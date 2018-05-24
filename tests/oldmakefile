@@ -1,0 +1,30 @@
+ALL:			 modelTests
+CFLAGS	         = -I $(INC_DIR) -I $(TEST_INC_DIR)
+FFLAGS	         =
+CPPFLAGS         =
+FPPFLAGS         =
+CLEANFILES       = modelTests
+
+TEST_SRC_DIR 	 = src
+TEST_INC_DIR 	 = include
+SRC_DIR			 = ../src
+INC_DIR			 = ../include
+
+MAIN			 = main.c
+
+TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.c)
+SRC 			 = $(filter-out $(SRC_DIR)/$(MAIN),$(wildcard $(SRC_DIR)/*.c))
+
+TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
+OBJ 			 = $(patsubst %.c,%.o,$(SRC))
+
+
+include ${PETSC_DIR}/lib/petsc/conf/variables
+include ${PETSC_DIR}/lib/petsc/conf/rules
+
+modelTests: $(TEST_OBJ) $(OBJ) chkopts
+	${CLINKER} -o modelTests $(TEST_OBJ) $(OBJ) ${PETSC_KSP_LIB} 
+	${RM} $(OBJ)
+
+runModelTests:
+	-@${MPIEXEC} -n 1 ./modelTests -info
