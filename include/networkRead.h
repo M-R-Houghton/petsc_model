@@ -1,7 +1,8 @@
 #ifndef NETWORK_READ_H
 #define NETWORK_READ_H
 
-#include "minUnitMacros.h"
+//#include "common.h"
+#include "common.h"
 
 /**
  * \brief Initiates network read in routine.

@@ -1,8 +1,6 @@
 #ifndef MIN_UNIT_MACROS_H
 #define MIN_UNIT_MACROS_H
 
-#include <stdio.h>
-#include <petscksp.h>
 #include "debugMacros.h"
 
 /* file: minunit.h */

@@ -2,12 +2,8 @@
 #define DEBUG_MACROS_H
 
 #include <stdio.h>
-#include <assert.h>
 #include <errno.h>
 #include <string.h>
-
-#include <petscksp.h>
-
 
 #ifdef NDEBUG
 #define debug(M, ...)
