@@ -2,27 +2,31 @@
 #define DEBUG_MACROS_H
 
 #include <stdio.h>
+#include <assert.h>
 #include <errno.h>
 #include <string.h>
+
+#include <petscksp.h>
+
 
 #ifdef NDEBUG
 #define debug(M, ...)
 #else
-#define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n",\
+#define debug(M, ...) fprintf(stdout, "DEBUG %s:%d: " M "\n",\
 		__FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
-#define log_err(M, ...) fprintf(stderr,\
+#define log_err(M, ...) fprintf(stdout,\
 		"[ERROR] (%s:%d:%s: errno: %s) " M "\n", __FILE__, __LINE__,\
 		__FUNCTION__, clean_errno(), ##__VA_ARGS__)
 
-#define log_warn(M, ...) fprintf(stderr,\
+#define log_warn(M, ...) fprintf(stdout,\
 		"[WARN] (%s:%d:%s: errno: %s) " M "\n",\
 		__FILE__, __LINE__, __FUNCTION__, clean_errno(), ##__VA_ARGS__)
 
-#define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d:%s:) " M "\n",\
+#define log_info(M, ...) fprintf(stdout, "[INFO] (%s:%d:%s:) " M "\n",\
 		__FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define check(A, M, ...) if(!(A)) {\
