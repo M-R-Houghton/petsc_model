@@ -5,8 +5,9 @@
 
 /**
  * \brief Initiates system assembly routine.
+ * \param H Global matrix to be assembled
  * \return Index to represent success or failure.
  */
-int systemAssembly();
+int systemAssembly(Mat H);
 
 #endif

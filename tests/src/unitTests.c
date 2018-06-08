@@ -34,18 +34,26 @@ const char *all_tests()
  
 int runUnitTests(PetscErrorCode ierr) 
 {
+    printf("==============================================\n");
+    printf("\t BEGINNING UNIT TESTS\n");
+    printf("==============================================\n");
+    
     // run network read in tests
     ierr = test_networkRead();
 
+    // run assembly tests
     ierr = test_systemAssembly();
 
+    // run solver tests
     ierr = test_systemSolve();
 
+    // run network prediction tests
     ierr = test_networkAnalysis();
 
+    // run network write out tests
     ierr = test_networkWrite();
 
-    //*
+    /*
     const char *result = all_tests();
     if (result != 0) 
     {
@@ -53,10 +61,14 @@ int runUnitTests(PetscErrorCode ierr)
     }
     else 
     {
-        log_info("ALL TESTS PASSED");
+        printf("ALL TESTS PASSED\n");
     }
-    log_info("Tests run: %d", tests_run);
-    //*/
+    printf("Tests run: %d\n", tests_run);
+    */
+
+    printf("==============================================\n");
+    printf("\t FINISHED UNIT TESTS\n");
+    printf("==============================================\n");
 
     return ierr;
 }

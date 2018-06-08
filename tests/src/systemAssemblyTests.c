@@ -2,9 +2,9 @@
 
 int test_systemAssembly()
 {
-	check(systemAssembly() == 0, "systemAssembly failed");
+	PetscErrorCode 	ierr;
+	Mat 			dummyMat = NULL;
+	assert(systemAssembly(dummyMat) == 0);
+	ierr = MatDestroy(&dummyMat);CHKERRQ(ierr);
 	return 0;
-
-error:
-	return -1;
 }

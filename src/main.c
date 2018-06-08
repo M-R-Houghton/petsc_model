@@ -12,10 +12,11 @@ int main(int argc, char **args)
 	PC             pc;           /* preconditioner context */
   	PetscReal      norm;         /* norm of solution error */
 	PetscErrorCode ierr;
-	PetscInt       i,n = 10,col[3],its;
+	PetscInt       n = 10,its;
 	PetscMPIInt    size;
-	PetscScalar    one = 1.0,value[3];
-	PetscBool      nonzeroguess = PETSC_FALSE,changepcside = PETSC_FALSE;
+	PetscScalar    one = 1.0;
+	PetscBool      nonzeroguess = PETSC_FALSE;
+	//PetscBool 	   changepcside = PETSC_FALSE;
 
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
@@ -32,11 +33,11 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
 	ierr = networkRead();
 
-	// assemble sparse structure and assemble linear system
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Assembling system...\n");CHKERRQ(ierr);
-	ierr = systemAssembly();
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Compute the matrix and right-hand-side vector that define
+         	the linear system, Ax = b.
+     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-	// minimal PETSc assembly example
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
 	ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
 	//ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
@@ -45,46 +46,39 @@ int main(int argc, char **args)
 	ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
 	ierr = VecDuplicate(x,&u);CHKERRQ(ierr);
 
-	ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
-	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
-	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
-	ierr = MatSetFromOptions(A);CHKERRQ(ierr);
-	ierr = MatSetUp(A);CHKERRQ(ierr);
-
-	/*
-	  Assemble matrix
-	*/
-	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
-	for(i=1; i<n-1; i++) 
-	{
-		col[0] = i-1; col[1] = i; col[2] = i+1;
-		ierr   = MatSetValues(A,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	}
-	i    = n - 1; col[0] = n - 2; col[1] = n - 1;
-	ierr = MatSetValues(A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-	ierr = MatSetValues(A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-	ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-
+	// assemble sparse structure and assemble linear system
+	A = NULL;
+	ierr = systemAssembly(A);
 	ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 
 	/*
        Set exact solution; then compute right-hand-side vector.
     */
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting exact solution...\n");CHKERRQ(ierr);
     ierr = VecSet(u,one);CHKERRQ(ierr);
     ierr = MatMult(A,u,b);CHKERRQ(ierr);
 
-    ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-    ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Create the linear solver and set various options
+     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    /*
+       Create linear solver context
+    */
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
-
+	
+	/*
+       Set operators. Here the matrix that defines the linear system
+       also serves as the preconditioning matrix.
+    */
 	ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
 
 	/*
@@ -120,7 +114,9 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
     ierr = systemSolve();
 
-
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Solve the linear system
+     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     /*
 	  Solve linear system
 	*/
@@ -132,10 +128,12 @@ int main(int argc, char **args)
 	*/
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        	Check solution and clean up
+     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/*
       Check the error
     */
