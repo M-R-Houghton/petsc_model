@@ -52,7 +52,12 @@ int main(int argc, char **args)
 
 	// assemble sparse structure and assemble linear system
 	A = NULL;
-	ierr = systemAssembly(A);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
+	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
+	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
+	ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+	ierr = MatSetUp(A);CHKERRQ(ierr);
+	ierr = systemAssembly(A);CHKERRQ(ierr);
 	ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 

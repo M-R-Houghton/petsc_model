@@ -6,11 +6,7 @@ int systemAssembly(Mat H)
 	PetscInt       i,n = 10,col[3];
 	PetscScalar    value[3];
 
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
-	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
-	ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
-	ierr = MatSetFromOptions(H);CHKERRQ(ierr);
-	ierr = MatSetUp(H);CHKERRQ(ierr);
+	
 
 	/*
 	  Assemble matrix
