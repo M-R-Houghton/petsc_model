@@ -7,6 +7,6 @@
  * \brief Tests network analysis routine.
  * \return Index to represent success or failure.
  */
-int test_networkAnalysis();
+PetscErrorCode test_networkAnalysis();
 
 #endif

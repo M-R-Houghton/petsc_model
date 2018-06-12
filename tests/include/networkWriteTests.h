@@ -7,6 +7,6 @@
  * \brief Tests network write out routine.
  * \return Index to represent success or failure.
  */
-int test_networkWrite();
+PetscErrorCode test_networkWrite();
 
 #endif

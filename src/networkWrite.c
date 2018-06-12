@@ -3,7 +3,7 @@
 PetscErrorCode networkWrite()
 {
 	PetscErrorCode 	ierr;
-	ierr = 0;
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
 
 	return ierr;
 }

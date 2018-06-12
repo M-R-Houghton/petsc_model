@@ -7,6 +7,6 @@
  * \brief Tests system solve routine.
  * \return Index to represent success or failure.
  */
-int test_systemSolve();
+PetscErrorCode test_systemSolve();
 
 #endif

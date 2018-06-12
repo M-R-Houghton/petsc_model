@@ -13,13 +13,11 @@ const char *all_data()
     return 0;
 }
 
-int test_networkRead()
+PetscErrorCode test_networkRead()
 {
-	check(networkRead() == 0, "networkRead failed");
+	PetscErrorCode ierr;
+	ierr = networkRead();CHKERRQ(ierr);
 
 	assert(test_dataRead() == 0);
-	return 0;
-
-error:
-	return -1;
+	return ierr;
 }

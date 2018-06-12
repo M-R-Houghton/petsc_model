@@ -32,26 +32,27 @@ const char *all_tests()
     return 0;
 }
  
-int runUnitTests(PetscErrorCode ierr) 
+PetscErrorCode runUnitTests() 
 {
-    printf("==============================================\n");
-    printf("\t BEGINNING UNIT TESTS\n");
-    printf("==============================================\n");
+    PetscErrorCode ierr;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"\t BEGINNING UNIT TESTS\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
     
     // run network read in tests
-    ierr = test_networkRead();
+    ierr = test_networkRead();CHKERRQ(ierr);
 
     // run assembly tests
-    ierr = test_systemAssembly();
+    ierr = test_systemAssembly();CHKERRQ(ierr);
 
     // run solver tests
-    ierr = test_systemSolve();
+    ierr = test_systemSolve();CHKERRQ(ierr);
 
     // run network prediction tests
-    ierr = test_networkAnalysis();
+    ierr = test_networkAnalysis();CHKERRQ(ierr);
 
     // run network write out tests
-    ierr = test_networkWrite();
+    ierr = test_networkWrite();CHKERRQ(ierr);
 
     /*
     const char *result = all_tests();
@@ -66,9 +67,9 @@ int runUnitTests(PetscErrorCode ierr)
     printf("Tests run: %d\n", tests_run);
     */
 
-    printf("==============================================\n");
-    printf("\t FINISHED UNIT TESTS\n");
-    printf("==============================================\n");
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"\t FINISHED UNIT TESTS\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
 
     return ierr;
 }

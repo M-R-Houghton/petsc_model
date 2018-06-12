@@ -7,6 +7,6 @@
 #include "networkAnalysisTests.h"
 #include "networkWriteTests.h"
 
-int runUnitTests(PetscErrorCode ierr);
+PetscErrorCode runUnitTests();
 
 #endif

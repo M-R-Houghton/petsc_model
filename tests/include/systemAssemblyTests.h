@@ -7,6 +7,6 @@
  * \brief Tests system assembly routine.
  * \return Index to represent success or failure.
  */
-int test_systemAssembly();
+PetscErrorCode test_systemAssembly();
 
 #endif

@@ -3,8 +3,7 @@
 PetscErrorCode networkRead()
 {
 	PetscErrorCode 	ierr;
-	ierr = 0;
-	printf("Entered network read.\n");
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
 
 	// open file
 

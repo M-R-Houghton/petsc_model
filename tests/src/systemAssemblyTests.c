@@ -1,6 +1,6 @@
 #include "systemAssemblyTests.h"
 
-int test_systemAssembly()
+PetscErrorCode test_systemAssembly()
 {
 	PetscErrorCode 	ierr;
 	Mat 			dummyMat = NULL;
@@ -9,7 +9,7 @@ int test_systemAssembly()
 	ierr = MatSetSizes(dummyMat,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 	ierr = MatSetFromOptions(dummyMat);CHKERRQ(ierr);
 	ierr = MatSetUp(dummyMat);CHKERRQ(ierr);
-	assert(systemAssembly(dummyMat) == 0);
+	ierr = systemAssembly(dummyMat);CHKERRQ(ierr);
 	ierr = MatDestroy(&dummyMat);CHKERRQ(ierr);
-	return 0;
+	return ierr;
 }

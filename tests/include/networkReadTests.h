@@ -10,6 +10,6 @@ const char *all_data();
  * \brief Tests network read in routine.
  * \return Index to represent success or failure.
  */
-int test_networkRead();
+PetscErrorCode test_networkRead();
 
 #endif

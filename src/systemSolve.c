@@ -3,7 +3,7 @@
 PetscErrorCode systemSolve()
 {
 	PetscErrorCode 	ierr;
-	ierr = 0;
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
 
 	return ierr;
 }

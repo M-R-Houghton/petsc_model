@@ -1,10 +1,9 @@
 #include "systemSolveTests.h"
 
-int test_systemSolve()
+PetscErrorCode test_systemSolve()
 {
-	check(systemSolve() == 0, "systemSolve failed");
-	return 0;
+	PetscErrorCode ierr;
+	ierr = systemSolve();CHKERRQ(ierr);
 
-error:
-	return -1;
+	return ierr;
 }

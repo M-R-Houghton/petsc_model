@@ -27,11 +27,10 @@ int main(int argc, char **args)
 
 	// run unit tests
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Running tests...\n");CHKERRQ(ierr);
-	ierr = runUnitTests(ierr);
+	ierr = runUnitTests();CHKERRQ(ierr);
 
 	// read in network data file
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
-	ierr = networkRead();
+	ierr = networkRead();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Compute the matrix and right-hand-side vector that define
@@ -115,8 +114,7 @@ int main(int argc, char **args)
 	}
 
 	// solve linear system
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    ierr = systemSolve();
+    ierr = systemSolve();CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
@@ -147,12 +145,10 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
 
     // make predictions based on solution
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Analysing network...\n");CHKERRQ(ierr);
-    ierr = networkAnalysis();
+    ierr = networkAnalysis();CHKERRQ(ierr);
 
     // write out new network data file
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
-    ierr = networkWrite();
+    ierr = networkWrite();CHKERRQ(ierr);
 
     /*
 	 * Free work space.
