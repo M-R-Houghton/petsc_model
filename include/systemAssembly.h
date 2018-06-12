@@ -6,8 +6,8 @@
 /**
  * \brief Initiates system assembly routine.
  * \param H Global matrix to be assembled
- * \return Index to represent success or failure.
+ * \return Index to represent Petsc error code.
  */
-PetscErrorCode systemAssembly(Mat H);
+PetscErrorCode systemAssembly(Mat H, Vec b);
 
 #endif

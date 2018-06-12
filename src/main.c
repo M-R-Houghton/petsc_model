@@ -25,8 +25,7 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
 
-	// run unit tests
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Running tests...\n");CHKERRQ(ierr);
+	// perform all unit tests
 	ierr = runUnitTests();CHKERRQ(ierr);
 
 	// read in network data file
@@ -37,6 +36,7 @@ int main(int argc, char **args)
          	the linear system, Ax = b.
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+    // allocate memory for global rhs and solution vectors and set them up
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
 	ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
 	//ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
@@ -49,14 +49,15 @@ int main(int argc, char **args)
 	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	//ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	// assemble sparse structure and assemble linear system
+	// allocate memory for global matrix and set it up
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
 	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
 	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 	ierr = MatSetFromOptions(A);CHKERRQ(ierr);
 	ierr = MatSetUp(A);CHKERRQ(ierr);
-	ierr = systemAssembly(A);CHKERRQ(ierr);
-	ierr = MatView(A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	// assemble sparse structure and assemble linear system
+	ierr = systemAssembly(A,x);CHKERRQ(ierr);
 
 
 	/*

@@ -5,7 +5,7 @@
 
 /**
  * \brief Tests network write out routine.
- * \return Index to represent success or failure.
+ * \return Index to represent Petsc error code.
  */
 PetscErrorCode test_networkWrite();
 

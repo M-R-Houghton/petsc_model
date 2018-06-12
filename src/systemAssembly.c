@@ -1,6 +1,6 @@
 #include "systemAssembly.h"
 
-PetscErrorCode systemAssembly(Mat H)
+PetscErrorCode systemAssembly(Mat H, Vec b)
 {
 	PetscErrorCode ierr;
 	PetscInt       i,n = 10,col[3];

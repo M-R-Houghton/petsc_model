@@ -16,9 +16,11 @@
 #define NODE_DANGLING 1
 #define NODE_BOUNDARY 2
 
-// set the span of association between nodes
-// stretch only     = 1
-// stretch and bend = 2
+/* 
+ * set the span of association between nodes
+ * stretch only     = 1
+ * stretch and bend = 2
+ */
 #define SPAN 2
 
 typedef struct parameters Parameters;
@@ -27,14 +29,14 @@ typedef struct node Node;
 typedef struct fibre Fibre;
 typedef struct sparseMat Sparse;
 
-// structure for storing variables
+/* structure for storing variables */
 struct parameters 
 {
 	double gamma;
 	double youngsModulus;
 };
 
-// structure for the domain
+/* structure for the domain */
 struct box 
 {
 	int nodeCount;
@@ -42,21 +44,21 @@ struct box
 	int fibreCount;
 	double xyzDimension[DIMENSION];
 	int xyzPeriodic[DIMENSION];
-	Node *masterNodeList;			// declare lists for storing nodes and fibres
+	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
 	Fibre *masterFibreList;
 };
 
-// structure for nodes
+/* structure for nodes */
 struct node 
 {
 	int nodeID;
-	int nodeType;					// might want to link back later
+	int nodeType;					/* might want to link back later */
 	int globalID;
 	double xyzCoord[DIMENSION];
 	double xyzDisplacement[DIMENSION];
 };
 
-// structure for fibres
+/* structure for fibres */
 struct fibre 
 {
 	int fibreID;
@@ -65,15 +67,15 @@ struct fibre
 	Node **nodesOnFibreList;
 };
 
-// structure for sparse matrices
+/* structure for sparse matrices */
 struct sparseMat 
 {
 	int n;
 	int nz;
-	int *counter; 					// (0<n)   counters
-	int *rowp;    					// (0<n+1) row pointers
-	int *col;     					// (0<nz)  column index
-	double *mat;  					// (0<nz)  matrix entry
+	int *counter; 					/* (0<n)   counters     */
+	int *rowp;    					/* (0<n+1) row pointers */
+	int *col;     					/* (0<nz)  column index */
+	double *mat;  					/* (0<nz)  matrix entry */
 };
 
 #endif

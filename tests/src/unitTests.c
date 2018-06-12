@@ -39,6 +39,9 @@ PetscErrorCode runUnitTests()
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\t BEGINNING UNIT TESTS\n");CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
     
+    // run network building tests
+    ierr = test_networkBuild();CHKERRQ(ierr);
+
     // run network read in tests
     ierr = test_networkRead();CHKERRQ(ierr);
 

@@ -5,7 +5,7 @@
 
 /**
  * \brief Initiates network analysis routine.
- * \return Index to represent success or failure.
+ * \return Index to represent Petsc error code.
  */
 PetscErrorCode networkAnalysis();
 

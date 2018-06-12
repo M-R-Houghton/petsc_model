@@ -1,12 +1,11 @@
 #ifndef NETWORK_READ_H
 #define NETWORK_READ_H
 
-//#include "common.h"
-#include "common.h"
+#include "networkBuild.h"
 
 /**
  * \brief Initiates network read in routine.
- * \return Index to represent success or failure.
+ * \return Index to represent Petsc error code.
  */
 PetscErrorCode networkRead();
 

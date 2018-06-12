@@ -19,5 +19,20 @@ PetscErrorCode test_networkRead()
 	ierr = networkRead();CHKERRQ(ierr);
 
 	assert(test_dataRead() == 0);
+
+	// test open file
+
+	// test read in line by line
+
+		// test process box line 
+
+		// test process fibre line 
+		// test make fibre
+
+		// test process node line 
+		// test make node
+
+	// test close file 
+
 	return ierr;
 }
