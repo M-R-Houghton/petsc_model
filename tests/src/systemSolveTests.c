@@ -1,5 +1,6 @@
 #include "systemSolveTests.h"
 
+/* Tests system solve routine */
 PetscErrorCode test_systemSolve()
 {
 	PetscErrorCode ierr;

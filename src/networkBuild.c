@@ -1,5 +1,6 @@
 #include "networkBuild.h"
 
+/* Initiates network build routine */
 PetscErrorCode networkBuild()
 {
 	PetscErrorCode 	ierr;

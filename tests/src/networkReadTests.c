@@ -13,6 +13,7 @@ const char *all_data()
     return 0;
 }
 
+/* Tests network read in routine */
 PetscErrorCode test_networkRead()
 {
 	PetscErrorCode ierr;

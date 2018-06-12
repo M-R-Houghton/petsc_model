@@ -31,7 +31,8 @@ const char *all_tests()
     mu_run_test(new_test);
     return 0;
 }
- 
+
+/* Initiates unit test routine */
 PetscErrorCode runUnitTests() 
 {
     PetscErrorCode ierr;
@@ -39,22 +40,22 @@ PetscErrorCode runUnitTests()
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\t BEGINNING UNIT TESTS\n");CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"===================================\n");CHKERRQ(ierr);
     
-    // run network building tests
+    /* run network building tests */
     ierr = test_networkBuild();CHKERRQ(ierr);
 
-    // run network read in tests
+    /* run network read in tests */
     ierr = test_networkRead();CHKERRQ(ierr);
 
-    // run assembly tests
+    /* run assembly tests */
     ierr = test_systemAssembly();CHKERRQ(ierr);
 
-    // run solver tests
+    /* run solver tests */
     ierr = test_systemSolve();CHKERRQ(ierr);
 
-    // run network prediction tests
+    /* run network prediction tests */
     ierr = test_networkAnalysis();CHKERRQ(ierr);
 
-    // run network write out tests
+    /* run network write out tests */
     ierr = test_networkWrite();CHKERRQ(ierr);
 
     /*

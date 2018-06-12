@@ -1,5 +1,6 @@
 #include "networkWrite.h"
 
+/* Initiates network write out routine */
 PetscErrorCode networkWrite()
 {
 	PetscErrorCode 	ierr;

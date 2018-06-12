@@ -1,5 +1,6 @@
 #include "systemSolve.h"
 
+/* Initiates system solve routine */
 PetscErrorCode systemSolve()
 {
 	PetscErrorCode 	ierr;

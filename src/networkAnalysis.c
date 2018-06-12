@@ -1,5 +1,6 @@
 #include "networkAnalysis.h"
 
+/* Initiates network analysis routine */
 PetscErrorCode networkAnalysis()
 {
 	PetscErrorCode 	ierr;

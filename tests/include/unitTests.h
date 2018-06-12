@@ -7,6 +7,7 @@
 #include "systemSolveTests.h"
 #include "networkAnalysisTests.h"
 #include "networkWriteTests.h"
+#include "networkDestroyTests.h"
 
 /**
  * \brief Initiates unit test routine

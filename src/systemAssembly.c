@@ -1,16 +1,15 @@
 #include "systemAssembly.h"
 
+/* Initiates system assembly routine */
 PetscErrorCode systemAssembly(Mat H, Vec b)
 {
 	PetscErrorCode ierr;
 	PetscInt       i,n = 10,col[3];
 	PetscScalar    value[3];
 
-	
-
 	/*
-	  Assemble matrix
-	*/
+	 * Assemble matrix
+	 */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Assembling system...\n");CHKERRQ(ierr);
 	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
 	for(i=1; i<n-1; i++) 
