@@ -43,6 +43,9 @@ PetscErrorCode runUnitTests()
     /* run network building tests */
     ierr = test_networkBuild();CHKERRQ(ierr);
 
+    /* run network destroying tests */
+    ierr = test_networkDestroy();CHKERRQ(ierr);
+
     /* run network read in tests */
     ierr = test_networkRead();CHKERRQ(ierr);
 

@@ -8,3 +8,11 @@ PetscErrorCode networkDestroy()
 
 	return ierr;
 }
+
+
+/* Destroys a parameters structure */
+void destroyParameters(Parameters *par_ptr)
+{
+	free(par_ptr);
+	par_ptr = NULL; assert(par_ptr == NULL); 	/* Null check */
+}

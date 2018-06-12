@@ -21,19 +21,19 @@ PetscErrorCode test_networkRead()
 
 	assert(test_dataRead() == 0);
 
-	// test open file
+	/* test open file */
 
-	// test read in line by line
+	/* test read in line by line */
 
-		// test process box line 
+		/* test process box line */
 
-		// test process fibre line 
-		// test make fibre
+		/* test process fibre line */
+		/* test make fibre */
 
-		// test process node line 
-		// test make node
+		/* test process node line */
+		/* test make node */
 
-	// test close file 
+	/* test close file */
 
 	return ierr;
 }

@@ -19,7 +19,16 @@ PetscErrorCode test_networkBuild()
 PetscErrorCode test_makeParameters()
 {
 	PetscErrorCode ierr;
-	ierr = 0;CHKERRQ(ierr);
+	PetscScalar    gamma = 0.5, yMod = 1.0;
+
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeParameters...\n");CHKERRQ(ierr);
+
+	Parameters *par_ptr = makeParameters(gamma, yMod);
+	assert(par_ptr->gamma         == 0.5);
+	assert(par_ptr->youngsModulus == 1.0);
+
+	free(par_ptr); par_ptr = NULL;
+	assert(par_ptr == NULL);
 	
 	return ierr;
 }
@@ -28,7 +37,8 @@ PetscErrorCode test_makeParameters()
 PetscErrorCode test_makeSparse()
 {
 	PetscErrorCode ierr;
-	ierr = 0;CHKERRQ(ierr);
+	
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeSparse...\n");CHKERRQ(ierr);
 	
 	return ierr;
 }
@@ -37,7 +47,8 @@ PetscErrorCode test_makeSparse()
 PetscErrorCode test_makeBox()
 {
 	PetscErrorCode ierr;
-	ierr = 0;CHKERRQ(ierr);
+	
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeBox...\n");CHKERRQ(ierr);
 	
 	return ierr;
 }
@@ -46,7 +57,8 @@ PetscErrorCode test_makeBox()
 PetscErrorCode test_makeFibre()
 {
 	PetscErrorCode ierr;
-	ierr = 0;CHKERRQ(ierr);
+	
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeFibre...\n");CHKERRQ(ierr);
 	
 	return ierr;
 }
@@ -55,7 +67,8 @@ PetscErrorCode test_makeFibre()
 PetscErrorCode test_makeNode()
 {
 	PetscErrorCode ierr;
-	ierr = 0;CHKERRQ(ierr);
+	
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeNode...\n");CHKERRQ(ierr);
 	
 	return ierr;
 }

@@ -9,4 +9,10 @@
  */
 PetscErrorCode networkDestroy();
 
+/**
+ * \brief Destroys a parameters structure
+ * \param par_ptr
+ */
+void destroyParameters(Parameters *par_ptr);
+
 #endif

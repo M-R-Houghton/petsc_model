@@ -9,4 +9,12 @@
  */
 PetscErrorCode networkBuild();
 
+/**
+ * \brief A function for parameters creation
+ * \param gamma
+ * \param yMod
+ * \return
+ */
+Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod);
+
 #endif
