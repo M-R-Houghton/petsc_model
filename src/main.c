@@ -51,7 +51,6 @@ int main(int argc, char **args)
 	//ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	// assemble sparse structure and assemble linear system
-	A = NULL;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
 	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
 	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);

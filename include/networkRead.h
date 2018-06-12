@@ -8,6 +8,6 @@
  * \brief Initiates network read in routine.
  * \return Index to represent success or failure.
  */
-int networkRead();
+PetscErrorCode networkRead();
 
 #endif

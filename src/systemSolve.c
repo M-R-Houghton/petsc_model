@@ -1,6 +1,9 @@
 #include "systemSolve.h"
 
-int systemSolve()
+PetscErrorCode systemSolve()
 {
-	return 0;
+	PetscErrorCode 	ierr;
+	ierr = 0;
+
+	return ierr;
 }

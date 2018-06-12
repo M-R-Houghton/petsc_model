@@ -1,6 +1,9 @@
 #include "networkWrite.h"
 
-int networkWrite()
+PetscErrorCode networkWrite()
 {
-	return 0;
+	PetscErrorCode 	ierr;
+	ierr = 0;
+
+	return ierr;
 }

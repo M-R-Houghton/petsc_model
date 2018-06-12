@@ -1,6 +1,9 @@
 #include "networkAnalysis.h"
 
-int networkAnalysis()
+PetscErrorCode networkAnalysis()
 {
-	return 0;
+	PetscErrorCode 	ierr;
+	ierr = 0;
+	
+	return ierr;
 }

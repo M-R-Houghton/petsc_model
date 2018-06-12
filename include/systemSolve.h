@@ -7,6 +7,6 @@
  * \brief Initiates system solve routine.
  * \return Index to represent success or failure.
  */
-int systemSolve();
+PetscErrorCode systemSolve();
 
 #endif

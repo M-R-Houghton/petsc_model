@@ -1,7 +1,9 @@
 #include "networkRead.h"
 
-int networkRead()
+PetscErrorCode networkRead()
 {
+	PetscErrorCode 	ierr;
+	ierr = 0;
 	printf("Entered network read.\n");
 
 	// open file
@@ -18,5 +20,5 @@ int networkRead()
 
 	// close file 
 
-	return 0;
+	return ierr;
 }

@@ -1,6 +1,6 @@
 #include "systemAssembly.h"
 
-int systemAssembly(Mat H)
+PetscErrorCode systemAssembly(Mat H)
 {
 	PetscErrorCode ierr;
 	PetscInt       i,n = 10,col[3];
@@ -26,5 +26,5 @@ int systemAssembly(Mat H)
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	return 0;
+	return ierr;
 }

@@ -8,6 +8,6 @@
  * \param H Global matrix to be assembled
  * \return Index to represent success or failure.
  */
-int systemAssembly(Mat H);
+PetscErrorCode systemAssembly(Mat H);
 
 #endif

@@ -7,6 +7,6 @@
  * \brief Initiates network write out routine.
  * \return Index to represent success or failure.
  */
-int networkWrite();
+PetscErrorCode networkWrite();
 
 #endif
