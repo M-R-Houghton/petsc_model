@@ -50,17 +50,12 @@ PetscErrorCode test_makeSparse()
 	sparse_ptr->col[14] = 82;
 	assert(sparse_ptr->col[14] == 82);		/* test assignment */
 
-	/* clean up and do null checks */
+	/* clean up */
 	free(sparse_ptr->counter); sparse_ptr->counter = NULL;
-	assert(sparse_ptr->counter == NULL);
 	free(sparse_ptr->rowp); sparse_ptr->rowp = NULL;
-	assert(sparse_ptr->rowp == NULL);
 	free(sparse_ptr->col); sparse_ptr->col = NULL;
-	assert(sparse_ptr->col == NULL);
 	free(sparse_ptr->mat); sparse_ptr->mat = NULL;
-	assert(sparse_ptr->mat == NULL);
 	free(sparse_ptr); sparse_ptr = NULL;
-	assert(sparse_ptr == NULL);
 	
 	return ierr;
 }
