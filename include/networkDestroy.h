@@ -21,4 +21,10 @@ void destroyParameters(Parameters *par_ptr);
  */
 void destroySparse(Sparse *sparse_ptr);
 
+/**
+ * \brief Destroys a box structure
+ * \param box_ptr
+ */
+void destroyBox(Box *box_ptr);
+
 #endif
