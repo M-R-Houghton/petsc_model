@@ -23,7 +23,7 @@ PetscErrorCode test_makeParameters()
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeParameters...\n");CHKERRQ(ierr);
 
-	Parameters *par_ptr = makeParameters(gamma, yMod);
+	Parameters *par_ptr = makeParameters(gamma,yMod);
 	assert(par_ptr->gamma         == 0.5);
 	assert(par_ptr->youngsModulus == 1.0);
 
@@ -37,8 +37,30 @@ PetscErrorCode test_makeParameters()
 PetscErrorCode test_makeSparse()
 {
 	PetscErrorCode ierr;
+	PetscInt 	   n = 25, nz = 15;
 	
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeSparse...\n");CHKERRQ(ierr);
+
+	assert(makeSparse(10,15) == NULL);		/* test invalid arguments */
+
+	Sparse *sparse_ptr = makeSparse(n,nz);
+	assert(sparse_ptr->n  == 25);
+	assert(sparse_ptr->nz == 15);			/* test inputs */
+
+	sparse_ptr->col[14] = 82;
+	assert(sparse_ptr->col[14] == 82);		/* test assignment */
+
+	/* clean up and do null checks */
+	free(sparse_ptr->counter); sparse_ptr->counter = NULL;
+	assert(sparse_ptr->counter == NULL);
+	free(sparse_ptr->rowp); sparse_ptr->rowp = NULL;
+	assert(sparse_ptr->rowp == NULL);
+	free(sparse_ptr->col); sparse_ptr->col = NULL;
+	assert(sparse_ptr->col == NULL);
+	free(sparse_ptr->mat); sparse_ptr->mat = NULL;
+	assert(sparse_ptr->mat == NULL);
+	free(sparse_ptr); sparse_ptr = NULL;
+	assert(sparse_ptr == NULL);
 	
 	return ierr;
 }

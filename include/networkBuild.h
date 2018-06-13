@@ -10,11 +10,19 @@
 PetscErrorCode networkBuild();
 
 /**
- * \brief A function for parameters creation
- * \param gamma
- * \param yMod
+ * \brief Creates a parameters structure
+ * \param gamma Parameter representing shear strain
+ * \param yMod Parameter representing the Youngs Modulus value
  * \return
  */
 Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod);
+
+/**
+ * \brief Creates a sparse structure
+ * \param n Total number of elements
+ * \param nz Number of nonzero elements
+ * \return
+ */
+Sparse *makeSparse(PetscInt n, PetscInt nz);
 
 #endif

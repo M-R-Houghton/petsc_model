@@ -15,4 +15,10 @@ PetscErrorCode networkDestroy();
  */
 void destroyParameters(Parameters *par_ptr);
 
+/**
+ * \brief Destroys a sparse structure
+ * \param sparse_ptr
+ */
+void destroySparse(Sparse *sparse_ptr);
+
 #endif
