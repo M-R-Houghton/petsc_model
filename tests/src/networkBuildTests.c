@@ -8,12 +8,14 @@ PetscErrorCode test_networkBuild()
 
 	ierr = test_makeParameters();CHKERRQ(ierr);
 	ierr = test_makeSparse();CHKERRQ(ierr);
+	ierr = test_checkBoxArguments();CHKERRQ(ierr);
 	ierr = test_makeBox();CHKERRQ(ierr);
 	ierr = test_makeFibre();CHKERRQ(ierr);
 	ierr = test_makeNode();CHKERRQ(ierr);
 	
 	return ierr;
 }
+
 
 /* Tests parameter builder */
 PetscErrorCode test_makeParameters()
@@ -32,6 +34,7 @@ PetscErrorCode test_makeParameters()
 	
 	return ierr;
 }
+
 
 /* Tests sparse matrix builder */
 PetscErrorCode test_makeSparse()
@@ -60,15 +63,39 @@ PetscErrorCode test_makeSparse()
 	return ierr;
 }
 
+
+/* Tests box argument checker */
+PetscErrorCode test_checkBoxArguments()
+{
+	PetscErrorCode ierr;
+	
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] checkBoxArguments...\n");CHKERRQ(ierr);
+
+	assert(checkBoxArguments(1,1,1,1,1,1,1,1) == 0);
+	
+	return ierr;
+}
+
+
 /* Tests box builder */
 PetscErrorCode test_makeBox()
 {
 	PetscErrorCode ierr;
 	
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeBox...\n");CHKERRQ(ierr);
+
+	assert(makeBox(-1,1,1,1,1,1,1,1) == NULL);
+	assert(makeBox(1,-1,1,1,1,1,1,1) == NULL);
+	assert(makeBox(1,1,-1,1,1,1,1,1) == NULL);
+	assert(makeBox(1,1,1,-1,1,1,1,1) == NULL);
+	assert(makeBox(1,1,1,1,-1,1,1,1) == NULL);
+	assert(makeBox(1,1,1,1,1,2,1,1) == NULL);
+	assert(makeBox(1,1,1,1,1,1,2,1) == NULL);
+	assert(makeBox(1,1,1,1,1,1,1,2) == NULL);	/* test invalid arguments */
 	
 	return ierr;
 }
+
 
 /* Tests fibre builder */
 PetscErrorCode test_makeFibre()
@@ -80,6 +107,7 @@ PetscErrorCode test_makeFibre()
 	return ierr;
 }
 
+
 /* Tests node builder */
 PetscErrorCode test_makeNode()
 {
@@ -89,3 +117,4 @@ PetscErrorCode test_makeNode()
 	
 	return ierr;
 }
+

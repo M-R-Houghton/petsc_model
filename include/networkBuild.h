@@ -25,4 +25,36 @@ Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod);
  */
 Sparse *makeSparse(PetscInt n, PetscInt nz);
 
+/**
+ * \brief Checks box arguments are all legal
+ * \param nCount
+ * \param fCount
+ * \param xDim
+ * \param yDim
+ * \param zDim
+ * \param xPer
+ * \param yPer
+ * \param zPer
+ * \return
+ */
+PetscInt checkBoxArguments(PetscInt nCount, PetscInt fCount, 
+							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+							PetscInt xPer, PetscInt yPer, PetscInt zPer);
+
+/**
+ * \brief Creates a box structure
+ * \param nCount
+ * \param fCount
+ * \param xDim
+ * \param yDim
+ * \param zDim
+ * \param xPer
+ * \param yPer
+ * \param zPer
+ * \return
+ */
+Box *makeBox(PetscInt nCount, PetscInt fCount, 
+				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+				PetscInt xPer, PetscInt yPer, PetscInt zPer);
+
 #endif

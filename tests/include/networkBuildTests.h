@@ -22,6 +22,12 @@ PetscErrorCode test_makeParameters();
 PetscErrorCode test_makeSparse();
 
 /**
+ * \brief Tests box argument checker.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode test_checkBoxArguments();
+
+/**
  * \brief Tests box builder.
  * \return Index to represent Petsc error code.
  */

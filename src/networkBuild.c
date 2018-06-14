@@ -43,3 +43,43 @@ Sparse *makeSparse(PetscInt n, PetscInt nz)
 
 	return sparse_ptr;
 }
+
+
+/* Checks box arguments are all legal */
+PetscInt checkBoxArguments(PetscInt nCount, PetscInt fCount, 
+							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+							PetscInt xPer, PetscInt yPer, PetscInt zPer)
+{
+	if (nCount < 0 || fCount < 0)
+	{
+		return -1;
+	}
+	else if (xDim < 0 || yDim < 0 || zDim < 0)
+	{
+		return -1;
+	}
+	else if (xPer < 0 || yPer < 0 || zPer < 0)
+	{
+		return -1;
+	}
+	else if (xPer > 1 || yPer > 1 || zPer > 1)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+/* Creates a box structure */
+Box *makeBox(PetscInt nCount, PetscInt fCount, 
+				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+				PetscInt xPer, PetscInt yPer, PetscInt zPer)
+{
+	if (checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer) == -1) return NULL;
+	
+	return NULL;
+}
+
