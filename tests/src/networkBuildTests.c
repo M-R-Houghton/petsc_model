@@ -44,8 +44,6 @@ PetscErrorCode test_makeSparse()
 	
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeSparse...\n");CHKERRQ(ierr);
 
-	assert(makeSparse(10,15) == NULL);		/* test invalid arguments */
-
 	Sparse *sparse_ptr = makeSparse(n,nz);
 	assert(sparse_ptr->n  == 25);
 	assert(sparse_ptr->nz == 15);			/* test inputs */
@@ -83,15 +81,6 @@ PetscErrorCode test_makeBox()
 	PetscErrorCode ierr;
 	
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeBox...\n");CHKERRQ(ierr);
-
-	assert(makeBox(-1,1,1,1,1,1,1,1) == NULL);
-	assert(makeBox(1,-1,1,1,1,1,1,1) == NULL);
-	assert(makeBox(1,1,-1,1,1,1,1,1) == NULL);
-	assert(makeBox(1,1,1,-1,1,1,1,1) == NULL);
-	assert(makeBox(1,1,1,1,-1,1,1,1) == NULL);
-	assert(makeBox(1,1,1,1,1,2,1,1) == NULL);
-	assert(makeBox(1,1,1,1,1,1,2,1) == NULL);
-	assert(makeBox(1,1,1,1,1,1,1,2) == NULL);	/* test invalid arguments */
 	
 	return ierr;
 }

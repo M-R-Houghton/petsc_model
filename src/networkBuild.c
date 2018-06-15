@@ -28,7 +28,7 @@ Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod)
 Sparse *makeSparse(PetscInt n, PetscInt nz) 
 {
 	/* exit function if invalid arguments given */
-	if (n < nz) return NULL;
+	assert(n >= nz);
 
 	/* allocate memory */
 	Sparse *sparse_ptr = (Sparse *)malloc(sizeof(Sparse));
@@ -46,30 +46,27 @@ Sparse *makeSparse(PetscInt n, PetscInt nz)
 
 
 /* Checks box arguments are all legal */
-PetscInt checkBoxArguments(PetscInt nCount, PetscInt fCount, 
+PetscErrorCode checkBoxArguments(PetscInt nCount, PetscInt fCount, 
 							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 							PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
-	if (nCount < 0 || fCount < 0)
-	{
-		return -1;
-	}
-	else if (xDim < 0 || yDim < 0 || zDim < 0)
-	{
-		return -1;
-	}
-	else if (xPer < 0 || yPer < 0 || zPer < 0)
-	{
-		return -1;
-	}
-	else if (xPer > 1 || yPer > 1 || zPer > 1)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
+	assert(nCount >= 0);
+	assert(fCount >= 0);
+
+	assert(xDim >= 0);
+	assert(yDim >= 0);
+	assert(zDim >= 0);
+
+	assert(xPer >= 0);
+	assert(yPer >= 0);
+	assert(zPer >= 0);
+
+	assert(xPer < 2);
+	assert(yPer < 2);
+	assert(zPer < 2);
+
+
+	return 0;
 }
 
 
@@ -78,7 +75,9 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 				PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
-	if (checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer) == -1) return NULL;
+	checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer);
+
+	/* do some stuff here */
 	
 	return NULL;
 }
