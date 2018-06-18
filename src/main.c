@@ -2,7 +2,7 @@
 static char help[] = "The first draft of the PETSc model.\n\n";
 
 #include "networkWrite.h"
-#include "unitTests.h"
+#include "integrationTests.h"
 
 int main(int argc, char **args)
 {
@@ -26,7 +26,7 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
 
 	// perform all unit tests
-	ierr = runUnitTests();CHKERRQ(ierr);
+	ierr = runIntegrationTests();CHKERRQ(ierr);
 
 	// read in network data file
 	ierr = networkRead();CHKERRQ(ierr);
