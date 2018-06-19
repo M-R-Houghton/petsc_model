@@ -65,7 +65,6 @@ PetscErrorCode checkBoxArguments(PetscInt nCount, PetscInt fCount,
 	assert(yPer < 2);
 	assert(zPer < 2);
 
-
 	return 0;
 }
 
@@ -75,10 +74,38 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 				PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
+	/* validate arguments */
 	checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer);
 
-	/* do some stuff here */
-	
-	return NULL;
+	/* allocate memory */
+	Box *box_ptr = (Box *)malloc(sizeof(Box));
+
+	/* assign attributes */
+	box_ptr->nodeCount = nCount;
+	box_ptr->nodeInternalCount = -1;
+	box_ptr->fibreCount = fCount;
+	box_ptr->xyzDimension[0] = xDim;
+	box_ptr->xyzDimension[1] = yDim;
+	box_ptr->xyzDimension[2] = zDim;
+	box_ptr->xyzPeriodic[0] = xPer;
+	box_ptr->xyzPeriodic[1] = yPer;
+	box_ptr->xyzPeriodic[2] = zPer;
+
+	/* assign allocated memory to master node/fibre lists */
+	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
+	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
+
+	return box_ptr;
+}
+
+
+/* Creates a fibre within its allocated location in a box */
+void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList) 
+{
+	/* assign attributes */
+	box_ptr->masterFibreList[fID].fibreID = fID;
+	box_ptr->masterFibreList[fID].nodesOnFibre = nOnFibre;
+	box_ptr->masterFibreList[fID].radius = radius;
+    box_ptr->masterFibreList[fID].nodesOnFibreList = nList;
 }
 
