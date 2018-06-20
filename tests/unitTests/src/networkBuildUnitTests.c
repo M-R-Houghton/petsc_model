@@ -132,7 +132,8 @@ Test(testMakeFibre, testValueAssignment)
 	Node *node2_ptr = &(box_ptr->masterNodeList[1]);
 
 	/* set up node list and make fibre */
-	Node *node_ptr_list[1];
+	Node **node_ptr_list = (Node**)calloc(1, sizeof(Node*));
+
 	node_ptr_list[0] = &(box_ptr->masterNodeList[0]);
 	makeFibre(box_ptr, 0, 1, 0.01, node_ptr_list);
 
@@ -156,19 +157,11 @@ Test(testMakeFibre, testValueAssignment)
 
 	/* clean up */
 	free(box_ptr->masterNodeList); box_ptr->masterNodeList = NULL;
-
-	//free(box_ptr->masterFibreList[0].nodesOnFibreList);	
-    //box_ptr->masterFibreList[0].nodesOnFibreList = NULL;
-
-    //free(box_ptr->masterFibreList[1].nodesOnFibreList);	
-    //box_ptr->masterFibreList[1].nodesOnFibreList = NULL;
-
-	for (int f = 0; f < box_ptr->fibreCount; f++)
-	{
-        //free(box_ptr->masterFibreList[f].nodesOnFibreList);	
-        //box_ptr->masterFibreList[f].nodesOnFibreList = NULL;
-	}
+	cr_expect_null(box_ptr->masterNodeList);
+    free(node_ptr_list); node_ptr_list = NULL;
+    cr_expect_null(node_ptr_list);
 	free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
+	cr_expect_null(box_ptr->masterFibreList);
     free(box_ptr); box_ptr = NULL;
     cr_expect_null(box_ptr);
 }
