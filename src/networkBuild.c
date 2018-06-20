@@ -46,7 +46,7 @@ Sparse *makeSparse(PetscInt n, PetscInt nz)
 
 
 /* Checks box arguments are all legal */
-PetscErrorCode checkBoxArguments(PetscInt nCount, PetscInt fCount, 
+void checkBoxArguments(PetscInt nCount, PetscInt fCount, 
 							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 							PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
@@ -64,8 +64,6 @@ PetscErrorCode checkBoxArguments(PetscInt nCount, PetscInt fCount,
 	assert(xPer < 2);
 	assert(yPer < 2);
 	assert(zPer < 2);
-
-	return 0;
 }
 
 
@@ -99,13 +97,93 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 }
 
 
-/* Creates a fibre within its allocated location in a box */
-void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList) 
+/* Checks fibre arguments are all legal */
+void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
+				PetscScalar radius, Node **nList_ptr_ptr)
 {
+	assert(box_ptr != NULL);
+	assert(fID >= 0);
+	assert(nOnFibre >= 0);
+	assert(radius >= 0);
+	assert(nList_ptr_ptr != NULL);
+}
+
+
+/* Creates a fibre within its allocated location in a box */
+void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr) 
+{
+	/* validate arguments */
+	checkFibreArguments(box_ptr, fID, nOnFibre, radius, nList_ptr_ptr);
+
 	/* assign attributes */
 	box_ptr->masterFibreList[fID].fibreID = fID;
 	box_ptr->masterFibreList[fID].nodesOnFibre = nOnFibre;
 	box_ptr->masterFibreList[fID].radius = radius;
-    box_ptr->masterFibreList[fID].nodesOnFibreList = nList;
+    box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 }
+
+
+/* Checks node arguments are all legal */
+void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType, 
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+{
+	assert(box_ptr != NULL);
+	assert(nID >= 0);
+	assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
+	assert(gIndex_ptr != NULL);
+}
+
+
+/* Creates a node within its allocated location in a box */
+PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+{
+	PetscErrorCode ierr = 0;
+	
+	/* validate arguments */
+	checkNodeArguments(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);
+
+	/* create shortcut for readability */
+	Node *node_ptr = &(box_ptr->masterNodeList[nID]);
+
+	/* assign attributes */
+	node_ptr->nodeID = nID;
+	node_ptr->nodeType = nType;
+	node_ptr->xyzCoord[0] = x;
+	node_ptr->xyzCoord[1] = y;
+	node_ptr->xyzCoord[2] = z;
+
+	/* default before switch case */
+	node_ptr->globalID = -1;
+	node_ptr->xyzDisplacement[0] = 0;
+	node_ptr->xyzDisplacement[1] = 0;
+	node_ptr->xyzDisplacement[2] = 0;
+
+	switch (nType)
+	{
+		case NODE_INTERNAL:
+			/* add global ID */
+			node_ptr->globalID = *gIndex_ptr;
+			*gIndex_ptr += 1;
+			break;
+		case NODE_BOUNDARY:
+			/* apply boundary conditions */
+			node_ptr->xyzDisplacement[0] = gamma * node_ptr->xyzCoord[1];
+			node_ptr->xyzDisplacement[1] = 0;
+			node_ptr->xyzDisplacement[2] = 0;
+			break;
+		case NODE_DANGLING:
+			/* do nothing at the moment */
+			break;
+		default:
+			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying node type");
+	}
+
+	return ierr;
+}
+
+
+
+
+
 

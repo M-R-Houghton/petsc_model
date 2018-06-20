@@ -39,13 +39,6 @@ Test(testMakeSparse, testValueAssignment)
 }
 
 
-Test(testCheckBoxArguments, testValidArguments)
-{
-	cr_expect(checkBoxArguments(1,2,3,4,5,0,0,0) == 0);
-	cr_expect(checkBoxArguments(1,2,3,4,5,1,1,1) == 0);
-}
-
-
 Test(testMakeBox, testValueAssignment)
 {
 	Box *box_ptr = makeBox(1,2,3,4,5,1,1,1);
@@ -146,7 +139,7 @@ Test(testMakeFibre, testValueAssignment)
 
 	/* change node in node list */
 	node_ptr_list[0] = &(box_ptr->masterNodeList[2]);
-	makeFibre(box_ptr, 1, 1, 0.05, node_ptr_list);
+	makeFibre(box_ptr,1,1,0.05,node_ptr_list);
 
 	/* test fibre values */
 	cr_expect(box_ptr->masterFibreList[1].fibreID 		== 1);
@@ -169,7 +162,48 @@ Test(testMakeFibre, testValueAssignment)
 
 Test(testMakeNode, testValueAssignment)
 {
-	//cr_expect_null(makeNode(1,1,1,1,1,1,1,1));
+	/* set up test */
+	PetscErrorCode ierr = 0;
+	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
+	PetscInt myInt = 1;
+	PetscInt *myInt_ptr = &myInt;
+
+	/* make some nodes */
+	ierr = makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
+	ierr = makeNode(box_ptr,0,1,2,3,4,myInt_ptr,0.25);
+
+	/* test node values */
+	cr_expect(box_ptr->masterNodeList[1].nodeID == 1);
+	cr_expect(box_ptr->masterNodeList[1].nodeType == 2);
+	cr_expect(box_ptr->masterNodeList[1].xyzCoord[0] == 3);
+	cr_expect(box_ptr->masterNodeList[1].xyzCoord[1] == 4);
+	cr_expect(box_ptr->masterNodeList[1].xyzCoord[2] == 5);
+	cr_expect(box_ptr->masterNodeList[1].globalID == -1);
+	cr_expect(box_ptr->masterNodeList[1].xyzDisplacement[0] == 0.5 * 4);
+	cr_expect(box_ptr->masterNodeList[1].xyzDisplacement[1] == 0);
+	cr_expect(box_ptr->masterNodeList[1].xyzDisplacement[2] == 0);
+
+	/* test node values */
+	cr_expect(box_ptr->masterNodeList[0].nodeID == 0);
+	cr_expect(box_ptr->masterNodeList[0].nodeType == 1);
+	cr_expect(box_ptr->masterNodeList[0].xyzCoord[0] == 2);
+	cr_expect(box_ptr->masterNodeList[0].xyzCoord[1] == 3);
+	cr_expect(box_ptr->masterNodeList[0].xyzCoord[2] == 4);
+	cr_expect(box_ptr->masterNodeList[0].globalID == -1);
+	cr_expect(box_ptr->masterNodeList[0].xyzDisplacement[0] == 0);
+	cr_expect(box_ptr->masterNodeList[0].xyzDisplacement[1] == 0);
+	cr_expect(box_ptr->masterNodeList[0].xyzDisplacement[2] == 0);
+
+	/* clean up */
+	free(box_ptr->masterNodeList); box_ptr->masterNodeList = NULL;
+	for (int f = 0; f < box_ptr->fibreCount; f++)
+	{
+        free(box_ptr->masterFibreList[f].nodesOnFibreList);	
+        box_ptr->masterFibreList[f].nodesOnFibreList = NULL;
+	}
+	free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
+    free(box_ptr); box_ptr = NULL;
+    cr_expect_null(box_ptr);
 }
 
 

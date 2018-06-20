@@ -35,9 +35,8 @@ Sparse *makeSparse(PetscInt n, PetscInt nz);
  * \param xPer
  * \param yPer
  * \param zPer
- * \return
  */
-PetscInt checkBoxArguments(PetscInt nCount, PetscInt fCount, 
+void checkBoxArguments(PetscInt nCount, PetscInt fCount, 
 							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 							PetscInt xPer, PetscInt yPer, PetscInt zPer);
 
@@ -57,4 +56,55 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
 				PetscInt xPer, PetscInt yPer, PetscInt zPer);
 
+/**
+ * \brief Checks fibre arguments are all legal
+ * \param box_ptr
+ * \param fID
+ * \param nOnFibre
+ * \param radius
+ * \param nList_ptr_ptr
+ */
+void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
+				PetscScalar radius, Node **nList_ptr_ptr);
+
+/**
+ * \brief Creates a fibre within its allocated location in a box
+ * \param box_ptr
+ * \param fID
+ * \param nOnFibre
+ * \param radius
+ * \param nList_ptr_ptr
+ */
+void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
+				PetscScalar radius, Node **nList_ptr_ptr);
+
+/**
+ * \brief Checks node arguments are all legal
+ * \param box_ptr
+ * \param nID
+ * \param nType
+ * \param x
+ * \param y
+ * \param z
+ * \param gIndex_ptr
+ * \param gamma
+ */
+void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType, 
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma);
+
+/**
+ * \brief Creates a node within its allocated location in a box
+ * \param box_ptr
+ * \param nID
+ * \param nType
+ * \param x
+ * \param y
+ * \param z
+ * \param gIndex_ptr
+ * \param gamma
+ */
+PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma);
+
 #endif
+
