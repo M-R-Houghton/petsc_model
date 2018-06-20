@@ -149,7 +149,7 @@ int main(int argc, char **args)
     ierr = networkAnalysis();CHKERRQ(ierr);
 
     // write out new network data file
-    ierr = networkWrite();CHKERRQ(ierr);
+    //ierr = networkWrite();CHKERRQ(ierr);
 
     /*
 	 * Free work space.

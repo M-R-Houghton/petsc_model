@@ -128,7 +128,7 @@ Test(testMakeFibre, testValueAssignment)
 	Node **node_ptr_list = (Node**)calloc(1, sizeof(Node*));
 
 	node_ptr_list[0] = &(box_ptr->masterNodeList[0]);
-	makeFibre(box_ptr, 0, 1, 0.01, node_ptr_list);
+	makeFibre(box_ptr,0,1,0.01,node_ptr_list);
 
 	/* test fibre values */
 	cr_expect(box_ptr->masterFibreList[0].fibreID 		== 0);

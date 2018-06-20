@@ -1,7 +1,7 @@
 #ifndef NETWORK_READ_H
 #define NETWORK_READ_H
 
-#include "networkBuild.h"
+#include "networkDestroy.h"
 
 /**
  * \brief Initiates network read in routine.
