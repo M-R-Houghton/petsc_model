@@ -32,18 +32,18 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
-	double gamma;
-	double youngsModulus;
+	PetscScalar gamma;
+	PetscScalar youngsModulus;
 };
 
 /* structure for the domain */
 struct box 
 {
-	int nodeCount;
-	int nodeInternalCount;
-	int fibreCount;
-	double xyzDimension[DIMENSION];
-	int xyzPeriodic[DIMENSION];
+	PetscInt nodeCount;
+	PetscInt nodeInternalCount;
+	PetscInt fibreCount;
+	PetscScalar xyzDimension[DIMENSION];
+	PetscInt xyzPeriodic[DIMENSION];
 	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
 	Fibre *masterFibreList;
 };
@@ -51,31 +51,31 @@ struct box
 /* structure for nodes */
 struct node 
 {
-	int nodeID;
-	int nodeType;					/* might want to link back later */
-	int globalID;
-	double xyzCoord[DIMENSION];
-	double xyzDisplacement[DIMENSION];
+	PetscInt nodeID;
+	PetscInt nodeType;					/* might want to link back later */
+	PetscInt globalID;
+	PetscScalar xyzCoord[DIMENSION];
+	PetscScalar xyzDisplacement[DIMENSION];
 };
 
 /* structure for fibres */
 struct fibre 
 {
-	int fibreID;
-	int nodesOnFibre;
-	double radius;
+	PetscInt fibreID;
+	PetscInt nodesOnFibre;
+	PetscScalar radius;
 	Node **nodesOnFibreList;
 };
 
 /* structure for sparse matrices */
 struct sparseMat 
 {
-	int n;
-	int nz;
-	int *counter; 					/* (0<n)   counters     */
-	int *rowp;    					/* (0<n+1) row pointers */
-	int *col;     					/* (0<nz)  column index */
-	double *mat;  					/* (0<nz)  matrix entry */
+	PetscInt n;
+	PetscInt nz;
+	PetscInt *counter; 					/* (0<n)   counters     */
+	PetscInt *rowp;    					/* (0<n+1) row pointers */
+	PetscInt *col;     					/* (0<nz)  column index */
+	PetscScalar *mat;  					/* (0<nz)  matrix entry */
 };
 
 #endif
