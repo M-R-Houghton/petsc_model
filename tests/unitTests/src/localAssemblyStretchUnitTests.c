@@ -9,6 +9,9 @@ Test(testCalculateK, testOutputKValue)
 
 	PetscInt fCount 		   			= 2;
 	Box *box_ptr 			   			= (Box *)malloc(sizeof(Box));
+	box_ptr->xyzDimension[0]			= 10;
+	box_ptr->xyzDimension[1]			= 10;
+	box_ptr->xyzDimension[2]			= 10;
 	box_ptr->fibreCount 	   			= fCount;
 	box_ptr->masterFibreList   			= (Fibre*)calloc(fCount, sizeof(Fibre));
 	box_ptr->masterFibreList[0].fibreID = 0;

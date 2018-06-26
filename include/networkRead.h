@@ -1,7 +1,7 @@
 #ifndef NETWORK_READ_H
 #define NETWORK_READ_H
 
-#include "networkDestroy.h"
+#include "vectorOperations.h"
 
 /**
  * \brief Initiates network read in routine.

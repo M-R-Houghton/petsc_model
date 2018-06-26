@@ -4,6 +4,14 @@
 #include "localAssemblyStretch.h"
 
 /**
+ * \brief Checks for legal kappa calculation arguments
+ * \param box_ptr
+ * \param par_ptr
+ * \param fIndex
+ */
+void checkKappaArguments(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+
+/**
  * \brief Calculates the bending term kappa
  * \param box_ptr
  * \param par_ptr
