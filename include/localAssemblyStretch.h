@@ -4,6 +4,14 @@
 #include "networkRead.h"
 
 /**
+ * \brief Checks for legal fibre index and segment length
+ * \param box_ptr
+ * \param fIndex
+ * \param segLength
+ */
+void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength);
+
+/**
  * \brief Calculates the stretching constant k
  * \param box_ptr
  * \param par_ptr

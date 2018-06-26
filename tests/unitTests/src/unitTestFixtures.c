@@ -1,4 +1,3 @@
-#include <petscksp.h>
 #include <criterion/criterion.h>
 #include "networkBuild.h"
 

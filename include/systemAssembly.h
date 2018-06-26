@@ -1,7 +1,7 @@
 #ifndef SYSTEM_ASSEMBLY_H
 #define SYSTEM_ASSEMBLY_H
 
-#include "networkRead.h"
+#include "localAssembly.h"
 
 /**
  * \brief Initiates system assembly routine.

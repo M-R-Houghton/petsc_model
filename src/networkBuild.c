@@ -27,7 +27,7 @@ Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod)
 /* Creates a sparse structure */
 Sparse *makeSparse(PetscInt n, PetscInt nz) 
 {
-	/* exit function if invalid arguments given */
+	/* check for invalid arguments given */
 	assert(n >= nz);
 
 	/* allocate memory */
