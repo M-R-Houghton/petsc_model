@@ -105,58 +105,165 @@ Test(testVecAddition, testOutputValues)
 }
 
 
-Test(testNearestSegmentCopyDirN, testOutputValuesForX)
+Test(testNearestSegmentCopyDirN, testOutputValuesForPeriodicX)
 {
+	PetscScalar tol 			= 1e-12;
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
 	box_ptr->xyzDimension[1] 	= 1;
 	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 1;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 0;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
 	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
 
 	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 0) == 0);
 	cr_expect(nearestSegmentCopyDirN(vec2, box_ptr, 0) == 0);
 
+	cr_expect_float_eq(vec1[0], 0.0, tol);
+	cr_expect_float_eq(vec1[1], 3.0, tol);
+
+	cr_expect_float_eq(vec2[0], 0.0, tol);
+	cr_expect_float_eq(vec2[1], 2.0, tol);
+	cr_expect_float_eq(vec2[2], 3.0, tol);
+
 	/* clean up */
     free(box_ptr); box_ptr = NULL;
 }
 
 
-Test(testNearestSegmentCopyDirN, testOutputValuesForY)
+Test(testNearestSegmentCopyDirN, testOutputValuesForAperiodicX)
 {
+	PetscScalar tol 			= 1e-12;
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
 	box_ptr->xyzDimension[1] 	= 1;
 	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 0;
+	PetscScalar vec1[2] 		= {2.0, 3.0};
+	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
+
+	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 0) == 0);
+	cr_expect(nearestSegmentCopyDirN(vec2, box_ptr, 0) == 0);
+
+	cr_expect_float_eq(vec1[0], 2.0, tol);
+	cr_expect_float_eq(vec1[1], 3.0, tol);
+
+	cr_expect_float_eq(vec2[0], 1.0, tol);
+	cr_expect_float_eq(vec2[1], 2.0, tol);
+	cr_expect_float_eq(vec2[2], 3.0, tol);
+
+	/* clean up */
+    free(box_ptr); box_ptr = NULL;
+}
+
+
+Test(testNearestSegmentCopyDirN, testOutputValuesForPeriodicY)
+{
+	PetscScalar tol 			= 1e-12;
+	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
+	box_ptr->xyzDimension[0] 	= 1;
+	box_ptr->xyzDimension[1] 	= 1;
+	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 1;
+	box_ptr->xyzPeriodic[2] 	= 0;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
 	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
 
 	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 1) == 0);
 	cr_expect(nearestSegmentCopyDirN(vec2, box_ptr, 1) == 0);
 
+	cr_expect_float_eq(vec1[0], 2.0, tol);
+	cr_expect_float_eq(vec1[1], 0.0, tol);
+
+	cr_expect_float_eq(vec2[0], 1.0, tol);
+	cr_expect_float_eq(vec2[1], 0.0, tol);
+	cr_expect_float_eq(vec2[2], 3.0, tol);
+
 	/* clean up */
     free(box_ptr); box_ptr = NULL;
 }
 
 
-Test(testNearestSegmentCopyDirN, testOutputValuesForZ)
+Test(testNearestSegmentCopyDirN, testOutputValuesForAperiodicY)
 {
+	PetscScalar tol 			= 1e-12;
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
 	box_ptr->xyzDimension[1] 	= 1;
 	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 0;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
 	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
 
-	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 2) == 0);
-	cr_expect(nearestSegmentCopyDirN(vec2, box_ptr, 2) == 0);
+	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 1) == 0);
+	cr_expect(nearestSegmentCopyDirN(vec2, box_ptr, 1) == 0);
+
+	cr_expect_float_eq(vec1[0], 2.0, tol);
+	cr_expect_float_eq(vec1[1], 3.0, tol);
+
+	cr_expect_float_eq(vec2[0], 1.0, tol);
+	cr_expect_float_eq(vec2[1], 2.0, tol);
+	cr_expect_float_eq(vec2[2], 3.0, tol);
 
 	/* clean up */
     free(box_ptr); box_ptr = NULL;
 }
 
 
-Test(testNearestSegmentCopy, testOutputValues)
+Test(testNearestSegmentCopyDirN, testOutputValuesForPeriodicZ)
+{
+	PetscScalar tol 			= 1e-12;
+	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
+	box_ptr->xyzDimension[0] 	= 1;
+	box_ptr->xyzDimension[1] 	= 1;
+	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 1;
+	PetscScalar vec1[3] 		= {1.0, 2.0, 3.0};
+
+	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 2) == 0);
+
+	cr_expect_float_eq(vec1[0], 1.0, tol);
+	cr_expect_float_eq(vec1[1], 2.0, tol);
+	cr_expect_float_eq(vec1[2], 0.0, tol);
+
+	/* clean up */
+    free(box_ptr); box_ptr = NULL;
+}
+
+
+Test(testNearestSegmentCopyDirN, testOutputValuesForAperiodicZ)
+{
+	PetscScalar tol 			= 1e-12;
+	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
+	box_ptr->xyzDimension[0] 	= 1;
+	box_ptr->xyzDimension[1] 	= 1;
+	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 0;
+	PetscScalar vec1[3] 		= {1.0, 2.0, 3.0};
+
+	cr_expect(nearestSegmentCopyDirN(vec1, box_ptr, 2) == 0);
+
+	cr_expect_float_eq(vec1[0], 1.0, tol);
+	cr_expect_float_eq(vec1[1], 2.0, tol);
+	cr_expect_float_eq(vec1[2], 3.0, tol);
+
+	/* clean up */
+    free(box_ptr); box_ptr = NULL;
+}
+
+
+Test(testNearestSegmentCopy, testOutputValuesForPeriodic)
 {
 	PetscScalar tol 			= 1e-12;
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
@@ -173,7 +280,39 @@ Test(testNearestSegmentCopy, testOutputValues)
 	cr_expect(nearestSegmentCopy(vec2, box_ptr) == 0);
 
 	cr_expect_float_eq(vec1[0], 0.0, tol);
-	cr_expect_float_neq(vec1[0], 1.0, tol);
+	cr_expect_float_eq(vec1[1], 0.0, tol);
+
+	cr_expect_float_eq(vec2[0], 0.0, tol);
+	cr_expect_float_eq(vec2[1], 0.0, tol);
+	cr_expect_float_eq(vec2[2], 0.0, tol);
+
+	/* clean up */
+    free(box_ptr); box_ptr = NULL;
+}
+
+
+Test(testNearestSegmentCopy, testOutputValuesForAPeriodic)
+{
+	PetscScalar tol 			= 1e-12;
+	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
+	box_ptr->xyzDimension[0] 	= 1;
+	box_ptr->xyzDimension[1] 	= 1;
+	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 0;
+	box_ptr->xyzPeriodic[1] 	= 0;
+	box_ptr->xyzPeriodic[2] 	= 0;
+	PetscScalar vec1[2] 		= {2.0, 3.0};
+	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
+
+	cr_expect(nearestSegmentCopy(vec1, box_ptr) == 0);
+	cr_expect(nearestSegmentCopy(vec2, box_ptr) == 0);
+
+	cr_expect_float_eq(vec1[0], 2.0, tol);
+	cr_expect_float_eq(vec1[1], 3.0, tol);
+
+	cr_expect_float_eq(vec2[0], 1.0, tol);
+	cr_expect_float_eq(vec2[1], 2.0, tol);
+	cr_expect_float_eq(vec2[2], 3.0, tol);
 
 	/* clean up */
     free(box_ptr); box_ptr = NULL;
