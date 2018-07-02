@@ -158,18 +158,24 @@ Test(testNearestSegmentCopyDirN, testOutputValuesForZ)
 
 Test(testNearestSegmentCopy, testOutputValues)
 {
+	PetscScalar tol 			= 1e-12;
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
 	box_ptr->xyzDimension[1] 	= 1;
 	box_ptr->xyzDimension[2] 	= 1;
+	box_ptr->xyzPeriodic[0] 	= 1;
+	box_ptr->xyzPeriodic[1] 	= 1;
+	box_ptr->xyzPeriodic[2] 	= 1;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
 	PetscScalar vec2[3] 		= {1.0, 2.0, 3.0};
 
 	cr_expect(nearestSegmentCopy(vec1, box_ptr) == 0);
 	cr_expect(nearestSegmentCopy(vec2, box_ptr) == 0);
 
-	//cr_expect(vec1[0] == 0.0);
+	cr_expect_float_eq(vec1[0], 0.0, tol);
+	cr_expect_float_neq(vec1[0], 1.0, tol);
 
 	/* clean up */
     free(box_ptr); box_ptr = NULL;
 }
+
