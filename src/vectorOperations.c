@@ -110,11 +110,11 @@ PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, Pe
 	{
 		PetscScalar dimN = box_ptr->xyzDimension[N]; 	/* i.e. width/height/depth */
 
-		if (distVec_ptr[N] > 0.5 * dimN) 
+		while (distVec_ptr[N] >  0.5 * dimN) 
 		{
 			distVec_ptr[N] -= dimN;
 		} 
-		else if (distVec_ptr[N] < -0.5 * dimN) 
+		while (distVec_ptr[N] < -0.5 * dimN) 
 		{
 			distVec_ptr[N] += dimN;
 		}
