@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 #include "localAssemblyStretch.h"
 
+
 Test(testCalculateK, testOutputKValue)
 {
 	PetscScalar tol 					= 1e-12;
@@ -33,4 +34,26 @@ Test(testCalculateK, testOutputKValue)
 	free(par_ptr); par_ptr = NULL;
 	free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
     free(box_ptr); box_ptr = NULL;
+}
+
+
+Test(testMakeStretchMatrix, testOutputValues)
+{
+	PetscErrorCode 	ierr;
+	PetscScalar 	k = 0.0;
+	PetscScalar 	tangVec[3] = {1.0, 2.0, 3.0};
+	Mat 			A;
+	PetscInt       	n = 10;
+	PetscBool      	nonzeroguess = PETSC_FALSE;
+	//ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);
+	//ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);
+
+	ierr = MatCreate(PETSC_COMM_WORLD,&A);
+	//ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);
+	//ierr = MatSetFromOptions(A);
+	//ierr = MatSetUp(A);
+
+	//cr_expect(makeStretchMatrix(k, tangVec, A) == 0);
+
+	ierr = MatDestroy(&A);
 }
