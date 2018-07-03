@@ -47,21 +47,34 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b)
 /* Calculates the dot product of two given vectors */
 PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 {
-	return 0;
+	PetscScalar total = 0;
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		total += vec1_ptr[i] * vec2_ptr[i];
+	}
+	return total;
 }
 
 
 /* Calculates the cross product of two given 2D vectors */
 PetscScalar vec2DCrossProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 {
-	return 0;
+	assert(DIMENSION == 2);		/* should not be calling this function in 3d case */
+
+	PetscScalar z = vec1_ptr[0] * vec2_ptr[1] - vec2_ptr[0] * vec1_ptr[1];
+	return z;
 }
 
 
 /* Calculates the cross product of two given 3D vectors */
 PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 {
+	assert(DIMENSION == 3);		/* should not be calling this function in 2d case */
+
 	PetscErrorCode ierr = 0;
+	crossVec_ptr[0] 	= vec1_ptr[1]*vec2_ptr[2] - vec1_ptr[2]*vec2_ptr[1];
+	crossVec_ptr[1] 	= vec1_ptr[2]*vec2_ptr[0] - vec1_ptr[0]*vec2_ptr[2];
+	crossVec_ptr[2] 	= vec1_ptr[0]*vec2_ptr[1] - vec1_ptr[1]*vec2_ptr[0];
 
 	return ierr;
 }
@@ -70,7 +83,7 @@ PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
 /* Calculates the magnitude of a given vector */
 PetscScalar vecMagnitude(PetscScalar *vec_ptr)
 {
-	return 0;
+	return sqrt(vecDotProduct(vec_ptr, vec_ptr));
 }
 
 
@@ -78,6 +91,31 @@ PetscScalar vecMagnitude(PetscScalar *vec_ptr)
 PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
 {
 	PetscErrorCode ierr = 0;
+
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		addVec_ptr[i] = posVec1_ptr[i] + posVec2_ptr[i];
+	}
+
+	/* update if crossing boundary */
+	ierr = nearestSegmentCopy(addVec_ptr, box_ptr);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+/* Creates the distance vector between two position vectors */
+PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		distVec_ptr[i] = posVec2_ptr[i] - posVec1_ptr[i];
+	}
+
+	/* update if crossing boundary */
+	ierr = nearestSegmentCopy(distVec_ptr, box_ptr);CHKERRQ(ierr);
 
 	return ierr;
 }
@@ -88,14 +126,52 @@ PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
 {
 	PetscErrorCode ierr = 0;
 
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		tangVec_ptr[i] = vec_ptr[i] / (vecMagnitude(vec_ptr));
+	}
+
 	return ierr;
 }
 
 
-/* Creates the distance vector between two position vectors */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+/* Creates the position vector of a given node */
+PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
+
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		posVec_ptr[i] = node_ptr->xyzCoord[i];
+	}
+
+	return ierr;
+}
+
+
+/* Creates the displacement vector of a given node */
+PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		dispVec_ptr[i] = node_ptr->xyzDisplacement[i];
+	}
+
+	return ierr;
+}
+
+
+/* Updates a position vector with the displacement of the corresponding node */
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		posVec_ptr[i] = node_ptr->xyzCoord[i] + node_ptr->xyzDisplacement[i];
+	}
 
 	return ierr;
 }
