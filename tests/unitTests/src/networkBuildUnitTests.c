@@ -1,5 +1,6 @@
-#include <criterion/criterion.h>
-#include "networkBuild.h"
+//#include <criterion/criterion.h>
+//#include "networkBuild.h"
+#include "unitTestFixtures.h"
 
 Test(testMakeParameters, testValueAssignment)
 {

@@ -1,7 +1,8 @@
-#include <criterion/criterion.h>
-#include "vectorOperations.h"
+//#include <criterion/criterion.h>
+//#include "vectorOperations.h"
+#include "unitTestFixtures.h"
 
-Test(testMinInt, testOutputValues)
+Test(testMinInt, testOutputValues, .init = setup, .fini = teardown)
 {
 	cr_expect(minInt( 1, 2) ==  1);
 	cr_expect(minInt( 4, 4) ==  4);

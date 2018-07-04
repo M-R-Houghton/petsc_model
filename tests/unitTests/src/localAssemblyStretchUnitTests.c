@@ -1,6 +1,6 @@
-#include <criterion/criterion.h>
-#include "localAssemblyStretch.h"
-
+//#include <criterion/criterion.h>
+//#include "localAssemblyStretch.h"
+#include "unitTestFixtures.h"
 
 Test(testCalculateK, testOutputKValue)
 {
@@ -37,8 +37,10 @@ Test(testCalculateK, testOutputKValue)
 }
 
 
-Test(testMakeStretchMatrix, testOutputValues)
+Test(testMakeStretchMatrix, testOutputValues, .init = setup, .fini = teardown)
 {
+	cr_skip_test();
+	/*
 	PetscErrorCode 	ierr;
 	PetscScalar 	k = 0.0;
 	PetscScalar 	tangVec[3] = {1.0, 2.0, 3.0};
@@ -56,4 +58,5 @@ Test(testMakeStretchMatrix, testOutputValues)
 	//cr_expect(makeStretchMatrix(k, tangVec, A) == 0);
 
 	ierr = MatDestroy(&A);
+	*/
 }

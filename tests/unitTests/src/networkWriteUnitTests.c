@@ -1,6 +1,7 @@
-#include <criterion/criterion.h>
+//#include <criterion/criterion.h>
 #include <criterion/redirect.h>
-#include "networkWrite.h"
+//#include "networkWrite.h"
+#include "unitTestFixtures.h"
 
 Test(testNetworkWrite, testOutputFile)
 {

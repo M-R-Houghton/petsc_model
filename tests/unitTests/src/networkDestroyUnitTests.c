@@ -1,5 +1,6 @@
-#include <criterion/criterion.h>
-#include "networkDestroy.h"
+//#include <criterion/criterion.h>
+//#include "networkDestroy.h"
+#include "unitTestFixtures.h"
 
 Test(simple5, test)
 {

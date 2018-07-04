@@ -1,5 +1,6 @@
-#include <criterion/criterion.h>
-#include "localAssemblyBend.h"
+//#include <criterion/criterion.h>
+//#include "localAssemblyBend.h"
+#include "unitTestFixtures.h"
 
 Test(testCalculateKappa, testOutputKappaValue)
 {
