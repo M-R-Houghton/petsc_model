@@ -68,6 +68,10 @@ gclean :
 # trailing _.
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
+# Needed for petsc
+include ${PETSC_DIR}/lib/petsc/conf/variables
+include ${PETSC_DIR}/lib/petsc/conf/rules
+
 # For simplicity and to avoid depending on Google Test's
 # implementation details, the dependencies specified below are
 # conservative and not optimized.  This is fine as Google Test
@@ -77,7 +81,7 @@ gtest-all.o : $(GTEST_SRCS_)
             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c \
             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
@@ -100,10 +104,6 @@ gtest_main.a : gtest-all.o gtest_main.o
 #sample1_unittest : sample1.o sample1_unittest.o gtest_main.a
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-# Needed for petsc
-include ${PETSC_DIR}/lib/petsc/conf/variables
-include ${PETSC_DIR}/lib/petsc/conf/rules
-
 sample2.o : $(TEST_SRC_DIR)/sample2.cc $(TEST_SRC_DIR)/sample2.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2.cc
 
@@ -112,7 +112,8 @@ sample2_unittest.o : $(TEST_SRC_DIR)/sample2_unittest.cc \
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc
 
 sample2_unittest : $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a chkopts
-	${CLINKER} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB}
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
+#	${CLINKER} changed from this here
 
 #gUnitTests: $(OBJ) $(TEST_OBJ) gtest_main.a chkopts
 #	${CLINKER} -o gUnitTests $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB}
