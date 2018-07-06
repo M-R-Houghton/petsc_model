@@ -104,11 +104,11 @@ gtest_main.a : gtest-all.o gtest_main.o
 #sample1_unittest : sample1.o sample1_unittest.o gtest_main.a
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-sample2.o : $(TEST_SRC_DIR)/sample2.cc $(TEST_SRC_DIR)/sample2.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2.cc
+sample2.o : $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc
 
 sample2_unittest.o : $(TEST_SRC_DIR)/sample2_unittest.cc \
-                     $(TEST_SRC_DIR)/sample2.h $(GTEST_HEADERS)
+                     $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc
 
 sample2_unittest : $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a chkopts
