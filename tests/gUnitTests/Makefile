@@ -40,7 +40,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest
+TESTS = sample2_unittest localAssemblyBend
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -114,6 +114,16 @@ sample2_unittest.o : $(TEST_SRC_DIR)/sample2_unittest.cc \
 sample2_unittest : $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
 #	${CLINKER} changed from this here
+
+localAssemblyBend.o : $(USER_SRC_DIR)/localAssemblyBend.c $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
+	${CLINKER} $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyBend.c
+
+localAssemblyBend_unittest.o : $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc \
+                     $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc
+
+localAssemblyBend_unittest : $(TEST_SRC_DIR)/localAssemblyBend.o $(TEST_SRC_DIR)/localAssemblyBend_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend.o $(TEST_SRC_DIR)/localAssemblyBend_unittest.o gtest_main.a 
 
 #gUnitTests: $(OBJ) $(TEST_OBJ) gtest_main.a chkopts
 #	${CLINKER} -o gUnitTests $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB}
