@@ -125,7 +125,7 @@ localAssemblyBend_unittest.o : $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc \
 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc -o $(TEST_OBJ_DIR)/$@
 
 localAssemblyBend_unittest : localAssemblyBend.o localAssemblyBend_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend.o $(TEST_SRC_DIR)/localAssemblyBend_unittest.o gtest_main.a 
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend_unittest.o $(TEST_SRC_DIR)/localAssemblyBend.o gtest_main.a 
 
 #gUnitTests: $(OBJ) $(TEST_OBJ) gtest_main.a chkopts
 #	${CLINKER} -o gUnitTests $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB}

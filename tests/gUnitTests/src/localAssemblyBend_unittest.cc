@@ -45,7 +45,9 @@
 
 #include <limits.h>
 #include <petscksp.h>
+extern "C" {
 #include "localAssemblyBend.h"
+}
 #include "gtest/gtest.h"
 namespace {
 
@@ -55,7 +57,7 @@ TEST(AssemblyTest, Negative) {
   // This test is named "Negative", and belongs to the "FactorialTest"
   // test case.
   PetscErrorCode ierr;
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");
   EXPECT_EQ(ierr, 0);
 
   // <TechnicalDetails>
@@ -72,6 +74,29 @@ TEST(AssemblyTest, Negative) {
   // and is thus more general.
   //
   // </TechnicalDetails>
+}
+
+TEST(AssemblyTest2, Something) {
+  PetscScalar tol           = 1e-12;
+  Parameters *par_ptr         = (Parameters *)malloc(sizeof(Parameters));
+  par_ptr->youngsModulus        = 1.0/(M_PI * pow(0.01, 2));
+
+  PetscInt fCount             = 2;
+  Box *box_ptr              = (Box *)malloc(sizeof(Box));
+  box_ptr->fibreCount           = fCount;
+  box_ptr->masterFibreList        = (Fibre*)calloc(fCount, sizeof(Fibre));
+  box_ptr->masterFibreList[0].fibreID = 0;
+  box_ptr->masterFibreList[0].radius  = 0.01;
+  box_ptr->masterFibreList[1].fibreID = 1;
+  box_ptr->masterFibreList[1].radius  = 0.3;
+
+  EXPECT_EQ(calculateKappa(box_ptr, par_ptr, 0), 0.000025);
+  EXPECT_EQ(calculateKappa(box_ptr, par_ptr, 1), 20.25);
+
+  /* clean up */
+  free(par_ptr); par_ptr = NULL;
+  free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
+  free(box_ptr); box_ptr = NULL;
 }
 
 }  // namespace
