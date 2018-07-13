@@ -29,6 +29,7 @@ USER_INC_DIR = ../../include
 # Where to find test code.
 TEST_SRC_DIR = src
 TEST_INC_DIR = src
+TEST_OBJ_DIR = src
 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
@@ -40,7 +41,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest localAssemblyBend
+TESTS = sample2_unittest localAssemblyBend_unittest
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -60,7 +61,8 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 all : $(TESTS) chkopts
 
 gclean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
+	rm -f $(TESTS) gtest.a gtest_main.a
+	find . -name '*.o' -exec rm {} \;
 
 # Builds gtest.a and gtest_main.a.
 
@@ -105,24 +107,24 @@ gtest_main.a : gtest-all.o gtest_main.o
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 sample2.o : $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc -o $(TEST_SRC_DIR)/$@
 
 sample2_unittest.o : $(TEST_SRC_DIR)/sample2_unittest.cc \
                      $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc -o $(TEST_SRC_DIR)/$@
 
-sample2_unittest : $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a chkopts
+sample2_unittest : sample2.o sample2_unittest.o gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
 #	${CLINKER} changed from this here
 
 localAssemblyBend.o : $(USER_SRC_DIR)/localAssemblyBend.c $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
-	${CLINKER} $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyBend.c
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyBend.c -o $(TEST_OBJ_DIR)/$@
 
 localAssemblyBend_unittest.o : $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc \
                      $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc -o $(TEST_OBJ_DIR)/$@
 
-localAssemblyBend_unittest : $(TEST_SRC_DIR)/localAssemblyBend.o $(TEST_SRC_DIR)/localAssemblyBend_unittest.o gtest_main.a chkopts
+localAssemblyBend_unittest : localAssemblyBend.o localAssemblyBend_unittest.o gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend.o $(TEST_SRC_DIR)/localAssemblyBend_unittest.o gtest_main.a 
 
 #gUnitTests: $(OBJ) $(TEST_OBJ) gtest_main.a chkopts
