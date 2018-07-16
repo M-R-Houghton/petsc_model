@@ -41,7 +41,8 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest localAssemblyStretch_unittest localAssemblyBend_unittest
+TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest \
+networkBuild_unittest networkDestroy_unittest networkWrite_unittest vectorOperations_unittest
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -132,6 +133,22 @@ sample2_unittest: sample2.o sample2_unittest.o gtest_main.a chkopts
 #	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/$(TEST_OBJ) $(TEST_SRC_DIR)/$(USER_OBJ) gtest_main.a
 #
 
+#
+# Make localAssembly
+#
+localAssembly.o: $(USER_SRC_DIR)/localAssembly.c $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssembly.c -o $(TEST_OBJ_DIR)/$@
+
+localAssembly_unittest.o: $(TEST_SRC_DIR)/localAssembly_unittest.cc \
+                     $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+localAssembly_unittest: localAssembly.o localAssembly_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssembly_unittest.o $(TEST_SRC_DIR)/localAssembly.o gtest_main.a
+
+#
+# Make localAssemblyStretch
+#
 localAssemblyStretch.o: $(USER_SRC_DIR)/localAssemblyStretch.c $(USER_INC_DIR)/localAssemblyStretch.h $(GTEST_HEADERS)
 	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyStretch.c -o $(TEST_OBJ_DIR)/$@
 
@@ -142,7 +159,9 @@ localAssemblyStretch_unittest.o: $(TEST_SRC_DIR)/localAssemblyStretch_unittest.c
 localAssemblyStretch_unittest: localAssemblyStretch.o localAssemblyStretch_unittest.o gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyStretch_unittest.o $(TEST_SRC_DIR)/localAssemblyStretch.o gtest_main.a
 
-
+#
+# Make localAssemblyBend
+#
 localAssemblyBend.o: $(USER_SRC_DIR)/localAssemblyBend.c $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
 	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyBend.c -o $(TEST_OBJ_DIR)/$@
 
@@ -151,5 +170,57 @@ localAssemblyBend_unittest.o: $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc \
 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc -o $(TEST_OBJ_DIR)/$@
 
 localAssemblyBend_unittest: localAssemblyBend.o localAssemblyBend_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend_unittest.o $(TEST_SRC_DIR)/localAssemblyBend.o gtest_main.a 	
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend_unittest.o $(TEST_SRC_DIR)/localAssemblyBend.o gtest_main.a 
+
+#
+# Make networkBuild
+#
+networkBuild.o: $(USER_SRC_DIR)/networkBuild.c $(USER_INC_DIR)/networkBuild.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkBuild.c -o $(TEST_OBJ_DIR)/$@
+
+networkBuild_unittest.o: $(TEST_SRC_DIR)/networkBuild_unittest.cc \
+                     $(USER_INC_DIR)/networkBuild.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkBuild_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+networkBuild_unittest: networkBuild.o networkBuild_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkBuild_unittest.o $(TEST_SRC_DIR)/networkBuild.o gtest_main.a	
+
+#
+# Make networkDestroy
+#
+networkDestroy.o: $(USER_SRC_DIR)/networkDestroy.c $(USER_INC_DIR)/networkDestroy.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkDestroy.c -o $(TEST_OBJ_DIR)/$@
+
+networkDestroy_unittest.o: $(TEST_SRC_DIR)/networkDestroy_unittest.cc \
+                     $(USER_INC_DIR)/networkDestroy.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkDestroy_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+networkDestroy_unittest: networkDestroy.o networkDestroy_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkDestroy_unittest.o $(TEST_SRC_DIR)/networkDestroy.o gtest_main.a	
+
+#
+# Make networkWrite
+#
+networkWrite.o: $(USER_SRC_DIR)/networkWrite.c $(USER_INC_DIR)/networkWrite.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkWrite.c -o $(TEST_OBJ_DIR)/$@
+
+networkWrite_unittest.o: $(TEST_SRC_DIR)/networkWrite_unittest.cc \
+                     $(USER_INC_DIR)/networkWrite.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkWrite_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+networkWrite_unittest: networkWrite.o networkWrite_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkWrite_unittest.o $(TEST_SRC_DIR)/networkWrite.o gtest_main.a	
+
+#
+# Make vectorOperations
+#
+vectorOperations.o: $(USER_SRC_DIR)/vectorOperations.c $(USER_INC_DIR)/vectorOperations.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/vectorOperations.c -o $(TEST_OBJ_DIR)/$@
+
+vectorOperations_unittest.o: $(TEST_SRC_DIR)/vectorOperations_unittest.cc \
+                     $(USER_INC_DIR)/vectorOperations.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/vectorOperations_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+vectorOperations_unittest: vectorOperations.o vectorOperations_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/vectorOperations_unittest.o $(TEST_SRC_DIR)/vectorOperations.o gtest_main.a	
 

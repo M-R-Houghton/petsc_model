@@ -73,15 +73,15 @@ namespace {
 // </TechnicalDetails>
 
 
-// Tests Factorial().
+// Tests Factorial2().
 
 // Tests factorial of negative numbers.
 TEST(FactorialTest2, Negative) {
   // This test is named "Negative", and belongs to the "FactorialTest2"
   // test case.
-  EXPECT_EQ(1, Factorial(-5));
-  EXPECT_EQ(1, Factorial(-1));
-  EXPECT_GT(Factorial(-10), 0);
+  EXPECT_EQ(1, Factorial2(-5));
+  EXPECT_EQ(1, Factorial2(-1));
+  EXPECT_GT(Factorial2(-10), 0);
 
   // <TechnicalDetails>
   //
@@ -101,43 +101,43 @@ TEST(FactorialTest2, Negative) {
 
 // Tests factorial of 0.
 TEST(FactorialTest2, Zero) {
-  EXPECT_EQ(1, Factorial(0));
+  EXPECT_EQ(1, Factorial2(0));
 }
 
 // Tests factorial of positive numbers.
 TEST(FactorialTest2, Positive) {
-  EXPECT_EQ(1, Factorial(1));
-  EXPECT_EQ(2, Factorial(2));
-  EXPECT_EQ(6, Factorial(3));
-  EXPECT_EQ(40320, Factorial(8));
+  EXPECT_EQ(1, Factorial2(1));
+  EXPECT_EQ(2, Factorial2(2));
+  EXPECT_EQ(6, Factorial2(3));
+  EXPECT_EQ(40320, Factorial2(8));
 }
 
 
-// Tests IsPrime()
+// Tests IsPrime2()
 
 // Tests negative input.
 TEST(IsPrimeTest2, Negative) {
   // This test belongs to the IsPrimeTest2 test case.
 
-  EXPECT_FALSE(IsPrime(-1));
-  EXPECT_FALSE(IsPrime(-2));
-  EXPECT_FALSE(IsPrime(INT_MIN));
+  EXPECT_FALSE(IsPrime2(-1));
+  EXPECT_FALSE(IsPrime2(-2));
+  EXPECT_FALSE(IsPrime2(INT_MIN));
 }
 
 // Tests some trivial cases.
 TEST(IsPrimeTest2, Trivial) {
-  EXPECT_FALSE(IsPrime(0));
-  EXPECT_FALSE(IsPrime(1));
-  EXPECT_TRUE(IsPrime(2));
-  EXPECT_TRUE(IsPrime(3));
+  EXPECT_FALSE(IsPrime2(0));
+  EXPECT_FALSE(IsPrime2(1));
+  EXPECT_TRUE(IsPrime2(2));
+  EXPECT_TRUE(IsPrime2(3));
 }
 
 // Tests positive input.
 TEST(IsPrimeTest2, Positive) {
-  EXPECT_FALSE(IsPrime(4));
-  EXPECT_TRUE(IsPrime(5));
-  EXPECT_FALSE(IsPrime(6));
-  EXPECT_TRUE(IsPrime(23));
+  EXPECT_FALSE(IsPrime2(4));
+  EXPECT_TRUE(IsPrime2(5));
+  EXPECT_FALSE(IsPrime2(6));
+  EXPECT_TRUE(IsPrime2(23));
 }
 }  // namespace
 
