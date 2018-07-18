@@ -58,7 +58,7 @@ TEST(testMaxScalar, testOutputValues)
 
 TEST(testVecDotProduct, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2] = {1.0, 2.0};
 	PetscScalar vec2[2] = {3.0, 4.0};
@@ -68,7 +68,7 @@ TEST(testVecDotProduct, testOutputValuesFor2D)
 
 TEST(testVecDotProduct, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec3[3] = {1.0, 2.0, 3.0};
 	PetscScalar vec4[3] = {4.0, 5.0, 6.0};
@@ -79,7 +79,7 @@ TEST(testVecDotProduct, testOutputValuesFor3D)
 
 TEST(testVec2DCrossProduct, testOutputValues)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2] = {1.0, 2.0};
 	PetscScalar vec2[2] = {3.0, 4.0};
@@ -90,7 +90,7 @@ TEST(testVec2DCrossProduct, testOutputValues)
 
 TEST(testVec3DCrossProduct, testOutputValues)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec1[3];
 	PetscScalar vec2[3]  = {1.0, 2.0, 3.0};
@@ -106,7 +106,7 @@ TEST(testVec3DCrossProduct, testOutputValues)
 
 TEST(testVecMagnitude, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2] = {1.0, 2.0};
 
@@ -116,7 +116,7 @@ TEST(testVecMagnitude, testOutputValuesFor2D)
 
 TEST(testVecMagnitude, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec2[3] = {4.0, 2.0, 3.0};
 
@@ -126,7 +126,7 @@ TEST(testVecMagnitude, testOutputValuesFor3D)
 
 TEST(testVecAddition, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -150,7 +150,7 @@ TEST(testVecAddition, testOutputValuesFor2D)
 
 TEST(testVecAddition, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -177,7 +177,7 @@ TEST(testVecAddition, testOutputValuesFor3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -201,7 +201,7 @@ TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -228,7 +228,7 @@ TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -252,7 +252,7 @@ TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -279,7 +279,7 @@ TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -303,7 +303,7 @@ TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -330,7 +330,7 @@ TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn3D)
 
 TEST(testMakeTangentVec, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2];
 	PetscScalar vec2[2]  = {3.0, 4.0};
@@ -350,7 +350,7 @@ TEST(testMakeTangentVec, testOutputValuesFor2D)
 
 TEST(testMakeTangentVec, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec4[3];
 	PetscScalar vec5[3]  = {1.0, 2.0, 3.0};
@@ -372,7 +372,7 @@ TEST(testMakeTangentVec, testOutputValuesFor3D)
 
 TEST(testMakePositionVec, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -391,7 +391,7 @@ TEST(testMakePositionVec, testOutputValuesFor2D)
 
 TEST(testMakePositionVec, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -412,7 +412,7 @@ TEST(testMakePositionVec, testOutputValuesFor3D)
 
 TEST(testMakeDisplacementVec, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -431,7 +431,7 @@ TEST(testMakeDisplacementVec, testOutputValuesFor2D)
 
 TEST(testMakeDisplacementVec, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -452,7 +452,7 @@ TEST(testMakeDisplacementVec, testOutputValuesFor3D)
 
 TEST(testUpdatePositionVec, testOutputValuesFor2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -473,7 +473,7 @@ TEST(testUpdatePositionVec, testOutputValuesFor2D)
 
 TEST(testUpdatePositionVec, testOutputValuesFor3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -497,7 +497,7 @@ TEST(testUpdatePositionVec, testOutputValuesFor3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -518,7 +518,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -542,7 +542,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -563,7 +563,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -587,7 +587,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -608,7 +608,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -632,7 +632,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -653,7 +653,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -677,7 +677,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicZ)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -701,7 +701,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicZ)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicZ)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -723,13 +723,29 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicZ)
 }
 
 
-TEST(testNearestSegmentCopy, testOutputValuesForPeriodicIn2D)
+struct testNearestSegmentCopy : ::testing::Test
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	Box *box_ptr;
+    void SetUp()
+    {
+        box_ptr 					= (Box *)malloc(sizeof(Box));
+		box_ptr->xyzDimension[0] 	= 1;
+		box_ptr->xyzDimension[1] 	= 1;
+		box_ptr->xyzDimension[2] 	= 1;
+    }
 
-	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
-	box_ptr->xyzDimension[0] 	= 1;
-	box_ptr->xyzDimension[1] 	= 1;
+    void TearDown()
+    {
+        /* clean up */
+    	free(box_ptr); box_ptr = NULL;
+    }
+};
+
+
+TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn2D)
+{
+	ASSERT_TRUE(DIMENSION == 2);
+
 	box_ptr->xyzPeriodic[0] 	= 1;
 	box_ptr->xyzPeriodic[1] 	= 1;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
@@ -738,20 +754,13 @@ TEST(testNearestSegmentCopy, testOutputValuesForPeriodicIn2D)
 
 	EXPECT_DOUBLE_EQ(vec1[0], 0.0);
 	EXPECT_DOUBLE_EQ(vec1[1], 0.0);
-
-	/* clean up */
-    free(box_ptr); box_ptr = NULL;
 }
 
 
-TEST(testNearestSegmentCopy, testOutputValuesForPeriodicIn3D)
+TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
-	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
-	box_ptr->xyzDimension[0] 	= 1;
-	box_ptr->xyzDimension[1] 	= 1;
-	box_ptr->xyzDimension[2] 	= 1;
 	box_ptr->xyzPeriodic[0] 	= 1;
 	box_ptr->xyzPeriodic[1] 	= 1;
 	box_ptr->xyzPeriodic[2] 	= 1;
@@ -762,19 +771,13 @@ TEST(testNearestSegmentCopy, testOutputValuesForPeriodicIn3D)
 	EXPECT_DOUBLE_EQ(vec2[0], 0.0);
 	EXPECT_DOUBLE_EQ(vec2[1], 0.0);
 	EXPECT_DOUBLE_EQ(vec2[2], 0.0);
-
-	/* clean up */
-    free(box_ptr); box_ptr = NULL;
 }
 
 
-TEST(testNearestSegmentCopy, testOutputValuesForAPeriodicIn2D)
+TEST_F(testNearestSegmentCopy, testOutputValuesForAPeriodicIn2D)
 {
-	if (DIMENSION != 2){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 2);
 
-	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
-	box_ptr->xyzDimension[0] 	= 1;
-	box_ptr->xyzDimension[1] 	= 1;
 	box_ptr->xyzPeriodic[0] 	= 0;
 	box_ptr->xyzPeriodic[1] 	= 0;
 	PetscScalar vec1[2] 		= {2.0, 3.0};
@@ -783,20 +786,13 @@ TEST(testNearestSegmentCopy, testOutputValuesForAPeriodicIn2D)
 
 	EXPECT_DOUBLE_EQ(vec1[0], 2.0);
 	EXPECT_DOUBLE_EQ(vec1[1], 3.0);
-
-	/* clean up */
-    free(box_ptr); box_ptr = NULL;
 }
 
 
-TEST(testNearestSegmentCopy, testOutputValuesForAPeriodicIn3D)
+TEST_F(testNearestSegmentCopy, testOutputValuesForAPeriodicIn3D)
 {
-	if (DIMENSION != 3){ ADD_FAILURE(); return; }
+	ASSERT_TRUE(DIMENSION == 3);
 
-	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
-	box_ptr->xyzDimension[0] 	= 1;
-	box_ptr->xyzDimension[1] 	= 1;
-	box_ptr->xyzDimension[2] 	= 1;
 	box_ptr->xyzPeriodic[0] 	= 0;
 	box_ptr->xyzPeriodic[1] 	= 0;
 	box_ptr->xyzPeriodic[2] 	= 0;
@@ -807,9 +803,6 @@ TEST(testNearestSegmentCopy, testOutputValuesForAPeriodicIn3D)
 	EXPECT_DOUBLE_EQ(vec2[0], 1.0);
 	EXPECT_DOUBLE_EQ(vec2[1], 2.0);
 	EXPECT_DOUBLE_EQ(vec2[2], 3.0);
-
-	/* clean up */
-    free(box_ptr); box_ptr = NULL;
 }
 
 } /* namespace */

@@ -44,10 +44,50 @@ TEST(testCalculateK, testOutputKValue)
 }
 
 
-TEST(testMakeStretchMatrix, testOutputValues)
+struct testMake2DStretchMatrix : ::testing::Test
 {
-	ADD_FAILURE();
+    void SetUp()
+    {
+        PetscErrorCode ierr;
+    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building everything\n");
+    }
+
+    void TearDown()
+    {
+        PetscErrorCode ierr;
+    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Destroying everything\n");
+    }
+};
+
+
+TEST_F(testMake2DStretchMatrix, testOutputValues)
+{
+	ASSERT_TRUE(DIMENSION == 2);
 }
+
+
+struct testMake2DStretchMatrix : ::testing::Test
+{
+    void SetUp()
+    {
+        PetscErrorCode ierr;
+    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building everything\n");
+    }
+
+    void TearDown()
+    {
+        PetscErrorCode ierr;
+    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Destroying everything\n");
+    }
+};
+
+
+TEST_F(testMake3DStretchMatrix, testOutputValues)
+{
+	ASSERT_TRUE(DIMENSION == 3);
+}
+
+
 
 } /* namespace */
 
