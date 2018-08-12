@@ -76,13 +76,6 @@ PetscScalar vecMagnitude(PetscScalar *vec_ptr);
 PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
 
 /**
- * \brief Creates the unit tangent vector of a given vector
- * \param tangVec_ptr
- * \param vec_ptr
- */
-PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr);
-
-/**
  * \brief Creates the distance vector between two position vectors
  * \param distVec_ptr
  * \param posVec1_ptr
@@ -92,6 +85,13 @@ PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr);
 PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
 
 /**
+ * \brief Creates the unit tangent vector of a given vector
+ * \param tangVec_ptr
+ * \param vec_ptr
+ */
+PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr);
+
+/**
  * \brief Creates the position vector of a given node
  * \param posVec_ptr
  * \param node_ptr
@@ -99,18 +99,18 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_pt
 PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
 
 /**
- * \brief Updates a position vector with the displacement of the corresponding node
- * \param posVec_ptr
- * \param node_ptr
- */
-PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
-
-/**
  * \brief Creates the displacement vector of a given node
  * \param dispVec_ptr
  * \param node_ptr
  */
 PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr);
+
+/**
+ * \brief Updates a position vector with the displacement of the corresponding node
+ * \param posVec_ptr
+ * \param node_ptr
+ */
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
 
 /**
  * \brief Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain

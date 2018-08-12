@@ -42,8 +42,8 @@ struct box
 	PetscInt nodeCount;
 	PetscInt nodeInternalCount;
 	PetscInt fibreCount;
-	PetscScalar xyzDimension[DIMENSION];
-	PetscInt xyzPeriodic[DIMENSION];
+	PetscScalar xyzDimension[3];
+	PetscInt xyzPeriodic[3];
 	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
 	Fibre *masterFibreList;
 };
@@ -54,8 +54,8 @@ struct node
 	PetscInt nodeID;
 	PetscInt nodeType;					/* might want to link back later */
 	PetscInt globalID;
-	PetscScalar xyzCoord[DIMENSION];
-	PetscScalar xyzDisplacement[DIMENSION];
+	PetscScalar xyzCoord[3];
+	PetscScalar xyzDisplacement[3];
 };
 
 /* structure for fibres */

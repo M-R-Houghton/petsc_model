@@ -34,12 +34,20 @@ PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, Petsc
 PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
 
 /**
- * \brief Assembles the local stretch matrix of a given pair
+ * \brief Assembles the 2D local stretch matrix of a given pair
  * \param k
  * \param tangVec_ptr
  * \param localStretchMat_A
  */
-PetscErrorCode makeStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat localStretchMat_A);
+PetscErrorCode make2DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat localStretchMat_A);
+
+/**
+ * \brief Assembles the 3D local stretch matrix of a given pair
+ * \param k
+ * \param tangVec_ptr
+ * \param localStretchMat_A
+ */
+PetscErrorCode make3DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat localStretchMat_A);
 
 /**
  * \brief Assembles the local stretch RHS vector of a given pair
