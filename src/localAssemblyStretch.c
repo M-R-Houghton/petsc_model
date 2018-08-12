@@ -24,3 +24,48 @@ PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, Petsc
 
     return mu / segLength;
 }
+
+
+/* Adds local stretch information for a single fibre to global system */
+PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
+{
+	PetscErrorCode ierr = 0;
+
+	return ierr;
+}
+
+
+/* Assembles the local stretch matrix of a given pair */
+PetscErrorCode make3DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat localStretchMat_A)
+{
+	PetscErrorCode ierr = 0;
+	PetscInt       i,n = 10,col[3];
+	PetscScalar    value[3];
+
+	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
+	for(i=1; i<n-1; i++) 
+	{
+		col[0] = i-1; col[1] = i; col[2] = i+1;
+		ierr   = MatSetValues(localStretchMat_A,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
+	}
+	i    = n - 1; col[0] = n - 2; col[1] = n - 1;
+	ierr = MatSetValues(localStretchMat_A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
+	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
+	ierr = MatSetValues(localStretchMat_A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
+	ierr = MatAssemblyBegin(localStretchMat_A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	ierr = MatAssemblyEnd(localStretchMat_A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+	ierr = MatView(localStretchMat_A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+/* Assembles the local stretch RHS vector of a given pair */
+PetscErrorCode makeStretchVec(Node *alpha_ptr, Node *beta_ptr, PetscScalar k, PetscScalar *tangVec_ptr, Vec localStretchVec_b)
+{
+	PetscErrorCode ierr = 0;
+
+	return ierr;
+}
+

@@ -41,8 +41,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest \
-networkBuild_unittest networkDestroy_unittest networkWrite_unittest vectorOperations_unittest
+TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest networkBuild_unittest networkDestroy_unittest networkWrite_unittest vectorOperations_unittest systemAssembly_unittest
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -223,4 +222,17 @@ vectorOperations_unittest.o: $(TEST_SRC_DIR)/vectorOperations_unittest.cc \
 
 vectorOperations_unittest: vectorOperations.o vectorOperations_unittest.o gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/vectorOperations_unittest.o $(TEST_SRC_DIR)/vectorOperations.o gtest_main.a	
+
+#
+# Make systemAssembly
+#
+systemAssembly.o: $(USER_SRC_DIR)/systemAssembly.c $(USER_INC_DIR)/systemAssembly.h $(GTEST_HEADERS)
+	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/systemAssembly.c -o $(TEST_OBJ_DIR)/$@
+
+systemAssembly_unittest.o: $(TEST_SRC_DIR)/systemAssembly_unittest.cc \
+                     $(USER_INC_DIR)/systemAssembly.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/systemAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+systemAssembly_unittest: systemAssembly.o systemAssembly_unittest.o gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/systemAssembly_unittest.o $(TEST_SRC_DIR)/systemAssembly.o gtest_main.a	
 

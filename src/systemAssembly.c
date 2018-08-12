@@ -27,3 +27,21 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	return ierr;
 }
+
+
+/* Reads in a file of integers to an array */
+PetscErrorCode readInt(char *fileName, PetscInt *array, PetscInt n)
+{
+	PetscErrorCode 	ierr;
+	PetscInt 		i,inp;
+
+    FILE *fp = fopen( fileName, "r" );
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s opened successfully\n", fileName);CHKERRQ(ierr);
+    for( i=0; i<n; ++i ) 
+    {
+        fscanf(fp,"%d",&inp);
+        array[i] = inp;
+    } 
+    fclose(fp);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s closed successfully\n", fileName);CHKERRQ(ierr);
+}
