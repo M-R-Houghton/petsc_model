@@ -44,4 +44,28 @@ PetscErrorCode readInt(char *fileName, PetscInt *array, PetscInt n)
     } 
     fclose(fp);
     ierr = PetscPrintf(PETSC_COMM_WORLD, "%s closed successfully\n", fileName);CHKERRQ(ierr);
+
+    return ierr;
 }
+
+
+/* Reads in a file of doubles to an array */
+PetscErrorCode readDbl(char *fileName, PetscScalar *array, PetscInt n)
+{
+	PetscErrorCode 	ierr;
+	PetscInt 		i;
+    PetscScalar 	inp;
+
+    FILE *fp = fopen( fileName, "r" );
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s opened successfully\n", fileName);CHKERRQ(ierr);
+    for( i=0; i<n; ++i ) 
+    {
+        fscanf(fp,"%lf",&inp);
+        array[i] = inp;
+    } 
+    fclose(fp);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s closed successfully\n", fileName);CHKERRQ(ierr);
+
+    return ierr;
+}
+
