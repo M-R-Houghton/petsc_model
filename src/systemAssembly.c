@@ -29,6 +29,45 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 }
 
 
+/* Assembles tripod matrix */
+PetscErrorCode tripodAssembly()
+{
+	PetscErrorCode 	ierr;
+	Mat            	H;
+	PetscInt 		n=3;
+
+	PetscInt 		idxm[9];
+	PetscInt 		idxn[9];
+	PetscScalar 	value[9];
+
+	char rowFileName[100] = "data/row/idxm.lmbTripod1";
+    readInt(rowFileName, idxm, 9);
+    char colFileName[100] = "data/col/col.lmbTripod1";
+    readInt(colFileName, idxn, 9);
+    char matFileName[100] = "data/mat/mat.lmbTripod1";
+    readDbl(matFileName, value, 9);
+
+	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
+	ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
+
+	//ierr = MatSetFromOptions(H);CHKERRQ(ierr);
+	ierr = MatSetUp(H);CHKERRQ(ierr);
+
+	ierr = MatSetValues(H,1,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 1st row where 1st row should be */
+	ierr = MatSetValues(H,2,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 2nd row where 1st row should be */
+	ierr = MatSetValues(H,3,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 3rd row where 1st row should be */
+
+	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	ierr = MatDestroy(&H);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
 /* Reads in a file of integers to an array */
 PetscErrorCode readInt(char *fileName, PetscInt *array, PetscInt n)
 {

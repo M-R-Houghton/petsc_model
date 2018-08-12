@@ -117,6 +117,9 @@ int main(int argc, char **args)
 	// solve linear system
     ierr = systemSolve();CHKERRQ(ierr);
 
+    // assemble tripod matrix
+    ierr = tripodAssembly();CHKERRQ(ierr);
+
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
