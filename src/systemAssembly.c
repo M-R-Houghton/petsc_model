@@ -34,7 +34,9 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
 {
 	PetscErrorCode 	ierr;
 	Mat            	H;
-	Vec 			B;
+	Vec 			B,U;
+	KSP            	ksp;          /* linear solver context */
+	PC             	pc;           /* preconditioner context */
 	PetscInt 		i,n=3;
 
 	PetscInt 		idxm[4];
@@ -50,8 +52,16 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
     /* Vector assembly for existing array */
     ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,3,rhsVec,&B);CHKERRQ(ierr);
 
+    /* Set up solution vector */
+    ierr = VecDuplicate(B,&U);CHKERRQ(ierr);
+    ierr = VecSet(U,1.0);CHKERRQ(ierr);
+
     /* Print vector to verify assembly */
     ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+    PetscViewer viewer;
+    ierr = PetscViewerASCIIOpen(PETSC_COMM_WORLD,solFile,&viewer);CHKERRQ(ierr);
+    ierr = VecView(U,viewer);CHKERRQ(ierr);
 
     /* Matrix assembly for existing CSR arrays */
 	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,3,3,idxm,idxn,value,&H);CHKERRQ(ierr);
@@ -79,6 +89,7 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
 
 	/* Clean up */
 	ierr = VecDestroy(&B);CHKERRQ(ierr);
+	ierr = VecDestroy(&U);CHKERRQ(ierr);
 	ierr = MatDestroy(&H);CHKERRQ(ierr);
 
 	return ierr;
@@ -119,6 +130,25 @@ PetscErrorCode readDbl(char *fileName, PetscScalar *array, PetscInt n)
         fscanf(fp,"%lf",&inp);
         array[i] = inp;
     } 
+    fclose(fp);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s closed successfully\n", fileName);CHKERRQ(ierr);
+
+    return ierr;
+}
+
+
+/* Writes out an array of doubles to file */
+PetscErrorCode writeDbl(char *fileName, PetscScalar *array, PetscInt n) 
+{
+    PetscErrorCode ierr;
+    PetscInt i;
+
+    FILE *fp = fopen( fileName, "w" );
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "%s opened successfully\n", fileName);CHKERRQ(ierr);
+    for( i=0; i<n; ++i )
+    {
+        fprintf(fp," %.16lf\n",array[i]);
+    }
     fclose(fp);
     ierr = PetscPrintf(PETSC_COMM_WORLD, "%s closed successfully\n", fileName);CHKERRQ(ierr);
 

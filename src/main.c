@@ -114,10 +114,10 @@ int main(int argc, char **args)
 		ierr = KSPSetInitialGuessNonzero(ksp,PETSC_TRUE);CHKERRQ(ierr);
 	}
 
-	// solve linear system
+	/* solve linear system */
     ierr = systemSolve();CHKERRQ(ierr);
 
-    // assemble tripod matrix
+    /* assemble tripod matrix */
     char rowFile[100] = "data/row/row.lmbTripod1";
     char colFile[100] = "data/col/col.lmbTripod1";
     char matFile[100] = "data/mat/mat.lmbTripod1";

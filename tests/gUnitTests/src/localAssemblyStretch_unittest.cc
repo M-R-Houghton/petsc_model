@@ -66,7 +66,7 @@ TEST_F(testMake2DStretchMatrix, testOutputValues)
 }
 
 
-struct testMake2DStretchMatrix : ::testing::Test
+struct testMake3DStretchMatrix : ::testing::Test
 {
     void SetUp()
     {
