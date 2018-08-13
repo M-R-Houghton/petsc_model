@@ -20,7 +20,7 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 	i    = n - 1; col[0] = n - 2; col[1] = n - 1;
 	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
 	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
+	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); /* where &i is an array of i */
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
@@ -40,25 +40,26 @@ PetscErrorCode tripodAssembly()
 	PetscInt 		idxn[9];
 	PetscScalar 	value[9];
 
-	char rowFileName[100] = "data/row/idxm.lmbTripod1";
-    readInt(rowFileName, idxm, 9);
+	char rowFileName[100] = "data/row/row.lmbTripod1";
+    readInt(rowFileName, idxm, 4);
     char colFileName[100] = "data/col/col.lmbTripod1";
     readInt(colFileName, idxn, 9);
     char matFileName[100] = "data/mat/mat.lmbTripod1";
     readDbl(matFileName, value, 9);
 
-	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
-	ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
+	//ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
+	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,3,3,idxm,idxn,value,&H);CHKERRQ(ierr);
+	//ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 
 	//ierr = MatSetFromOptions(H);CHKERRQ(ierr);
-	ierr = MatSetUp(H);CHKERRQ(ierr);
+	//ierr = MatSetUp(H);CHKERRQ(ierr);
 
-	ierr = MatSetValues(H,1,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 1st row where 1st row should be */
-	ierr = MatSetValues(H,2,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 2nd row where 1st row should be */
-	ierr = MatSetValues(H,3,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 3rd row where 1st row should be */
+	//ierr = MatSetValues(H,1,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 1st row where 1st row should be */
+	//ierr = MatSetValues(H,2,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 2nd row where 1st row should be */
+	//ierr = MatSetValues(H,3,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 3rd row where 1st row should be */
 
-	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	//ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	//ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
