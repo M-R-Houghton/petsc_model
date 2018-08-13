@@ -30,39 +30,55 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 
 
 /* Assembles tripod matrix */
-PetscErrorCode tripodAssembly()
+PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char *vecFile, char *solFile)
 {
 	PetscErrorCode 	ierr;
 	Mat            	H;
-	PetscInt 		n=3;
+	Vec 			B;
+	PetscInt 		i,n=3;
 
-	PetscInt 		idxm[9];
+	PetscInt 		idxm[4];
 	PetscInt 		idxn[9];
 	PetscScalar 	value[9];
+	PetscScalar		rhsVec[3];
 
-	char rowFileName[100] = "data/row/row.lmbTripod1";
-    readInt(rowFileName, idxm, 4);
-    char colFileName[100] = "data/col/col.lmbTripod1";
-    readInt(colFileName, idxn, 9);
-    char matFileName[100] = "data/mat/mat.lmbTripod1";
-    readDbl(matFileName, value, 9);
+    readInt(rowFile, idxm, 4);
+    readInt(colFile, idxn, 9);
+    readDbl(matFile, value, 9);
+    readDbl(vecFile, rhsVec, 3);
 
-	//ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
+    /* Vector assembly for existing array */
+    ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,3,rhsVec,&B);CHKERRQ(ierr);
+
+    /* Print vector to verify assembly */
+    ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+    /* Matrix assembly for existing CSR arrays */
 	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,3,3,idxm,idxn,value,&H);CHKERRQ(ierr);
-	//ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 
-	//ierr = MatSetFromOptions(H);CHKERRQ(ierr);
-	//ierr = MatSetUp(H);CHKERRQ(ierr);
+	/* Row at a time manual matrix assembly *//*
+	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
+	ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 
-	//ierr = MatSetValues(H,1,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 1st row where 1st row should be */
-	//ierr = MatSetValues(H,2,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 2nd row where 1st row should be */
-	//ierr = MatSetValues(H,3,idxm,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		/* produces 3rd row where 1st row should be */
+	ierr = MatSetFromOptions(H);CHKERRQ(ierr);
+	ierr = MatSetUp(H);CHKERRQ(ierr);
 
-	//ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-	//ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	for (i = 0; i < 3; i++)
+	{
+		ierr = MatSetValues(H,1,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
+		//ierr = MatSetValues(H,2,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 2nd row where 1st row should be
+		//ierr = MatSetValues(H,3,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 3rd row where 1st row should be
+	}
 
+	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	*//* END manual matrix assembly */
+
+	/* Print matrix to verify assembly */
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
+	/* Clean up */
+	ierr = VecDestroy(&B);CHKERRQ(ierr);
 	ierr = MatDestroy(&H);CHKERRQ(ierr);
 
 	return ierr;
