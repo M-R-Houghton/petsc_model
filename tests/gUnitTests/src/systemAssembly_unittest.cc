@@ -168,23 +168,23 @@ struct testLattice2Solve : ::testing::Test
     }
 };
 
-TEST_F(testLattice2Solve, testTripodSolFileOutput)
+TEST_F(testLattice2Solve, testLatticeSolFileOutput)
 {
     PetscScalar array[n];
 
     solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
 
     readDbl(solFile, array, n);
-    EXPECT_DOUBLE_EQ(array[0],  0.0209388832015097);
-    EXPECT_DOUBLE_EQ(array[0],  0.0196076495539259);
-    EXPECT_DOUBLE_EQ(array[0],  0.0220868995837766);
-    EXPECT_DOUBLE_EQ(array[0],  0.0198653624690423);
-    EXPECT_DOUBLE_EQ(array[0],  0.0235944405745198);
-    EXPECT_DOUBLE_EQ(array[0],  0.0203574100237293);
-    EXPECT_DOUBLE_EQ(array[0],  0.0252534152769034);
-    EXPECT_DOUBLE_EQ(array[0],  0.0207804940686276);
-    EXPECT_DOUBLE_EQ(array[0],  0.0269826458296214);
-    EXPECT_DOUBLE_EQ(array[0],  0.0215427134108775);
+    EXPECT_FLOAT_EQ(array[0],  0.0209387473297936);
+    EXPECT_FLOAT_EQ(array[1],  0.0196075653537027);
+    EXPECT_FLOAT_EQ(array[2],  0.0220867548145517);
+    EXPECT_FLOAT_EQ(array[3],  0.0198649352083624);
+    EXPECT_FLOAT_EQ(array[4],  0.0235944741704036);
+    EXPECT_FLOAT_EQ(array[5],  0.0203577389170724);
+    EXPECT_FLOAT_EQ(array[6],  0.0252535447741999);
+    EXPECT_FLOAT_EQ(array[7],  0.0207797440129432);
+    EXPECT_FLOAT_EQ(array[8],  0.0269823082382125);
+    EXPECT_FLOAT_EQ(array[9],  0.0215428695902322);
 }
 
 } /* namespace */

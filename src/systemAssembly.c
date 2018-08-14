@@ -64,7 +64,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
     ierr = VecSet(U,1.0);CHKERRQ(ierr);
 
     /* Print vector to verify assembly */
-    ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* Matrix assembly for existing CSR arrays */
 	//ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,rowArray,colArray,valArray,&H);CHKERRQ(ierr);
@@ -100,7 +100,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	//*//* END manual matrix assembly */
 
 	/* Print matrix to verify assembly */
-	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* Create solver context */
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
