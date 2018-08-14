@@ -38,7 +38,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	Vec 			B,U;
 	KSP            	ksp;          /* linear solver context */
 	PC             	pc;           /* preconditioner context */
-	PetscInt 		i;
+	PetscInt 		i,its;
 
 	PetscInt 		rowArray[n+1];
 	PetscScalar		rhsArray[n];
@@ -67,25 +67,37 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
     ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* Matrix assembly for existing CSR arrays */
-	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,rowArray,colArray,valArray,&H);CHKERRQ(ierr);
+	//ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,rowArray,colArray,valArray,&H);CHKERRQ(ierr);
 
-	/* Row at a time manual matrix assembly *//*
+	/* Row at a time manual matrix assembly */
+	///*
 	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
 	ierr = MatSetSizes(H,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 
 	ierr = MatSetFromOptions(H);CHKERRQ(ierr);
 	ierr = MatSetUp(H);CHKERRQ(ierr);
 
-	for (i = 0; i < 3; i++)
+	PetscInt 	tmpCol[n];
+	PetscScalar tmpMat[n];
+
+	for (i = 0; i < n; i++)
 	{
-		ierr = MatSetValues(H,1,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
+		PetscInt j,count = 0;
+
+		for (j = rowArray[i]; j < rowArray[i+1]; j++)
+		{
+			tmpCol[count] = colArray[j];
+			tmpMat[count] = valArray[j];
+			count += 1;
+		}
+		ierr = MatSetValues(H,1,&i,rowArray[i+1]-rowArray[i],tmpCol,tmpMat,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
 		//ierr = MatSetValues(H,2,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 2nd row where 1st row should be
 		//ierr = MatSetValues(H,3,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 3rd row where 1st row should be
 	}
 
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-	*//* END manual matrix assembly */
+	//*//* END manual matrix assembly */
 
 	/* Print matrix to verify assembly */
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -96,9 +108,11 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	/* Choose matrix as it's own preconditioning matrix */
 	ierr = KSPSetOperators(ksp,H,H);CHKERRQ(ierr);
 
+	ierr = KSPSetType(ksp, KSPPREONLY);
+
 	/* Set up default options */
 	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
+	ierr = PCSetType(pc,PCLU);CHKERRQ(ierr);
 	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
 
 	/* Set runtime options */
@@ -109,6 +123,9 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 
 	/* View solver info */
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	/* Get iteration count */
+	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
 
 	/* Check out array */
     ierr = VecGetArray(U, &solArray);CHKERRQ(ierr);
