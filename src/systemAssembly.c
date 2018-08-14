@@ -47,9 +47,24 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	/* Read in row file to array */
     ierr = readInt(rowFile, rowArray, n+1);CHKERRQ(ierr);
 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Got to here\n");CHKERRQ(ierr);
+
+    int myInt = rowArray[n];
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Got to here %d\n", myInt);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Got to here\n");CHKERRQ(ierr);
+
     /* Use final value of row ptr array to determine length of col and mat arrays */
-    PetscInt 		colArray[rowArray[n]];
-	PetscScalar 	valArray[rowArray[n]];
+    //PetscInt 		colArray[rowArray[n]];
+	//PetscScalar 	valArray[rowArray[n]];
+
+	/* dynamic allocation for larger problems */
+	PetscInt 		*colArray;
+	PetscScalar		*valArray;
+	ierr = PetscMalloc1(rowArray[n]*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
+	ierr = PetscMalloc1(rowArray[n]*sizeof(PetscScalar), &valArray);CHKERRQ(ierr);
+
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"Got to here\n");CHKERRQ(ierr);
 
 	/* Read in further files to arrays */
     ierr = readInt(colFile, colArray, rowArray[n]);CHKERRQ(ierr);
@@ -98,6 +113,10 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	//*//* END manual matrix assembly */
+
+	/* Free any dynamic allocation */
+	ierr = PetscFree(colArray);CHKERRQ(ierr);
+	ierr = PetscFree(valArray);CHKERRQ(ierr);
 
 	/* Print matrix to verify assembly */
 	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
