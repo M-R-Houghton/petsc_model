@@ -60,13 +60,6 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
     /* Print vector to verify assembly */
     ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-    /* Check out array */
-    ierr = VecGetArray(U, &solVec);CHKERRQ(ierr);
-    /* Write out array */
-    ierr = writeDbl(solFile, solVec, n);CHKERRQ(ierr);
-    /* Check array back in */
-    ierr = VecRestoreArray(U, &solVec);CHKERRQ(ierr);
-
     /* Matrix assembly for existing CSR arrays */
 	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,idxm,idxn,value,&H);CHKERRQ(ierr);
 
@@ -91,10 +84,38 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
 	/* Print matrix to verify assembly */
 	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
+	/* Create solver context */
+	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
+
+	/* Choose matrix as it's own preconditioning matrix */
+	ierr = KSPSetOperators(ksp,H,H);CHKERRQ(ierr);
+
+	/* Set up default options */
+	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
+	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
+
+	/* Set runtime options */
+    ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
+
+    /* Solve linear system */
+	ierr = KSPSolve(ksp,B,U);CHKERRQ(ierr);
+
+	/* View solver info */
+	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	/* Check out array */
+    ierr = VecGetArray(U, &solVec);CHKERRQ(ierr);
+    /* Write out array */
+    ierr = writeDbl(solFile, solVec, n);CHKERRQ(ierr);
+    /* Check array back in */
+    ierr = VecRestoreArray(U, &solVec);CHKERRQ(ierr);
+
 	/* Clean up */
 	ierr = VecDestroy(&B);CHKERRQ(ierr);
 	ierr = VecDestroy(&U);CHKERRQ(ierr);
 	ierr = MatDestroy(&H);CHKERRQ(ierr);
+	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	return ierr;
 }
