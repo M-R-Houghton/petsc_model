@@ -118,12 +118,12 @@ int main(int argc, char **args)
     ierr = systemSolve();CHKERRQ(ierr);
 
     /* assemble tripod matrix */
-    char rowFile[100] = "data/row/row.lmbTripod1";
-    char colFile[100] = "data/col/col.lmbTripod1";
-    char matFile[100] = "data/mat/mat.lmbTripod1";
-    char rhsFile[100] = "data/rhs/rhs.lmbTripod1";
-    char solFile[100] = "data/sol/sol.lmbTripod1";
-    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile);CHKERRQ(ierr);
+    char rowFile[100] = "data/row/row.f3tTripod1";
+    char colFile[100] = "data/col/col.f3tTripod1";
+    char matFile[100] = "data/mat/mat.f3tTripod1";
+    char rhsFile[100] = "data/rhs/rhs.f3tTripod1";
+    char solFile[100] = "data/sol/sol.f3tTripod1";
+    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
@@ -131,13 +131,13 @@ int main(int argc, char **args)
     /*
 	  Solve linear system
 	*/
-	ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
+	//ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
 
 	/*
 	  View solver info; we could instead use the option -ksp_view to
 	  print this info to the screen at the conclusion of KSPSolve().
 	*/
-	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -148,10 +148,12 @@ int main(int argc, char **args)
 	/*
       Check the error
     */
+    /*
     ierr = VecAXPY(x,-1.0,u);CHKERRQ(ierr);
     ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
     ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
+	*/
 
     // make predictions based on solution
     ierr = networkAnalysis();CHKERRQ(ierr);
