@@ -121,9 +121,9 @@ int main(int argc, char **args)
     char rowFile[100] = "data/row/row.lmbTripod1";
     char colFile[100] = "data/col/col.lmbTripod1";
     char matFile[100] = "data/mat/mat.lmbTripod1";
-    char vecFile[100] = "data/vec/vec.lmbTripod1";
+    char rhsFile[100] = "data/rhs/rhs.lmbTripod1";
     char solFile[100] = "data/sol/sol.lmbTripod1";
-    ierr = tripodAssembly(rowFile,colFile,matFile,vecFile,solFile);CHKERRQ(ierr);
+    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system

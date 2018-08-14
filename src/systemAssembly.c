@@ -29,29 +29,35 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 }
 
 
-/* Assembles tripod matrix */
-PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char const *matFile, char const *vecFile, char const *solFile)
+/* Solves a matrix from pre-assembled arrays */
+PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
+									char const *rhsFile, char const *solFile, PetscInt n)
 {
 	PetscErrorCode 	ierr;
 	Mat            	H;
 	Vec 			B,U;
 	KSP            	ksp;          /* linear solver context */
 	PC             	pc;           /* preconditioner context */
-	PetscInt 		i,n=3;
+	PetscInt 		i;
 
-	PetscInt 		idxm[4];
-	PetscInt 		idxn[9];
-	PetscScalar 	value[9];
-	PetscScalar		rhsVec[3];
-	PetscScalar		*solVec;
+	PetscInt 		rowArray[n+1];
+	PetscScalar		rhsArray[n];
+	PetscScalar		*solArray;
 
-    ierr = readInt(rowFile, idxm, n+1);CHKERRQ(ierr);
-    ierr = readInt(colFile, idxn, idxm[n]);CHKERRQ(ierr);
-    ierr = readDbl(matFile, value, idxm[n]);CHKERRQ(ierr);
-    ierr = readDbl(vecFile, rhsVec, n);CHKERRQ(ierr);
+	/* Read in row file to array */
+    ierr = readInt(rowFile, rowArray, n+1);CHKERRQ(ierr);
+
+    /* Use final value of row ptr array to determine length of col and mat arrays */
+    PetscInt 		colArray[rowArray[n]];
+	PetscScalar 	valArray[rowArray[n]];
+
+	/* Read in further files to arrays */
+    ierr = readInt(colFile, colArray, rowArray[n]);CHKERRQ(ierr);
+    ierr = readDbl(matFile, valArray, rowArray[n]);CHKERRQ(ierr);
+    ierr = readDbl(rhsFile, rhsArray, n);CHKERRQ(ierr);
 
     /* Vector assembly for existing array */
-    ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,n,rhsVec,&B);CHKERRQ(ierr);
+    ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,n,rhsArray,&B);CHKERRQ(ierr);
 
     /* Set up solution vector */
     ierr = VecDuplicate(B,&U);CHKERRQ(ierr);
@@ -61,7 +67,7 @@ PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char con
     ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* Matrix assembly for existing CSR arrays */
-	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,idxm,idxn,value,&H);CHKERRQ(ierr);
+	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,rowArray,colArray,valArray,&H);CHKERRQ(ierr);
 
 	/* Row at a time manual matrix assembly *//*
 	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
@@ -72,9 +78,9 @@ PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char con
 
 	for (i = 0; i < 3; i++)
 	{
-		ierr = MatSetValues(H,1,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
-		//ierr = MatSetValues(H,2,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 2nd row where 1st row should be
-		//ierr = MatSetValues(H,3,&i,3,idxn,value,INSERT_VALUES);CHKERRQ(ierr);		// produces 3rd row where 1st row should be
+		ierr = MatSetValues(H,1,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
+		//ierr = MatSetValues(H,2,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 2nd row where 1st row should be
+		//ierr = MatSetValues(H,3,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 3rd row where 1st row should be
 	}
 
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -105,11 +111,11 @@ PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char con
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* Check out array */
-    ierr = VecGetArray(U, &solVec);CHKERRQ(ierr);
+    ierr = VecGetArray(U, &solArray);CHKERRQ(ierr);
     /* Write out array */
-    ierr = writeDbl(solFile, solVec, n);CHKERRQ(ierr);
+    ierr = writeDbl(solFile, solArray, n);CHKERRQ(ierr);
     /* Check array back in */
-    ierr = VecRestoreArray(U, &solVec);CHKERRQ(ierr);
+    ierr = VecRestoreArray(U, &solArray);CHKERRQ(ierr);
 
 	/* Clean up */
 	ierr = VecDestroy(&B);CHKERRQ(ierr);

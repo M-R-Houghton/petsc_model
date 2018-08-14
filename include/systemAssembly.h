@@ -11,15 +11,17 @@
 PetscErrorCode systemAssembly(Mat H, Vec b);
 
 /**
- * \brief Assembles tripod matrix.
+ * \brief Solves a matrix from pre-assembled arrays.
  * \param rowFile String representing name of row pointer file to be read in.
  * \param colFile String representing name of column index file to be read in.
  * \param matFile String representing name of matrix value file to be read in.
  * \param vecFile String representing name of RHS vector file to be read in.
  * \param solFile String representing name of solution vector file to be read in.
+ * \param n Dimension of global matrix (nxn).
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char const *matFile, char const *vecFile, char const *solFile);
+PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
+									char const *rhsFile, char const *solFile, PetscInt n);
 
 /**
  * \brief Reads in a file of integers to an array

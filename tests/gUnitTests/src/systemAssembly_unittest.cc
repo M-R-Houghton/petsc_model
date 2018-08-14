@@ -70,7 +70,7 @@ TEST(testReadDbl, testMatFileReadIn)
 TEST(testReadDbl, testRhsFileReadIn) 
 {
     PetscScalar array[3];
-    char fileName[100] = "../../data/vec/vec.lmbTripod1";
+    char fileName[100] = "../../data/rhs/rhs.lmbTripod1";
     readDbl(fileName, array, 3);
 
     EXPECT_DOUBLE_EQ(array[0],  0.0000056234484900);
@@ -94,13 +94,13 @@ TEST(testWriteDbl, testSolFileWriteOut)
     EXPECT_DOUBLE_EQ(array[2], -9.87654);
 }
 
-struct testTripodAssembly : ::testing::Test
+struct testSolveAssembledMatrix : ::testing::Test
 {
     PetscErrorCode ierr;
     char const *rowFile;
     char const *colFile;
     char const *matFile;
-    char const *vecFile;
+    char const *rhsFile;
     char const *solFile;
 
     void SetUp()
@@ -109,7 +109,7 @@ struct testTripodAssembly : ::testing::Test
         rowFile = "../../data/row/row.lmbTripod1";
         colFile = "../../data/col/col.lmbTripod1";
         matFile = "../../data/mat/mat.lmbTripod1";
-        vecFile = "../../data/vec/vec.lmbTripod1";
+        rhsFile = "../../data/rhs/rhs.lmbTripod1";
         solFile = "../../data/sol/sol.lmbTripod1";
     }
 
@@ -119,17 +119,17 @@ struct testTripodAssembly : ::testing::Test
     }
 };
 
-TEST_F(testTripodAssembly, testIfRuns)
+TEST_F(testSolveAssembledMatrix, testIfTripodCaseRuns)
 {
-    ierr = tripodAssembly(rowFile,colFile,matFile,vecFile,solFile);
+    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);
     EXPECT_EQ(ierr, 0);
 }
 
-TEST_F(testTripodAssembly, testSolFileOutput)
+TEST_F(testSolveAssembledMatrix, testTripodSolFileOutput)
 {
     PetscScalar array[3];
 
-    tripodAssembly(rowFile,colFile,matFile,vecFile,solFile);
+    solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);
 
     readDbl(solFile, array, 3);
 
