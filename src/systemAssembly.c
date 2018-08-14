@@ -43,14 +43,15 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
 	PetscInt 		idxn[9];
 	PetscScalar 	value[9];
 	PetscScalar		rhsVec[3];
+	PetscScalar		*solVec;
 
-    readInt(rowFile, idxm, 4);
-    readInt(colFile, idxn, 9);
-    readDbl(matFile, value, 9);
-    readDbl(vecFile, rhsVec, 3);
+    ierr = readInt(rowFile, idxm, n+1);CHKERRQ(ierr);
+    ierr = readInt(colFile, idxn, idxm[n]);CHKERRQ(ierr);
+    ierr = readDbl(matFile, value, idxm[n]);CHKERRQ(ierr);
+    ierr = readDbl(vecFile, rhsVec, n);CHKERRQ(ierr);
 
     /* Vector assembly for existing array */
-    ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,3,rhsVec,&B);CHKERRQ(ierr);
+    ierr = VecCreateSeqWithArray(PETSC_COMM_WORLD,1,n,rhsVec,&B);CHKERRQ(ierr);
 
     /* Set up solution vector */
     ierr = VecDuplicate(B,&U);CHKERRQ(ierr);
@@ -59,12 +60,15 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
     /* Print vector to verify assembly */
     ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-    PetscViewer viewer;
-    ierr = PetscViewerASCIIOpen(PETSC_COMM_WORLD,solFile,&viewer);CHKERRQ(ierr);
-    ierr = VecView(U,viewer);CHKERRQ(ierr);
+    /* Check out array */
+    ierr = VecGetArray(U, &solVec);CHKERRQ(ierr);
+    /* Write out array */
+    ierr = writeDbl(solFile, solVec, n);CHKERRQ(ierr);
+    /* Check array back in */
+    ierr = VecRestoreArray(U, &solVec);CHKERRQ(ierr);
 
     /* Matrix assembly for existing CSR arrays */
-	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,3,3,idxm,idxn,value,&H);CHKERRQ(ierr);
+	ierr = MatCreateSeqAIJWithArrays(PETSC_COMM_WORLD,n,n,idxm,idxn,value,&H);CHKERRQ(ierr);
 
 	/* Row at a time manual matrix assembly *//*
 	ierr = MatCreate(PETSC_COMM_WORLD,&H);CHKERRQ(ierr);
