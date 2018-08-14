@@ -97,15 +97,20 @@ TEST(testWriteDbl, testSolFileWriteOut)
 struct testTripodAssembly : ::testing::Test
 {
     PetscErrorCode ierr;
-    char rowFile[100] = "../../data/row/row.lmbTripod1";
-    char colFile[100] = "../../data/col/col.lmbTripod1";
-    char matFile[100] = "../../data/mat/mat.lmbTripod1";
-    char vecFile[100] = "../../data/vec/vec.lmbTripod1";
-    char solFile[100] = "../../data/sol/sol.lmbTripod1";
+    char const *rowFile;
+    char const *colFile;
+    char const *matFile;
+    char const *vecFile;
+    char const *solFile;
 
     void SetUp()
     {
         /* set up */
+        rowFile = "../../data/row/row.lmbTripod1";
+        colFile = "../../data/col/col.lmbTripod1";
+        matFile = "../../data/mat/mat.lmbTripod1";
+        vecFile = "../../data/vec/vec.lmbTripod1";
+        solFile = "../../data/sol/sol.lmbTripod1";
     }
 
     void TearDown()

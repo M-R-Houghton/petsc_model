@@ -30,7 +30,7 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 
 
 /* Assembles tripod matrix */
-PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char *vecFile, char *solFile)
+PetscErrorCode tripodAssembly(char const *rowFile, char const *colFile, char const *matFile, char const *vecFile, char const *solFile)
 {
 	PetscErrorCode 	ierr;
 	Mat            	H;
@@ -122,7 +122,7 @@ PetscErrorCode tripodAssembly(char *rowFile, char *colFile, char *matFile, char 
 
 
 /* Reads in a file of integers to an array */
-PetscErrorCode readInt(char *fileName, PetscInt *array, PetscInt n)
+PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)
 {
 	PetscErrorCode 	ierr;
 	PetscInt 		i,inp;
@@ -142,7 +142,7 @@ PetscErrorCode readInt(char *fileName, PetscInt *array, PetscInt n)
 
 
 /* Reads in a file of doubles to an array */
-PetscErrorCode readDbl(char *fileName, PetscScalar *array, PetscInt n)
+PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)
 {
 	PetscErrorCode 	ierr;
 	PetscInt 		i;
@@ -163,7 +163,7 @@ PetscErrorCode readDbl(char *fileName, PetscScalar *array, PetscInt n)
 
 
 /* Writes out an array of doubles to file */
-PetscErrorCode writeDbl(char *fileName, PetscScalar *array, PetscInt n) 
+PetscErrorCode writeDbl(char const *fileName, PetscScalar *array, PetscInt n) 
 {
     PetscErrorCode ierr;
     PetscInt i;
