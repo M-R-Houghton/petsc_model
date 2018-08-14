@@ -126,6 +126,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 
 	/* Get iteration count */
 	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"Iterations %D\n",its);CHKERRQ(ierr);
 
 	/* Check out array */
     ierr = VecGetArray(U, &solArray);CHKERRQ(ierr);
