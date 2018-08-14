@@ -13,7 +13,7 @@ namespace {
 TEST(testReadInt, testRowFileReadIn) 
 {
     PetscInt array[9];
-    char fileName[100] = "../../data/row/idxm.lmbTripod1";
+    char fileName[100] = "../../data/row/idxm.f3tTripod1";
     readInt(fileName, array, 9);
 
     EXPECT_EQ(array[0], 0);
@@ -32,7 +32,7 @@ TEST(testReadInt, testRowFileReadIn)
 TEST(testReadInt, testColFileReadIn) 
 {
     PetscInt array[9];
-    char fileName[100] = "../../data/col/col.lmbTripod1";
+    char fileName[100] = "../../data/col/col.f3tTripod1";
     readInt(fileName, array, 9);
 
     EXPECT_EQ(array[0], 0);
@@ -51,7 +51,7 @@ TEST(testReadInt, testColFileReadIn)
 TEST(testReadDbl, testMatFileReadIn) 
 {
     PetscScalar array[9];
-    char fileName[100] = "../../data/mat/mat.lmbTripod1";
+    char fileName[100] = "../../data/mat/mat.f3tTripod1";
     readDbl(fileName, array, 9);
 
     EXPECT_DOUBLE_EQ(array[0],  0.0003959445836206);
@@ -70,7 +70,7 @@ TEST(testReadDbl, testMatFileReadIn)
 TEST(testReadDbl, testRhsFileReadIn) 
 {
     PetscScalar array[3];
-    char fileName[100] = "../../data/rhs/rhs.lmbTripod1";
+    char fileName[100] = "../../data/rhs/rhs.f3tTripod1";
     readDbl(fileName, array, 3);
 
     EXPECT_DOUBLE_EQ(array[0],  0.0000056234484900);
@@ -81,7 +81,7 @@ TEST(testReadDbl, testRhsFileReadIn)
 TEST(testWriteDbl, testSolFileWriteOut) 
 {
     PetscScalar array[3];
-    char fileName[100] = "../../data/sol/sol.lmbTripod1";
+    char fileName[100] = "../../data/sol/sol.f3tTripod1";
 
     array[0] =  1.23456;
     array[1] =  7.80000;
@@ -97,6 +97,7 @@ TEST(testWriteDbl, testSolFileWriteOut)
 struct testSolveAssembledMatrix : ::testing::Test
 {
     PetscErrorCode ierr;
+    PetscInt n;
     char const *rowFile;
     char const *colFile;
     char const *matFile;
@@ -106,11 +107,12 @@ struct testSolveAssembledMatrix : ::testing::Test
     void SetUp()
     {
         /* set up */
-        rowFile = "../../data/row/row.lmbTripod1";
-        colFile = "../../data/col/col.lmbTripod1";
-        matFile = "../../data/mat/mat.lmbTripod1";
-        rhsFile = "../../data/rhs/rhs.lmbTripod1";
-        solFile = "../../data/sol/sol.lmbTripod1";
+        n       = 3;
+        rowFile = "../../data/row/row.f3tTripod1";
+        colFile = "../../data/col/col.f3tTripod1";
+        matFile = "../../data/mat/mat.f3tTripod1";
+        rhsFile = "../../data/rhs/rhs.f3tTripod1";
+        solFile = "../../data/sol/sol.f3tTripod1";
     }
 
     void TearDown()
@@ -121,21 +123,68 @@ struct testSolveAssembledMatrix : ::testing::Test
 
 TEST_F(testSolveAssembledMatrix, testIfTripodCaseRuns)
 {
-    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);
+    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
     EXPECT_EQ(ierr, 0);
 }
 
 TEST_F(testSolveAssembledMatrix, testTripodSolFileOutput)
 {
-    PetscScalar array[3];
+    PetscScalar array[n];
 
-    solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);
+    solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
 
-    readDbl(solFile, array, 3);
+    readDbl(solFile, array, n);
 
-    EXPECT_DOUBLE_EQ(array[0], 1.0);
-    EXPECT_DOUBLE_EQ(array[1], 1.0);
-    EXPECT_DOUBLE_EQ(array[2], 1.0);
+    EXPECT_DOUBLE_EQ(array[0],  0.0125059804156416);
+    EXPECT_DOUBLE_EQ(array[1], -0.0062488840076005);
+    EXPECT_DOUBLE_EQ(array[2],  0.0000000000000000);
+}
+
+
+struct testLattice2Solve : ::testing::Test
+{
+    PetscErrorCode ierr;
+    PetscInt n;
+    char const *rowFile;
+    char const *colFile;
+    char const *matFile;
+    char const *rhsFile;
+    char const *solFile;
+
+    void SetUp()
+    {
+        /* set up */
+        n       = 2355;
+        rowFile = "../../data/row/row.f3tLat02";
+        colFile = "../../data/col/col.f3tLat02";
+        matFile = "../../data/mat/mat.f3tLat02";
+        rhsFile = "../../data/rhs/rhs.f3tLat02";
+        solFile = "../../data/sol/sol.f3tLat02";
+    }
+
+    void TearDown()
+    {
+        /* clean up */
+    }
+};
+
+TEST_F(testLattice2Solve, testTripodSolFileOutput)
+{
+    PetscScalar array[n];
+
+    solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
+
+    readDbl(solFile, array, n);
+    EXPECT_DOUBLE_EQ(array[0],  0.0209388832015097);
+    EXPECT_DOUBLE_EQ(array[0],  0.0196076495539259);
+    EXPECT_DOUBLE_EQ(array[0],  0.0220868995837766);
+    EXPECT_DOUBLE_EQ(array[0],  0.0198653624690423);
+    EXPECT_DOUBLE_EQ(array[0],  0.0235944405745198);
+    EXPECT_DOUBLE_EQ(array[0],  0.0203574100237293);
+    EXPECT_DOUBLE_EQ(array[0],  0.0252534152769034);
+    EXPECT_DOUBLE_EQ(array[0],  0.0207804940686276);
+    EXPECT_DOUBLE_EQ(array[0],  0.0269826458296214);
+    EXPECT_DOUBLE_EQ(array[0],  0.0215427134108775);
 }
 
 } /* namespace */
