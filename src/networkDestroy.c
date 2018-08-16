@@ -45,7 +45,8 @@ void destroyBox(Box *box_ptr)
 	box_ptr->masterNodeList = NULL; assert(box_ptr->masterNodeList == NULL);
 
 	/* free node list of each fibre */
-	for (int f = 0; f < box_ptr->fibreCount; f++)
+	int f;
+	for (f = 0; f < box_ptr->fibreCount; f++)
 	{
         free(box_ptr->masterFibreList[f].nodesOnFibreList);	
         box_ptr->masterFibreList[f].nodesOnFibreList = NULL;
