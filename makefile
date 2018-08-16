@@ -3,13 +3,13 @@ CFLAGS	         = -I $(INC_DIR) -I $(TEST_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
 FPPFLAGS         =
-CLEANFILES       = model
+CLEANFILES       = model $(OBJ) $(TEST_OBJ)
 
 SRC_DIR			 = src
 INC_DIR			 = include
 
-TEST_SRC_DIR 	 = tests/src
-TEST_INC_DIR 	 = tests/include
+TEST_SRC_DIR 	 = tests/integrationTests/src
+TEST_INC_DIR 	 = tests/integrationTests/include
 
 SRC 			 = $(wildcard $(SRC_DIR)/*.c)
 OBJ 			 = $(patsubst %.c,%.o,$(SRC))
@@ -25,4 +25,7 @@ model: $(OBJ) $(TEST_OBJ) chkopts
 	${RM} $(OBJ) $(TEST_OBJ)
 
 runmodel:
+	-@${MPIEXEC} -n 1 ./model
+
+runmodelinfo:
 	-@${MPIEXEC} -n 1 ./model -info
