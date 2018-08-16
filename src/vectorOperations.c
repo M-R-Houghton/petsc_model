@@ -48,7 +48,8 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b)
 PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 {
 	PetscScalar total = 0;
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		total += vec1_ptr[i] * vec2_ptr[i];
 	}
@@ -92,7 +93,8 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, Pe
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		addVec_ptr[i] = posVec1_ptr[i] + posVec2_ptr[i];
 	}
@@ -109,7 +111,8 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_pt
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		distVec_ptr[i] = posVec2_ptr[i] - posVec1_ptr[i];
 	}
@@ -126,7 +129,8 @@ PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		tangVec_ptr[i] = vec_ptr[i] / (vecMagnitude(vec_ptr));
 	}
@@ -140,7 +144,8 @@ PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		posVec_ptr[i] = node_ptr->xyzCoord[i];
 	}
@@ -154,7 +159,8 @@ PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		dispVec_ptr[i] = node_ptr->xyzDisplacement[i];
 	}
@@ -168,7 +174,8 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
-	for (int i = 0; i < DIMENSION; i++)
+	int i;
+	for (i = 0; i < DIMENSION; i++)
 	{
 		posVec_ptr[i] = node_ptr->xyzCoord[i] + node_ptr->xyzDisplacement[i];
 	}
