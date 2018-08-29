@@ -18,8 +18,10 @@ int main(int argc, char **args)
 	PetscBool      nonzeroguess = PETSC_FALSE;
 	//PetscBool 	   changepcside = PETSC_FALSE;
 
+	static char optFile[] = "optionsDat";
+
 	printf("[STATUS] Initialising...\n");
-	ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
+	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
 	ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
   	if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
 	ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
