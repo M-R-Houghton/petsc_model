@@ -122,12 +122,12 @@ int main(int argc, char **args)
     ierr = systemSolve();CHKERRQ(ierr);
 
     /* assemble tripod matrix */
-    char rowFile[100] = "data/row/row.f3tRnd_s01_f1200";
-    char colFile[100] = "data/col/col.f3tRnd_s01_f1200";
-    char matFile[100] = "data/mat/mat.f3tRnd_s01_f1200";
-    char rhsFile[100] = "data/rhs/rhs.f3tRnd_s01_f1200";
-    char solFile[100] = "data/sol/sol.f3tRnd_s01_f1200";
-    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,75255);CHKERRQ(ierr);
+    char rowFile[100] = "data/row/row.f3tTripod1";
+    char colFile[100] = "data/col/col.f3tTripod1";
+    char matFile[100] = "data/mat/mat.f3tTripod1";
+    char rhsFile[100] = "data/rhs/rhs.f3tTripod1";
+    char solFile[100] = "data/sol/sol.f3tTripod1";
+    ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
