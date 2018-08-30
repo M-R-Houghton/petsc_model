@@ -22,3 +22,27 @@ PetscErrorCode networkRead()
 
 	return ierr;
 }
+
+
+/* Reads box information from file */
+PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	char 		bChar;
+	PetscInt 	nodeCount, fibreCount;
+  	PetscScalar xDim, yDim, zDim; 
+  	PetscInt 	xPer, yPer, zPer;
+
+	// read in a box line
+	//sscanf(file_ptr, "%c %d %d %lf %lf %lf %d %d %d",
+  	//		&bChar, &nodeCount, &fibreCount, 
+  	//		&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
+
+	//box_ptr = makeBox(nodeCount, fibreCount, 
+  	//					xDim, yDim, zDim, xPer, yPer, zPer);
+
+  	networkBuild();
+
+	return ierr;
+}

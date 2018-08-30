@@ -9,4 +9,12 @@
  */
 PetscErrorCode networkRead();
 
+/**
+ * \brief Reads box information from file.
+ * \param file_ptr Pointer to the file.
+ * \param box_ptr Empty box for data to be written into.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr);
+
 #endif

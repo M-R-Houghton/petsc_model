@@ -19,7 +19,7 @@ int main(int argc, char **args)
 	PetscBool      nonzeroguess = PETSC_FALSE;
 	//PetscBool 	   changepcside = PETSC_FALSE;
 
-	static char optFile[] = "modelOptions.dat";
+	const char optFile[] = "modelOptions.dat";
 
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
