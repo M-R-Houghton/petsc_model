@@ -47,21 +47,22 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	/* Read in row file to array */
     ierr = readInt(rowFile, rowArray, n+1);CHKERRQ(ierr);
 
-    int myInt = rowArray[n];
+    /* Determine the number of nonzeros */
+    PetscInt 		nz = rowArray[n];
  
     /* Use final value of row ptr array to determine length of col and mat arrays */
-    //PetscInt 		colArray[rowArray[n]];
-	//PetscScalar 	valArray[rowArray[n]];
+    //PetscInt 		colArray[nz];	/* static allocation */
+	//PetscScalar 	valArray[nz];	/* static allocation */
 
 	/* dynamic allocation for larger problems */
 	PetscInt 		*colArray;
 	PetscScalar		*valArray;
-	ierr = PetscMalloc1(rowArray[n]*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
-	ierr = PetscMalloc1(rowArray[n]*sizeof(PetscScalar), &valArray);CHKERRQ(ierr);
+	ierr = PetscMalloc1(nz*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
+	ierr = PetscMalloc1(nz*sizeof(PetscScalar),&valArray);CHKERRQ(ierr);
 
 	/* Read in further files to arrays */
-    ierr = readInt(colFile, colArray, rowArray[n]);CHKERRQ(ierr);
-    ierr = readDbl(matFile, valArray, rowArray[n]);CHKERRQ(ierr);
+    ierr = readInt(colFile, colArray, nz);CHKERRQ(ierr);
+    ierr = readDbl(matFile, valArray, nz);CHKERRQ(ierr);
     ierr = readDbl(rhsFile, rhsArray, n);CHKERRQ(ierr);
 
     /* Vector assembly for existing array */
