@@ -18,6 +18,9 @@ int main(int argc, char **args)
 	PetscScalar    one = 1.0;
 	PetscBool      nonzeroguess = PETSC_FALSE;
 	//PetscBool 	   changepcside = PETSC_FALSE;
+#if defined(PETSC_USE_LOG)
+	PetscLogStage stages[4];
+#endif
 
 	const char optFile[] = "modelOptions.dat";
 
@@ -28,18 +31,26 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
 
-	// perform all unit tests
+	/* perform all unit tests */
 	ierr = runIntegrationTests();CHKERRQ(ierr);
 
-	// read in network data file
+	/* Register stages for separate profiling */
+	ierr = PetscLogStageRegister("Network Read-in",  &stages[0]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("System Assembly",  &stages[1]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("Network Analysis", &stages[2]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("Network Write-out",&stages[3]);CHKERRQ(ierr);
+
+	/* read in network data file */
+	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
 	ierr = networkRead();CHKERRQ(ierr);
+	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Compute the matrix and right-hand-side vector that define
          	the linear system, Ax = b.
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    // allocate memory for global rhs and solution vectors and set them up
+    /* allocate memory for global rhs and solution vectors and set them up */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
 	ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
 	//ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
@@ -52,16 +63,17 @@ int main(int argc, char **args)
 	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	//ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	// allocate memory for global matrix and set it up
+	/* allocate memory for global matrix and set it up */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
 	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
 	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
 	ierr = MatSetFromOptions(A);CHKERRQ(ierr);
 	ierr = MatSetUp(A);CHKERRQ(ierr);
 
-	// assemble sparse structure and assemble linear system
+	/* assemble sparse structure and assemble linear system */
+	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
 	ierr = systemAssembly(A,x);CHKERRQ(ierr);
-
+	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/*
        Set exact solution; then compute right-hand-side vector.
@@ -162,11 +174,15 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
 	*/
 
-    // make predictions based on solution
+    /* make predictions based on solution */
+    ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
     ierr = networkAnalysis();CHKERRQ(ierr);
+    ierr = PetscLogStagePop();CHKERRQ(ierr);
 
-    // write out new network data file
+    /* write out new network data file */
+    ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
     //ierr = networkWrite();CHKERRQ(ierr);
+    ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     /*
 	 * Free work space.
