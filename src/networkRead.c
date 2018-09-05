@@ -42,7 +42,7 @@ PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr)
 	//box_ptr = makeBox(nodeCount, fibreCount, 
   	//					xDim, yDim, zDim, xPer, yPer, zPer);
 
-  	networkBuild();
+  	//networkBuild();
 
 	return ierr;
 }
