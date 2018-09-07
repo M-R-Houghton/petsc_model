@@ -12,7 +12,7 @@
 # project, except GTEST_HEADERS, which you can use in your own targets
 # but shouldn't modify.
 
-CFLAGS 			+= -I $(USER_INC_DIR) -I $(TEST_INC_DIR)
+CFLAGS 			+= -I $(USER_INC_DIR) -I $(TEST_INC_DIR) -I $(ITEST_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
 FPPFLAGS         =
@@ -31,6 +31,9 @@ TEST_SRC_DIR = src
 TEST_INC_DIR = src
 TEST_OBJ_DIR = src
 
+# Where to find integration tests
+ITEST_INC_DIR = ../integrationTests/include
+
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
 # the compiler doesn't generate warnings in Google Test headers.
@@ -41,7 +44,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest networkBuild_unittest networkDestroy_unittest networkRead_unittest networkWrite_unittest vectorOperations_unittest systemAssembly_unittest
+TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest networkBuild_unittest networkDestroy_unittest networkRead_unittest networkWrite_unittest vectorOperations_unittest systemAssembly_unittest 
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -53,12 +56,19 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 #OBJ 			 = $(filter-out $(SRC_DIR)/main.o, $(patsubst %.c,%.o,$(SRC)))
 
 # Test source and object files
-#TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.c)
+TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.cc)
+
+USER_SRC 		 = $(wildcard $(USER_SRC_DIR)/*.c)
+USER_OBJ		 = $(patsubst %.c,%.o,$(USER_SRC))
+#USER_INC 		 = $(wildcard $(USER_INC_DIR)/*.h)
 #TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 
 # House-keeping build targets.
 
 all: $(TESTS) chkopts
+
+subtest:
+	echo $(USER_SRC)
 
 gclean:
 	rm -f $(TESTS) gtest.a gtest_main.a
@@ -92,6 +102,12 @@ gtest.a: gtest-all.o
 gtest_main.a: gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
+
+
+myTest: $(USER_OBJ) chkopts
+	${CLINKER} -o myTest $(USER_OBJ) ${PETSC_KSP_LIB} 
+	${RM} $(USER_OBJ)
+
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
 # function.
@@ -111,8 +127,7 @@ gtest_main.a: gtest-all.o gtest_main.o
 sample2.o: $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc -o $(TEST_SRC_DIR)/$@
 
-sample2_unittest.o: $(TEST_SRC_DIR)/sample2_unittest.cc \
-                     $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
+sample2_unittest.o: $(TEST_SRC_DIR)/sample2_unittest.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc -o $(TEST_SRC_DIR)/$@
 
 sample2_unittest: sample2.o sample2_unittest.o gtest_main.a chkopts
