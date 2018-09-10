@@ -44,7 +44,12 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample2_unittest localAssembly_unittest localAssemblyStretch_unittest localAssemblyBend_unittest networkBuild_unittest networkDestroy_unittest networkRead_unittest networkWrite_unittest vectorOperations_unittest systemAssembly_unittest 
+#TESTS = sample2 localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly 
+TESTS = localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly 
+
+MYSRC = $(patsubst %,%.c,$(TESTS))
+MYOBJ = $(patsubst %,%.o,$(TESTS))
+MYTES = $(patsubst %,%_unittest.o,$(TESTS))
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -61,18 +66,12 @@ TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.cc)
 USER_SRC 		 = $(wildcard $(USER_SRC_DIR)/*.c)
 USER_OBJ		 = $(patsubst %.c,%.o,$(USER_SRC))
 #USER_INC 		 = $(wildcard $(USER_INC_DIR)/*.h)
+#ITEST_INC 		 = $(wildcard $(ITEST_INC_DIR)/*.h)
 #TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 
 # House-keeping build targets.
 
-all: $(TESTS) chkopts
-
-subtest:
-	echo $(USER_SRC)
-
-gclean:
-	rm -f $(TESTS) gtest.a gtest_main.a
-	find . -name '*.o' -exec rm {} \;
+all: $(TESTS)
 
 # Builds gtest.a and gtest_main.a.
 
@@ -90,11 +89,11 @@ include ${PETSC_DIR}/lib/petsc/conf/rules
 # compiles fast and for ordinary users its source rarely changes.
 gtest-all.o: $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest-all.cc
+             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o: $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest_main.cc
+             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a: gtest-all.o
 	$(AR) $(ARFLAGS) $@ $^
@@ -102,165 +101,67 @@ gtest.a: gtest-all.o
 gtest_main.a: gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
+model.a: $(filter-out %/main.o,$(USER_OBJ))
+	$(AR) $(ARFLAGS) $@ $^
+
+# # generate all model object files
+#$(MYOBJ): %.o: $(USER_SRC_DIR)/%.c $(USER_INC_DIR)/%.h $(GTEST_HEADERS)
+#	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $< -o $(TEST_OBJ_DIR)/$@
+
+# # generate all unittest object files
+$(MYTES): %_unittest.o: $(TEST_SRC_DIR)/%_unittest.cc $(USER_INC_DIR)/%.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $< -o $(TEST_OBJ_DIR)/$@
+
+# # generate executable for all unittests
+$(TESTS): %: %_unittest.o model.a gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(addprefix $(TEST_SRC_DIR)/,$(filter %.o,$^)) model.a gtest_main.a
+
+# # Builds a sample test.  A test should link with either gtest.a or
+# # gtest_main.a, depending on whether it defines its own main()
+# # function.
+
+# # SAMPLE UNITTEST
+# # (used for sanity check)
+# sample2.o: $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
+# 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc -o $(TEST_SRC_DIR)/$@
+
+# sample2_unittest.o: $(TEST_SRC_DIR)/sample2_unittest.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
+# 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc -o $(TEST_SRC_DIR)/$@
+
+# sample2_unittest: sample2.o sample2_unittest.o gtest_main.a chkopts
+# 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
+# #	${CLINKER} changed from this here
+
+# # Draft of automated version
+# #
+# #$(USER_OBJ): $(USER_SRC_DIR)/$(USER_SRC) $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
+# #	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/$(USER_SRC) -o $(TEST_OBJ_DIR)/$@
+# #
+# #$(TEST_OBJ): $(TEST_SRC_DIR)/$(TEST_SRC) \
+# #                     $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
+# #	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/$(TEST_SRC) -o $(TEST_OBJ_DIR)/$@
+# #
+# #$(TEST_EXE): $(USER_OBJ) $(TEST_OBJ) gtest_main.a chkopts
+# #	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/$(TEST_OBJ) $(TEST_SRC_DIR)/$(USER_OBJ) gtest_main.a
+# #
+
+# #
+# # Make localAssembly
+# #
+# localAssembly.o: $(USER_SRC_DIR)/localAssembly.c $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
+# 	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssembly.c -o $(TEST_OBJ_DIR)/$@
+
+# localAssembly_unittest.o: $(TEST_SRC_DIR)/localAssembly_unittest.cc \
+#                      $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
+# 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
+
+# localAssembly_unittest: localAssembly.o localAssembly_unittest.o gtest_main.a chkopts
+# 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssembly_unittest.o $(TEST_SRC_DIR)/localAssembly.o gtest_main.a
 
 
-myTest: $(USER_OBJ) chkopts
-	${CLINKER} -o myTest $(USER_OBJ) ${PETSC_KSP_LIB} 
-	${RM} $(USER_OBJ)
 
-# Builds a sample test.  A test should link with either gtest.a or
-# gtest_main.a, depending on whether it defines its own main()
-# function.
+gclean:
+	rm -f $(TESTS) gtest.a gtest_main.a model.a
+	find . -name '*.o' -exec rm {} \;
 
-#sample1.o : $(TEST_SRC_DIR)/sample1.cc $(TEST_SRC_DIR)/sample1.h $(GTEST_HEADERS)
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample1.cc
-
-#sample1_unittest.o : $(TEST_SRC_DIR)/sample1_unittest.cc \
-#                     $(TEST_SRC_DIR)/sample1.h $(GTEST_HEADERS)
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample1_unittest.cc
-
-#sample1_unittest : sample1.o sample1_unittest.o gtest_main.a
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
-
-# SAMPLE UNITTEST
-# (used for sanity check)
-sample2.o: $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc -o $(TEST_SRC_DIR)/$@
-
-sample2_unittest.o: $(TEST_SRC_DIR)/sample2_unittest.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc -o $(TEST_SRC_DIR)/$@
-
-sample2_unittest: sample2.o sample2_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
-#	${CLINKER} changed from this here
-
-# Draft of automated version
-#
-#$(USER_OBJ): $(USER_SRC_DIR)/$(USER_SRC) $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
-#	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/$(USER_SRC) -o $(TEST_OBJ_DIR)/$@
-#
-#$(TEST_OBJ): $(TEST_SRC_DIR)/$(TEST_SRC) \
-#                     $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
-#	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/$(TEST_SRC) -o $(TEST_OBJ_DIR)/$@
-#
-#$(TEST_EXE): $(USER_OBJ) $(TEST_OBJ) gtest_main.a chkopts
-#	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/$(TEST_OBJ) $(TEST_SRC_DIR)/$(USER_OBJ) gtest_main.a
-#
-
-#
-# Make localAssembly
-#
-localAssembly.o: $(USER_SRC_DIR)/localAssembly.c $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssembly.c -o $(TEST_OBJ_DIR)/$@
-
-localAssembly_unittest.o: $(TEST_SRC_DIR)/localAssembly_unittest.cc \
-                     $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-localAssembly_unittest: localAssembly.o localAssembly_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssembly_unittest.o $(TEST_SRC_DIR)/localAssembly.o gtest_main.a
-
-#
-# Make localAssemblyStretch
-#
-localAssemblyStretch.o: $(USER_SRC_DIR)/localAssemblyStretch.c $(USER_INC_DIR)/localAssemblyStretch.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyStretch.c -o $(TEST_OBJ_DIR)/$@
-
-localAssemblyStretch_unittest.o: $(TEST_SRC_DIR)/localAssemblyStretch_unittest.cc \
-                     $(USER_INC_DIR)/localAssemblyStretch.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyStretch_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-localAssemblyStretch_unittest: localAssemblyStretch.o localAssemblyStretch_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyStretch_unittest.o $(TEST_SRC_DIR)/localAssemblyStretch.o gtest_main.a
-
-#
-# Make localAssemblyBend
-#
-localAssemblyBend.o: $(USER_SRC_DIR)/localAssemblyBend.c $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssemblyBend.c -o $(TEST_OBJ_DIR)/$@
-
-localAssemblyBend_unittest.o: $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc \
-                     $(USER_INC_DIR)/localAssemblyBend.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssemblyBend_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-localAssemblyBend_unittest: localAssemblyBend.o localAssemblyBend_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssemblyBend_unittest.o $(TEST_SRC_DIR)/localAssemblyBend.o gtest_main.a 
-
-#
-# Make networkBuild
-#
-networkBuild.o: $(USER_SRC_DIR)/networkBuild.c $(USER_INC_DIR)/networkBuild.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkBuild.c -o $(TEST_OBJ_DIR)/$@
-
-networkBuild_unittest.o: $(TEST_SRC_DIR)/networkBuild_unittest.cc \
-                     $(USER_INC_DIR)/networkBuild.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkBuild_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-networkBuild_unittest: networkBuild.o networkBuild_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkBuild_unittest.o $(TEST_SRC_DIR)/networkBuild.o gtest_main.a	
-
-#
-# Make networkDestroy
-#
-networkDestroy.o: $(USER_SRC_DIR)/networkDestroy.c $(USER_INC_DIR)/networkDestroy.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkDestroy.c -o $(TEST_OBJ_DIR)/$@
-
-networkDestroy_unittest.o: $(TEST_SRC_DIR)/networkDestroy_unittest.cc \
-                     $(USER_INC_DIR)/networkDestroy.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkDestroy_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-networkDestroy_unittest: networkDestroy.o networkDestroy_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkDestroy_unittest.o $(TEST_SRC_DIR)/networkDestroy.o gtest_main.a	
-
-#
-# Make networkRead
-#
-networkRead.o: $(USER_SRC_DIR)/networkRead.c $(USER_INC_DIR)/networkRead.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkRead.c -o $(TEST_OBJ_DIR)/$@
-
-networkRead_unittest.o: $(TEST_SRC_DIR)/networkRead_unittest.cc \
-                     $(USER_INC_DIR)/networkRead.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkRead_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-networkRead_unittest: networkRead.o networkRead_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkRead_unittest.o $(TEST_SRC_DIR)/networkRead.o gtest_main.a	
-
-#
-# Make networkWrite
-#
-networkWrite.o: $(USER_SRC_DIR)/networkWrite.c $(USER_INC_DIR)/networkWrite.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/networkWrite.c -o $(TEST_OBJ_DIR)/$@
-
-networkWrite_unittest.o: $(TEST_SRC_DIR)/networkWrite_unittest.cc \
-                     $(USER_INC_DIR)/networkWrite.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/networkWrite_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-networkWrite_unittest: networkWrite.o networkWrite_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/networkWrite_unittest.o $(TEST_SRC_DIR)/networkWrite.o gtest_main.a	
-
-#
-# Make vectorOperations
-#
-vectorOperations.o: $(USER_SRC_DIR)/vectorOperations.c $(USER_INC_DIR)/vectorOperations.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/vectorOperations.c -o $(TEST_OBJ_DIR)/$@
-
-vectorOperations_unittest.o: $(TEST_SRC_DIR)/vectorOperations_unittest.cc \
-                     $(USER_INC_DIR)/vectorOperations.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/vectorOperations_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-vectorOperations_unittest: vectorOperations.o vectorOperations_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/vectorOperations_unittest.o $(TEST_SRC_DIR)/vectorOperations.o gtest_main.a	
-
-#
-# Make systemAssembly
-#
-systemAssembly.o: $(USER_SRC_DIR)/systemAssembly.c $(USER_INC_DIR)/systemAssembly.h $(GTEST_HEADERS)
-	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/systemAssembly.c -o $(TEST_OBJ_DIR)/$@
-
-systemAssembly_unittest.o: $(TEST_SRC_DIR)/systemAssembly_unittest.cc \
-                     $(USER_INC_DIR)/systemAssembly.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/systemAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-systemAssembly_unittest: systemAssembly.o systemAssembly_unittest.o gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/systemAssembly_unittest.o $(TEST_SRC_DIR)/systemAssembly.o gtest_main.a	
 
