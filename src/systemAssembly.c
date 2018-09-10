@@ -113,7 +113,8 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	ierr = PetscFree(valArray);CHKERRQ(ierr);
 
 	/* Print matrix to verify assembly */
-	ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
+	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
 
 	/* Create solver context */
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);

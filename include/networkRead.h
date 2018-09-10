@@ -15,6 +15,6 @@ PetscErrorCode networkRead();
  * \param box_ptr Empty box for data to be written into.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr);
+PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr);
 
 #endif

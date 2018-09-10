@@ -25,7 +25,7 @@ PetscErrorCode networkRead()
 
 
 /* Reads box information from file */
-PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr)
+PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -35,12 +35,22 @@ PetscErrorCode readBoxLine(FILE *file_ptr, Box *box_ptr)
   	PetscInt 	xPer, yPer, zPer;
 
 	// read in a box line
-	//sscanf(file_ptr, "%c %d %d %lf %lf %lf %d %d %d",
-  	//		&bChar, &nodeCount, &fibreCount, 
-  	//		&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
+	sscanf(line_ptr, "%c %d %d %lf %lf %lf %d %d %d",
+  			&bChar, &nodeCount, &fibreCount, 
+  			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
 
-	//box_ptr = makeBox(nodeCount, fibreCount, 
-  	//					xDim, yDim, zDim, xPer, yPer, zPer);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %c\n", bChar);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", nodeCount);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", fibreCount);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", xDim);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", yDim);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", zDim);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", xPer);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", yPer);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", zPer);CHKERRQ(ierr);
+
+	*box_ptr = makeBox(nodeCount, fibreCount, 
+  						xDim, yDim, zDim, xPer, yPer, zPer);
 
   	//networkBuild();
 

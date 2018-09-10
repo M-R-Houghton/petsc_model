@@ -89,9 +89,13 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	box_ptr->xyzPeriodic[1] = yPer;
 	box_ptr->xyzPeriodic[2] = zPer;
 
+	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
+
 	/* assign allocated memory to master node/fibre lists */
 	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
 	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
+
+	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
 
 	return box_ptr;
 }
