@@ -12,7 +12,7 @@
 # project, except GTEST_HEADERS, which you can use in your own targets
 # but shouldn't modify.
 
-CFLAGS 			+= -I $(USER_INC_DIR) -I $(TEST_INC_DIR) -I $(ITEST_INC_DIR)
+CFLAGS 			+= -I $(MODEL_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
 FPPFLAGS         =
@@ -22,34 +22,24 @@ CLEANFILES       =
 # Remember to tweak this if you move this file.
 GTEST_DIR = ../gtest
 
-# Where to find user code.
-USER_SRC_DIR = ../../src
-USER_INC_DIR = ../../include
+# Where to find the model code.
+MODEL_SRC_DIR 	= ../../src
+MODEL_INC_DIR 	= ../../include
 
 # Where to find test code.
-TEST_SRC_DIR = src
-TEST_INC_DIR = src
-TEST_OBJ_DIR = src
-
-# Where to find integration tests
-ITEST_INC_DIR = ../integrationTests/include
+TESTS_SRC_DIR 	= src
 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
 # the compiler doesn't generate warnings in Google Test headers.
-CPPFLAGS += -isystem $(GTEST_DIR)/include -I $(USER_INC_DIR) -I $(TEST_INC_DIR)
+CPPFLAGS += -isystem $(GTEST_DIR)/include -I $(MODEL_INC_DIR)
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread
 
-# All tests produced by this Makefile.  Remember to add new tests you
+# All tests produced by this Makefile. Remember to add new tests you
 # created to the list.
-#TESTS = sample2 localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly 
-TESTS = localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly 
-
-MYSRC = $(patsubst %,%.c,$(TESTS))
-MYOBJ = $(patsubst %,%.o,$(TESTS))
-MYTES = $(patsubst %,%_unittest.o,$(TESTS))
+TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -57,23 +47,15 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 
 # Model source and object files
-#SRC 			 = $(filter-out $(SRC_DIR)/main.c, $(wildcard $(SRC_DIR)/*.c))
-#OBJ 			 = $(filter-out $(SRC_DIR)/main.o, $(patsubst %.c,%.o,$(SRC)))
+MODEL_SRC 		= $(wildcard $(MODEL_SRC_DIR)/*.c)
+MODEL_OBJ 		= $(patsubst %.c,%.o,$(MODEL_SRC))
 
-# Test source and object files
-TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.cc)
+# Test object files
+TESTS_OBJ 		= $(patsubst %,%_unittest.o,$(TESTS_EXE))
 
-USER_SRC 		 = $(wildcard $(USER_SRC_DIR)/*.c)
-USER_OBJ		 = $(patsubst %.c,%.o,$(USER_SRC))
-#USER_INC 		 = $(wildcard $(USER_INC_DIR)/*.h)
-#ITEST_INC 		 = $(wildcard $(ITEST_INC_DIR)/*.h)
-#TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 
-# House-keeping build targets.
-
-all: $(TESTS)
-
-# Builds gtest.a and gtest_main.a.
+# Build all unittests
+all: $(TESTS_EXE)
 
 # Usually you shouldn't tweak such internal variables, indicated by a
 # trailing _.
@@ -101,67 +83,23 @@ gtest.a: gtest-all.o
 gtest_main.a: gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-model.a: $(filter-out %/main.o,$(USER_OBJ))
+
+# Builds library of model functions excluding the model main.c
+model.a: $(filter-out %/main.o,$(MODEL_OBJ))
 	$(AR) $(ARFLAGS) $@ $^
 
-# # generate all model object files
-#$(MYOBJ): %.o: $(USER_SRC_DIR)/%.c $(USER_INC_DIR)/%.h $(GTEST_HEADERS)
-#	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $< -o $(TEST_OBJ_DIR)/$@
+# Builds all unittest object files
+$(TESTS_OBJ): %_unittest.o: $(TESTS_SRC_DIR)/%_unittest.cc $(MODEL_INC_DIR)/%.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $< -o $(TESTS_SRC_DIR)/$@
 
-# # generate all unittest object files
-$(MYTES): %_unittest.o: $(TEST_SRC_DIR)/%_unittest.cc $(USER_INC_DIR)/%.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $< -o $(TEST_OBJ_DIR)/$@
-
-# # generate executable for all unittests
-$(TESTS): %: %_unittest.o model.a gtest_main.a chkopts
-	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(addprefix $(TEST_SRC_DIR)/,$(filter %.o,$^)) model.a gtest_main.a
-
-# # Builds a sample test.  A test should link with either gtest.a or
-# # gtest_main.a, depending on whether it defines its own main()
-# # function.
-
-# # SAMPLE UNITTEST
-# # (used for sanity check)
-# sample2.o: $(USER_SRC_DIR)/sample2.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-# 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/sample2.cc -o $(TEST_SRC_DIR)/$@
-
-# sample2_unittest.o: $(TEST_SRC_DIR)/sample2_unittest.cc $(USER_INC_DIR)/sample2.h $(GTEST_HEADERS)
-# 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_SRC_DIR)/sample2_unittest.cc -o $(TEST_SRC_DIR)/$@
-
-# sample2_unittest: sample2.o sample2_unittest.o gtest_main.a chkopts
-# 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/sample2.o $(TEST_SRC_DIR)/sample2_unittest.o gtest_main.a 
-# #	${CLINKER} changed from this here
-
-# # Draft of automated version
-# #
-# #$(USER_OBJ): $(USER_SRC_DIR)/$(USER_SRC) $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
-# #	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/$(USER_SRC) -o $(TEST_OBJ_DIR)/$@
-# #
-# #$(TEST_OBJ): $(TEST_SRC_DIR)/$(TEST_SRC) \
-# #                     $(USER_INC_DIR)/$(USER_INC) $(GTEST_HEADERS)
-# #	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/$(TEST_SRC) -o $(TEST_OBJ_DIR)/$@
-# #
-# #$(TEST_EXE): $(USER_OBJ) $(TEST_OBJ) gtest_main.a chkopts
-# #	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/$(TEST_OBJ) $(TEST_SRC_DIR)/$(USER_OBJ) gtest_main.a
-# #
-
-# #
-# # Make localAssembly
-# #
-# localAssembly.o: $(USER_SRC_DIR)/localAssembly.c $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
-# 	$(PCC) $(CPPFLAGS) -I$(GTEST_DIR) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(USER_SRC_DIR)/localAssembly.c -o $(TEST_OBJ_DIR)/$@
-
-# localAssembly_unittest.o: $(TEST_SRC_DIR)/localAssembly_unittest.cc \
-#                      $(USER_INC_DIR)/localAssembly.h $(GTEST_HEADERS)
-# 	$(CXX) $(CPPFLAGS) $(PETSC_CC_INCLUDES) $(CXXFLAGS) -c $(TEST_SRC_DIR)/localAssembly_unittest.cc -o $(TEST_OBJ_DIR)/$@
-
-# localAssembly_unittest: localAssembly.o localAssembly_unittest.o gtest_main.a chkopts
-# 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(TEST_SRC_DIR)/localAssembly_unittest.o $(TEST_SRC_DIR)/localAssembly.o gtest_main.a
-
-
+# Builds all unittest executables.  A test should link with either gtest.a or
+# gtest_main.a, depending on whether it defines its own main()
+# function.
+$(TESTS_EXE): %: %_unittest.o model.a gtest_main.a chkopts
+	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(addprefix $(TESTS_SRC_DIR)/,$(filter %.o,$^)) model.a gtest_main.a
 
 gclean:
-	rm -f $(TESTS) gtest.a gtest_main.a model.a
+	rm -f $(TESTS_EXE) gtest.a gtest_main.a model.a
 	find . -name '*.o' -exec rm {} \;
 
 
