@@ -23,11 +23,11 @@ CLEANFILES       =
 GTEST_DIR = ../gtest
 
 # Where to find the model code.
-MODEL_SRC_DIR 	= ../../src
-MODEL_INC_DIR 	= ../../include
+MODEL_SRC_DIR = ../../src
+MODEL_INC_DIR = ../../include
 
 # Where to find test code.
-TESTS_SRC_DIR 	= src
+TESTS_SRC_DIR = src
 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
@@ -39,7 +39,9 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile. Remember to add new tests you
 # created to the list.
-TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend networkBuild networkDestroy networkRead networkWrite vectorOperations systemAssembly
+TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend \
+			networkBuild networkDestroy networkRead networkWrite \
+			vectorOperations systemAssembly
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -47,11 +49,11 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 
 # Model source and object files
-MODEL_SRC 		= $(wildcard $(MODEL_SRC_DIR)/*.c)
-MODEL_OBJ 		= $(patsubst %.c,%.o,$(MODEL_SRC))
+MODEL_SRC = $(wildcard $(MODEL_SRC_DIR)/*.c)
+MODEL_OBJ = $(patsubst %.c,%.o,$(MODEL_SRC))
 
 # Test object files
-TESTS_OBJ 		= $(patsubst %,%_unittest.o,$(TESTS_EXE))
+TESTS_OBJ = $(patsubst %,%_unittest.o,$(TESTS_EXE))
 
 
 # Build all unittests
