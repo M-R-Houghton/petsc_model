@@ -92,8 +92,8 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
 
 	/* assign allocated memory to master node/fibre lists */
-	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
-	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
+	//box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
+	//box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
 	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
 
