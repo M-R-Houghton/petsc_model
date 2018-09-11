@@ -25,7 +25,7 @@ Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod)
 
 
 /* Creates a sparse structure */
-Sparse *makeSparse(PetscInt n, PetscInt nz) 
+Sparse *makeSparse(PetscInt n, PetscInt nz)
 {
 	/* check for invalid arguments given */
 	assert(n >= nz);
@@ -46,8 +46,8 @@ Sparse *makeSparse(PetscInt n, PetscInt nz)
 
 
 /* Checks box arguments are all legal */
-void checkBoxArguments(PetscInt nCount, PetscInt fCount, 
-							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+void checkBoxArguments(PetscInt nCount, PetscInt fCount,
+							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
 							PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
 	assert(nCount >= 0);
@@ -68,8 +68,8 @@ void checkBoxArguments(PetscInt nCount, PetscInt fCount,
 
 
 /* Creates a box structure */
-Box *makeBox(PetscInt nCount, PetscInt fCount, 
-				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+Box *makeBox(PetscInt nCount, PetscInt fCount,
+				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
 				PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
 	/* validate arguments */
@@ -92,8 +92,8 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
 
 	/* assign allocated memory to master node/fibre lists */
-	//box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
-	//box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
+	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
+	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
 	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failure next \n");
 
@@ -102,7 +102,7 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 
 
 /* Checks fibre arguments are all legal */
-void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
+void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 				PetscScalar radius, Node **nList_ptr_ptr)
 {
 	assert(box_ptr != NULL);
@@ -114,7 +114,7 @@ void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 
 
 /* Creates a fibre within its allocated location in a box */
-void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr) 
+void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)
 {
 	/* validate arguments */
 	checkFibreArguments(box_ptr, fID, nOnFibre, radius, nList_ptr_ptr);
@@ -128,7 +128,7 @@ void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius
 
 
 /* Checks node arguments are all legal */
-void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType, 
+void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
 	assert(box_ptr != NULL);
@@ -139,11 +139,11 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 
 /* Creates a node within its allocated location in a box */
-PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
+PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
 	PetscErrorCode ierr = 0;
-	
+
 	/* validate arguments */
 	checkNodeArguments(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);
 
@@ -185,9 +185,3 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 	return ierr;
 }
-
-
-
-
-
-
