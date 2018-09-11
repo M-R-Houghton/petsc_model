@@ -13,18 +13,18 @@ PetscErrorCode networkDestroy();
  * \brief Destroys a parameters structure
  * \param par_ptr
  */
-void destroyParameters(Parameters *par_ptr);
+PetscErrorCode destroyParameters(Parameters *par_ptr);
 
 /**
  * \brief Destroys a sparse structure
  * \param sparse_ptr
  */
-void destroySparse(Sparse *sparse_ptr);
+PetscErrorCode destroySparse(Sparse *sparse_ptr);
 
 /**
  * \brief Destroys a box structure
  * \param box_ptr
  */
-void destroyBox(Box *box_ptr);
+PetscErrorCode destroyBox(Box *box_ptr);
 
 #endif

@@ -11,16 +11,22 @@ PetscErrorCode networkDestroy()
 
 
 /* Destroys a parameters structure */
-void destroyParameters(Parameters *par_ptr)
+PetscErrorCode destroyParameters(Parameters *par_ptr)
 {
+	PetscErrorCode 	ierr = 0;
+
 	free(par_ptr);
 	par_ptr = NULL; assert(par_ptr == NULL); 	/* Null check */
+
+	return ierr;
 }
 
 
 /* Destroys a sparse structure */
-void destroySparse(Sparse *sparse_ptr) 
+PetscErrorCode destroySparse(Sparse *sparse_ptr) 
 {
+	PetscErrorCode 	ierr = 0;
+
 	/* free each column of sparse structure */
 	free(sparse_ptr->counter);
 	sparse_ptr->counter = NULL; assert(sparse_ptr->counter == NULL);
@@ -34,12 +40,16 @@ void destroySparse(Sparse *sparse_ptr)
 	/* free the remaining sparse structure */
 	free(sparse_ptr);
 	sparse_ptr = NULL; assert(sparse_ptr == NULL); 	/* Null checks */
+
+	return ierr;
 }
 
 
 /* Destroys a box structure */
-void destroyBox(Box *box_ptr)
+PetscErrorCode destroyBox(Box *box_ptr)
 {
+	PetscErrorCode 	ierr = 0;
+
 	/* free the master list of nodes */
 	free(box_ptr->masterNodeList);
 	box_ptr->masterNodeList = NULL; assert(box_ptr->masterNodeList == NULL);
@@ -60,5 +70,7 @@ void destroyBox(Box *box_ptr)
     /* free the remaining box */
 	free(box_ptr);
     box_ptr = NULL; assert(box_ptr == NULL);	/* Null checks */
+
+	return ierr;
 }
 
