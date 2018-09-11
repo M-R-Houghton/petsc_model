@@ -24,6 +24,38 @@ PetscErrorCode networkRead()
 }
 
 
+/* Reads network data from a given line pointer */
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
+{
+	PetscErrorCode ierr = 0;
+
+	/* collect initial character and move pointer to where cropped line begins */
+    char *tkn_ptr        = strtok(line_ptr, " ");
+    char *lineCrop_ptr   = tkn_ptr + 2;
+	
+	/* switch over different line types */
+	switch (*tkn_ptr)
+	{
+		case 'b':
+			/* pass line pointer to box line reader */
+			readBoxLine(lineCrop_ptr, box_ptr_ptr);
+			break;
+		case 'f':
+			/* pass line pointer to fibre line reader */
+			readFibreLine(lineCrop_ptr, *box_ptr_ptr);
+			break;
+		case 'n':
+			/* pass line pointer to node line reader */
+			readNodeLine(lineCrop_ptr, *box_ptr_ptr, gIndex_ptr, gamma);
+			break;
+		default:
+			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
+	}
+
+	return ierr;
+}
+
+
 /* Reads box information from a given line pointer */
 PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 {

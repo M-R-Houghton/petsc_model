@@ -10,6 +10,16 @@
 PetscErrorCode networkRead();
 
 /**
+ * \brief Reads network data from a given line pointer
+ * \param line_ptr Pointer to the line.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \param gIndex_ptr Pointer to the current global index.
+ * \param gamma Global gamma value.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
+
+/**
  * \brief Reads box information from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Empty box for data to be written into.
