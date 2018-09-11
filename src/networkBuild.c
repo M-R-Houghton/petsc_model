@@ -110,8 +110,10 @@ void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 
 
 /* Creates a fibre within its allocated location in a box */
-void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)
+PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)
 {
+	PetscErrorCode ierr = 0;
+
 	/* validate arguments */
 	checkFibreArguments(box_ptr, fID, nOnFibre, radius, nList_ptr_ptr);
 
@@ -120,6 +122,8 @@ void makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius
 	box_ptr->masterFibreList[fID].nodesOnFibre = nOnFibre;
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
+
+    return ierr;
 }
 
 

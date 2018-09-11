@@ -77,7 +77,7 @@ struct testReadFibreLine : ::testing::Test
         lineCrop_ptr         = tkn_ptr + 2;
 
         // additional setup
-        box_ptr = makeBox(4,1,1,2,3,1,1,1);
+        box_ptr = makeBox(4,5,1,2,3,1,1,1);
     }
 
     void TearDown()
@@ -96,7 +96,26 @@ TEST_F(testReadFibreLine, testErrorOutput)
 TEST_F(testReadFibreLine, testReadValues)
 {
     ASSERT_TRUE(DIMENSION == 3);
-    EXPECT_EQ(readFibreLine(lineCrop_ptr, box_ptr), 1);
+
+    /* set up test */
+    Node *node0_ptr = &(box_ptr->masterNodeList[0]);
+    Node *node1_ptr = &(box_ptr->masterNodeList[1]);
+    Node *node2_ptr = &(box_ptr->masterNodeList[2]);
+    Node *node3_ptr = &(box_ptr->masterNodeList[3]);
+
+    readFibreLine(lineCrop_ptr, box_ptr);
+
+    /* test fibre values */
+    EXPECT_EQ(box_ptr->masterFibreList[2].fibreID,              2);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibre,         3);
+    EXPECT_EQ(box_ptr->masterFibreList[2].radius,               0.46);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[0],  node0_ptr);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[1],  node3_ptr);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[2],  node2_ptr);
+
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[0],  node1_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[1],  node1_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[2],  node1_ptr);
 }
 
 
