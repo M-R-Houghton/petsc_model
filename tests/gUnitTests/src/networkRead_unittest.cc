@@ -11,6 +11,30 @@ extern "C"
 namespace {
 
 
+struct testNetworkRead : ::testing::Test
+{
+    Box  *box_ptr;
+    const char *fileToRead;
+
+    void SetUp()
+    {
+        // open file, read in line and close
+        fileToRead = "data/exReadNetwork.dat";
+    }
+
+    void TearDown()
+    {
+        //destroyBox(box_ptr);
+    }
+};
+
+
+TEST_F(testNetworkRead, testErrorOutput)
+{
+    EXPECT_EQ(networkRead(fileToRead, &box_ptr, 0.05), 0);
+}
+
+
 struct testReadDataLine : ::testing::Test
 {
     Box         *box_ptr;
@@ -147,7 +171,7 @@ struct testReadBoxLine : ::testing::Test
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
     }
 };
 
@@ -155,7 +179,6 @@ struct testReadBoxLine : ::testing::Test
 TEST_F(testReadBoxLine, testErrorOutput)
 {
     EXPECT_EQ(readBoxLine(lineCrop_ptr, &box_ptr), 0);
-    destroyBox(box_ptr);
 }
 
 
@@ -173,8 +196,6 @@ TEST_F(testReadBoxLine, testReadValues)
     EXPECT_EQ(box_ptr->xyzPeriodic[0],         1);
     EXPECT_EQ(box_ptr->xyzPeriodic[1],         1);
     EXPECT_EQ(box_ptr->xyzPeriodic[2],         1);
-
-    destroyBox(box_ptr);
 }
 
 

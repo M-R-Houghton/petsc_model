@@ -42,7 +42,7 @@ int main(int argc, char **args)
 
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
-	ierr = networkRead();CHKERRQ(ierr);
+	//ierr = networkRead();CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

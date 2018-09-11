@@ -5,9 +5,12 @@
 
 /**
  * \brief Initiates network read in routine.
+ * \param line_ptr Pointer to the file to be read.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkRead();
+PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma);
 
 /**
  * \brief Reads network data from a given line pointer

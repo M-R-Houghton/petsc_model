@@ -1,7 +1,7 @@
 #include "networkRead.h"
 
 /* Initiates network read in routine */
-PetscErrorCode networkRead()
+PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma)
 {
 	PetscErrorCode 	ierr;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
