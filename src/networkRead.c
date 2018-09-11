@@ -24,35 +24,52 @@ PetscErrorCode networkRead()
 }
 
 
-/* Reads box information from file */
+/* Reads box information from a given line pointer */
 PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 {
 	PetscErrorCode ierr = 0;
 
-	char 		bChar;
+	char 		lineChar;
 	PetscInt 	nodeCount, fibreCount;
   	PetscScalar xDim, yDim, zDim; 
   	PetscInt 	xPer, yPer, zPer;
 
-	// read in a box line
+	/* read in a box line */
 	sscanf(line_ptr, "%c %d %d %lf %lf %lf %d %d %d",
-  			&bChar, &nodeCount, &fibreCount, 
+  			&lineChar, &nodeCount, &fibreCount, 
   			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
 
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %c\n", bChar);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", nodeCount);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", fibreCount);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", xDim);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", yDim);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %lf\n", zDim);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", xPer);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", yPer);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading %d\n", zPer);CHKERRQ(ierr);
+	/* assert that it is a box line */
+	//int myInt = atoi(&lineChar);			/* does not behave as I would expect */
+	//assert(myInt == 98);					/* return to this at some point and understand why */
 
+	/* assign box values to scanned values */
 	*box_ptr = makeBox(nodeCount, fibreCount, 
   						xDim, yDim, zDim, xPer, yPer, zPer);
 
-  	//networkBuild();
+	return ierr;
+}
+
+
+/* Reads node information from a given line pointer */
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt gIndex_ptr, PetscScalar gamma)
+{
+	PetscErrorCode ierr = 0;
+
+	char 		lineChar;
+  	PetscInt 	nID, nType;
+	PetscScalar x, y, z;
+
+	/* read in a box line */
+	sscanf(line_ptr, "%c %d %d %lf %lf %lf %d %d %d",
+  			&lineChar, &nodeCount, &fibreCount, 
+  			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
+
+	/* assert that it is a node line */
+	//assert(lineChar == 'n');
+
+	/* assign scanned values to a node */
+	makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma)
 
 	return ierr;
 }
