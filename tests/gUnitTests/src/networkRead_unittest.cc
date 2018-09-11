@@ -65,15 +65,18 @@ TEST_F(testReadBoxLine, testReadValues)
 
 struct testReadNodeLine : ::testing::Test
 {
-    Box *box_ptr;
-    FILE *fp;
-    const char *fileName;
-    char line[100], *line_ptr;
+    Box         *box_ptr;
+    PetscInt    *gIndex_ptr, gIndex;
+    FILE        *fp;
+    const char  *fileName;
+    char        line[100], *line_ptr;
 
     void SetUp()
     {
-        fileName = "data/exReadNodeLine.dat";
-        box_ptr = makeBox(3,1,1,2,3,1,1,1);
+        fileName    = "data/exReadNodeLine.dat";
+        box_ptr     = makeBox(4,1,1,2,3,1,1,1);
+        gIndex      = 0;
+        gIndex_ptr  = &gIndex;
     }
 
     void TearDown()
@@ -88,7 +91,7 @@ TEST_F(testReadNodeLine, testErrorOutput)
     fp = fopen(fileName, "r");
 
     line_ptr = fgets(line, sizeof(line), fp);
-    EXPECT_EQ(readNodeLine(line_ptr, &box_ptr), 0);
+    EXPECT_EQ(readNodeLine(line_ptr, box_ptr, gIndex_ptr, 0.05), 0);
 
     fclose(fp);
 }
@@ -100,17 +103,19 @@ TEST_F(testReadNodeLine, testReadValues)
     fp = fopen(fileName, "r");
 
     line_ptr = fgets(line, sizeof(line), fp);
-    readNodeLine(line_ptr, &box_ptr);
+    readNodeLine(line_ptr, box_ptr, gIndex_ptr, 0.05);
 
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].nodeID, 1);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].nodeType, 2);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzCoord[0], 0.25);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzCoord[1], 0.00);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzCoord[2], 0.75);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].globalID, -1);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzDisplacement[0], 0);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzDisplacement[1], 0);
-    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[2].xyzDisplacement[2], 0);
+    EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
+    EXPECT_EQ(box_ptr->masterNodeList[3].nodeType,  2);
+
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[0], 0.25);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[1], 0.00);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[2], 0.75);
+
+    EXPECT_EQ(box_ptr->masterNodeList[3].globalID, -1);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[0], 0.00);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[1], 0.00);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[2], 0.00);
 
     fclose(fp);
 }

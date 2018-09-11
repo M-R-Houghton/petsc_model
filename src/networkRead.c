@@ -44,32 +44,30 @@ PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 	//assert(myInt == 98);					/* return to this at some point and understand why */
 
 	/* assign box values to scanned values */
-	*box_ptr = makeBox(nodeCount, fibreCount, 
-  						xDim, yDim, zDim, xPer, yPer, zPer);
+	*box_ptr = makeBox(nodeCount, fibreCount, xDim, yDim, zDim, xPer, yPer, zPer);
 
 	return ierr;
 }
 
 
 /* Reads node information from a given line pointer */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt gIndex_ptr, PetscScalar gamma)
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode ierr;
 
 	char 		lineChar;
   	PetscInt 	nID, nType;
 	PetscScalar x, y, z;
 
 	/* read in a box line */
-	sscanf(line_ptr, "%c %d %d %lf %lf %lf %d %d %d",
-  			&lineChar, &nodeCount, &fibreCount, 
-  			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
+	sscanf(line_ptr, "%c %d %d %lf %lf %lf",
+  			&lineChar, &nID, &nType, &x, &y, &z);
 
 	/* assert that it is a node line */
 	//assert(lineChar == 'n');
 
 	/* assign scanned values to a node */
-	makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma)
+	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
 
 	return ierr;
 }

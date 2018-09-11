@@ -25,6 +25,6 @@ PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr);
  * \param gamma Node's gamma value.
  * \return gIndex to represent Petsc error code.
  */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt gIndex_ptr, PetscScalar gamma);
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
 
 #endif
