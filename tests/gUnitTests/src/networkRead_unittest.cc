@@ -13,13 +13,19 @@ namespace {
 struct testReadBoxLine : ::testing::Test
 {
     Box *box_ptr;
-    FILE *fp;
-    const char *fileName;
-    char line[100], *line_ptr;
+    char line[100], *lineCrop_ptr;
 
     void SetUp()
     {
-        fileName = "data/exReadBoxLine.dat";
+        // open file, read in line and close
+        const char *fileName = "data/exReadBoxLine.dat";
+        FILE *fp             = fopen(fileName, "r");
+        char *line_ptr       = fgets(line, sizeof(line), fp);
+        fclose(fp);
+
+        // crop initial character and move pointer
+        char *tkn_ptr        = strtok(line_ptr, " ");
+        lineCrop_ptr         = tkn_ptr + 2;
     }
 
     void TearDown()
@@ -31,24 +37,16 @@ struct testReadBoxLine : ::testing::Test
 
 TEST_F(testReadBoxLine, testErrorOutput)
 {
-    fp = fopen(fileName, "r");
-
-    line_ptr = fgets(line, sizeof(line), fp);
-    EXPECT_EQ(readBoxLine(line_ptr, &box_ptr), 0);
-
+    EXPECT_EQ(readBoxLine(lineCrop_ptr, &box_ptr), 0);
     destroyBox(box_ptr);
-
-    fclose(fp);
 }
 
 
 TEST_F(testReadBoxLine, testReadValues)
 {
     ASSERT_TRUE(DIMENSION == 3);
-    fp = fopen(fileName, "r");
 
-    line_ptr = fgets(line, sizeof(line), fp);
-    readBoxLine(line_ptr, &box_ptr);
+    readBoxLine(lineCrop_ptr, &box_ptr);
 
     EXPECT_EQ(box_ptr->xyzDimension[0], 1);
     EXPECT_EQ(box_ptr->xyzDimension[1], 2);
@@ -58,8 +56,71 @@ TEST_F(testReadBoxLine, testReadValues)
     EXPECT_EQ(box_ptr->xyzPeriodic[2],  1);
 
     destroyBox(box_ptr);
+}
 
-    fclose(fp);
+
+struct testReadFibreLine : ::testing::Test
+{
+    Box  *box_ptr;
+    char line[100], *lineCrop_ptr;
+
+    void SetUp()
+    {
+        // open file, read in line and close
+        const char *fileName = "data/exReadFibreLine.dat";
+        FILE *fp             = fopen(fileName, "r");
+        char *line_ptr       = fgets(line, sizeof(line), fp);
+        fclose(fp);
+
+        // crop initial character and move pointer
+        char *tkn_ptr        = strtok(line_ptr, " ");
+        lineCrop_ptr         = tkn_ptr + 2;
+
+        // additional setup
+        box_ptr = makeBox(4,1,1,2,3,1,1,1);
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+    }
+};
+
+
+TEST_F(testReadFibreLine, testErrorOutput)
+{
+    EXPECT_EQ(readFibreLine(lineCrop_ptr, box_ptr), 0);
+}
+
+
+TEST_F(testReadFibreLine, testReadValues)
+{
+    ASSERT_TRUE(DIMENSION == 3);
+    EXPECT_EQ(readFibreLine(lineCrop_ptr, box_ptr), 1);
+}
+
+
+TEST(testTrimRightWhitespace, testOutputValue)
+{
+    // set up comparison strings
+    char exampleString1[100] = "some example string";
+    char exampleString2[100] = "a_different string_ex";
+
+    EXPECT_STRNE(exampleString1, exampleString2);
+
+    // set up test strings to be trimmed
+    char withSpace1[100] = "some example string        ";
+    char withSpace2[100] = "a_different string_ex         ";
+
+    EXPECT_STRNE(exampleString1, withSpace1);
+    EXPECT_STRNE(exampleString2, withSpace2);
+
+    // trim strings
+    char *noSpace1 = trimRightWhitespace(withSpace1);
+    char *noSpace2 = trimRightWhitespace(withSpace2);
+
+    EXPECT_STREQ(exampleString1, noSpace1);
+    EXPECT_STREQ(exampleString2, noSpace2);
 }
 
 
@@ -67,13 +128,21 @@ struct testReadNodeLine : ::testing::Test
 {
     Box         *box_ptr;
     PetscInt    *gIndex_ptr, gIndex;
-    FILE        *fp;
-    const char  *fileName;
-    char        line[100], *line_ptr;
+    char        line[100], *lineCrop_ptr;
 
     void SetUp()
     {
-        fileName    = "data/exReadNodeLine.dat";
+        // open file, read in line and close
+        const char *fileName = "data/exReadNodeLine.dat";
+        FILE *fp             = fopen(fileName, "r");
+        char *line_ptr       = fgets(line, sizeof(line), fp);
+        fclose(fp);
+
+        // crop initial character and move pointer
+        char *tkn_ptr        = strtok(line_ptr, " ");
+        lineCrop_ptr         = tkn_ptr + 2;
+
+        // additional setup
         box_ptr     = makeBox(4,1,1,2,3,1,1,1);
         gIndex      = 0;
         gIndex_ptr  = &gIndex;
@@ -88,22 +157,15 @@ struct testReadNodeLine : ::testing::Test
 
 TEST_F(testReadNodeLine, testErrorOutput)
 {
-    fp = fopen(fileName, "r");
-
-    line_ptr = fgets(line, sizeof(line), fp);
-    EXPECT_EQ(readNodeLine(line_ptr, box_ptr, gIndex_ptr, 0.05), 0);
-
-    fclose(fp);
+    EXPECT_EQ(readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05), 0);
 }
 
 
 TEST_F(testReadNodeLine, testReadValues)
 {
     ASSERT_TRUE(DIMENSION == 3);
-    fp = fopen(fileName, "r");
 
-    line_ptr = fgets(line, sizeof(line), fp);
-    readNodeLine(line_ptr, box_ptr, gIndex_ptr, 0.05);
+    readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05);
 
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeType,  2);
@@ -116,8 +178,6 @@ TEST_F(testReadNodeLine, testReadValues)
     EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[0], 0.00);
     EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[1], 0.00);
     EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[2], 0.00);
-
-    fclose(fp);
 }
 
 } /* namespace */

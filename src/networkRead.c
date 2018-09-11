@@ -27,21 +27,15 @@ PetscErrorCode networkRead()
 /* Reads box information from a given line pointer */
 PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 {
-	PetscErrorCode ierr = 0;
-
-	char 		lineChar;
-	PetscInt 	nodeCount, fibreCount;
-  	PetscScalar xDim, yDim, zDim; 
-  	PetscInt 	xPer, yPer, zPer;
+	PetscErrorCode 	ierr = 0;
+	PetscInt 		nodeCount, fibreCount;
+  	PetscScalar 	xDim, yDim, zDim; 
+  	PetscInt 		xPer, yPer, zPer;
 
 	/* read in a box line */
-	sscanf(line_ptr, "%c %d %d %lf %lf %lf %d %d %d",
-  			&lineChar, &nodeCount, &fibreCount, 
+	sscanf(line_ptr, "%d %d %lf %lf %lf %d %d %d",
+  			&nodeCount, &fibreCount, 
   			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
-
-	/* assert that it is a box line */
-	//int myInt = atoi(&lineChar);			/* does not behave as I would expect */
-	//assert(myInt == 98);					/* return to this at some point and understand why */
 
 	/* assign box values to scanned values */
 	*box_ptr = makeBox(nodeCount, fibreCount, xDim, yDim, zDim, xPer, yPer, zPer);
@@ -50,24 +44,42 @@ PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 }
 
 
+/* Reads fibre information from a given line pointer */
+PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	return ierr;
+}
+
+
 /* Reads node information from a given line pointer */
 PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
-	PetscErrorCode ierr;
-
-	char 		lineChar;
-  	PetscInt 	nID, nType;
-	PetscScalar x, y, z;
+	PetscErrorCode 	ierr;
+  	PetscInt 		nID, nType;
+	PetscScalar 	x, y, z;
 
 	/* read in a box line */
-	sscanf(line_ptr, "%c %d %d %lf %lf %lf",
-  			&lineChar, &nID, &nType, &x, &y, &z);
-
-	/* assert that it is a node line */
-	//assert(lineChar == 'n');
+	sscanf(line_ptr, "%d %d %lf %lf %lf", &nID, &nType, &x, &y, &z);
 
 	/* assign scanned values to a node */
 	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
 
 	return ierr;
+}
+
+
+/* Removes trailing whitespace on the right-hand side of a string */
+char *trimRightWhitespace(char *str_ptr)
+{
+	char *end = str_ptr + strlen(str_ptr);
+
+  	while( (end!=str_ptr) && isspace(*(end-1)) )
+  	{
+  		end--;
+  	}
+  	*end = '\0';
+
+  	return str_ptr;
 }
