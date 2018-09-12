@@ -6,6 +6,7 @@ static char help[] = "The first draft of the PETSc model.\n\n";
 
 int main(int argc, char **args)
 {
+	Box  		   *box_ptr;
 	Vec            x, b, u;      /* approx solution, RHS, exact solution */
   	Mat            A;            /* linear system matrix */
   	//KSP            ksp;          /* linear solver context */
@@ -22,7 +23,14 @@ int main(int argc, char **args)
 	PetscLogStage stages[4];
 #endif
 
+	/* set options file */
 	const char optFile[] = "modelOptions.dat";
+
+	/* these will be put in the parameter file */
+	PetscScalar gamma = 0.05;
+	/* set input/output files */
+	const char inputNetwork[]  = "data/dat/f3tTripod1_in.dat";
+	const char outputNetwork[] = "data/dat/f3tTripod1_out.dat";
 
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
@@ -42,7 +50,8 @@ int main(int argc, char **args)
 
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
-	//ierr = networkRead();CHKERRQ(ierr);
+	ierr = networkRead(inputNetwork, &box_ptr, gamma);CHKERRQ(ierr);
+	destroyBox(box_ptr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

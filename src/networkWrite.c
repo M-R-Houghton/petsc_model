@@ -4,7 +4,24 @@
 PetscErrorCode networkWrite(const char *fileToWrite_ptr, Box *box_ptr)
 {
 	PetscErrorCode 	ierr;
+	PetscInt fIndex, nIndex;
+
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
+
+	/* first written line should be box line */
+	writeBoxLine(*fileToWrite_ptr, box_ptr);
+
+	/* followed a line for every fibre */
+	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
+	{
+		writeFibreLine(fileToWrite_ptr, box_ptr, fIndex);
+	}
+
+	/* ending with a line for every node */
+	for (nIndex = 0; nIndex < box_ptr->nodeCount; nIndex++)
+	{
+		writeNodeLine(fileToWrite_ptr, box_ptr, nIndex);
+	}
 
 	return ierr;
 }
@@ -30,7 +47,7 @@ PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr)
 
 
 /* Writes fibre information to file */
-PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr)
+PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr, PetscInt fIndex)
 {
 	PetscErrorCode ierr = 0;
 
@@ -39,7 +56,7 @@ PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr)
 
 
 /* Writes node information to file */
-PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr)
+PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr, PetscInt nIndex)
 {
 	PetscErrorCode ierr = 0;
 
