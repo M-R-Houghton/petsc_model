@@ -23,18 +23,16 @@ PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr);
  * \brief Writes fibre information to file.
  * \param file_ptr Pointer to the file.
  * \param fibre_ptr Fibre containing network data to write out.
- * \param fIndex Index corresponding to fibre in master fibre list
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr, PetscInt fIndex);
+PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr);
 
 /**
  * \brief Writes node information to file.
  * \param file_ptr Pointer to the file.
  * \param node_ptr Node containing network data to write out.
- * \param nIndex Index corresponding to node in master node list
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr, PetscInt nIndex);
+PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr);
 
 #endif

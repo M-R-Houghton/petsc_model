@@ -17,13 +17,13 @@ PetscErrorCode networkWrite(const char *fileName, Box *box_ptr)
 	/* followed a line for every fibre */
 	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
 	{
-		writeFibreLine(file_ptr, &(box_ptr->masterFibreList[fIndex]), fIndex);
+		writeFibreLine(file_ptr, &(box_ptr->masterFibreList[fIndex]));
 	}
 
 	/* ending with a line for every node */
 	for (nIndex = 0; nIndex < box_ptr->nodeCount; nIndex++)
 	{
-		writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]), nIndex);
+		writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]));
 	}
 
 	fclose(file_ptr);
@@ -52,7 +52,7 @@ PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr)
 
 
 /* Writes fibre information to file */
-PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr, PetscInt fIndex)
+PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -72,9 +72,20 @@ PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr, PetscInt fIndex)
 
 
 /* Writes node information to file */
-PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr, PetscInt nIndex)
+PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
+
+	PetscScalar xUpdated = node_ptr->xyzCoord[0] + node_ptr->xyzDisplacement[0];
+	PetscScalar yUpdated = node_ptr->xyzCoord[1] + node_ptr->xyzDisplacement[1];
+	PetscScalar zUpdated = node_ptr->xyzCoord[2] + node_ptr->xyzDisplacement[2];
+
+	fprintf(file_ptr, "n ");
+	fprintf(file_ptr, "%d ",   node_ptr->nodeID);
+	fprintf(file_ptr, "%d ",   node_ptr->nodeType);
+	fprintf(file_ptr, "%lf ",  xUpdated);
+	fprintf(file_ptr, "%lf ",  yUpdated);
+	fprintf(file_ptr, "%lf\n", zUpdated);
 
 	return ierr;
 }

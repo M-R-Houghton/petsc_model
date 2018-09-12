@@ -170,14 +170,13 @@ TEST(testMakeFibre, testValueAssignment)
 TEST(testMakeNode, testValueAssignment)
 {
 	/* set up test */
-	PetscErrorCode ierr = 0;
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
 	PetscInt myInt = 1;
 	PetscInt *myInt_ptr = &myInt;
 
 	/* make some nodes */
-	ierr = makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
-	ierr = makeNode(box_ptr,0,1,2,3,4,myInt_ptr,0.25);
+	makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
+	makeNode(box_ptr,0,1,2,3,4,myInt_ptr,0.25);
 
 	/* test node values */
 	EXPECT_EQ(box_ptr->masterNodeList[1].nodeID, 1);
