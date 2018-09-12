@@ -24,7 +24,7 @@ struct testNetworkRead : ::testing::Test
 
     void TearDown()
     {
-        //destroyBox(box_ptr);
+        destroyBox(box_ptr);
     }
 };
 
@@ -32,6 +32,12 @@ struct testNetworkRead : ::testing::Test
 TEST_F(testNetworkRead, testErrorOutput)
 {
     EXPECT_EQ(networkRead(fileToRead, &box_ptr, 0.05), 0);
+}
+
+
+TEST_F(testNetworkRead, testReadValues)
+{
+    EXPECT_EQ(networkRead(fileToRead, &box_ptr, 0.05), 1);
 }
 
 

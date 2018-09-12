@@ -6,19 +6,32 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	PetscErrorCode 	ierr;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
 
-	/* open file */
+	/* declare array for storing line, pointer, and counter for current line */
+	char line[MAX_LENGTH], *line_ptr;
+	PetscInt line_number = 0;
+	FILE *fp;
 
-	/* read in line by line */
+	/* setup global index */
+	PetscInt gIndex = 0;
+	PetscInt *gIndex_ptr = &gIndex;
 
-		/* process box line */
+	/* open file and check whether successful */
+	fp = fopen(fileToRead_ptr, "r");
+	if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
-		/* process fibre line */
-		/* make fibre */
+	/* read in line by line until EOF is reached */
+	while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+	{
+		/* read in line and increment line number */
+		readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);
+		line_number += 1;
+	}
 
-		/* process node line */
-		/* make node */
+	/* use final global index to set total internal nodes */
+	(*box_ptr_ptr)->nodeInternalCount = gIndex;
 
-	/* close file  */
+	/* close file */
+	fclose(fp);
 
 	return ierr;
 }
