@@ -62,14 +62,14 @@ TEST_F(testNetworkRead, testReadFibreValues)
 {
     networkRead(fileToRead, &box_ptr, 0.05);
 
-    /* set up test */
+    // set up test
     Node *node0_ptr = &(box_ptr->masterNodeList[0]);
     Node *node1_ptr = &(box_ptr->masterNodeList[1]);
     Node *node2_ptr = &(box_ptr->masterNodeList[2]);
     Node *node3_ptr = &(box_ptr->masterNodeList[3]);
     Node *node4_ptr = &(box_ptr->masterNodeList[4]);
 
-    /* test fibre values */
+    // test fibre values
     EXPECT_EQ(box_ptr->masterFibreList[2].fibreID,              2);
     EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibre,         3);
     EXPECT_EQ(box_ptr->masterFibreList[2].radius,               0.46);
