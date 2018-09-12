@@ -35,9 +35,79 @@ TEST_F(testNetworkRead, testErrorOutput)
 }
 
 
-TEST_F(testNetworkRead, testReadValues)
+TEST_F(testNetworkRead, testNodeInternalCount)
 {
-    EXPECT_EQ(networkRead(fileToRead, &box_ptr, 0.05), 1);
+    networkRead(fileToRead, &box_ptr, 0.05);
+
+    EXPECT_EQ(box_ptr->nodeInternalCount, 2);
+}
+
+
+TEST_F(testNetworkRead, testReadBoxValues)
+{
+    networkRead(fileToRead, &box_ptr, 0.05);
+
+    EXPECT_EQ(box_ptr->nodeCount,              5);
+    EXPECT_EQ(box_ptr->fibreCount,             4);
+    EXPECT_DOUBLE_EQ(box_ptr->xyzDimension[0], 1.0);
+    EXPECT_DOUBLE_EQ(box_ptr->xyzDimension[1], 2.0);
+    EXPECT_DOUBLE_EQ(box_ptr->xyzDimension[2], 3.0);
+    EXPECT_EQ(box_ptr->xyzPeriodic[0],         1);
+    EXPECT_EQ(box_ptr->xyzPeriodic[1],         1);
+    EXPECT_EQ(box_ptr->xyzPeriodic[2],         1);
+}
+
+
+TEST_F(testNetworkRead, testReadFibreValues)
+{
+    networkRead(fileToRead, &box_ptr, 0.05);
+
+    /* set up test */
+    Node *node0_ptr = &(box_ptr->masterNodeList[0]);
+    Node *node1_ptr = &(box_ptr->masterNodeList[1]);
+    Node *node2_ptr = &(box_ptr->masterNodeList[2]);
+    Node *node3_ptr = &(box_ptr->masterNodeList[3]);
+    Node *node4_ptr = &(box_ptr->masterNodeList[4]);
+
+    /* test fibre values */
+    EXPECT_EQ(box_ptr->masterFibreList[2].fibreID,              2);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibre,         3);
+    EXPECT_EQ(box_ptr->masterFibreList[2].radius,               0.46);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[0],  node0_ptr);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[1],  node3_ptr);
+    EXPECT_EQ(box_ptr->masterFibreList[2].nodesOnFibreList[2],  node2_ptr);
+
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[0],  node1_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[1],  node1_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[2],  node1_ptr);
+
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[0],  node4_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[1],  node4_ptr);
+    EXPECT_NE(box_ptr->masterFibreList[2].nodesOnFibreList[2],  node4_ptr);
+
+    EXPECT_EQ(box_ptr->masterFibreList[0].nodesOnFibre,         2);
+    EXPECT_EQ(box_ptr->masterFibreList[1].nodesOnFibre,         2);
+    EXPECT_EQ(box_ptr->masterFibreList[3].nodesOnFibre,         3);
+}
+
+
+TEST_F(testNetworkRead, testReadNodeValues)
+{
+    networkRead(fileToRead, &box_ptr, 0.05);
+
+    EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
+    EXPECT_EQ(box_ptr->masterNodeList[3].nodeType,  0);
+
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[0], 0.25);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[1], 0.5);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzCoord[2], 0.7);
+
+    EXPECT_EQ(box_ptr->masterNodeList[3].globalID, 1);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[0], 0.0);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[1], 0.0);
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[2], 0.0);
+
+    EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[0].xyzDisplacement[0], 0.05);
 }
 
 
@@ -90,8 +160,6 @@ TEST_F(testReadDataLine, testErrorOutput)
 
 TEST_F(testReadDataLine, testReadBoxValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     readDataLine(box_line_ptr, &box_ptr, gIndex_ptr, 0.045);
     readDataLine(fibre_line_ptr, &box_ptr, gIndex_ptr, 0.3);
     readDataLine(node_line_ptr, &box_ptr, gIndex_ptr, 0.02);
@@ -109,8 +177,6 @@ TEST_F(testReadDataLine, testReadBoxValues)
 
 TEST_F(testReadDataLine, testReadFibreValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     readDataLine(box_line_ptr, &box_ptr, gIndex_ptr, 0.045);
     readDataLine(fibre_line_ptr, &box_ptr, gIndex_ptr, 0.3);
     readDataLine(node_line_ptr, &box_ptr, gIndex_ptr, 0.02);
@@ -137,8 +203,6 @@ TEST_F(testReadDataLine, testReadFibreValues)
 
 TEST_F(testReadDataLine, testReadNodeValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     readDataLine(box_line_ptr, &box_ptr, gIndex_ptr, 0.045);
     readDataLine(fibre_line_ptr, &box_ptr, gIndex_ptr, 0.3);
     readDataLine(node_line_ptr, &box_ptr, gIndex_ptr, 0.02);
@@ -190,8 +254,6 @@ TEST_F(testReadBoxLine, testErrorOutput)
 
 TEST_F(testReadBoxLine, testReadValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     readBoxLine(lineCrop_ptr, &box_ptr);
 
     EXPECT_EQ(box_ptr->nodeCount,              5);
@@ -241,8 +303,6 @@ TEST_F(testReadFibreLine, testErrorOutput)
 
 TEST_F(testReadFibreLine, testReadValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     /* set up test */
     Node *node0_ptr = &(box_ptr->masterNodeList[0]);
     Node *node1_ptr = &(box_ptr->masterNodeList[1]);
@@ -328,8 +388,6 @@ TEST_F(testReadNodeLine, testErrorOutput)
 
 TEST_F(testReadNodeLine, testReadValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
-
     readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05);
 
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
