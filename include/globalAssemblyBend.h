@@ -13,8 +13,8 @@
  * \param beta_lInd The local index for node beta.
  * \return Petsc error code.
  */
-PetscErrorCode addSingleBendCont(Mat globalMat_H, PetscInt alpha_gInd, PetscInt beta_gInd, 
-									PetscInt alpha_lInd, PetscInt beta_lInd);
+PetscErrorCode addSingleBendCont( Mat globalMat_H, PetscInt alpha_gInd, PetscInt beta_gInd, 
+									PetscInt alpha_lInd, PetscInt beta_lInd );
 
 
 #endif

@@ -91,7 +91,8 @@ PetscErrorCode make3DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat 
 
 
 /* Assembles the local stretch RHS vector of a given pair */
-PetscErrorCode makeStretchVec(Node *alpha_ptr, Node *beta_ptr, PetscScalar k, PetscScalar *tangVec_ptr, Vec localStretchVec_b)
+PetscErrorCode makeStretchVec( Node *alpha_ptr, Node *beta_ptr, PetscScalar k, 
+								PetscScalar *tangVec_ptr, Vec localStretchVec_b )
 {
 	PetscErrorCode ierr = 0;
 
