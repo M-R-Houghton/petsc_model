@@ -31,6 +31,35 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 {
 	PetscErrorCode ierr = 0;
 
+	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
+
+	/* setup local matrix and rhs vector */
+
+	/* setup static vectors */
+
+	/* loop over every pair of nodes on the fibre */
+	int i;
+	for (i = 0; i < fibre_ptr->nodesOnFibre; i++)
+	{
+
+
+		if (DIMENSION == 2)
+		{
+			/* assemble the 2D local matrix and rhs vector */
+			//ierr = make2DStretchMatrix(k, tangVec_ptr, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make2DStretchVec(alpha_ptr, beta_ptr, k, tangVec_ptr, localStretchVec_b);CHKERRQ(ierr);
+		}
+		else if (DIMENSION == 3)
+		{
+			/* assemble the 3D local matrix and rhs vector */
+			//ierr = make3DStretchMatrix(k, tangVec_ptr, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make3DStretchVec(alpha_ptr, beta_ptr, k, tangVec_ptr, localStretchVec_b);CHKERRQ(ierr);
+		}
+
+		/* determine contributions and add to the global system */
+	}
+
+
 	return ierr;
 }
 

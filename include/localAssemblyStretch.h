@@ -1,7 +1,7 @@
 #ifndef LOCAL_ASSEMBLY_STRETCH_H
 #define LOCAL_ASSEMBLY_STRETCH_H
 
-#include "networkRead.h"
+#include "globalAssemblyBend.h"
 
 /**
  * \brief Checks for legal fibre index and segment length
@@ -57,7 +57,7 @@ PetscErrorCode make3DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat 
  * \param tangVec_ptr
  * \param localStretchVec_b
  */
-PetscErrorCode makeStretchVec(Node *alpha_ptr, Node *beta_ptr, PetscScalar k, PetscScalar *tangVec_ptr, Vec localStretchVec_b);
+PetscErrorCode make3DStretchVec(Node *alpha_ptr, Node *beta_ptr, PetscScalar k, PetscScalar *tangVec_ptr, Vec localStretchVec_b);
 
 
 #endif

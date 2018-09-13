@@ -4,13 +4,13 @@
 /* include c source file */
 extern "C" 
 {
-    #include "localAssembly.h"
+    #include "globalAssemblyBend.h"
 }
 
 
 namespace {
 
-struct testAddLocalContributions : ::testing::Test
+struct testAddSingleBendContribution : ::testing::Test
 {
     Box *box_ptr;
     Parameters *par_ptr;
@@ -32,9 +32,9 @@ struct testAddLocalContributions : ::testing::Test
     }
 };
 
-TEST_F(testAddLocalContributions, testErrorOutput) 
+TEST_F(testAddSingleBendContribution, testErrorOutput) 
 {
-    EXPECT_EQ(addLocalContributions(box_ptr, par_ptr, testMatrix, testVector), 0);
+    EXPECT_EQ(addSingleBendCont(testMatrix,0,0,0,0), 0);
 }
 
 } /* namespace */

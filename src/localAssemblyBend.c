@@ -19,3 +19,12 @@ PetscScalar calculateKappa(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
 
     return (area * pow(radius, 2) * yMod) / 4.0;
 }
+
+
+/* Adds local bend information for a single fibre to global system */
+PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
+{
+	PetscErrorCode ierr = 0;
+
+	return ierr;
+}

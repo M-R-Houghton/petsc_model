@@ -10,6 +10,16 @@ extern "C"
 
 namespace {
 
+TEST(testSystemAssembly, testErrorOutput)
+{
+    Box *box_ptr = NULL;
+    Parameters *par_ptr = NULL;
+    Mat H = NULL;
+    Vec B = NULL;
+
+    EXPECT_EQ(systemAssembly(box_ptr, par_ptr, H, B), 0);
+}
+
 TEST(testReadInt, testRowFileReadIn) 
 {
     PetscInt array[9];

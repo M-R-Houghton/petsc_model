@@ -1,15 +1,29 @@
 #include "systemAssembly.h"
 
 /* Initiates system assembly routine */
-PetscErrorCode systemAssembly(Mat H, Vec b)
+PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 {
 	PetscErrorCode ierr;
 	PetscInt       i,n = 10,col[3];
 	PetscScalar    value[3];
 
 	/*
-	 * Assemble matrix
+	 * Calculate sparsity of global matrix
 	 */
+
+	/*
+	 * Pre-allocate memory for global matrix
+	 */
+
+	/*
+	 * Assemble local contributions and add to global matrix
+	 */
+	ierr = addLocalContributions(box_ptr, par_ptr, H, b);CHKERRQ(ierr);
+
+	/*
+	 * Assemble matrix (REFERENCE)
+	 */
+	/*
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Assembling system...\n");CHKERRQ(ierr);
 	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
 	for(i=1; i<n-1; i++) 
@@ -20,9 +34,10 @@ PetscErrorCode systemAssembly(Mat H, Vec b)
 	i    = n - 1; col[0] = n - 2; col[1] = n - 1;
 	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
 	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); /* where &i is an array of i */
+	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); // where &i is an array of i
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	*/
 
 	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	return ierr;
@@ -113,7 +128,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	ierr = PetscFree(valArray);CHKERRQ(ierr);
 
 	/* Print matrix to verify assembly */
-	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	//ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
 
 	/* Create solver context */

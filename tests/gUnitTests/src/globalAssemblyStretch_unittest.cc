@@ -4,13 +4,13 @@
 /* include c source file */
 extern "C" 
 {
-    #include "localAssembly.h"
+    #include "globalAssemblyStretch.h"
 }
 
 
 namespace {
 
-struct testAddLocalContributions : ::testing::Test
+struct testAddSingleStretchCont : ::testing::Test
 {
     Box *box_ptr;
     Parameters *par_ptr;
@@ -32,9 +32,9 @@ struct testAddLocalContributions : ::testing::Test
     }
 };
 
-TEST_F(testAddLocalContributions, testErrorOutput) 
+TEST_F(testAddSingleStretchCont, testErrorOutput) 
 {
-    EXPECT_EQ(addLocalContributions(box_ptr, par_ptr, testMatrix, testVector), 0);
+    EXPECT_EQ(addSingleStretchCont(testMatrix,0,0,0,0), 0);
 }
 
 } /* namespace */

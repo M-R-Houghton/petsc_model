@@ -17,6 +17,7 @@ TEST(testGoogleTestImplementation, testPetscCommand)
     EXPECT_EQ(ierr, 0);
 }
 
+
 TEST(testCalculateKappa, testOutputKappaValue) 
 {
     Parameters *par_ptr         = (Parameters *)malloc(sizeof(Parameters));
@@ -38,6 +39,36 @@ TEST(testCalculateKappa, testOutputKappaValue)
     free(par_ptr); par_ptr = NULL;
     free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
     free(box_ptr); box_ptr = NULL;
+}
+
+
+struct testAddFibreLocalBend : ::testing::Test
+{
+    Box *box_ptr;
+    Parameters *par_ptr;
+    Mat testMatrix;
+    Vec testVector;
+
+    void SetUp()
+    {
+        testMatrix = NULL;
+        testVector = NULL;
+
+        const char fileToRead[] = "data/exReadNetwork.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+    }
+};
+
+TEST_F(testAddFibreLocalBend, testErrorOutput) 
+{
+    EXPECT_EQ(addFibreLocalBend(box_ptr, par_ptr, testMatrix, testVector, 0), 0);
+    EXPECT_EQ(addFibreLocalBend(box_ptr, par_ptr, testMatrix, testVector, 1), 0);
+    EXPECT_EQ(addFibreLocalBend(box_ptr, par_ptr, testMatrix, testVector, 2), 0);
 }
 
 } /* namespace */

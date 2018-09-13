@@ -80,7 +80,8 @@ int main(int argc, char **args)
 
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
-	ierr = systemAssembly(A,x);CHKERRQ(ierr);
+	Parameters par_ptr;
+	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/*

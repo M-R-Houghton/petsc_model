@@ -44,23 +44,51 @@ TEST(testCalculateK, testOutputKValue)
 }
 
 
-struct testMake2DStretchMatrix : ::testing::Test
+struct testAddFibreLocalStretch : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
+    Mat testMatrix;
+    Vec testVector;
+
     void SetUp()
     {
-        PetscErrorCode ierr;
-    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building everything\n");
+        testMatrix = NULL;
+        testVector = NULL;
+
+        const char fileToRead[] = "data/exReadNetwork.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
     }
 
     void TearDown()
     {
-        PetscErrorCode ierr;
-    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Destroying everything\n");
+        destroyBox(box_ptr);
+    }
+};
+
+TEST_F(testAddFibreLocalStretch, testErrorOutput) 
+{
+    EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 0), 0);
+    EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 1), 0);
+    EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 2), 0);
+}
+
+
+struct testMake2DStretchMatrix : ::testing::Test
+{
+    void SetUp()
+    {
+        
+    }
+
+    void TearDown()
+    {
+        
     }
 };
 
 
-TEST_F(testMake2DStretchMatrix, testOutputValues)
+TEST_F(testMake2DStretchMatrix, DISABLED_testOutputValues)
 {
 	ASSERT_TRUE(DIMENSION == 2);
 }
@@ -70,14 +98,12 @@ struct testMake3DStretchMatrix : ::testing::Test
 {
     void SetUp()
     {
-        PetscErrorCode ierr;
-    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building everything\n");
+        
     }
 
     void TearDown()
     {
-        PetscErrorCode ierr;
-    	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Destroying everything\n");
+        
     }
 };
 

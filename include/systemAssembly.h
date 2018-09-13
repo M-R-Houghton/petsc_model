@@ -8,7 +8,7 @@
  * \param H Global matrix to be assembled
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode systemAssembly(Mat H, Vec b);
+PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
 
 /**
  * \brief Solves a matrix from pre-assembled arrays.
