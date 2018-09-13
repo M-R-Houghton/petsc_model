@@ -51,7 +51,6 @@ int main(int argc, char **args)
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
 	ierr = networkRead(inputNetwork, &box_ptr, gamma);CHKERRQ(ierr);
-	destroyBox(box_ptr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,7 +189,8 @@ int main(int argc, char **args)
 
     /* write out new network data file */
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
-    //ierr = networkWrite();CHKERRQ(ierr);
+    ierr = networkWrite(outputNetwork, box_ptr);CHKERRQ(ierr);
+    ierr = destroyBox(box_ptr);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     /*
