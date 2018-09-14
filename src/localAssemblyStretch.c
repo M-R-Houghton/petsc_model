@@ -5,9 +5,9 @@ void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength)
 {
 	assert(fIndex >= 0);
 	assert(segLength >= 0);
-	assert(segLength < box_ptr->xyzDimension[0]*0.5);
-	assert(segLength < box_ptr->xyzDimension[1]*0.5);
-	assert(segLength < box_ptr->xyzDimension[2]*0.5);
+	assert(segLength < box_ptr->xyzDimension[0]*0.5 || box_ptr->xyzPeriodic[0] == 0);
+	assert(segLength < box_ptr->xyzDimension[1]*0.5 || box_ptr->xyzPeriodic[1] == 0);
+	assert(segLength < box_ptr->xyzDimension[2]*0.5 || box_ptr->xyzPeriodic[2] == 0);
 }
 
 
@@ -29,7 +29,8 @@ PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, Petsc
 /* Adds local stretch information for a single fibre to global system */
 PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+	PetscScalar		l_alphBeta;
 
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
@@ -41,29 +42,42 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 	PetscScalar s_alph[DIMENSION];
 	PetscScalar s_beta[DIMENSION];
 	PetscScalar s_alphBeta[DIMENSION];
-	PetscScalar tangVec[DIMENSION];
+	PetscScalar t_alphBeta[DIMENSION];
 
 	/* loop over every pair of nodes on the fibre */
 	PetscInt i;
-	for (i = 0; i < fibre_ptr->nodesOnFibre; i++)
+	for (i = 0; i < fibre_ptr->nodesOnFibre - 1; i++)
 	{
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
-		Node *beta_ptr  = fibre_ptr->nodesOnFibreList[i+1];
+		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
 
+		/* make position vectors for alpha and beta */
+		ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+		ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
+		/* make distance vector between position vectors */
+		ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
 
+		/* make tangent vector of segment */
+		ierr = makeTangentVec(t_alphBeta, s_alphBeta);
+
+		/* calculate segment length */
+		l_alphBeta = vecMagnitude(s_alphBeta);
+
+		/* calculate stretching modulus */
+		ierr = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
 
 		if (DIMENSION == 2)
 		{
 			/* assemble the 2D local matrix and rhs vector */
-			//ierr = make2DStretchMatrix(k, tangVec, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make2DStretchVec(u_alph, u_beta, k, tangVec, localStretchVec_b);CHKERRQ(ierr);
+			//ierr = make2DStretchMatrix(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make2DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
 		}
 		else if (DIMENSION == 3)
 		{
 			/* assemble the 3D local matrix and rhs vector */
-			//ierr = make3DStretchMatrix(k, tangVec, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make3DStretchVec(u_alph, u_beta, k, tangVec, localStretchVec_b);CHKERRQ(ierr);
+			//ierr = make3DStretchMatrix(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
 		}
 
 		/* determine contributions and add to the global system */
