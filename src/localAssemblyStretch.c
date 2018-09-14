@@ -34,26 +34,36 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
+	PetscScalar localStretchMat_A[2*DIMENSION][2*DIMENSION];
+	PetscScalar localStretchVec_b[2*DIMENSION];
 
 	/* setup static vectors */
+	PetscScalar s_alph[DIMENSION];
+	PetscScalar s_beta[DIMENSION];
+	PetscScalar s_alphBeta[DIMENSION];
+	PetscScalar tangVec[DIMENSION];
 
 	/* loop over every pair of nodes on the fibre */
-	int i;
+	PetscInt i;
 	for (i = 0; i < fibre_ptr->nodesOnFibre; i++)
 	{
+		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
+		Node *beta_ptr  = fibre_ptr->nodesOnFibreList[i+1];
+
+
 
 
 		if (DIMENSION == 2)
 		{
 			/* assemble the 2D local matrix and rhs vector */
-			//ierr = make2DStretchMatrix(k, tangVec_ptr, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make2DStretchVec(alpha_ptr, beta_ptr, k, tangVec_ptr, localStretchVec_b);CHKERRQ(ierr);
+			//ierr = make2DStretchMatrix(k, tangVec, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make2DStretchVec(u_alph, u_beta, k, tangVec, localStretchVec_b);CHKERRQ(ierr);
 		}
 		else if (DIMENSION == 3)
 		{
 			/* assemble the 3D local matrix and rhs vector */
-			//ierr = make3DStretchMatrix(k, tangVec_ptr, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make3DStretchVec(alpha_ptr, beta_ptr, k, tangVec_ptr, localStretchVec_b);CHKERRQ(ierr);
+			//ierr = make3DStretchMatrix(k, tangVec, localStretchMat_A);CHKERRQ(ierr);
+			//ierr = make3DStretchVec(u_alph, u_beta, k, tangVec, localStretchVec_b);CHKERRQ(ierr);
 		}
 
 		/* determine contributions and add to the global system */
@@ -64,37 +74,150 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 }
 
 
-/* Assembles the local stretch matrix of a given pair */
-PetscErrorCode make3DStretchMatrix(PetscScalar k, PetscScalar *tangVec_ptr, Mat localStretchMat_A)
+/* Assembles the 2D local stretch matrix of a given pair */
+PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[4][4])
 {
 	PetscErrorCode ierr = 0;
-	PetscInt       i,n = 10,col[3];
-	PetscScalar    value[3];
 
-	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
-	for(i=1; i<n-1; i++) 
-	{
-		col[0] = i-1; col[1] = i; col[2] = i+1;
-		ierr   = MatSetValues(localStretchMat_A,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	}
-	i    = n - 1; col[0] = n - 2; col[1] = n - 1;
-	ierr = MatSetValues(localStretchMat_A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-	ierr = MatSetValues(localStretchMat_A,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-	ierr = MatAssemblyBegin(localStretchMat_A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-	ierr = MatAssemblyEnd(localStretchMat_A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+	PetscInt x=0;    // set these values purely for readability
+    PetscInt y=1;    // set *(1) also for readability
 
-	ierr = MatView(localStretchMat_A,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    /* Row X (alpha) */
+    localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[0][1] = (-1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[0][2] = ( 1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[0][3] = (-1) * k * tangVec[x] * tangVec[y];
+
+    /* Row X (beta) */
+    localStretchMat_A[1][0] = localStretchMat_A[0][1];
+    localStretchMat_A[1][1] = ( 1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[1][2] = (-1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[1][3] = ( 1) * k * tangVec[x] * tangVec[y];
+
+    /* Row Y (alpha) */
+    localStretchMat_A[2][0] = localStretchMat_A[0][2];
+    localStretchMat_A[2][1] = localStretchMat_A[1][2];
+    localStretchMat_A[2][2] = ( 1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[2][3] = (-1) * k * pow( tangVec[y], 2 );
+
+    /* Row Y (beta) */
+    localStretchMat_A[3][0] = localStretchMat_A[0][3];
+    localStretchMat_A[3][1] = localStretchMat_A[1][3];
+    localStretchMat_A[3][2] = localStretchMat_A[2][3];
+    localStretchMat_A[3][3] = ( 1) * k * pow( tangVec[y], 2 );
 
 	return ierr;
 }
 
 
-/* Assembles the local stretch RHS vector of a given pair */
-PetscErrorCode makeStretchVec( Node *alpha_ptr, Node *beta_ptr, PetscScalar k, 
-								PetscScalar *tangVec_ptr, Vec localStretchVec_b )
+/* Assembles the local 2D stretch RHS vector of a given pair */
+PetscErrorCode make2DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, 
+									PetscScalar *tangVec, PetscScalar *localStretchVec_b )
 {
 	PetscErrorCode ierr = 0;
+
+    int x=0;    /* set these values purely for readability */
+    int y=1;    /* set *(1) also for readability */
+
+    PetscScalar extensionEqn = ((u_beta[x] - u_alph[x]) * tangVec[x]
+                            	+ (u_beta[y] - u_alph[y]) * tangVec[y]);
+
+    /* we want the negation of the 1st partial derivatives */
+    extensionEqn *= -1;
+
+    localStretchVec_b[0] = (-1) * k * tangVec[x] * extensionEqn;
+    localStretchVec_b[1] = ( 1) * k * tangVec[x] * extensionEqn;
+    localStretchVec_b[2] = (-1) * k * tangVec[y] * extensionEqn;
+    localStretchVec_b[3] = ( 1) * k * tangVec[y] * extensionEqn;
+
+	return ierr;
+}
+
+
+/* Assembles the 3D local stretch matrix of a given pair */
+PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
+{
+	PetscErrorCode ierr = 0;
+
+	PetscInt x=0;    // set these values purely for readability
+    PetscInt y=1;    // set *(1) also for readability
+    PetscInt z=2;
+
+    /* Row X (alpha) */
+    localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[0][1] = (-1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[0][2] = ( 1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[0][3] = (-1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[0][4] = ( 1) * k * tangVec[x] * tangVec[z];
+    localStretchMat_A[0][5] = (-1) * k * tangVec[x] * tangVec[z];
+
+    /* Row X (beta) */
+    localStretchMat_A[1][0] = localStretchMat_A[0][1];
+    localStretchMat_A[1][1] = ( 1) * k * pow( tangVec[x], 2 );
+    localStretchMat_A[1][2] = (-1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[1][3] = ( 1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[1][4] = (-1) * k * tangVec[x] * tangVec[z];
+    localStretchMat_A[1][5] = ( 1) * k * tangVec[x] * tangVec[z];
+
+    /* Row Y (alpha) */
+    localStretchMat_A[2][0] = localStretchMat_A[0][2];
+    localStretchMat_A[2][1] = localStretchMat_A[1][2];
+    localStretchMat_A[2][2] = ( 1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[2][3] = (-1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[2][4] = ( 1) * k * tangVec[y] * tangVec[z];
+    localStretchMat_A[2][5] = (-1) * k * tangVec[y] * tangVec[z];
+
+    /* Row Y (beta) */
+    localStretchMat_A[3][0] = localStretchMat_A[0][3];
+    localStretchMat_A[3][1] = localStretchMat_A[1][3];
+    localStretchMat_A[3][2] = localStretchMat_A[2][3];
+    localStretchMat_A[3][3] = ( 1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[3][4] = (-1) * k * tangVec[y] * tangVec[z];
+    localStretchMat_A[3][5] = ( 1) * k * tangVec[y] * tangVec[z];
+
+    /* Row Z (alpha) */
+    localStretchMat_A[4][0] = localStretchMat_A[0][4];
+    localStretchMat_A[4][1] = localStretchMat_A[1][4];
+    localStretchMat_A[4][2] = localStretchMat_A[2][4];
+    localStretchMat_A[4][3] = localStretchMat_A[3][4];
+    localStretchMat_A[4][4] = ( 1) * k * pow( tangVec[z], 2 );
+    localStretchMat_A[4][5] = (-1) * k * pow( tangVec[z], 2 );
+
+    /* Row Z (beta) */
+    localStretchMat_A[5][0] = localStretchMat_A[0][5];
+    localStretchMat_A[5][1] = localStretchMat_A[1][5];
+    localStretchMat_A[5][2] = localStretchMat_A[2][5];
+    localStretchMat_A[5][3] = localStretchMat_A[3][5];
+    localStretchMat_A[5][4] = localStretchMat_A[4][5];
+    localStretchMat_A[5][5] = ( 1) * k * pow( tangVec[z], 2 );
+
+	return ierr;
+}
+
+
+/* Assembles the local 3D stretch RHS vector of a given pair */
+PetscErrorCode make3DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, 
+									PetscScalar *tangVec, PetscScalar *localStretchVec_b )
+{
+	PetscErrorCode ierr = 0;
+
+    int x=0;    /* set these values purely for readability */
+    int y=1;    /* set *(1) also for readability */
+    int z=2;
+
+    PetscScalar extensionEqn = ((u_beta[x] - u_alph[x]) * tangVec[x]
+                            	+ (u_beta[y] - u_alph[y]) * tangVec[y]
+                            	+ (u_beta[z] - u_alph[z]) * tangVec[z]);
+
+    /* we want the negation of the 1st partial derivatives */
+    extensionEqn *= -1;
+
+    localStretchVec_b[0] = (-1) * k * tangVec[x] * extensionEqn;
+    localStretchVec_b[1] = ( 1) * k * tangVec[x] * extensionEqn;
+    localStretchVec_b[2] = (-1) * k * tangVec[y] * extensionEqn;
+    localStretchVec_b[3] = ( 1) * k * tangVec[y] * extensionEqn;
+    localStretchVec_b[4] = (-1) * k * tangVec[z] * extensionEqn;
+    localStretchVec_b[5] = ( 1) * k * tangVec[z] * extensionEqn;
 
 	return ierr;
 }

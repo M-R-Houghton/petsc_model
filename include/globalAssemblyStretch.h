@@ -36,7 +36,7 @@ PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar 
 
 /**
  * \brief Adds local stretching contributions to the global matrix and RHS vector
- * \param alpha_ptr A pointer to x the node alpha.
+ * \param alph_ptr A pointer to x the node alpha.
  * \param beta_ptr A pointer to x the node beta.
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
@@ -44,7 +44,7 @@ PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar 
  * \param localVec The local rhs vector.
  * \return Petsc error code.
  */
-PetscErrorCode addStretchContToGlobal( Node *alpha_ptr, Node *beta_ptr,
+PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
 										Mat globalMat_H, Vec globalVec_B, 
 									   	PetscScalar localMat[][6], PetscScalar localVec[] );
 

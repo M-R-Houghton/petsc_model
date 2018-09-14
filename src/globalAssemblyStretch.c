@@ -6,20 +6,21 @@ PetscErrorCode addSingleStretchContFAST( Box *box_ptr, Mat globalMat_H, PetscSca
 											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
 {
 	PetscErrorCode 	ierr = 0;
+	PetscInt 		N 	 = box_ptr->nodeInternalCount;
+	PetscInt 		row;
 	PetscInt 		col[DIMENSION];
 	PetscScalar 	val[DIMENSION];
 	PetscInt 		i,j;
-
-	PetscInt 		N = box_ptr->nodeInternalCount;
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
+			row    = gInd_A + i*N;
 			col[j] = gInd_B + j*N;
 			val[j] = localMat[lInd_A + 2*i][lInd_B + 2*j];
 		}
-		MatSetValues(globalMat_H, 1, gInd_A + i*N, 3, col, val, INSERT_VALUES);
+		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, INSERT_VALUES);CHKERRQ(ierr);
 	}
 
 	return ierr;
@@ -30,16 +31,15 @@ PetscErrorCode addSingleStretchContFAST( Box *box_ptr, Mat globalMat_H, PetscSca
 PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar localMat[][6], 
 										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
 {
-	PetscErrorCode ierr = 0;
-	PetscInt i,j;
-
-	PetscInt N = box_ptr->nodeInternalCount;
+	PetscErrorCode 	ierr = 0;
+	PetscInt 		N 	 = box_ptr->nodeInternalCount;
+	PetscInt 		i,j;
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 2*i][lInd_B + 2*j], INSERT_VALUES);
+			//ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 2*i][lInd_B + 2*j], INSERT_VALUES);CHKERRQ(ierr);
 		}
 	}
 
@@ -48,7 +48,7 @@ PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar 
 
 
 /* Adds local stretching contributions to the global matrix and RHS vector */
-PetscErrorCode addStretchContToGlobal( Node *alpha_ptr, Node *beta_ptr,
+PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
 										Mat globalMat_H, Vec globalVec_B, 
 									   	PetscScalar localMat[][6], PetscScalar localVec[] )
 {
@@ -57,7 +57,7 @@ PetscErrorCode addStretchContToGlobal( Node *alpha_ptr, Node *beta_ptr,
 	/*
 	 * add matrix contributions
 	 */
-	if (alpha_ptr->nodeType == NODE_INTERNAL)
+	if (alph_ptr->nodeType == NODE_INTERNAL)
 	{
 		/* add (alpha,alpha) matrix contributions */
 	}
@@ -67,7 +67,7 @@ PetscErrorCode addStretchContToGlobal( Node *alpha_ptr, Node *beta_ptr,
 		/* add (beta,beta) matrix contributions */
 	}
 
-	if (alpha_ptr->nodeType == NODE_INTERNAL && 
+	if (alph_ptr->nodeType == NODE_INTERNAL && 
 		beta_ptr->nodeType == NODE_INTERNAL)
 	{
 		/* add (alpha,beta) and (beta,alpha) mixed matrix contributions */
@@ -77,13 +77,13 @@ PetscErrorCode addStretchContToGlobal( Node *alpha_ptr, Node *beta_ptr,
 	/*
 	 * add vector contributions
 	 */
-	if (alpha_ptr->nodeType == NODE_BOUNDARY && 
+	if (alph_ptr->nodeType == NODE_BOUNDARY && 
 		beta_ptr->nodeType == NODE_INTERNAL)
 	{
 		/* add (beta) vector contributions */
 	}
 
-	if (alpha_ptr->nodeType == NODE_INTERNAL && 
+	if (alph_ptr->nodeType == NODE_INTERNAL && 
 		beta_ptr->nodeType == NODE_BOUNDARY)
 	{
 		/* add (alpha) vector contributions */

@@ -74,11 +74,14 @@ TEST_F(testAddFibreLocalStretch, testErrorOutput)
 }
 
 
-struct testMake2DStretchMatrix : ::testing::Test
+struct testMake2DStretchMat : ::testing::Test
 {
+    PetscScalar locMat[4][4];
+    PetscScalar tangVec[DIMENSION];
     void SetUp()
     {
-        
+        tangVec[0] = 1.0;
+        tangVec[1] = 2.0;
     }
 
     void TearDown()
@@ -88,17 +91,31 @@ struct testMake2DStretchMatrix : ::testing::Test
 };
 
 
-TEST_F(testMake2DStretchMatrix, DISABLED_testOutputValues)
+TEST_F(testMake2DStretchMat, DISABLED_testOutputValues)
 {
 	ASSERT_TRUE(DIMENSION == 2);
+
+    EXPECT_EQ(make2DStretchMat(1.0, tangVec, locMat), 0);
 }
 
 
-struct testMake3DStretchMatrix : ::testing::Test
+struct testMake2DStretchVec : ::testing::Test
 {
+    Box *box_ptr;
+    Node *alpha_ptr;
+    Node *beta_ptr;
+    PetscScalar locVec[4];
+    PetscScalar tangVec[DIMENSION];
     void SetUp()
     {
-        
+        tangVec[0] = 1.0;
+        tangVec[1] = 2.0;
+
+        const char fileToRead[] = "data/exReadNetwork.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+        alpha_ptr = &(box_ptr->masterNodeList[0]);
+        beta_ptr  = &(box_ptr->masterNodeList[1]);
     }
 
     void TearDown()
@@ -108,9 +125,72 @@ struct testMake3DStretchMatrix : ::testing::Test
 };
 
 
-TEST_F(testMake3DStretchMatrix, testOutputValues)
+TEST_F(testMake2DStretchVec, testOutputValues)
+{
+    ASSERT_TRUE(DIMENSION == 2);
+
+    EXPECT_EQ(make2DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
+}
+
+
+struct testMake3DStretchMat : ::testing::Test
+{
+    PetscScalar locMat[6][6];
+    PetscScalar tangVec[DIMENSION];
+    void SetUp()
+    {
+        tangVec[0] = 1.0;
+        tangVec[1] = 2.0;
+        tangVec[2] = 3.0;
+    }
+
+    void TearDown()
+    {
+        
+    }
+};
+
+
+TEST_F(testMake3DStretchMat, testOutputValues)
 {
 	ASSERT_TRUE(DIMENSION == 3);
+
+    EXPECT_EQ(make3DStretchMat(1.0, tangVec, locMat), 0);
+}
+
+
+struct testMake3DStretchVec : ::testing::Test
+{
+    Box *box_ptr;
+    Node *alpha_ptr;
+    Node *beta_ptr;
+    PetscScalar locVec[6];
+    PetscScalar tangVec[DIMENSION];
+    void SetUp()
+    {
+        tangVec[0] = 1.0;
+        tangVec[1] = 2.0;
+        tangVec[2] = 3.0;
+
+        const char fileToRead[] = "data/exReadNetwork.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+        alpha_ptr = &(box_ptr->masterNodeList[0]);
+        beta_ptr  = &(box_ptr->masterNodeList[1]);
+    }
+
+    void TearDown()
+    {
+        
+    }
+};
+
+
+TEST_F(testMake3DStretchVec, testOutputValues)
+{
+    ASSERT_TRUE(DIMENSION == 3);
+
+    EXPECT_EQ(make3DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
 }
 
 
