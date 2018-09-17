@@ -81,6 +81,7 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		}
 
 		/* determine contributions and add to the global system */
+        //addStretchContToGlobal(alph_ptr, beta_ptr, globalMat_H, globalVec_B, localStretchMat_A, localStretchVec_b);
 	}
 
 

@@ -6,33 +6,46 @@
 /**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
  * Extracts 9 values from a local stretch matrix and adds them to the global using global indexes
- * This function should be faster than the standard version, due to more efficient adding
- * \param box_ptr Pointer to box containing internal node count.
+ * This function should be faster than the standard version, due to more efficient adding 
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
+ * \param N Total number of internal nodes.
  * \param gInd_A The global index for node alpha.
  * \param gInd_B The global index for node beta.
  * \param lInd_A The local index for node alpha.
  * \param lInd_B The local index for node beta.
  * \return Petsc error code.
  */
-PetscErrorCode addSingleStretchContFAST( Box *box_ptr, Mat globalMat_H, PetscScalar localMat[][6], 
+PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
 											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
 
 /**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
- * Extracts 9 values from a local stretch matrix and adds them to the global using global indexes
- * \param box_ptr Pointer to box containing internal node count.
+ * Extracts 9 values from a local stretch matrix and adds them to the global using global indexes 
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
+ * \param N Total number of internal nodes.
  * \param gInd_A The global index for node alpha.
  * \param gInd_B The global index for node beta.
  * \param lInd_A The local index for node alpha.
  * \param lInd_B The local index for node beta.
  * \return Petsc error code.
  */
-PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar localMat[][6], 
+PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
 										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+
+/**
+ * \brief Adds a single stretching contribution of 3 values to the global vector
+ * Extracts 3 values from a local stretch vector and adds them to the global using global indexes 
+ * \param globalVec_H The global vector H.
+ * \param localVec The local vector to extract values from.
+ * \param N Total number of internal nodes.
+ * \param gInd_A The global index for node alpha.
+ * \param lInd_A The local index for node alpha.
+ * \return Petsc error code.
+ */
+PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
+										PetscInt gInd_A, PetscInt lInd_A );
 
 /**
  * \brief Adds local stretching contributions to the global matrix and RHS vector
@@ -40,12 +53,13 @@ PetscErrorCode addSingleStretchCont( Box *box_ptr, Mat globalMat_H, PetscScalar 
  * \param beta_ptr A pointer to x the node beta.
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
+ * \param N Total number of internal nodes.
  * \param localMat The local matrix.
  * \param localVec The local rhs vector.
  * \return Petsc error code.
  */
 PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, 
+										Mat globalMat_H, Vec globalVec_B, PetscInt N,
 									   	PetscScalar localMat[][6], PetscScalar localVec[] );
 
 #endif
