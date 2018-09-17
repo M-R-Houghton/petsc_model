@@ -19,7 +19,7 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
 			col[j] = gInd_B + j*N;
 			val[j] = localMat[lInd_A + 2*i][lInd_B + 2*j];
 		}
-		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, INSERT_VALUES);CHKERRQ(ierr);
+		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, ADD_VALUES);CHKERRQ(ierr);
 	}
 
 	return ierr;
@@ -41,7 +41,7 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 2*i][lInd_B + 2*j], INSERT_VALUES);CHKERRQ(ierr);
+			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 2*i][lInd_B + 2*j], ADD_VALUES);CHKERRQ(ierr);
 		}
 	}
 
@@ -61,7 +61,7 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[],
 
 	for (i = 0; i < DIMENSION; i++)
 	{
-		ierr = VecSetValue(globalVec_B, gInd_A + i*N, localVec[lInd_A + 2*i], INSERT_VALUES);CHKERRQ(ierr);
+		ierr = VecSetValue(globalVec_B, gInd_A + i*N, localVec[lInd_A + 2*i], ADD_VALUES);CHKERRQ(ierr);
 	}
 
 	return ierr;

@@ -17,7 +17,11 @@ const char *all_data()
 PetscErrorCode test_networkRead()
 {
 	PetscErrorCode ierr;
-	ierr = networkRead();CHKERRQ(ierr);
+	Box *box_ptr;
+
+    const char *fileToRead = "data/dat/f3tTripod1_in.dat";
+
+	ierr = networkRead(fileToRead, &box_ptr, 0.05);CHKERRQ(ierr);
 
 	assert(test_dataRead() == 0);
 
@@ -34,6 +38,8 @@ PetscErrorCode test_networkRead()
 		/* test make node */
 
 	/* test close file */
+
+	destroyBox(box_ptr);
 
 	return ierr;
 }

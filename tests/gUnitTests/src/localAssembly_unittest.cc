@@ -66,9 +66,9 @@ TEST_F(testAddLocalContributions, testMatrixValues)
     MatGetDiagonal(testMatrix,diags);
 
     VecGetArray(diags, &diagonal);
-    EXPECT_DOUBLE_EQ(diagonal[0], 0.0003958007154149);
-    EXPECT_DOUBLE_EQ(diagonal[1], 0.0015832028616595);
-    EXPECT_DOUBLE_EQ(diagonal[2], 0.0001710066440216);
+    EXPECT_FLOAT_EQ(diagonal[0], 0.0003958007154149);
+    EXPECT_FLOAT_EQ(diagonal[1], 0.0015832028616595);
+    EXPECT_FLOAT_EQ(diagonal[2], 0.0001710066440216);
     VecRestoreArray(diags, &diagonal);
     /*
     MPI_Comm comm = PETSC_COMM_WORLD;
@@ -77,7 +77,8 @@ TEST_F(testAddLocalContributions, testMatrixValues)
     PetscViewerPushFormat(viewer, PETSC_VIEWER_ASCII_DENSE);
     MatView(testMatrix,viewer);
     PetscViewerPopFormat(viewer);
-    PetscViewerDestroy(&viewer);*/
+    PetscViewerDestroy(&viewer);
+    */
 }
 
 } /* namespace */

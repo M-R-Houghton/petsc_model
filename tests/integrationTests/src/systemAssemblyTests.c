@@ -4,6 +4,8 @@
 PetscErrorCode test_systemAssembly()
 {
 	PetscErrorCode 	ierr;
+	Box				*box_ptr;
+	Parameters		*par_ptr;
 	Vec             dummy_b;
 	Mat 			dummy_H;
 	PetscInt		n = 10;
@@ -20,7 +22,7 @@ PetscErrorCode test_systemAssembly()
 	ierr = MatSetUp(dummy_H);CHKERRQ(ierr);
 
 	/* assembly tests go here */
-	ierr = systemAssembly(dummy_H,dummy_b);CHKERRQ(ierr);
+	ierr = systemAssembly(box_ptr, par_ptr, dummy_H,dummy_b);CHKERRQ(ierr);
 
 	/* clean up */
 	ierr = VecDestroy(&dummy_b);CHKERRQ(ierr); 
