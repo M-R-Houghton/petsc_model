@@ -100,7 +100,7 @@ struct testAddStretchContToGlobal : ::testing::Test
         locMat[0][0] = 0;
         locVec[0] = 0;
 
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "data/exAssembleSystem.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         alpha_ptr = &(box_ptr->masterNodeList[0]);

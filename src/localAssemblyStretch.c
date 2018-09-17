@@ -30,7 +30,7 @@ PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, Petsc
 PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
 {
 	PetscErrorCode 	ierr = 0;
-	PetscScalar		l_alphBeta;
+	PetscScalar		l_alphBeta, k;
 
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
@@ -51,6 +51,9 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
 
+        PetscScalar *u_alph = alph_ptr->xyzDisplacement;
+        PetscScalar *u_beta = beta_ptr->xyzDisplacement;
+
 		/* make position vectors for alpha and beta */
 		ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
 		ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
@@ -59,29 +62,31 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
 
 		/* make tangent vector of segment */
-		ierr = makeTangentVec(t_alphBeta, s_alphBeta);
+		ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
 		/* calculate segment length */
 		l_alphBeta = vecMagnitude(s_alphBeta);
 
 		/* calculate stretching modulus */
-		ierr = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+		k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
 
 		if (DIMENSION == 2)
 		{
 			/* assemble the 2D local matrix and rhs vector */
-			//ierr = make2DStretchMatrix(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make2DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
+			ierr = make2DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
+			ierr = make2DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
 		}
 		else if (DIMENSION == 3)
 		{
 			/* assemble the 3D local matrix and rhs vector */
-			//ierr = make3DStretchMatrix(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
-			//ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
+			ierr = make3DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
+			ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
 		}
 
 		/* determine contributions and add to the global system */
-        //addStretchContToGlobal(alph_ptr, beta_ptr, globalMat_H, globalVec_B, localStretchMat_A, localStretchVec_b);
+        ierr = addStretchContToGlobal( alph_ptr, beta_ptr, globalMat_H, globalVec_B, 
+                                        box_ptr->nodeInternalCount, localStretchMat_A, localStretchVec_b );
+        CHKERRQ(ierr);
 	}
 
 

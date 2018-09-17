@@ -53,8 +53,14 @@ struct testAddFibreLocalStretch : ::testing::Test
 
     void SetUp()
     {
-        testMatrix = NULL;
-        testVector = NULL;
+        MatCreate(PETSC_COMM_WORLD,&testMatrix);
+        MatSetFromOptions(testMatrix);
+        MatSetSizes(testMatrix,PETSC_DECIDE,PETSC_DECIDE,3,3);
+        MatSetUp(testMatrix);
+
+        VecCreate(PETSC_COMM_WORLD,&testVector);
+        VecSetFromOptions(testVector);
+        VecSetSizes(testVector,PETSC_DECIDE,3);
 
         const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
