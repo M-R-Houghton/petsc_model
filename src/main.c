@@ -9,12 +9,12 @@ int main(int argc, char **args)
 	Box  		   *box_ptr;
 	Vec            x, b, u;      /* approx solution, RHS, exact solution */
   	Mat            A;            /* linear system matrix */
-  	//KSP            ksp;          /* linear solver context */
-	//PC             pc;           /* preconditioner context */
+  	KSP            ksp;          /* linear solver context */
+	PC             pc;           /* preconditioner context */
   	//PetscReal      norm;         /* norm of solution error */
 	PetscErrorCode ierr;
 	PetscInt       n,N;
-	//PetscInt 	   its;
+	PetscInt 	   its;
 	PetscMPIInt    size;
 	PetscScalar    one = 1.0;
 	PetscBool      nonzeroguess = PETSC_FALSE;
@@ -95,7 +95,7 @@ int main(int argc, char **args)
     ierr = VecSet(u,one);CHKERRQ(ierr);
     ierr = MatMult(A,u,b);CHKERRQ(ierr);
 
-    //ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -105,13 +105,13 @@ int main(int argc, char **args)
        Create linear solver context
     */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
-	//ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
+	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
 	
 	/*
        Set operators. Here the matrix that defines the linear system
        also serves as the preconditioning matrix.
     */
-	//ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
+	ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
 
 	/*
 	  Set linear solver defaults for this problem (optional).
@@ -122,11 +122,11 @@ int main(int argc, char **args)
 	    parameters could alternatively be specified at runtime via
 	    KSPSetFromOptions();
 	*/
-	/*
+	//*
 	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
 	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
 	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
-	*/
+	//*/
 
 	/*
       Set runtime options, e.g.,
@@ -135,9 +135,9 @@ int main(int argc, char **args)
       KSPSetFromOptions() is called _after_ any other customization
       routines.
     */
-    /*
     ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
+    /*
     if (nonzeroguess) 
     {
 		PetscScalar p = .5;
@@ -163,7 +163,7 @@ int main(int argc, char **args)
     /*
 	  Solve linear system
 	*/
-	//ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
+	ierr = KSPSolve(ksp,x,b);CHKERRQ(ierr);
 
 	/*
 	  View solver info; we could instead use the option -ksp_view to
@@ -172,7 +172,7 @@ int main(int argc, char **args)
 	//ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         	Check solution and clean up
@@ -205,7 +205,7 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Cleaning up...\n");CHKERRQ(ierr);
 	ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
 	ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
-	//ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Finalising...\n");CHKERRQ(ierr);
 	ierr = PetscFinalize();
