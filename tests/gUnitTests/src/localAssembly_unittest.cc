@@ -81,4 +81,27 @@ TEST_F(testAddLocalContributions, testMatrixValues)
     */
 }
 
+
+TEST_F(testAddLocalContributions, testVectorValues) 
+{
+    addLocalContributions(box_ptr, par_ptr, testMatrix, testVector);
+
+    PetscScalar *array;
+
+    VecGetArray(testVector, &array);
+    EXPECT_FLOAT_EQ(array[0],  0.0000056198517848);
+    EXPECT_FLOAT_EQ(array[1], -0.0000112397035697);
+    EXPECT_FLOAT_EQ(array[2],  0.0000000000000000);
+    VecRestoreArray(testVector, &array);
+    /*
+    MPI_Comm comm = PETSC_COMM_WORLD;
+    PetscViewer viewer;
+    PetscViewerASCIIOpen(comm, "Amat.m", &viewer);
+    PetscViewerPushFormat(viewer, PETSC_VIEWER_ASCII_DENSE);
+    MatView(testMatrix,viewer);
+    PetscViewerPopFormat(viewer);
+    PetscViewerDestroy(&viewer);
+    */
+}
+
 } /* namespace */

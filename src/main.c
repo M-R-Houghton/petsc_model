@@ -13,7 +13,7 @@ int main(int argc, char **args)
 	//PC             pc;           /* preconditioner context */
   	//PetscReal      norm;         /* norm of solution error */
 	PetscErrorCode ierr;
-	PetscInt       n = 10;
+	PetscInt       n,N;
 	//PetscInt 	   its;
 	PetscMPIInt    size;
 	PetscScalar    one = 1.0;
@@ -28,6 +28,7 @@ int main(int argc, char **args)
 
 	/* these will be put in the parameter file */
 	PetscScalar gamma = 0.05;
+	PetscScalar youngsModulus = 1.0;
 	/* set input/output files */
 	const char inputNetwork[]  = "data/dat/f3tTripod1_in.dat";
 	const char outputNetwork[] = "data/dat/f3tTripod1_out.dat";
@@ -51,6 +52,9 @@ int main(int argc, char **args)
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
 	ierr = networkRead(inputNetwork, &box_ptr, gamma);CHKERRQ(ierr);
+	N 	 = box_ptr->nodeInternalCount;
+	n 	 = N * DIMENSION;
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,7 +84,7 @@ int main(int argc, char **args)
 
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
-	Parameters *par_ptr;
+	Parameters *par_ptr = makeParameters(gamma,youngsModulus);
 	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
@@ -192,6 +196,7 @@ int main(int argc, char **args)
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
     ierr = networkWrite(outputNetwork, box_ptr);CHKERRQ(ierr);
     ierr = destroyBox(box_ptr);CHKERRQ(ierr);
+    ierr = destroyParameters(par_ptr);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     /*

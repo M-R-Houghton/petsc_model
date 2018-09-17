@@ -21,7 +21,7 @@
  * stretch only     = 1
  * stretch and bend = 2
  */
-#define SPAN 2
+#define SPAN 1
 
 typedef struct parameters Parameters;
 typedef struct box Box;
