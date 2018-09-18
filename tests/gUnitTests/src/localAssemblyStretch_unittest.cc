@@ -169,7 +169,7 @@ TEST_F(testMake3DStretchMat, testErrorOutput)
 }
 
 
-TEST_F(testMake3DStretchMat, testMatrix1Output)
+TEST_F(testMake3DStretchMat, testMatrixOutput1)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
@@ -223,7 +223,7 @@ TEST_F(testMake3DStretchMat, testMatrix1Output)
 }
 
 
-TEST_F(testMake3DStretchMat, testMatrix2Output)
+TEST_F(testMake3DStretchMat, testMatrixOutput2)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
@@ -277,7 +277,7 @@ TEST_F(testMake3DStretchMat, testMatrix2Output)
 }
 
 
-TEST_F(testMake3DStretchMat, testMatrix3Output)
+TEST_F(testMake3DStretchMat, testMatrixOutput3)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
@@ -364,8 +364,6 @@ TEST_F(testMake3DStretchVec, testOutputValues)
 
     EXPECT_EQ(make3DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
 }
-
-
 
 } /* namespace */
 
