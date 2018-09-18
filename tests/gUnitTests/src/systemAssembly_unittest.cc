@@ -14,8 +14,8 @@ TEST(testSystemAssembly, testErrorOutput)
 {
     Box *box_ptr = NULL;
     Parameters *par_ptr = NULL;
-    Mat H;
-    Vec B;
+    Mat glbMat;
+    Vec glbVec;
 
     MatCreate(PETSC_COMM_WORLD,&glbMat);
     MatSetFromOptions(glbMat);
@@ -26,7 +26,7 @@ TEST(testSystemAssembly, testErrorOutput)
     VecSetFromOptions(glbVec);
     VecSetSizes(glbVec,PETSC_DECIDE,6);
 
-    EXPECT_EQ(systemAssembly(box_ptr, par_ptr, H, B), 0);
+    EXPECT_EQ(systemAssembly(box_ptr, par_ptr, glbMat, glbVec), 0);
 }
 
 TEST(testReadInt, testRowFileReadIn) 

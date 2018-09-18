@@ -66,9 +66,9 @@ TEST_F(testAddLocalContributions, testMatrixValues)
     MatGetDiagonal(testMatrix,diags);
 
     VecGetArray(diags, &diagonal);
-    EXPECT_FLOAT_EQ(diagonal[0], 0.0003958007154149);
-    EXPECT_FLOAT_EQ(diagonal[1], 0.0015832028616595);
-    EXPECT_FLOAT_EQ(diagonal[2], 0.0001710066440216);
+    EXPECT_NEAR(diagonal[0], 0.0003958007154149, 1e-16);
+    EXPECT_NEAR(diagonal[1], 0.0015832028616595, 1e-16);
+    EXPECT_NEAR(diagonal[2], 0.0001710066440216, 1e-16);
     VecRestoreArray(diags, &diagonal);
     /*
     MPI_Comm comm = PETSC_COMM_WORLD;
@@ -89,9 +89,9 @@ TEST_F(testAddLocalContributions, testVectorValues)
     PetscScalar *array;
 
     VecGetArray(testVector, &array);
-    EXPECT_FLOAT_EQ(array[0],  0.0000056198517848);
-    EXPECT_FLOAT_EQ(array[1], -0.0000112397035697);
-    EXPECT_FLOAT_EQ(array[2],  0.0000000000000000);
+    EXPECT_NEAR(array[0],  0.0000056198517848, 1e-16);
+    EXPECT_NEAR(array[1], -0.0000112397035697, 1e-16);
+    EXPECT_NEAR(array[2],  0.0000000000000000, 1e-16);
     VecRestoreArray(testVector, &array);
     /*
     MPI_Comm comm = PETSC_COMM_WORLD;
