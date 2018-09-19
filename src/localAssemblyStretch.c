@@ -98,8 +98,8 @@ PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt x=0;    // set these values purely for readability
-    PetscInt y=1;    // set *(1) also for readability
+	PetscInt x=0;    /* set these values purely for readability */
+    PetscInt y=1;    /* set *(1) also for readability */
 
     /* Row X (alpha) */
     localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
@@ -184,8 +184,8 @@ PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt x=0;    // set these values purely for readability
-    PetscInt y=1;    // set *(1) also for readability
+	PetscInt x=0;    /* set these values purely for readability */
+    PetscInt y=1;    /* set *(1) also for readability */
     PetscInt z=2;
 
     /* Row X (alpha) */
