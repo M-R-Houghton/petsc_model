@@ -34,55 +34,55 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 
 /**
  * \brief Assembles the local 2D bend matrix of a given triplet
- * \param s_alphOmeg_ptr
- * \param s_omegBeta_ptr
- * \param s_alphBeta_ptr
+ * \param s_alphOmeg
+ * \param s_omegBeta
+ * \param s_alphBeta
  * \param bConst
  * \param localBendMat_A
  */
-PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg_ptr, PetscScalar *s_omegBeta_ptr, 
-								PetscScalar *s_alphBeta_ptr, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
+								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 2D bend RHS vector of a given triplet
- * \param alph_ptr
- * \param omeg_ptr
- * \param beta_ptr
- * \param s_alphOmeg_ptr
- * \param s_omegBeta_ptr
- * \param s_alphBeta_ptr
+ * \param u_alph
+ * \param u_omeg
+ * \param u_beta
+ * \param s_alphOmeg
+ * \param s_omegBeta
+ * \param s_alphBeta
  * \param bConst
  * \param localBendVec_b
  */
-PetscErrorCode make2DBendVec(Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr,
-                    			PetscScalar *s_alphOmeg_ptr, PetscScalar *s_omegBeta_ptr,
-                    			PetscScalar *s_alphBeta_ptr, PetscScalar bConst, PetscScalar localBendVec_b[9] );
+PetscErrorCode make2DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
+                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
+                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
 
 /**
  * \brief Assembles the local 3D bend matrix of a given triplet
- * \param s_alphOmeg_ptr
- * \param s_omegBeta_ptr
- * \param s_alphBeta_ptr
+ * \param s_alphOmeg
+ * \param s_omegBeta
+ * \param s_alphBeta
  * \param bConst
  * \param localBendMat_A
  */
-PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg_ptr, PetscScalar *s_omegBeta_ptr, 
-								PetscScalar *s_alphBeta_ptr, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
+								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 3D bend RHS vector of a given triplet
- * \param alph_ptr
- * \param omeg_ptr
- * \param beta_ptr
- * \param s_alphOmeg_ptr
- * \param s_omegBeta_ptr
- * \param s_alphBeta_ptr
+ * \param u_alph
+ * \param u_omeg
+ * \param u_beta
+ * \param s_alphOmeg
+ * \param s_omegBeta
+ * \param s_alphBeta
  * \param bConst
  * \param localBendVec_b
  */
-PetscErrorCode make3DBendVec(Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr,
-                    			PetscScalar *s_alphOmeg_ptr, PetscScalar *s_omegBeta_ptr,
-                    			PetscScalar *s_alphBeta_ptr, PetscScalar bConst, PetscScalar localBendVec_b[9] );
+PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
+                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
+                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
 
 
 

@@ -89,13 +89,12 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
         CHKERRQ(ierr);
 	}
 
-
 	return ierr;
 }
 
 
 /* Assembles the 2D local stretch matrix of a given pair */
-PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[4][4])
+PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
 {
 	PetscErrorCode ierr = 0;
 

@@ -91,12 +91,12 @@ struct testAddBendContToGlobal : ::testing::Test
     {
         MatCreate(PETSC_COMM_WORLD,&glbMat);
         MatSetFromOptions(glbMat);
-        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
+        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,9,9);
         MatSetUp(glbMat);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);
         VecSetFromOptions(glbVec);
-        VecSetSizes(glbVec,PETSC_DECIDE,6);
+        VecSetSizes(glbVec,PETSC_DECIDE,9);
 
         locMat[0][0] = 0;
         locVec[0] = 0;
@@ -107,6 +107,8 @@ struct testAddBendContToGlobal : ::testing::Test
         alph_ptr = &(box_ptr->masterNodeList[0]);
         omeg_ptr = &(box_ptr->masterNodeList[1]);
         beta_ptr = &(box_ptr->masterNodeList[2]);
+
+        omeg_ptr->nodeType = 0;
 
         N = box_ptr->nodeInternalCount;
     }

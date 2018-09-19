@@ -39,7 +39,7 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
  * \param tangVec_ptr
  * \param localStretchMat_A
  */
-PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[4][4]);
+PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
 
 /**
  * \brief Assembles the 2D local stretch RHS vector of a given pair

@@ -86,7 +86,7 @@ TEST_F(testAddFibreLocalStretch, testErrorOutput)
 
 struct testMake2DStretchMat : ::testing::Test
 {
-    PetscScalar locMat[4][4];
+    PetscScalar locMat[6][6];
     PetscScalar tangVec[DIMENSION];
     void SetUp()
     {
@@ -114,7 +114,7 @@ struct testMake2DStretchVec : ::testing::Test
     Box *box_ptr;
     Node *alpha_ptr;
     Node *beta_ptr;
-    PetscScalar locVec[4];
+    PetscScalar locVec[6];
     PetscScalar tangVec[DIMENSION];
     void SetUp()
     {

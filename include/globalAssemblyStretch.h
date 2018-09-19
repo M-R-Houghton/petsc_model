@@ -5,10 +5,10 @@
 
 /**
  * \brief Checks stretch matrix contribution indexes are all legal 
- * \param gInd_A The global index for node alpha.
- * \param gInd_B The global index for node beta.
- * \param lInd_A The local index for node alpha.
- * \param lInd_B The local index for node beta.
+ * \param gInd_A The global index for node_A.
+ * \param gInd_B The global index for node_B.
+ * \param lInd_A The local index for node_A.
+ * \param lInd_B The local index for node_B.
  */
 void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
 
@@ -19,10 +19,10 @@ void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node alpha.
- * \param gInd_B The global index for node beta.
- * \param lInd_A The local index for node alpha.
- * \param lInd_B The local index for node beta.
+ * \param gInd_A The global index for node_A.
+ * \param gInd_B The global index for node_B.
+ * \param lInd_A The local index for node_A.
+ * \param lInd_B The local index for node_B.
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
@@ -34,10 +34,10 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node alpha.
- * \param gInd_B The global index for node beta.
- * \param lInd_A The local index for node alpha.
- * \param lInd_B The local index for node beta.
+ * \param gInd_A The global index for node_A.
+ * \param gInd_B The global index for node_B.
+ * \param lInd_A The local index for node_A.
+ * \param lInd_B The local index for node_B.
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
@@ -45,8 +45,8 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 
 /**
  * \brief Checks stretch vector contribution indexes are all legal 
- * \param gInd_A The global index for node alpha.
- * \param lInd_A The local index for node alpha.
+ * \param gInd_A The global index for node_A.
+ * \param lInd_A The local index for node_A.
  */
 void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A );
 
@@ -56,8 +56,8 @@ void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A );
  * \param globalVec_H The global vector H.
  * \param localVec The local vector to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node alpha.
- * \param lInd_A The local index for node alpha.
+ * \param gInd_A The global index for node_A.
+ * \param lInd_A The local index for node_A.
  * \return Petsc error code.
  */
 PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,

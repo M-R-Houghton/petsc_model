@@ -146,7 +146,8 @@ struct testMake2DBendVec : ::testing::Test
 TEST_F(testMake2DBendVec, DISABLED_testOutputValues)
 {
     ASSERT_TRUE(DIMENSION == 2);
-    EXPECT_EQ(make2DBendVec(alph_ptr, omeg_ptr, beta_ptr, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
+    EXPECT_EQ(make2DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
+                            beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
 }
 
 
@@ -253,7 +254,8 @@ TEST_F(testMake3DBendVec, testOutputValues)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
-    EXPECT_EQ(make3DBendVec(alph_ptr, omeg_ptr, beta_ptr, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
+    EXPECT_EQ(make3DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
+                            beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
 }
 
 } /* namespace */
