@@ -22,9 +22,9 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], Pe
 
 
 /* Adds local bending contributions to the global matrix and RHS vector */
-PetscErrorCode addBendContToGlobal( Node *alph_ptr, Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									   	PetscScalar localMat[][9], PetscScalar localVec[] )
+PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
+									PetscScalar localMat[][9], PetscScalar localVec[],
+									Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr )
 {
 	PetscErrorCode ierr = 0;
 

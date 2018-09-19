@@ -10,32 +10,38 @@ extern "C"
 
 namespace {
 
-struct testAddSingleBendCont : ::testing::Test
+struct testAddMatSingleBendCont : ::testing::Test
 {
     Box *box_ptr;
     Parameters *par_ptr;
-    Mat testMatrix;
-    Vec testVector;
+    Mat glbMat;
+    PetscScalar locMat[9][9];
+    PetscInt N;
 
     void SetUp()
     {
-        testMatrix = NULL;
-        testVector = NULL;
+        MatCreate(PETSC_COMM_WORLD,&glbMat);
+        MatSetFromOptions(glbMat);
+        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,3,3);
+        MatSetUp(glbMat);
 
-        const char fileToRead[] = "data/exReadNetwork.dat";
+        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
+
+        N = box_ptr->nodeInternalCount;
     }
 
     void TearDown()
     {
         destroyBox(box_ptr);
+        MatDestroy(&glbMat);
     }
 };
 
 
-TEST_F(testAddSingleBendCont, testErrorOutput) 
+TEST_F(testAddMatSingleBendCont, testErrorOutput) 
 {
-    EXPECT_EQ(addSingleBendCont(), 0);
+    EXPECT_EQ(addMatSingleBendCont(glbMat,locMat,N,0,0,0,0), 0);
 }
 
 
@@ -67,7 +73,7 @@ struct testAddVecSingleBendCont : ::testing::Test
 TEST_F(testAddVecSingleBendCont, testErrorOutput) 
 {
     PetscInt N = box_ptr->nodeInternalCount;
-    EXPECT_EQ(addVecSingleBendCont(), 0);
+    EXPECT_EQ(addVecSingleBendCont(glbVec,locVec,N,0,0), 0);
 }
 
 
@@ -78,7 +84,7 @@ struct testAddBendContToGlobal : ::testing::Test
     Mat glbMat;
     Vec glbVec;
     PetscScalar locMat[9][9], locVec[9];
-    Node *alpha_ptr, *beta_ptr;
+    Node *alph_ptr, *omeg_ptr, *beta_ptr;
     PetscInt N;
 
     void SetUp()
@@ -98,8 +104,9 @@ struct testAddBendContToGlobal : ::testing::Test
         const char fileToRead[] = "data/exAssembleSystem.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        alpha_ptr = &(box_ptr->masterNodeList[0]);
-        beta_ptr = &(box_ptr->masterNodeList[1]);
+        alph_ptr = &(box_ptr->masterNodeList[0]);
+        omeg_ptr = &(box_ptr->masterNodeList[1]);
+        beta_ptr = &(box_ptr->masterNodeList[2]);
 
         N = box_ptr->nodeInternalCount;
     }
@@ -115,64 +122,64 @@ struct testAddBendContToGlobal : ::testing::Test
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphInternalBetaInternal)
 {
-    beta_ptr->nodeType = 0, alpha_ptr->nodeType = 0;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 0, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphInternalBetaDangling)
 {
-    beta_ptr->nodeType = 1, alpha_ptr->nodeType = 0;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 1, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphInternalBetaBoundary)
 {
-    beta_ptr->nodeType = 2, alpha_ptr->nodeType = 0;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 2, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphDanglingBetaInternal)
 {
-    beta_ptr->nodeType = 0, alpha_ptr->nodeType = 1;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 0, alph_ptr->nodeType = 1;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphDanglingBetaDangling)
 {
-    beta_ptr->nodeType = 1, alpha_ptr->nodeType = 1;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 1, alph_ptr->nodeType = 1;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphDanglingBetaBoundary)
 {
-    beta_ptr->nodeType = 2, alpha_ptr->nodeType = 1;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 2, alph_ptr->nodeType = 1;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphBoundarylBetaInternal)
 {
-    beta_ptr->nodeType = 0, alpha_ptr->nodeType = 2;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 0, alph_ptr->nodeType = 2;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphBoundarylBetaDangling)
 {
-    beta_ptr->nodeType = 1, alpha_ptr->nodeType = 2;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 1, alph_ptr->nodeType = 2;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 
 TEST_F(testAddBendContToGlobal, testErrorOutputAlphBoundarylBetaBoundary)
 {
-    beta_ptr->nodeType = 2, alpha_ptr->nodeType = 2;
-    EXPECT_EQ(addBendContToGlobal(), 0);
+    beta_ptr->nodeType = 2, alph_ptr->nodeType = 2;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
 } /* namespace */

@@ -33,18 +33,19 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], Pe
 
 /**
  * \brief Adds local bending contributions to the global matrix and RHS vector
- * \param alph_ptr A pointer to x the node alpha.
- * \param beta_ptr A pointer to x the node beta.
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
  * \param N Total number of internal nodes.
  * \param localMat The local matrix.
  * \param localVec The local rhs vector.
+ * \param alph_ptr A pointer to the node alpha.
+ * \param omeg_ptr A pointer to the node omega.
+ * \param beta_ptr A pointer to the node beta.
  * \return Petsc error code.
  */
-PetscErrorCode addBendContToGlobal( Node *alph_ptr, Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									   	PetscScalar localMat[][9], PetscScalar localVec[] );
+PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
+									PetscScalar localMat[][9], PetscScalar localVec[],
+									Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr );
 
 
 #endif
