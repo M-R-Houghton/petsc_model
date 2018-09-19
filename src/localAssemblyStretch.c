@@ -106,25 +106,49 @@ PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
     localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
     localStretchMat_A[0][1] = (-1) * k * pow( tangVec[x], 2 );
     localStretchMat_A[0][2] = ( 1) * k * tangVec[x] * tangVec[y];
-    localStretchMat_A[0][3] = (-1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[0][3] = (-1) * k * tangVec[x] * tangVec[y]; /* Additional values to be ignored
+    localStretchMat_A[0][4] = 0;  ******                           * in 2 dimensions
+    localStretchMat_A[0][5] = 0;  ******                           */
 
     /* Row X (beta) */
     localStretchMat_A[1][0] = localStretchMat_A[0][1];
     localStretchMat_A[1][1] = ( 1) * k * pow( tangVec[x], 2 );
     localStretchMat_A[1][2] = (-1) * k * tangVec[x] * tangVec[y];
-    localStretchMat_A[1][3] = ( 1) * k * tangVec[x] * tangVec[y];
+    localStretchMat_A[1][3] = ( 1) * k * tangVec[x] * tangVec[y]; /* Additional values to be ignored
+    localStretchMat_A[1][4] = 0;  ******                           * in 2 dimensions
+    localStretchMat_A[1][5] = 0;  ******                           */
 
     /* Row Y (alpha) */
     localStretchMat_A[2][0] = localStretchMat_A[0][2];
     localStretchMat_A[2][1] = localStretchMat_A[1][2];
     localStretchMat_A[2][2] = ( 1) * k * pow( tangVec[y], 2 );
-    localStretchMat_A[2][3] = (-1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[2][3] = (-1) * k * pow( tangVec[y], 2 );    /* Additional values to be ignored
+    localStretchMat_A[2][4] = 0;  ******                           * in 2 dimensions
+    localStretchMat_A[2][5] = 0;  ******                           */
 
     /* Row Y (beta) */
     localStretchMat_A[3][0] = localStretchMat_A[0][3];
     localStretchMat_A[3][1] = localStretchMat_A[1][3];
     localStretchMat_A[3][2] = localStretchMat_A[2][3];
-    localStretchMat_A[3][3] = ( 1) * k * pow( tangVec[y], 2 );
+    localStretchMat_A[3][3] = ( 1) * k * pow( tangVec[y], 2 );    /* Additional values to be ignored
+    localStretchMat_A[3][4] = 0;  ******                           * in 2 dimensions
+    localStretchMat_A[3][5] = 0;  ******                           */
+
+    /* Row Z (alpha) */          /*
+    localStretchMat_A[4][0] = 0;  ******
+    localStretchMat_A[4][1] = 0;  ******
+    localStretchMat_A[4][2] = 0;  ******
+    localStretchMat_A[4][3] = 0;  ******
+    localStretchMat_A[4][4] = 0;  ******
+    localStretchMat_A[4][5] = 0;  */
+
+    /* Row Z (beta) */           /*
+    localStretchMat_A[5][0] = 0;  ******
+    localStretchMat_A[5][1] = 0;  ******
+    localStretchMat_A[5][2] = 0;  ******
+    localStretchMat_A[5][3] = 0;  ******
+    localStretchMat_A[5][4] = 0;  ******
+    localStretchMat_A[5][5] = 0;  */
 
 	return ierr;
 }
@@ -148,7 +172,9 @@ PetscErrorCode make2DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, Petsc
     localStretchVec_b[0] = (-1) * k * tangVec[x] * extensionEqn;
     localStretchVec_b[1] = ( 1) * k * tangVec[x] * extensionEqn;
     localStretchVec_b[2] = (-1) * k * tangVec[y] * extensionEqn;
-    localStretchVec_b[3] = ( 1) * k * tangVec[y] * extensionEqn;
+    localStretchVec_b[3] = ( 1) * k * tangVec[y] * extensionEqn; /* Additional values to be ignored
+    localStretchVec_b[4] = 0;  ******                             * in 2 dimensions
+    localStretchVec_b[5] = 0;  ******                             */
 
 	return ierr;
 }
