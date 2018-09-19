@@ -1,6 +1,15 @@
 #include "globalAssemblyStretch.h"
 
 
+/* Checks stretch matrix contribution indexes are all legal */
+void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+{
+	assert(gInd_A != -1 && gInd_B != -1);
+	assert(lInd_A ==  0 || lInd_A ==  1);		/* protect from indexing out of range */
+	assert(lInd_B ==  0 || lInd_B ==  1);
+}
+
+
 /* Adds a single stretching contribution of 9 values to the global matrix potentially more efficiently */
 PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
 											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
@@ -10,6 +19,8 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
 	PetscInt 		col[DIMENSION];
 	PetscScalar 	val[DIMENSION];
 	PetscInt 		i,j;
+
+	checkMatStretchContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
@@ -33,9 +44,7 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i,j;
 
-	assert(gInd_A != -1 && gInd_B != -1);
-	assert(lInd_A ==  0 || lInd_A ==  1);		/* protect from indexing out of range */
-	assert(lInd_B ==  0 || lInd_B ==  1);
+	checkMatStretchContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
@@ -49,6 +58,14 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 }
 
 
+/* Checks stretch vector contribution indexes are all legal */
+void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A )
+{
+	assert(gInd_A != -1);
+	assert(lInd_A ==  0 || lInd_A == 1);		/* protect from indexing out of range */
+}
+
+
 /* Adds a single stretching contribution of 3 values to the global vector */
 PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
 										PetscInt gInd_A, PetscInt lInd_A )
@@ -56,8 +73,7 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[],
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i;
 
-	assert(gInd_A != -1);
-	assert(lInd_A ==  0 || lInd_A == 1);		/* protect from indexing out of range */
+	checkVecStretchContIndexes(gInd_A, lInd_A);
 
 	for (i = 0; i < DIMENSION; i++)
 	{

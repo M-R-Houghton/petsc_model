@@ -4,6 +4,15 @@
 #include "networkRead.h"
 
 /**
+ * \brief Checks stretch matrix contribution indexes are all legal 
+ * \param gInd_A The global index for node alpha.
+ * \param gInd_B The global index for node beta.
+ * \param lInd_A The local index for node alpha.
+ * \param lInd_B The local index for node beta.
+ */
+void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+
+/**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
  * Extracts 9 values from a local stretch matrix and adds them to the global using global indexes
  * This function should be faster than the standard version, due to more efficient adding 
@@ -33,6 +42,13 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
  */
 PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
 										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+
+/**
+ * \brief Checks stretch vector contribution indexes are all legal 
+ * \param gInd_A The global index for node alpha.
+ * \param lInd_A The local index for node alpha.
+ */
+void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A );
 
 /**
  * \brief Adds a single stretching contribution of 3 values to the global vector
