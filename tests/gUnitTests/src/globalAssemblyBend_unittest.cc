@@ -184,4 +184,24 @@ TEST_F(testAddBendContToGlobal, testErrorOutputAlphBoundarylBetaBoundary)
     EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
 }
 
+
+TEST_F(testAddBendContToGlobal, testErrorOutputOmegNotInternal)
+{
+    omeg_ptr->nodeType = 1;
+    beta_ptr->nodeType = 0, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+    beta_ptr->nodeType = 1, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+    beta_ptr->nodeType = 2, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+
+    omeg_ptr->nodeType = 2;
+    beta_ptr->nodeType = 0, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+    beta_ptr->nodeType = 1, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+    beta_ptr->nodeType = 2, alph_ptr->nodeType = 0;
+    EXPECT_EQ(addBendContToGlobal(glbMat,glbVec,N,locMat,locVec,alph_ptr,omeg_ptr,beta_ptr), 0);
+}
+
 } /* namespace */

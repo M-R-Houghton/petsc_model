@@ -274,35 +274,35 @@ PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScal
     PetscInt y = 1;    /* set *(1) also for readability */
     PetscInt z = 2;
 
-    PetscScalar phi1 = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
+    PetscScalar phi_xy = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
                     	- s_alphOmeg[y] * (u_beta[x] - u_omeg[x])
                     	- s_omegBeta[x] * (u_omeg[y] - u_alph[y])
                     	+ s_omegBeta[y] * (u_omeg[x] - u_alph[x]);
 
-    PetscScalar phi2 = s_alphOmeg[z] * (u_beta[x] - u_omeg[x])
+    PetscScalar phi_zx = s_alphOmeg[z] * (u_beta[x] - u_omeg[x])
                     	- s_alphOmeg[x] * (u_beta[z] - u_omeg[z])
                     	- s_omegBeta[z] * (u_omeg[x] - u_alph[x])
                     	+ s_omegBeta[x] * (u_omeg[z] - u_alph[z]);
 
-    PetscScalar phi3 = s_alphOmeg[y] * (u_beta[z] - u_omeg[z])
+    PetscScalar phi_yz = s_alphOmeg[y] * (u_beta[z] - u_omeg[z])
                     	- s_alphOmeg[z] * (u_beta[y] - u_omeg[y])
                     	- s_omegBeta[y] * (u_omeg[z] - u_alph[z])
                     	+ s_omegBeta[z] * (u_omeg[y] - u_alph[y]);
 
     /* we want the negation of the 1st partial derivatives */
-    phi1 *= -1;
-    phi2 *= -1;
-    phi3 *= -1;     /* This should be done in a cleaner way!!! */
+    phi_xy *= -1;
+    phi_zx *= -1;
+    phi_yz *= -1;     /* This should be done in a cleaner way!!! */
 
-    localBendVec_b[0] = bConst * ((-1) * phi1 * s_omegBeta[y] + ( 1) * phi2 * s_omegBeta[z]);
-    localBendVec_b[1] = bConst * (( 1) * phi1 * s_alphBeta[y] + (-1) * phi2 * s_alphBeta[z]);
-    localBendVec_b[2] = bConst * ((-1) * phi1 * s_alphOmeg[y] + ( 1) * phi2 * s_alphOmeg[z]);
-    localBendVec_b[3] = bConst * ((-1) * phi3 * s_omegBeta[z] + ( 1) * phi1 * s_omegBeta[x]);
-    localBendVec_b[4] = bConst * (( 1) * phi3 * s_alphBeta[z] + (-1) * phi1 * s_alphBeta[x]);
-    localBendVec_b[5] = bConst * ((-1) * phi3 * s_alphOmeg[z] + ( 1) * phi1 * s_alphOmeg[x]);
-    localBendVec_b[6] = bConst * ((-1) * phi2 * s_omegBeta[x] + ( 1) * phi3 * s_omegBeta[y]);
-    localBendVec_b[7] = bConst * (( 1) * phi2 * s_alphBeta[x] + (-1) * phi3 * s_alphBeta[y]);
-    localBendVec_b[8] = bConst * ((-1) * phi2 * s_alphOmeg[x] + ( 1) * phi3 * s_alphOmeg[y]);
+    localBendVec_b[0] = bConst * ((-1) * phi_xy * s_omegBeta[y] + ( 1) * phi_zx * s_omegBeta[z]);
+    localBendVec_b[1] = bConst * (( 1) * phi_xy * s_alphBeta[y] + (-1) * phi_zx * s_alphBeta[z]);
+    localBendVec_b[2] = bConst * ((-1) * phi_xy * s_alphOmeg[y] + ( 1) * phi_zx * s_alphOmeg[z]);
+    localBendVec_b[3] = bConst * ((-1) * phi_yz * s_omegBeta[z] + ( 1) * phi_xy * s_omegBeta[x]);
+    localBendVec_b[4] = bConst * (( 1) * phi_yz * s_alphBeta[z] + (-1) * phi_xy * s_alphBeta[x]);
+    localBendVec_b[5] = bConst * ((-1) * phi_yz * s_alphOmeg[z] + ( 1) * phi_xy * s_alphOmeg[x]);
+    localBendVec_b[6] = bConst * ((-1) * phi_zx * s_omegBeta[x] + ( 1) * phi_yz * s_omegBeta[y]);
+    localBendVec_b[7] = bConst * (( 1) * phi_zx * s_alphBeta[x] + (-1) * phi_yz * s_alphBeta[y]);
+    localBendVec_b[8] = bConst * ((-1) * phi_zx * s_alphOmeg[x] + ( 1) * phi_yz * s_alphOmeg[y]);
 
 	return ierr;
 }

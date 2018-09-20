@@ -40,7 +40,7 @@ TEST_F(testAddMatSingleStretchCont, testErrorOutput)
 {
     PetscInt N = box_ptr->nodeInternalCount;
     EXPECT_EQ(addMatSingleStretchCont(glbMat,locMat,N,0,0,0,0), 0);
-    //EXPECT_EQ(addMatSingleStretchContFAST(box_ptr,glbMat,locMat,N,0,0,0,0), 0);
+    //EXPECT_EQ(addMatSingleStretchContFAST(glbMat,locMat,N,0,0,0,0), 0);
 }
 
 
