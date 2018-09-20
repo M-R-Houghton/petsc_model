@@ -159,17 +159,17 @@ struct testMake3DBendMat : ::testing::Test
     PetscScalar s_alphBeta[DIMENSION];
     void SetUp()
     {
-        s_alphOmeg[0] = 1.0;
-        s_alphOmeg[1] = 2.0;
-        s_alphOmeg[2] = 3.0;
+        s_alphOmeg[0] = -0.25;
+        s_alphOmeg[1] =  0.50;
+        s_alphOmeg[2] =  0.00;
 
-        s_omegBeta[0] = 4.0;
-        s_omegBeta[1] = 5.0;
-        s_omegBeta[2] = 6.0;
+        s_omegBeta[0] = -0.25;
+        s_omegBeta[1] =  0.50;
+        s_omegBeta[2] =  0.00;
 
-        s_alphBeta[0] = 7.0;
-        s_alphBeta[1] = 8.0;
-        s_alphBeta[2] = 9.0;
+        s_alphBeta[0] = -0.50;
+        s_alphBeta[1] =  1.00;
+        s_alphBeta[2] =  0.00;
     }
 
     void TearDown()
@@ -183,46 +183,133 @@ TEST_F(testMake3DBendMat, testErrorOutput)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
+    s_alphOmeg[0] = 1.0;
+    s_alphOmeg[1] = 2.0;
+    s_alphOmeg[2] = 3.0;
+
+    s_omegBeta[0] = 4.0;
+    s_omegBeta[1] = 5.0;
+    s_omegBeta[2] = 6.0;
+
+    s_alphBeta[0] = 7.0;
+    s_alphBeta[1] = 8.0;
+    s_alphBeta[2] = 9.0;
+
     EXPECT_EQ(make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locMat), 0);
 }
 
 
-TEST_F(testMake3DBendMat, testMatrixOutput1)
+TEST_F(testMake3DBendMat, testMatrixOutputXRows)
 {
     ASSERT_TRUE(DIMENSION == 3);
-
-    s_alphOmeg[0] = -0.25;
-    s_alphOmeg[1] =  0.50;
-    s_alphOmeg[2] =  0.00;
-
-    s_omegBeta[0] = -0.25;
-    s_omegBeta[1] =  0.50;
-    s_omegBeta[2] =  0.00;
-
-    s_alphBeta[0] = -0.50;
-    s_alphBeta[1] =  1.00;
-    s_alphBeta[2] =  0.00;
 
     make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
 
-    EXPECT_NEAR(locMat[0][0],  3.59670514229285e-08, 1e-16);
-    EXPECT_DOUBLE_EQ(locMat[0][0],  3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][0],  3.596705142292850e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][1], -7.193410284585700e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][2],  3.596705142292850e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][3],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][4], -3.596705142292850e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][5],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[0][6],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[0][7], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[0][8],  0.0);
+
+    EXPECT_DOUBLE_EQ(locMat[1][0], -7.1934102845857e-08);
+    EXPECT_DOUBLE_EQ(locMat[1][1],  1.43868205691714e-07);
+    EXPECT_DOUBLE_EQ(locMat[1][2], -7.1934102845857e-08);
+    EXPECT_DOUBLE_EQ(locMat[1][3], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[1][4],  7.1934102845857e-08);
+    EXPECT_DOUBLE_EQ(locMat[1][5], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[1][6], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[1][7],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[1][8], -0.0);
+
+    EXPECT_DOUBLE_EQ(locMat[2][0],  3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][1], -7.1934102845857e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][2],  3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][3],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][4], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][5],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[2][6],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[2][7], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[2][8],  0.0);
 }
 
 
-TEST_F(testMake3DBendMat, testMatrixOutput2)
+TEST_F(testMake3DBendMat, testMatrixOutputYRows)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
-    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locMat);
+    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
+
+    EXPECT_DOUBLE_EQ(locMat[3][0],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[3][1], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[3][2],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[3][3],  8.991762855732125e-09);
+    EXPECT_DOUBLE_EQ(locMat[3][4], -1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[3][5],  8.991762855732125e-09);
+    EXPECT_DOUBLE_EQ(locMat[3][6], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[3][7],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[3][8], -0.0);
+
+    EXPECT_DOUBLE_EQ(locMat[4][0], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][1],  7.1934102845857e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][2], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][3], -1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][4],  3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][5], -1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[4][6],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[4][7], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[4][8],  0.0);
+
+    EXPECT_DOUBLE_EQ(locMat[5][0],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[5][1], -3.59670514229285e-08);
+    EXPECT_DOUBLE_EQ(locMat[5][2],  1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[5][3],  8.991762855732125e-09);
+    EXPECT_DOUBLE_EQ(locMat[5][4], -1.798352571146425e-08);
+    EXPECT_DOUBLE_EQ(locMat[5][5],  8.991762855732125e-09);
+    EXPECT_DOUBLE_EQ(locMat[5][6], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[5][7],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[5][8], -0.0);
 }
 
 
-TEST_F(testMake3DBendMat, testMatrixOutput3)
+TEST_F(testMake3DBendMat, testMatrixOutputZRows)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
-    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locMat);
+    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
+
+    EXPECT_DOUBLE_EQ(locMat[6][0],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][1], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][2],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][3], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][4],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][5], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[6][6],  4.495881427866062e-08);
+    EXPECT_DOUBLE_EQ(locMat[6][7], -8.991762855732125e-08);
+    EXPECT_DOUBLE_EQ(locMat[6][8],  4.495881427866062e-08);
+
+    EXPECT_DOUBLE_EQ(locMat[7][0], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][1],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][2], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][3],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][4], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][5],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[7][6], -8.991762855732125e-08);
+    EXPECT_DOUBLE_EQ(locMat[7][7],  1.798352571146425e-07);
+    EXPECT_DOUBLE_EQ(locMat[7][8], -8.991762855732125e-08);
+
+    EXPECT_DOUBLE_EQ(locMat[8][0],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][1], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][2],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][3], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][4],  0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][5], -0.0);
+    EXPECT_DOUBLE_EQ(locMat[8][6],  4.495881427866062e-08);
+    EXPECT_DOUBLE_EQ(locMat[8][7], -8.991762855732125e-08);
+    EXPECT_DOUBLE_EQ(locMat[8][8],  7.1934102845857e-08);
 }
 
 
@@ -238,24 +325,24 @@ struct testMake3DBendVec : ::testing::Test
     PetscScalar s_alphBeta[DIMENSION];
     void SetUp()
     {
-        s_alphOmeg[0] = 1.0;
-        s_alphOmeg[1] = 2.0;
-        s_alphOmeg[2] = 3.0;
+        s_alphOmeg[0] = -0.25;
+        s_alphOmeg[1] =  0.50;
+        s_alphOmeg[2] =  0.00;
 
-        s_omegBeta[0] = 4.0;
-        s_omegBeta[1] = 5.0;
-        s_omegBeta[2] = 6.0;
+        s_omegBeta[0] = -0.25;
+        s_omegBeta[1] =  0.50;
+        s_omegBeta[2] =  0.00;
 
-        s_alphBeta[0] = 7.0;
-        s_alphBeta[1] = 8.0;
-        s_alphBeta[2] = 9.0;
+        s_alphBeta[0] = -0.50;
+        s_alphBeta[1] =  1.00;
+        s_alphBeta[2] =  0.00;
 
         const char fileToRead[] = "data/exReadNetwork.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         alph_ptr = &(box_ptr->masterNodeList[0]);
-        omeg_ptr = &(box_ptr->masterNodeList[1]);
-        beta_ptr = &(box_ptr->masterNodeList[2]);
+        omeg_ptr = &(box_ptr->masterNodeList[3]);
+        beta_ptr = &(box_ptr->masterNodeList[1]);
     }
 
     void TearDown()
@@ -265,12 +352,43 @@ struct testMake3DBendVec : ::testing::Test
 };
 
 
+TEST_F(testMake3DBendVec, testErrorOutput)
+{
+    ASSERT_TRUE(DIMENSION == 3);
+
+    s_alphOmeg[0] = 1.0;
+    s_alphOmeg[1] = 2.0;
+    s_alphOmeg[2] = 3.0;
+
+    s_omegBeta[0] = 4.0;
+    s_omegBeta[1] = 5.0;
+    s_omegBeta[2] = 6.0;
+
+    s_alphBeta[0] = 7.0;
+    s_alphBeta[1] = 8.0;
+    s_alphBeta[2] = 9.0;
+
+    EXPECT_EQ(make3DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
+                            beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
+}
+
+
 TEST_F(testMake3DBendVec, testOutputValues)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
-    EXPECT_EQ(make3DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
-                            beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
+    make3DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 
+                    s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locVec);
+
+    EXPECT_DOUBLE_EQ(locVec[0], -1.798352571146425e-09);
+    EXPECT_DOUBLE_EQ(locVec[1],  3.59670514229285e-09);
+    EXPECT_DOUBLE_EQ(locVec[2], -1.798352571146425e-09);
+    EXPECT_DOUBLE_EQ(locVec[3], -8.991762855732126e-10);
+    EXPECT_DOUBLE_EQ(locVec[4],  1.798352571146425e-09);
+    EXPECT_DOUBLE_EQ(locVec[5], -8.991762855732126e-10);
+    EXPECT_DOUBLE_EQ(locVec[6], -0.00000);
+    EXPECT_DOUBLE_EQ(locVec[7],  0.00000);
+    EXPECT_DOUBLE_EQ(locVec[8], -0.00000);
 }
 
 } /* namespace */
