@@ -135,7 +135,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     PetscInt z = 2;
 
     /* Row (alpha) X */
-    localBendMat_A[0][0] = ( 1) * bConst * (pow(s_omegBeta[y], 2)     + pow(s_omegBeta[z],2));
+    localBendMat_A[0][0] = ( 1) * bConst * (pow(s_omegBeta[y], 2) + pow(s_omegBeta[z],2));
     localBendMat_A[0][1] = (-1) * bConst * (s_omegBeta[y]*s_alphBeta[y] + s_omegBeta[z]*s_alphBeta[z]);
     localBendMat_A[0][2] = ( 1) * bConst * (s_omegBeta[y]*s_alphOmeg[y] + s_omegBeta[z]*s_alphOmeg[z]);
 
@@ -150,7 +150,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
     /* Row (omega) X */
     localBendMat_A[1][0] = localBendMat_A[0][1];
-    localBendMat_A[1][1] = ( 1) * bConst * (pow(s_alphBeta[y], 2)     + pow(s_alphBeta[z], 2));
+    localBendMat_A[1][1] = ( 1) * bConst * (pow(s_alphBeta[y], 2) + pow(s_alphBeta[z], 2));
     localBendMat_A[1][2] = (-1) * bConst * (s_alphBeta[y]*s_alphOmeg[y] + s_alphBeta[z]*s_alphOmeg[z]);
 
     localBendMat_A[1][3] = ( 1) * bConst * (s_alphBeta[y]*s_omegBeta[x]);
@@ -165,7 +165,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     /* Row (beta) X */
     localBendMat_A[2][0] = localBendMat_A[0][2];
     localBendMat_A[2][1] = localBendMat_A[1][2];
-    localBendMat_A[2][2] = ( 1) * bConst * (pow(s_alphOmeg[y], 2)     + pow(s_alphOmeg[z], 2));
+    localBendMat_A[2][2] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[z], 2));
 
     localBendMat_A[2][3] = (-1) * bConst * (s_alphOmeg[y]*s_omegBeta[x]);
     localBendMat_A[2][4] = ( 1) * bConst * (s_alphOmeg[y]*s_alphBeta[x]);
@@ -181,7 +181,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[3][1] = localBendMat_A[1][3];
     localBendMat_A[3][2] = localBendMat_A[2][3];
 
-    localBendMat_A[3][3] = ( 1) * bConst * (pow(s_omegBeta[z], 2)     + pow(s_omegBeta[x], 2));
+    localBendMat_A[3][3] = ( 1) * bConst * (pow(s_omegBeta[z], 2) + pow(s_omegBeta[x], 2));
     localBendMat_A[3][4] = (-1) * bConst * (s_omegBeta[z]*s_alphBeta[z] + s_omegBeta[x]*s_alphBeta[x]);
     localBendMat_A[3][5] = ( 1) * bConst * (s_omegBeta[z]*s_alphOmeg[z] + s_omegBeta[x]*s_alphOmeg[x]);
 
@@ -196,7 +196,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[4][2] = localBendMat_A[2][4];
 
     localBendMat_A[4][3] = localBendMat_A[3][4];
-    localBendMat_A[4][4] = ( 1) * bConst * (pow(s_alphBeta[z], 2)     + pow(s_alphBeta[x], 2));
+    localBendMat_A[4][4] = ( 1) * bConst * (pow(s_alphBeta[z], 2) + pow(s_alphBeta[x], 2));
     localBendMat_A[4][5] = (-1) * bConst * (s_alphBeta[z]*s_alphOmeg[z] + s_alphBeta[x]*s_alphOmeg[x]);
 
     localBendMat_A[4][6] = ( 1) * bConst * (s_alphBeta[z]*s_omegBeta[y]);
@@ -211,7 +211,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
     localBendMat_A[5][3] = localBendMat_A[3][5];
     localBendMat_A[5][4] = localBendMat_A[4][5];
-    localBendMat_A[5][5] = ( 1) * bConst * (pow(s_alphOmeg[z], 2)     + pow(s_alphOmeg[x], 2));
+    localBendMat_A[5][5] = ( 1) * bConst * (pow(s_alphOmeg[z], 2) + pow(s_alphOmeg[x], 2));
 
     localBendMat_A[5][6] = (-1) * bConst * (s_alphOmeg[z]*s_omegBeta[y]);
     localBendMat_A[5][7] = ( 1) * bConst * (s_alphOmeg[z]*s_alphBeta[y]);
@@ -227,7 +227,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[6][4] = localBendMat_A[4][6];
     localBendMat_A[6][5] = localBendMat_A[5][6];
 
-    localBendMat_A[6][6] = ( 1) * bConst * (pow(s_omegBeta[y], 2)     + pow(s_omegBeta[x], 2));
+    localBendMat_A[6][6] = ( 1) * bConst * (pow(s_omegBeta[y], 2) + pow(s_omegBeta[x], 2));
     localBendMat_A[6][7] = (-1) * bConst * (s_omegBeta[y]*s_alphBeta[y] + s_omegBeta[x]*s_alphBeta[x]);
     localBendMat_A[6][8] = ( 1) * bConst * (s_omegBeta[y]*s_alphOmeg[y] + s_omegBeta[x]*s_alphOmeg[x]);
 
@@ -242,7 +242,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[7][5] = localBendMat_A[5][7];
 
     localBendMat_A[7][6] = localBendMat_A[6][7];
-    localBendMat_A[7][7] = ( 1) * bConst * (pow(s_alphBeta[y], 2)     + pow(s_alphBeta[x], 2));
+    localBendMat_A[7][7] = ( 1) * bConst * (pow(s_alphBeta[y], 2) + pow(s_alphBeta[x], 2));
     localBendMat_A[7][8] = (-1) * bConst * (s_alphBeta[y]*s_alphOmeg[y] + s_alphBeta[x]*s_alphOmeg[x]);
 
 
@@ -257,7 +257,7 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
     localBendMat_A[8][6] = localBendMat_A[6][8];
     localBendMat_A[8][7] = localBendMat_A[7][8];
-    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2)     + pow(s_alphOmeg[y], 2));
+    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[y], 2));
 
 	return ierr;
 }

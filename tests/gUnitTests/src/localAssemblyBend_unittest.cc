@@ -191,7 +191,22 @@ TEST_F(testMake3DBendMat, testMatrixOutput1)
 {
     ASSERT_TRUE(DIMENSION == 3);
 
-    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locMat);
+    s_alphOmeg[0] = -0.25;
+    s_alphOmeg[1] =  0.50;
+    s_alphOmeg[2] =  0.00;
+
+    s_omegBeta[0] = -0.25;
+    s_omegBeta[1] =  0.50;
+    s_omegBeta[2] =  0.00;
+
+    s_alphBeta[0] = -0.50;
+    s_alphBeta[1] =  1.00;
+    s_alphBeta[2] =  0.00;
+
+    make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
+
+    EXPECT_NEAR(locMat[0][0],  3.59670514229285e-08, 1e-16);
+    EXPECT_DOUBLE_EQ(locMat[0][0],  3.59670514229285e-08);
 }
 
 
