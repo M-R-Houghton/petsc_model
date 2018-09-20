@@ -104,14 +104,14 @@ int main(int argc, char **args)
     /*
        Create linear solver context
     */
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
-	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
+	//ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
 	
 	/*
        Set operators. Here the matrix that defines the linear system
        also serves as the preconditioning matrix.
     */
-	ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
+	//ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
 
 	/*
 	  Set linear solver defaults for this problem (optional).
@@ -123,9 +123,9 @@ int main(int argc, char **args)
 	    KSPSetFromOptions();
 	*/
 	//*
-	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
-	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
+	//ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+	//ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
+	//ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
 	//*/
 
 	/*
@@ -135,7 +135,7 @@ int main(int argc, char **args)
       KSPSetFromOptions() is called _after_ any other customization
       routines.
     */
-    ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
+    //ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
     /*
     if (nonzeroguess) 
@@ -147,8 +147,10 @@ int main(int argc, char **args)
 	*/
 
 	/* solve linear system */
-    ierr = systemSolve();CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
+    ierr = systemSolve(A,x,b);CHKERRQ(ierr);
 
+    ierr = networkUpdate(box_ptr,b);CHKERRQ(ierr);
     /* assemble tripod matrix */
     char rowFile[100] = "data/row/row.f3tTripod1";
     char colFile[100] = "data/col/col.f3tTripod1";
@@ -163,7 +165,7 @@ int main(int argc, char **args)
     /*
 	  Solve linear system
 	*/
-	ierr = KSPSolve(ksp,x,b);CHKERRQ(ierr);
+	//ierr = KSPSolve(ksp,x,b);CHKERRQ(ierr);
 
 	/*
 	  View solver info; we could instead use the option -ksp_view to

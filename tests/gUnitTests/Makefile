@@ -40,8 +40,10 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 # All tests produced by this Makefile. Remember to add new tests you
 # created to the list.
 TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend \
-			networkBuild networkDestroy networkRead networkWrite \
-			vectorOperations systemAssembly
+			globalAssemblyStretch globalAssemblyBend networkBuild \
+			networkDestroy networkRead networkWrite \
+			vectorOperations systemAssembly systemSolve \
+			networkUpdate
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -56,7 +58,7 @@ MODEL_OBJ = $(patsubst %.c,%.o,$(MODEL_SRC))
 TESTS_OBJ = $(patsubst %,%_unittest.o,$(TESTS_EXE))
 
 
-# Build all unittests
+## all 			: Build all unit-tests
 all: $(TESTS_EXE)
 
 # Usually you shouldn't tweak such internal variables, indicated by a
@@ -100,8 +102,14 @@ $(TESTS_OBJ): %_unittest.o: $(TESTS_SRC_DIR)/%_unittest.cc $(MODEL_INC_DIR)/%.h 
 $(TESTS_EXE): %: %_unittest.o model.a gtest_main.a chkopts
 	$(CXX) $(CXXFLAGS) -lpthread ${PETSC_KSP_LIB} -o $@ $(addprefix $(TESTS_SRC_DIR)/,$(filter %.o,$^)) model.a gtest_main.a
 
+## gclean 		: Remove object files and libraries
+.PHONY : gclean
 gclean:
 	rm -f $(TESTS_EXE) gtest.a gtest_main.a model.a
 	find . -name '*.o' -exec rm {} \;
+
+.PHONY : help
+help : Makefile
+	@sed -n 's/^##//p' $<
 
 

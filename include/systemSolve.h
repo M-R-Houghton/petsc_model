@@ -7,6 +7,6 @@
  * \brief Initiates system solve routine.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode systemSolve();
+PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U);
 
 #endif

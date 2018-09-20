@@ -1,7 +1,7 @@
 #ifndef NETWORK_ANALYSIS_H
 #define NETWORK_ANALYSIS_H
 
-#include "systemSolve.h"
+#include "networkUpdate.h"
 
 /**
  * \brief Initiates network analysis routine.

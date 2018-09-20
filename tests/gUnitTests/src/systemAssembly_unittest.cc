@@ -27,6 +27,9 @@ TEST(testSystemAssembly, testErrorOutput)
     VecSetSizes(glbVec,PETSC_DECIDE,6);
 
     EXPECT_EQ(systemAssembly(box_ptr, par_ptr, glbMat, glbVec), 0);
+
+    MatDestroy(&glbMat);
+    VecDestroy(&glbVec);
 }
 
 TEST(testReadInt, testRowFileReadIn) 
