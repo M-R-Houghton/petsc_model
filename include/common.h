@@ -24,6 +24,10 @@
  */
 #define SPAN 2
 
+/* may remove and add back into .par files */
+#define GAMMA 0.05
+#define YOUNGS_MOD 1.0
+
 typedef struct parameters Parameters;
 typedef struct box Box;
 typedef struct node Node;
@@ -33,10 +37,8 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
-	/*
-	const char inputNetwork[MAX_NAME];
-	const char outputNetwork[MAX_NAME];
-	*/
+	const char *inputNetwork;
+	const char *outputNetwork;
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
 };

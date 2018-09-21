@@ -12,20 +12,26 @@ namespace {
 
 TEST(testDestroyParameters, testErrorOutput)
 {
-	Parameters *par_ptr = makeParameters(0.5,0.1);
+	const char inNetwork[]  = "data/dat/f3tTripod1_in.dat";
+	const char outNetwork[] = "data/dat/f3tTripod1_out.dat";
+
+	Parameters *par_ptr = makeParameters(inNetwork,outNetwork,0.5,0.1);
 	EXPECT_EQ(destroyParameters(par_ptr), 0);
 
-	Parameters *other_par_ptr = makeParameters(2.7,0.3);
+	Parameters *other_par_ptr = makeParameters(inNetwork,outNetwork,2.7,0.3);
 	EXPECT_EQ(destroyParameters(other_par_ptr), 0);
 }
 
 
 TEST(testDestroyParameters, testRemovedValues)
 {
-	Parameters *par_ptr = makeParameters(0.5,0.1);
+	const char inNetwork[]  = "data/dat/f3tTripod1_in.dat";
+	const char outNetwork[] = "data/dat/f3tTripod1_out.dat";
+
+	Parameters *par_ptr = makeParameters(inNetwork,outNetwork,0.5,0.1);
 	destroyParameters(par_ptr);
 
-	Parameters *other_par_ptr = makeParameters(2.7,0.3);
+	Parameters *other_par_ptr = makeParameters(inNetwork,outNetwork,2.7,0.3);
 	destroyParameters(other_par_ptr);
 
 	EXPECT_NE(par_ptr->gamma, 		  0.5);

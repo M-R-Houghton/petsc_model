@@ -55,7 +55,7 @@ struct testAddFibreLocalBend : ::testing::Test
         const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
     }
 
     void TearDown()

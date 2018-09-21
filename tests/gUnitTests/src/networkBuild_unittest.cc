@@ -14,11 +14,16 @@ TEST(testMakeParameters, testValueAssignment)
 {
 	PetscScalar gamma = 0.5, yMod = 1.0;
 
-	Parameters *par_ptr = makeParameters(gamma,yMod);
+	const char inNetwork[]  = "data/dat/f3tTripod1_in.dat";
+	const char outNetwork[] = "data/dat/f3tTripod1_out.dat";
+
+	Parameters *par_ptr = makeParameters(inNetwork, outNetwork, gamma, yMod);
 	EXPECT_TRUE(par_ptr != NULL);
 
-	EXPECT_EQ(par_ptr->gamma, 		  0.5);
-	EXPECT_EQ(par_ptr->youngsModulus, 1.0);
+	EXPECT_STREQ(par_ptr->inputNetwork,	 inNetwork);
+	EXPECT_STREQ(par_ptr->outputNetwork, outNetwork);
+	EXPECT_EQ(par_ptr->gamma, 		  	 0.5);
+	EXPECT_EQ(par_ptr->youngsModulus, 	 1.0);
 
 	free(par_ptr); par_ptr = NULL;
 	EXPECT_TRUE(par_ptr == NULL);

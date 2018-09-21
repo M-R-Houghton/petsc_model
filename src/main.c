@@ -26,12 +26,18 @@ int main(int argc, char **args)
 	/* set options file */
 	const char optFile[] = "modelOptions.dat";
 
+	/* set parameter file */
+	const char parFile[] = "data/par/f3tTripod1.par";
+
 	/* these will be put in the parameter file */
-	PetscScalar gamma = 0.05;
-	PetscScalar youngsModulus = 1.0;
+	PetscScalar gamma 		  = GAMMA;
+	PetscScalar youngsModulus = YOUNGS_MOD;
+
 	/* set input/output files */
 	const char inputNetwork[]  = "data/dat/f3tTripod1_in.dat";
 	const char outputNetwork[] = "data/dat/f3tTripod1_out.dat";
+
+	Parameters *par_ptr = makeParameters(inputNetwork,outputNetwork,gamma,youngsModulus);
 
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
@@ -84,7 +90,6 @@ int main(int argc, char **args)
 
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
-	Parameters *par_ptr = makeParameters(gamma,youngsModulus);
 	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 

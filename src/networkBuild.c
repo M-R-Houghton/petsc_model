@@ -11,12 +11,14 @@ PetscErrorCode networkBuild()
 
 
 /* Creates a parameters structure */
-Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod)
+Parameters *makeParameters(const char *input, const char *output, PetscScalar gamma, PetscScalar yMod)
 {
 	/* allocate memory */
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
 
 	/* assign attributes */
+	par_ptr->inputNetwork = input;
+	par_ptr->outputNetwork = output;
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
 

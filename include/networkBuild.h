@@ -15,7 +15,7 @@ PetscErrorCode networkBuild();
  * \param yMod Parameter representing the Youngs Modulus value
  * \return
  */
-Parameters *makeParameters(PetscScalar gamma, PetscScalar yMod);
+Parameters *makeParameters(const char *input, const char *output, PetscScalar gamma, PetscScalar yMod);
 
 /**
  * \brief Creates a sparse structure
