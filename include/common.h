@@ -11,6 +11,7 @@
 
 #define DIMENSION 3
 #define MAX_LENGTH 10000
+#define MAX_NAME 100
 #define PARAMETERS 8
 #define NODE_INTERNAL 0
 #define NODE_DANGLING 1
@@ -32,6 +33,10 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
+	/*
+	const char inputNetwork[MAX_NAME];
+	const char outputNetwork[MAX_NAME];
+	*/
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
 };
