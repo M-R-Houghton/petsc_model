@@ -43,7 +43,7 @@ TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend \
 			globalAssemblyStretch globalAssemblyBend networkBuild \
 			networkDestroy networkRead networkWrite \
 			vectorOperations systemAssembly systemSolve \
-			networkUpdate
+			networkUpdate resultsValidation
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
