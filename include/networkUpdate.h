@@ -20,4 +20,14 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U);
  */
 PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_U);
 
+/**
+ * \brief Updates a single dangling node using its 2 closest neighbouring nodes
+ * \param box_ptr Pointer to box, needed for making relevant distance vectors.
+ * \param alph_ptr Pointer to the node 2nd closest to the dangling node.
+ * \param beta_ptr Pointer to the node closest to the dangling node.
+ * \param delt_ptr Pointer to the dangling node that is to be updated.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_ptr, Node *delt_ptr);
+
 #endif

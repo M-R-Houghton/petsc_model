@@ -165,7 +165,10 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	node_ptr->xyzDisplacement[1] = 0;
 	node_ptr->xyzDisplacement[2] = 0;
 
-	switch (nType) 	/* NOTE: this assumes boundary nodes are fixed y=0, and sheared y=HEIGHT along the x-axis */
+	/* NOTE: node displacement assumes boundary nodes are fixed at y=0...	*
+	 *		...and sheared at y=HEIGHT along the x-axis 					*/
+
+	switch (nType)
 	{
 		case NODE_INTERNAL:
 			/* add global ID */

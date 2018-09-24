@@ -80,6 +80,11 @@ PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr)
 	PetscScalar yUpdated = node_ptr->xyzCoord[1] + node_ptr->xyzDisplacement[1];
 	PetscScalar zUpdated = node_ptr->xyzCoord[2] + node_ptr->xyzDisplacement[2];
 
+	/* cleaner method (eliminates duplication) */
+	//PetscScalar s_node[DIMENSION];
+	//ierr = updatePositionVec(s_node, node_ptr);CHKERRQ(ierr);
+	// change xUpdated, y, z etc. below...
+
 	fprintf(file_ptr, "n ");
 	fprintf(file_ptr, "%d ",   node_ptr->nodeID);
 	fprintf(file_ptr, "%d ",   node_ptr->nodeType);
