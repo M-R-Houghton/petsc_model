@@ -106,7 +106,7 @@ struct testAddStretchContToGlobal : ::testing::Test
         alpha_ptr = &(box_ptr->masterNodeList[0]);
         beta_ptr = &(box_ptr->masterNodeList[1]);
 
-        N = box_ptr->nodeInternalCount;
+        N = 2;
     }
 
     void TearDown()

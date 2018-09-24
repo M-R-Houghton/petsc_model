@@ -10,26 +10,53 @@ extern "C"
 
 namespace {
 
-TEST(testSystemAssembly, testErrorOutput)
+struct testSystemAssembly : ::testing::Test
 {
-    Box *box_ptr = NULL;
-    Parameters *par_ptr = NULL;
+    Box *box_ptr;
+    Parameters *par_ptr;
     Mat glbMat;
     Vec glbVec;
+    PetscScalar locMat[6][6], locVec[6];
+    Node *alpha_ptr, *beta_ptr;
+    PetscInt N;
 
-    MatCreate(PETSC_COMM_WORLD,&glbMat);
-    MatSetFromOptions(glbMat);
-    MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
-    MatSetUp(glbMat);
+    void SetUp()
+    {
+        MatCreate(PETSC_COMM_WORLD,&glbMat);
+        MatSetFromOptions(glbMat);
+        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
+        MatSetUp(glbMat);
 
-    VecCreate(PETSC_COMM_WORLD,&glbVec);
-    VecSetFromOptions(glbVec);
-    VecSetSizes(glbVec,PETSC_DECIDE,6);
+        VecCreate(PETSC_COMM_WORLD,&glbVec);
+        VecSetFromOptions(glbVec);
+        VecSetSizes(glbVec,PETSC_DECIDE,6);
 
+        locMat[0][0] = 0;
+        locVec[0] = 0;
+
+        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+
+        alpha_ptr = &(box_ptr->masterNodeList[0]);
+        beta_ptr = &(box_ptr->masterNodeList[1]);
+
+        N = 2;
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
+        MatDestroy(&glbMat);
+        VecDestroy(&glbVec);
+    }
+};
+
+TEST_F(testSystemAssembly, testErrorOutput)
+{
     EXPECT_EQ(systemAssembly(box_ptr, par_ptr, glbMat, glbVec), 0);
-
-    MatDestroy(&glbMat);
-    VecDestroy(&glbVec);
 }
 
 TEST(testReadInt, testRowFileReadIn) 
