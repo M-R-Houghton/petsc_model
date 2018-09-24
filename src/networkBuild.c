@@ -165,7 +165,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	node_ptr->xyzDisplacement[1] = 0;
 	node_ptr->xyzDisplacement[2] = 0;
 
-	switch (nType)
+	switch (nType) 	/* NOTE: this assumes boundary nodes are fixed y=0, and sheared y=HEIGHT along the x-axis */
 	{
 		case NODE_INTERNAL:
 			/* add global ID */
@@ -175,8 +175,8 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */
 			node_ptr->xyzDisplacement[0] = gamma * node_ptr->xyzCoord[1];
-			node_ptr->xyzDisplacement[1] = 0;
-			node_ptr->xyzDisplacement[2] = 0;
+/*		 	node_ptr->xyzDisplacement[1] = 0; *****	*
+ * 		 	node_ptr->xyzDisplacement[2] = 0; *****	*/
 			break;
 		case NODE_DANGLING:
 			/* do nothing at the moment */
