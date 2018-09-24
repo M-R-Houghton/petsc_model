@@ -21,6 +21,14 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U);
 PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_U);
 
 /**
+ * \brief Catches dangling fibres that should be avoided during network generation 
+ * \param fibre_ptr Pointer to the fibre to be checked.
+ * \param nOnFibre Number of nodes on each fibre
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre);
+
+/**
  * \brief Updates a single dangling node using its 2 closest neighbouring nodes
  * \param box_ptr Pointer to box, needed for making relevant distance vectors.
  * \param alph_ptr Pointer to the node 2nd closest to the dangling node.

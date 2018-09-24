@@ -18,7 +18,7 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 		/* update all internal nodes before updating dangling nodes */
 		if (node_ptr->nodeType == NODE_INTERNAL)
 		{
-			updateInternalNodeDisp(node_ptr, box_ptr->nodeInternalCount, globalVec_U);
+			ierr = updateInternalNodeDisp(node_ptr, box_ptr->nodeInternalCount, globalVec_U);CHKERRQ(ierr);
 		}
 
 		/* NOTE: don't need to update boundary nodes since they are updated
@@ -30,10 +30,27 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 	for (j = 0; j < box_ptr->fibreCount; j++)
 	{
 		Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
+		PetscInt nOnFibre = fibre_ptr->nodesOnFibre;
 
-		if (fibre_ptr->nodesOnFibre > 2)
+		ierr = checkForDanglingFibre(fibre_ptr, nOnFibre);CHKERRQ(ierr);
+		
+		if (nOnFibre > 2)
 		{
 			/* consider each end of the fibres node list */
+			if (fibre_ptr->nodesOnFibreList[0]->nodeType == NODE_DANGLING)
+			{
+				ierr = updateDanglingNodeDisp(box_ptr, fibre_ptr->nodesOnFibreList[2], 
+												fibre_ptr->nodesOnFibreList[1], 
+												fibre_ptr->nodesOnFibreList[0]);
+				CHKERRQ(ierr);
+			}
+			if (fibre_ptr->nodesOnFibreList[nOnFibre-1]->nodeType == NODE_DANGLING)
+			{
+				ierr = updateDanglingNodeDisp(box_ptr, fibre_ptr->nodesOnFibreList[nOnFibre-3], 
+												fibre_ptr->nodesOnFibreList[nOnFibre-2], 
+												fibre_ptr->nodesOnFibreList[nOnFibre-1]);
+				CHKERRQ(ierr);
+			}
 		}
 	}
 
@@ -67,13 +84,32 @@ PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_
 }
 
 
+/* Catches dangling fibres that should be avoided during network generation */
+PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre)
+{
+	PetscErrorCode ierr = 0;
+
+	if (nOnFibre == 3)
+	{
+		if (fibre_ptr->nodesOnFibreList[0]->nodeType == NODE_DANGLING &&
+			fibre_ptr->nodesOnFibreList[nOnFibre-1]->nodeType == NODE_DANGLING)
+		{
+			ierr = PetscPrintf(PETSC_COMM_WORLD,"[WARNING] Found dangling fibre!\n");CHKERRQ(ierr);
+		}
+	}
+
+	return ierr;
+}
+
+
 /* Updates a single dangling node using its 2 closest neighbouring nodes */
 PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_ptr, Node *delt_ptr)
 {
 	/* Vector operation summary:						*
 	 * 		s_ndel = s_nbet + l_betaDelt * t_nalpBeta 	*
  	 *		u_delt = s_ndel - s_delt 					*/
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+	PetscScalar 	l_betaDelt;
 
 	/* initialise initial position vectors */
     PetscScalar s_alph[DIMENSION];
@@ -90,17 +126,30 @@ PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_p
     PetscScalar s_nalpBeta[DIMENSION];
     PetscScalar t_nalpBeta[DIMENSION];
 
-    /* make position vectors */
     ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
     ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
     ierr = makePositionVec(s_delt, delt_ptr);CHKERRQ(ierr);
 
-    /* make updated position vectors */
     ierr = updatePositionVec(s_nalp, alph_ptr);CHKERRQ(ierr);
     ierr = updatePositionVec(s_nbet, beta_ptr);CHKERRQ(ierr);
 
-    /* make distance vector */
+    /* use distance vector to find previous segment length */
     ierr = makeDistanceVec(s_betaDelt, s_beta, s_delt, box_ptr);CHKERRQ(ierr);
+    l_betaDelt = vecMagnitude(s_betaDelt);
+
+    /* use new distance vector to find new orientation of dangling segment */
+    ierr = makeDistanceVec(s_nalpBeta, s_nalp, s_nbet, box_ptr);CHKERRQ(ierr);
+    ierr = makeTangentVec(t_nalpBeta, s_nalpBeta);CHKERRQ(ierr);
+
+    /* combine new direction with previous magnitude to find new position */
+    PetscInt i;
+    for (i = 0; i < DIMENSION; i++)
+    {
+    	/* find new position */
+    	s_ndel[i] = s_nbet[i] + (l_betaDelt * t_nalpBeta[i]);
+    	/* convert it back to a displacement */
+ 	 	delt_ptr->xyzDisplacement[i] = s_ndel[i] - s_delt[i];
+    }
 
 	return ierr;
 }
