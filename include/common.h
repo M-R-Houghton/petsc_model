@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <assert.h>
+#include <string.h>
 
 #include "minUnitMacros.h"
 
@@ -37,8 +38,8 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
-	const char *inputNetwork;
-	const char *outputNetwork;
+	char inputNetwork[MAX_NAME];
+	char outputNetwork[MAX_NAME];
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
 };

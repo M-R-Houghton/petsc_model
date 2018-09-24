@@ -1,5 +1,13 @@
 #include "parameterRead.h"
 
+void checkFileNameLengths(const char *inputFileName, const char *outputFileName)
+{
+	/* adjust MAX_NAME in common.h if this fails */
+	assert(strlen(inputFileName)  < MAX_NAME);
+	assert(strlen(outputFileName) < MAX_NAME);
+}
+
+
 /* Initiates parameter file read in routine */
 PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr)
 {
@@ -21,11 +29,8 @@ PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr)
 
 	/* scan both lines at once */
 	fscanf(file_ptr, " %s\n %s\n", inputNetwork, outputNetwork);
-   
-   	/* use these to check for unwanted whitespace */
-   	printf("Read input file  |%s|\n", inputNetwork  );
-   	printf("Read output file |%s|\n", outputNetwork );
 
+	checkFileNameLengths(inputNetwork, outputNetwork);
 
    	/* use obtained information to set up parameters */
    	*par_ptr = makeParameters(inputNetwork, outputNetwork, gamma, youngsModulus);

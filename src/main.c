@@ -7,6 +7,7 @@ static char help[] = "The first draft of the PETSc model.\n\n";
 int main(int argc, char **args)
 {
 	Box  		   *box_ptr;
+	Parameters 	   *par_ptr;
 	Vec            x, b, u;      /* approx solution, RHS, exact solution */
   	Mat            A;            /* linear system matrix */
   	KSP            ksp;          /* linear solver context */
@@ -29,16 +30,6 @@ int main(int argc, char **args)
 	/* set parameter file */
 	const char parFile[] = "data/par/f3tTripod1.par";
 
-	/* these will be put in the parameter file */
-	PetscScalar gamma 		  = GAMMA;
-	PetscScalar youngsModulus = YOUNGS_MOD;
-
-	/* set input/output files */
-	const char inputNetwork[]  = "data/dat/f3tTripod1_in.dat";
-	const char outputNetwork[] = "data/dat/f3tTripod1_out.dat";
-
-	Parameters *par_ptr = makeParameters(inputNetwork,outputNetwork,gamma,youngsModulus);
-
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
 	ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
@@ -55,9 +46,11 @@ int main(int argc, char **args)
 	ierr = PetscLogStageRegister("Network Analysis", &stages[2]);CHKERRQ(ierr);
 	ierr = PetscLogStageRegister("Network Write-out",&stages[3]);CHKERRQ(ierr);
 
+	ierr = parameterRead(parFile, &par_ptr);CHKERRQ(ierr);
+
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
-	ierr = networkRead(inputNetwork, &box_ptr, gamma);CHKERRQ(ierr);
+	ierr = networkRead(par_ptr->inputNetwork, &box_ptr, par_ptr->gamma);CHKERRQ(ierr);
 	N 	 = box_ptr->nodeInternalCount;
 	n 	 = N * DIMENSION;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
@@ -201,7 +194,7 @@ int main(int argc, char **args)
 
     /* write out new network data file */
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
-    ierr = networkWrite(outputNetwork, box_ptr);CHKERRQ(ierr);
+    ierr = networkWrite(par_ptr->outputNetwork, box_ptr);CHKERRQ(ierr);
     ierr = destroyBox(box_ptr);CHKERRQ(ierr);
     ierr = destroyParameters(par_ptr);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);

@@ -17,8 +17,8 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
 
 	/* assign attributes */
-	par_ptr->inputNetwork = input;
-	par_ptr->outputNetwork = output;
+	strcpy(par_ptr->inputNetwork, input);
+	strcpy(par_ptr->outputNetwork, output);
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
 

@@ -37,8 +37,8 @@ TEST_F(testParameterRead, testErrorOutput)
 
 TEST_F(testParameterRead, testOutputValues)
 {
-    const char input[]  = "../../data/dat/f3tTripod1_in.dat";
-    const char output[] = "../../data/dat/f3tTripod1_out.dat";
+    const char input[]  = "data/dat/f3tTripod1_in.dat";
+    const char output[] = "data/dat/f3tTripod1_out.dat";
     parameterRead(fileToRead, &par_ptr);
 
     EXPECT_STREQ(par_ptr->inputNetwork,     input);
