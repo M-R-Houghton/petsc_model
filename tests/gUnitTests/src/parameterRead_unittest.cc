@@ -19,7 +19,7 @@ struct testParameterRead : ::testing::Test
     void SetUp()
     {
         // open file, read in line and close
-        fileToRead = "../../data/par/f3tTripod1.par";
+        fileToRead = "../../data/par/tri_3d_01.par";
     }
 
     void TearDown()
@@ -37,8 +37,8 @@ TEST_F(testParameterRead, testErrorOutput)
 
 TEST_F(testParameterRead, testOutputValues)
 {
-    const char input[]  = "data/dat/f3tTripod1_in.dat";
-    const char output[] = "data/dat/f3tTripod1_out.dat";
+    const char input[]  = "data/dat/tri/tri_3d_01_in.dat";
+    const char output[] = "data/dat/tri/tri_3d_01_out.dat";
     parameterRead(fileToRead, &par_ptr);
 
     EXPECT_STREQ(par_ptr->inputNetwork,     input);

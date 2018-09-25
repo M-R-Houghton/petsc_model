@@ -18,7 +18,7 @@ struct testNetworkUpdate : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);
@@ -52,7 +52,7 @@ struct testUpdateInternalNodeDisp : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);
@@ -88,7 +88,7 @@ struct testUpdateDanglingNodeDisp : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         alph_ptr = &(box_ptr->masterNodeList[0]);

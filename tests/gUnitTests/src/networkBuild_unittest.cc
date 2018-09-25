@@ -14,8 +14,8 @@ TEST(testMakeParameters, testValueAssignment)
 {
 	PetscScalar gamma = 0.5, yMod = 1.0;
 
-	const char inNetwork[]  = "data/dat/f3tTripod1_in.dat";
-	const char outNetwork[] = "data/dat/f3tTripod1_out.dat";
+	const char inNetwork[]  = "data/dat/tri/tri_3d_01_in.dat";
+	const char outNetwork[] = "data/dat/tri/tri_3d_01_out.dat";
 
 	Parameters *par_ptr = makeParameters(inNetwork, outNetwork, gamma, yMod);
 	EXPECT_TRUE(par_ptr != NULL);

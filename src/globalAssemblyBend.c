@@ -12,8 +12,8 @@ void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A,
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
+											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		row;
@@ -32,6 +32,27 @@ PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9],
 			val[j] = localMat[lInd_A + 3*i][lInd_B + 3*j];
 		}
 		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, ADD_VALUES);CHKERRQ(ierr);
+	}
+
+	return ierr;
+}
+
+
+/* Adds a single bending contribution of 9 values to the global matrix */
+PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
+										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+{
+	PetscErrorCode 	ierr = 0;
+	PetscInt 		i,j;
+
+	checkMatBendContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
+
+	for (i = 0; i < DIMENSION; i++)
+	{
+		for (j = 0; j < DIMENSION; j++)
+		{
+			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 3*i][lInd_B + 3*j], ADD_VALUES);CHKERRQ(ierr);
+		}
 	}
 
 	return ierr;

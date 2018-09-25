@@ -31,7 +31,7 @@ struct testAddLocalContributions : ::testing::Test
         VecSetFromOptions(testVector);
         VecSetSizes(testVector,PETSC_DECIDE,size);
 
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);

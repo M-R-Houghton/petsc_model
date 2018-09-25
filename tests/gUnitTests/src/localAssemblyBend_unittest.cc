@@ -52,7 +52,7 @@ struct testAddFibreLocalBend : ::testing::Test
         VecSetFromOptions(testVector);
         VecSetSizes(testVector,PETSC_DECIDE,3);
 
-        const char fileToRead[] = "../../data/dat/tri/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
@@ -184,7 +184,7 @@ struct testMake2DBendVec : ::testing::Test
         s_alphBeta[0] =  2.0;
         s_alphBeta[1] = -2.0;
 
-        const char fileToRead[] = "../../data/dat/lmb/lmbDefault_in.dat";
+        const char fileToRead[] = "../../data/dat/lmb/lmb_2d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         alph_ptr = &(box_ptr->masterNodeList[1]);

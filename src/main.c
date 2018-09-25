@@ -24,7 +24,7 @@ int main(int argc, char **args)
 	PetscLogStage stages[4];
 #endif
 
-	if (argc != 2)
+	if (argc < 2)
 	{
 		printf("[ERROR] Incorrect number of arguments provided.\n");
 		exit(EXIT_FAILURE);
@@ -99,7 +99,7 @@ int main(int argc, char **args)
     ierr = VecSet(u,one);CHKERRQ(ierr);
     ierr = MatMult(A,u,b);CHKERRQ(ierr);
 
-    ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +178,7 @@ int main(int argc, char **args)
 	//ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         	Check solution and clean up

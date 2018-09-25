@@ -62,7 +62,7 @@ struct testAddFibreLocalStretch : ::testing::Test
         VecSetFromOptions(testVector);
         VecSetSizes(testVector,PETSC_DECIDE,3);
 
-        const char fileToRead[] = "../../data/dat/tri/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
@@ -157,7 +157,7 @@ struct testMake2DStretchVec : ::testing::Test
         tangVec[0] = 0.7071067811865475;
         tangVec[1] = -0.7071067811865475;
 
-        const char fileToRead[] = "../../data/dat/lmb/lmbDefault_in.dat";
+        const char fileToRead[] = "../../data/dat/lmb/lmb_2d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         alpha_ptr = &(box_ptr->masterNodeList[1]);

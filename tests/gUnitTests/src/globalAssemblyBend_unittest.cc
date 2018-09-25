@@ -25,7 +25,7 @@ struct testAddMatSingleBendCont : ::testing::Test
         MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,3,3);
         MatSetUp(glbMat);
 
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         N = box_ptr->nodeInternalCount;
@@ -54,7 +54,7 @@ struct testAddVecSingleBendCont : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);

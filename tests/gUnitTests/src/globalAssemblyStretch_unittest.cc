@@ -19,7 +19,7 @@ struct testAddMatSingleStretchCont : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         MatCreate(PETSC_COMM_WORLD,&glbMat);
@@ -53,7 +53,7 @@ struct testAddVecSingleStretchCont : ::testing::Test
 
     void SetUp()
     {
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);

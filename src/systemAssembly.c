@@ -153,11 +153,11 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	ierr = KSPSolve(ksp,B,U);CHKERRQ(ierr);
 
 	/* View solver info */
-	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* Get iteration count */
 	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"Iterations %D\n",its);CHKERRQ(ierr);
+	//ierr = PetscPrintf(PETSC_COMM_WORLD,"Iterations %D\n",its);CHKERRQ(ierr);
 
 	//ierr = VecView(U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 

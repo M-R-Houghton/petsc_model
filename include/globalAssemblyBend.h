@@ -24,6 +24,10 @@ void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A,
  * \param lInd_B The local index for node_B.
  * \return Petsc error code.
  */
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
+										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+
+
 PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
 										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
 

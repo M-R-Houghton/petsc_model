@@ -7,7 +7,7 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Updating network...\n");CHKERRQ(ierr);
 
-	ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* update network by looping node by node */
 	PetscInt i;
