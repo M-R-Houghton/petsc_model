@@ -54,9 +54,49 @@ struct testSystemAssembly : ::testing::Test
     }
 };
 
+
 TEST_F(testSystemAssembly, testErrorOutput)
 {
     EXPECT_EQ(systemAssembly(box_ptr, par_ptr, glbMat, glbVec), 0);
+}
+
+
+TEST_F(testSystemAssembly, DISABLED_testGlobalMatValues)
+{
+    /* write a test for lmbAdd1 matrix value validation */
+    /*
+    0   0   0.0004443160618341999 
+    0   2   -0.0002221163788895548
+    0   1   -0.0002221774685299544  
+    0   3   0.0002221108252858821
+
+    2   0   -0.0002221163788895548
+    2   2   0.0004443160618341999  
+    2   1   0.0002221108252858821 
+    2   3   -0.0002221774685299544 
+
+    1   1   0.0006664842743580332 
+    1   3   -0.0002220923132736397 
+    1   0   -0.0002221774685299544 
+    1   2   0.0002221108252858821 
+
+    3   1   -0.0002220923132736397 
+    3   3   0.0006664842743580332 
+    3   0   0.0002221108252858821 
+    3   2   -0.0002221774685299544 
+    */
+}
+
+
+TEST_F(testSystemAssembly, DISABLED_testGlobalRHSVecValues)
+{
+    /* write a test for lmbAdd1 vector value validation */
+    /*
+    -1.110720734539591e-09 
+     4.443105082305272e-05 
+    -1.110720734539591e-09 
+     2.221441469078285e-09 
+    */
 }
 
 TEST(testReadInt, testRowFileReadIn) 
