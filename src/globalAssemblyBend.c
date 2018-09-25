@@ -123,6 +123,10 @@ PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N
 			ierr = PetscPrintf(PETSC_COMM_WORLD,"alph I\n");
 			/* add (alpha,alpha) matrix contributions */
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, alph_gID, alph_gID, alph_lID, alph_lID);CHKERRQ(ierr);
+
+			/* add (alpha,omega) and (omega,alpha) mixed matrix contributions */
+			ierr = addMatSingleBendCont(globalMat_H, localMat, N, alph_gID, omeg_gID, alph_lID, omeg_lID);CHKERRQ(ierr);
+			ierr = addMatSingleBendCont(globalMat_H, localMat, N, omeg_gID, alph_gID, omeg_lID, alph_lID);CHKERRQ(ierr);
 		}
 
 		if (beta_ptr->nodeType == NODE_INTERNAL)
@@ -130,6 +134,10 @@ PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N
 			ierr = PetscPrintf(PETSC_COMM_WORLD,"beta I\n");
 			/* add (beta,beta) matrix contributions */
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, beta_gID, beta_gID, beta_lID, beta_lID);CHKERRQ(ierr);
+
+			/* add (omega,beta) and (beta,omega) mixed matrix contributions */
+			ierr = addMatSingleBendCont(globalMat_H, localMat, N, omeg_gID, beta_gID, omeg_lID, beta_lID);CHKERRQ(ierr);
+			ierr = addMatSingleBendCont(globalMat_H, localMat, N, beta_gID, omeg_gID, beta_lID, omeg_lID);CHKERRQ(ierr);
 		}
 
 		if (alph_ptr->nodeType == NODE_INTERNAL &&
