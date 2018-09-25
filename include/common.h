@@ -10,7 +10,7 @@
 
 #include "minUnitMacros.h"
 
-#define DIMENSION 3
+#define DIMENSION 2
 #define MAX_LENGTH 10000
 #define MAX_NAME 100
 #define PARAMETERS 8

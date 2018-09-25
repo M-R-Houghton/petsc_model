@@ -24,11 +24,17 @@ int main(int argc, char **args)
 	PetscLogStage stages[4];
 #endif
 
+	if (argc != 2)
+	{
+		printf("[ERROR] Incorrect number of arguments provided.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	/* set options file */
 	const char optFile[] = "modelOptions.dat";
 
 	/* set parameter file */
-	const char parFile[] = "data/par/f3tTripod1.par";
+	char *parFile = args[1];
 
 	printf("[STATUS] Initialising...\n");
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;

@@ -62,7 +62,7 @@ struct testAddFibreLocalStretch : ::testing::Test
         VecSetFromOptions(testVector);
         VecSetSizes(testVector,PETSC_DECIDE,3);
 
-        const char fileToRead[] = "../../data/dat/f3tTripod1_in.dat";
+        const char fileToRead[] = "../../data/dat/tri/f3tTripod1_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
@@ -79,6 +79,8 @@ struct testAddFibreLocalStretch : ::testing::Test
 
 TEST_F(testAddFibreLocalStretch, testErrorOutput) 
 {
+    ASSERT_TRUE(DIMENSION == 3);
+
     EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 0), 0);
     EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 1), 0);
 }
@@ -86,12 +88,14 @@ TEST_F(testAddFibreLocalStretch, testErrorOutput)
 
 struct testMake2DStretchMat : ::testing::Test
 {
+    PetscScalar k;
     PetscScalar locMat[6][6];
     PetscScalar tangVec[DIMENSION];
     void SetUp()
     {
-        tangVec[0] = 1.0;
-        tangVec[1] = 2.0;
+        k = 0.0002221441469079183;
+        tangVec[0] = 0.7071067811865475;
+        tangVec[1] = -0.7071067811865475;
     }
 
     void TearDown()
@@ -101,11 +105,41 @@ struct testMake2DStretchMat : ::testing::Test
 };
 
 
-TEST_F(testMake2DStretchMat, DISABLED_testOutputValues)
+TEST_F(testMake2DStretchMat, testErrorOutput)
 {
 	ASSERT_TRUE(DIMENSION == 2);
 
     EXPECT_EQ(make2DStretchMat(1.0, tangVec, locMat), 0);
+}
+
+
+TEST_F(testMake2DStretchMat, testMatrixOutput)
+{
+    ASSERT_TRUE(DIMENSION == 2);
+
+    make2DStretchMat(k, tangVec, locMat);
+
+
+    EXPECT_DOUBLE_EQ(locMat[0][0],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[0][1], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[0][2], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[0][3],  0.0001110720734539591);
+
+    EXPECT_DOUBLE_EQ(locMat[1][0], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[1][1],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[1][2],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[1][3], -0.0001110720734539591);
+
+    EXPECT_DOUBLE_EQ(locMat[2][0], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[2][1],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[2][2],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[2][3], -0.0001110720734539591);
+
+    EXPECT_DOUBLE_EQ(locMat[3][0],  0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[3][1], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[3][2], -0.0001110720734539591);
+    EXPECT_DOUBLE_EQ(locMat[3][3],  0.0001110720734539591);
+
 }
 
 
@@ -114,32 +148,47 @@ struct testMake2DStretchVec : ::testing::Test
     Box *box_ptr;
     Node *alpha_ptr;
     Node *beta_ptr;
+    PetscScalar k;
     PetscScalar locVec[6];
     PetscScalar tangVec[DIMENSION];
     void SetUp()
     {
-        tangVec[0] = 1.0;
-        tangVec[1] = 2.0;
+        k = 0.0002221441469079183;
+        tangVec[0] = 0.7071067811865475;
+        tangVec[1] = -0.7071067811865475;
 
-        const char fileToRead[] = "data/exReadNetwork.dat";
+        const char fileToRead[] = "../../data/dat/lmb/lmbDefault_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        alpha_ptr = &(box_ptr->masterNodeList[0]);
-        beta_ptr  = &(box_ptr->masterNodeList[1]);
+        alpha_ptr = &(box_ptr->masterNodeList[1]);
+        beta_ptr  = &(box_ptr->masterNodeList[2]);
     }
 
     void TearDown()
     {
-        
+        destroyBox(box_ptr);
     }
 };
 
 
-TEST_F(testMake2DStretchVec, DISABLED_testOutputValues)
+TEST_F(testMake2DStretchVec, testErrorOutput)
 {
     ASSERT_TRUE(DIMENSION == 2);
 
     EXPECT_EQ(make2DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
+}
+
+
+TEST_F(testMake2DStretchVec, testOutputValues)
+{
+    ASSERT_TRUE(DIMENSION == 2);
+
+    make2DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, k, tangVec, locVec);
+
+    EXPECT_DOUBLE_EQ(locVec[0], -1.110720734539591e-05);
+    EXPECT_DOUBLE_EQ(locVec[1],  1.110720734539591e-05);
+    EXPECT_DOUBLE_EQ(locVec[2],  1.110720734539591e-05);
+    EXPECT_DOUBLE_EQ(locVec[3], -1.110720734539591e-05);
 }
 
 
