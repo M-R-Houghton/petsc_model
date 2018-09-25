@@ -35,8 +35,8 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
-	PetscScalar localStretchMat_A[2*DIMENSION][2*DIMENSION];
-	PetscScalar localStretchVec_b[2*DIMENSION];
+	PetscScalar localStretchMat_A[6][6];
+	PetscScalar localStretchVec_b[6];        /* actual size will be 2*DIMENSION */
 
 	/* setup static vectors */
 	PetscScalar s_alph[DIMENSION];

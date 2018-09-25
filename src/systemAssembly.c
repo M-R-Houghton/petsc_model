@@ -4,8 +4,6 @@
 PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 {
 	PetscErrorCode ierr;
-	PetscInt       i,n = 10,col[3];
-	PetscScalar    value[3];
 
 	/*
 	 * Calculate sparsity of global matrix
@@ -24,6 +22,8 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 	 * Assemble matrix (REFERENCE)
 	 */
 	/*
+	PetscInt       i,n = 10,col[3];
+	PetscScalar    value[3];
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Assembling system...\n");CHKERRQ(ierr);
 	value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
 	for(i=1; i<n-1; i++) 

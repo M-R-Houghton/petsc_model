@@ -32,8 +32,8 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
-	PetscScalar localBendMat_A[3*DIMENSION][3*DIMENSION];
-	PetscScalar localBendVec_b[3*DIMENSION];
+	PetscScalar localBendMat_A[9][9];
+	PetscScalar localBendVec_b[9];         /* actual size will be 3*DIMENSION */
 
 	/* setup position vectors */
 	PetscScalar s_alph[DIMENSION];
