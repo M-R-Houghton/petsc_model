@@ -354,7 +354,7 @@ TEST_F(testFileEquality, testLambdaAdd4Results)
 }
 
 
-TEST_F(testFileEquality, DISABLED_testLattice2DResults) 
+TEST_F(testFileEquality, testLattice2DResults) 
 {
     oldFile = "../../data/dat/ref/dil_0_94_out.dat";
     newFile = "../../data/dat/lat2D/dil_0_94_out.dat";
@@ -374,7 +374,7 @@ TEST_F(testFileEquality, DISABLED_testLattice2DResults)
 }
 
 
-TEST_F(testFileEquality, DISABLED_testLattice3DResults) 
+TEST_F(testFileEquality, testLattice3DResults) 
 {
     oldFile = "../../data/dat/ref/f3tLat02_out.dat";
     newFile = "../../data/dat/lat3D/lat_02_out.dat";
