@@ -165,6 +165,13 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	node_ptr->xyzDisplacement[1] = 0;
 	node_ptr->xyzDisplacement[2] = 0;
 
+	/* assign affine displacements like boundary nodes */
+	/*
+	node_ptr->xyzAffDisplacement[0] = gamma * y;
+	node_ptr->xyzAffDisplacement[0] = 0;
+	node_ptr->xyzAffDisplacement[0] = 0;
+	 */
+
 	/* NOTE: node displacement assumes boundary nodes are fixed at y=0...	*
 	 *		...and sheared at y=HEIGHT along the x-axis 					*/
 

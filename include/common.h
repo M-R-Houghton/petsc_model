@@ -64,6 +64,9 @@ struct node
 	PetscInt globalID;
 	PetscScalar xyzCoord[3];
 	PetscScalar xyzDisplacement[3];
+	/*
+	PetscScalar xyzAffDisplacement[3];
+	 */
 };
 
 /* structure for fibres */
