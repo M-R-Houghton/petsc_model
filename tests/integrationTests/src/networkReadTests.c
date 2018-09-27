@@ -19,7 +19,7 @@ PetscErrorCode test_networkRead()
 	PetscErrorCode ierr;
 	Box *box_ptr;
 
-    const char *fileToRead = "data/dat/f3tTripod1_in.dat";
+    const char *fileToRead = "data/dat/tri/tri_3d_01_in.dat";
 
 	ierr = networkRead(fileToRead, &box_ptr, 0.05);CHKERRQ(ierr);
 

@@ -51,7 +51,7 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
 
-        PetscScalar *u_alph = alph_ptr->xyzDisplacement;
+        PetscScalar *u_alph = alph_ptr->xyzDisplacement;    /* need to decide if it's safer to use makeDisplacementVec() here */
         PetscScalar *u_beta = beta_ptr->xyzDisplacement;
 
 		/* make position vectors for alpha and beta */

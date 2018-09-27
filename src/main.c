@@ -62,6 +62,10 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
+	/* simple check to make sure macro is correctly set */
+	if (box_ptr->xyzDimension[2] == 0.0) assert(DIMENSION == 2);
+	if (box_ptr->xyzDimension[2] != 0.0) assert(DIMENSION == 3);
+
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Compute the matrix and right-hand-side vector that define
          	the linear system, Ax = b.

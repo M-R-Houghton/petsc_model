@@ -3,8 +3,11 @@
 /* Tests system solve routine */
 PetscErrorCode test_systemSolve()
 {
-	PetscErrorCode ierr;
-	ierr = systemSolve();CHKERRQ(ierr);
+	PetscErrorCode 	ierr = 0;
+	//Mat 			globalH=NULL;
+	//Vec 			globalB=NULL, globalU=NULL;
+
+	//ierr = systemSolve(globalH, globalB, globalU);CHKERRQ(ierr);
 
 	return ierr;
 }
