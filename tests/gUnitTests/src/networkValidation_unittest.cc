@@ -394,10 +394,50 @@ TEST_F(testFileEquality, testLattice3DResults)
 }
 
 
-TEST_F(testFileEquality, DISABLED_testRandom2DResults) 
+TEST_F(testFileEquality, test2DRandom1Results) 
 {
     oldFile = "../../data/dat/ref/rnd01_out.dat";
     newFile = "../../data/dat/rnd2D/rnd01_out.dat";
+
+    fp_old = fopen(oldFile, "r");
+    ASSERT_FALSE(fp_old == NULL);
+
+    fp_new = fopen(newFile, "r");
+    ASSERT_FALSE(fp_new == NULL);
+
+    do {
+        lineOld_ptr = fgets(lineOld, sizeof(lineOld), fp_old);
+        lineNew_ptr = fgets(lineNew, sizeof(lineNew), fp_new);
+        
+        EXPECT_STREQ(lineOld_ptr, lineNew_ptr);
+    } while (lineOld_ptr != NULL && lineNew_ptr != NULL);
+}
+
+
+TEST_F(testFileEquality, test2DRandom2Results) 
+{
+    oldFile = "../../data/dat/ref/rnd02_out.dat";
+    newFile = "../../data/dat/rnd2D/rnd02_out.dat";
+
+    fp_old = fopen(oldFile, "r");
+    ASSERT_FALSE(fp_old == NULL);
+
+    fp_new = fopen(newFile, "r");
+    ASSERT_FALSE(fp_new == NULL);
+
+    do {
+        lineOld_ptr = fgets(lineOld, sizeof(lineOld), fp_old);
+        lineNew_ptr = fgets(lineNew, sizeof(lineNew), fp_new);
+        
+        EXPECT_STREQ(lineOld_ptr, lineNew_ptr);
+    } while (lineOld_ptr != NULL && lineNew_ptr != NULL);
+}
+
+
+TEST_F(testFileEquality, test2DRandom3Results) 
+{
+    oldFile = "../../data/dat/ref/rnd03_out.dat";
+    newFile = "../../data/dat/rnd2D/rnd03_out.dat";
 
     fp_old = fopen(oldFile, "r");
     ASSERT_FALSE(fp_old == NULL);

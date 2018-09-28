@@ -10,7 +10,7 @@
 
 #include "minUnitMacros.h"
 
-#define DIMENSION 2
+#define DIMENSION 3
 #define MAX_LENGTH 10000
 #define MAX_NAME 100
 #define PARAMETERS 8
@@ -64,9 +64,7 @@ struct node
 	PetscInt globalID;
 	PetscScalar xyzCoord[3];
 	PetscScalar xyzDisplacement[3];
-	/*
 	PetscScalar xyzAffDisplacement[3];
-	 */
 };
 
 /* structure for fibres */

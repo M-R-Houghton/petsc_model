@@ -166,11 +166,9 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	node_ptr->xyzDisplacement[2] = 0;
 
 	/* assign affine displacements like boundary nodes */
-	/*
 	node_ptr->xyzAffDisplacement[0] = gamma * y;
 	node_ptr->xyzAffDisplacement[0] = 0;
-	node_ptr->xyzAffDisplacement[0] = 0;
-	 */
+	node_ptr->xyzAffDisplacement[0] = 0; 	/* is node_ptr->xyzCoord[1] safer than y? */
 
 	/* NOTE: node displacement assumes boundary nodes are fixed at y=0...	*
 	 *		...and sheared at y=HEIGHT along the x-axis 					*/
@@ -184,7 +182,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */
-			node_ptr->xyzDisplacement[0] = gamma * node_ptr->xyzCoord[1];
+			node_ptr->xyzDisplacement[0] = gamma * y;
 /*		 	node_ptr->xyzDisplacement[1] = 0; *****	*
  * 		 	node_ptr->xyzDisplacement[2] = 0; *****	*/
 			break;
