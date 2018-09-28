@@ -48,7 +48,7 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	*/
 	ierr = KSPSolve(ksp,globalVec_B,globalVec_U);CHKERRQ(ierr);
 
-	ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/*
 	  View solver info; we could instead use the option -ksp_view to
