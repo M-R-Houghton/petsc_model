@@ -42,6 +42,12 @@ struct parameters
 	char outputNetwork[MAX_NAME];
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
+	/*
+	PetscScalar energyStre;
+	PetscScalar energyBend;
+	PetscScalar energyTotl;
+	PetscScalar shearModulus;
+	 */
 };
 
 /* structure for the domain */

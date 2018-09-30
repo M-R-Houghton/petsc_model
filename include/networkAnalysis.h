@@ -51,10 +51,9 @@ PetscScalar calculateBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fInd
  * \brief Calculates the energy of an entire network
  * \param box_ptr
  * \param par_ptr
- * \param energy_ptr
  * \return
  */
-PetscScalar calculateEnergy(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
+PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr);
 
 /**
  * \brief Calculates the area of a network
@@ -82,19 +81,9 @@ PetscScalar aperiodicRange(Box *box_ptr, PetscInt i);
  * \brief Calculates the shear modulus of a network
  * \param box_ptr
  * \param par_ptr
- * \param energy_ptr
  * \return
  */
-PetscScalar calculateShearModulus(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
-
-/**
- * \brief Calculates the affine shear modulus of a network
- * \param box_ptr
- * \param par_ptr
- * \param energy_ptr
- * \return
- */
-PetscScalar calculateAffShearModulus(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
+PetscScalar calculateShearModulus(Box *box_ptr, Parameters *par_ptr);
 
 
 #endif

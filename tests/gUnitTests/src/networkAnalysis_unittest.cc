@@ -30,189 +30,244 @@ TEST_F(testNetworkAnalysis, testErrorOutput)
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateSegStretchEnergy : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
+    PetscInt fIndex;
+    Node *alph_ptr;
+    Node *omeg_ptr;
+    Node *beta_ptr;
     void SetUp()
     {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
 
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+
+        alph_ptr = &(box_ptr->masterNodeList[0]);
+        beta_ptr = &(box_ptr->masterNodeList[4]);
+
+        fIndex = 0;
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateSegStretchEnergy, testErrorOutput)
 {
-    EXPECT_DOUBLE_EQ( calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-                                        Node *alph_ptr, Node *beta_ptr ), 0.0);
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 0.0);
 }
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
-{
-    calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-                                     Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr );
-}
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateSegBendEnergy : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
+    PetscInt fIndex;
+    Node *alph_ptr;
+    Node *omeg_ptr;
+    Node *beta_ptr;
     void SetUp()
     {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
 
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+
+        alph_ptr = &(box_ptr->masterNodeList[0]);
+        omeg_ptr = &(box_ptr->masterNodeList[4]);
+        beta_ptr = &(box_ptr->masterNodeList[1]);
+
+        fIndex = 0;
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateSegBendEnergy, testErrorOutput)
 {
-    calculateStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateStretchEnergy : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
+    PetscInt fIndex;
     void SetUp()
     {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
 
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateStretchEnergy, testErrorOutput)
 {
-    calculateBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+    EXPECT_DOUBLE_EQ(calculateStretchEnergy(box_ptr, par_ptr, fIndex), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateBendEnergy : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
+    PetscInt fIndex;
     void SetUp()
     {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
 
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateBendEnergy, testErrorOutput)
 {
-    calculateEnergy(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
+    EXPECT_DOUBLE_EQ(calculateBendEnergy(box_ptr, par_ptr, fIndex), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateEnergy : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
     void SetUp()
     {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
 
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateEnergy, testErrorOutput)
 {
-    calculateArea(Box *box_ptr);
+    EXPECT_EQ(calculateEnergy(box_ptr, par_ptr), 0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateArea : ::testing::Test
 {
+    Box *box_ptr;
     void SetUp()
     {
-
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateArea, testErrorOutput)
 {
-    calculateVolume(Box *box_ptr);
+    EXPECT_DOUBLE_EQ(calculateArea(box_ptr), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateVolume : ::testing::Test
 {
+    Box *box_ptr;
     void SetUp()
     {
-
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateVolume, testErrorOutput)
 {
-    aperiodicRange(Box *box_ptr, PetscInt i);
+    EXPECT_DOUBLE_EQ(calculateVolume(box_ptr), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testAperiodicRange : ::testing::Test
 {
+    Box *box_ptr;
+    PetscInt i;
     void SetUp()
     {
-
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testAperiodicRange, testErrorOutput)
 {
-    calculateShearModulus(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
+    EXPECT_DOUBLE_EQ(aperiodicRange(box_ptr, i), 0.0);
 }
 
 
-struct testNetworkAnalysis : ::testing::Test
+struct testCalculateShearModulus : ::testing::Test
 {
+    Box *box_ptr;
+    Parameters *par_ptr;
     void SetUp()
     {
-
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
     }
 
     void TearDown()
     {
-
+        destroyBox(box_ptr);
     }
 };
 
 
-TEST_F(testNetworkAnalysis, testErrorOutput)
+TEST_F(testCalculateShearModulus, testErrorOutput)
 {
-    calculateAffShearModulus(Box *box_ptr, Parameters *par_ptr, PetscScalar *energy_ptr);
+    EXPECT_DOUBLE_EQ(calculateShearModulus(box_ptr, par_ptr), 0.0);
 }
 
 } /* namespace */
