@@ -52,19 +52,19 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
 	{
 		/* calculate stretching energy from contributions of every fibre */
-		par_ptr->energyStre += calculateStretchEnergy(box_ptr, par_ptr, fIndex);
+		//par_ptr->energyStre += calculateStretchEnergy(box_ptr, par_ptr, fIndex);
 
 		/* calculate bending energy from contributions of every fibre */
 		if (SPAN == 2)
 		{
-			par_ptr->energyBend += calculateBendEnergy(box_ptr, par_ptr, fIndex);
+			//par_ptr->energyBend += calculateBendEnergy(box_ptr, par_ptr, fIndex);
 		}
 	}
 
-	if (SPAN != 2) assert(par_ptr->energyBend == 0.0);
+	//if (SPAN != 2) assert(par_ptr->energyBend == 0.0);
 
 	/* calculate total energy after looping over every fibre */
-	par_ptr->energyTotl = par_ptr->energyStre + par_ptr->energyBend;
+	//par_ptr->energyTotl = par_ptr->energyStre + par_ptr->energyBend;
 
 	return ierr;
 }
@@ -96,12 +96,15 @@ PetscScalar aperiodicRange(Box *box_ptr, PetscInt i)
 
 PetscScalar calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 {
+	/*
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	V,G;
 
 	calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
 
+	*/
 	/* currently need to use separate calculations for area and volume */
+	/*
 	if (DIMENSION == 2)
 	{
 		V = calculateArea(box_ptr);
@@ -110,10 +113,11 @@ PetscScalar calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 	{
 		V = calculateVolume(box_ptr);
 	}
-
+	*/
     /* use energy and volume/area to calculate the shear modulus */
+    /*
 	G = (2 * par_ptr->energyTotl) / (V * pow(par_ptr->gamma, 2));
-
-	return G;
+	*/
+	return 0.0;
 }
 
