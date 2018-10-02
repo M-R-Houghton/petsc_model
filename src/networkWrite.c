@@ -7,23 +7,21 @@ PetscErrorCode networkWrite(const char *fileName, Box *box_ptr)
 	PetscInt fIndex, nIndex;
 	FILE *file_ptr;
 
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
-
 	file_ptr = fopen(fileName, "w+");
 
 	/* first written line should be box line */
-	writeBoxLine(file_ptr, box_ptr);
+	ierr = writeBoxLine(file_ptr, box_ptr);CHKERRQ(ierr);
 
 	/* followed a line for every fibre */
 	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
 	{
-		writeFibreLine(file_ptr, &(box_ptr->masterFibreList[fIndex]));
+		ierr = writeFibreLine(file_ptr, &(box_ptr->masterFibreList[fIndex]));CHKERRQ(ierr);
 	}
 
 	/* ending with a line for every node */
 	for (nIndex = 0; nIndex < box_ptr->nodeCount; nIndex++)
 	{
-		writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]));
+		ierr = writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]));CHKERRQ(ierr);
 	}
 
 	fclose(file_ptr);

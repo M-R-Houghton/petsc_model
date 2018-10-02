@@ -3,8 +3,7 @@
 /* Initiates network analysis routine */
 PetscErrorCode networkAnalysis()
 {
-	PetscErrorCode 	ierr;
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Analysing network...\n");CHKERRQ(ierr);
+	PetscErrorCode 	ierr = 0;
 	
 	return ierr;
 }

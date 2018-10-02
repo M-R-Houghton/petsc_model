@@ -21,7 +21,7 @@ int main(int argc, char **args)
 	PetscBool      nonzeroguess = PETSC_FALSE;
 	//PetscBool 	   changepcside = PETSC_FALSE;
 #if defined(PETSC_USE_LOG)
-	PetscLogStage stages[4];
+	PetscLogStage stages[6];
 #endif
 
 	if (argc < 2)
@@ -49,8 +49,10 @@ int main(int argc, char **args)
 	/* Register stages for separate profiling */
 	ierr = PetscLogStageRegister("Network Read-in",  &stages[0]);CHKERRQ(ierr);
 	ierr = PetscLogStageRegister("System Assembly",  &stages[1]);CHKERRQ(ierr);
-	ierr = PetscLogStageRegister("Network Analysis", &stages[2]);CHKERRQ(ierr);
-	ierr = PetscLogStageRegister("Network Write-out",&stages[3]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("System Solve",  	 &stages[2]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("Network Update", 	 &stages[3]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("Network Analysis", &stages[4]);CHKERRQ(ierr);
+	ierr = PetscLogStageRegister("Network Write-out",&stages[5]);CHKERRQ(ierr);
 
 	ierr = parameterRead(parFile, &par_ptr);CHKERRQ(ierr);
 
@@ -155,17 +157,26 @@ int main(int argc, char **args)
 	*/
 
 	/* solve linear system */
+	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
     ierr = systemSolve(A,x,b);CHKERRQ(ierr);
+    ierr = PetscLogStagePop();CHKERRQ(ierr);
 
+    ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Updating network...\n");CHKERRQ(ierr);
     ierr = networkUpdate(box_ptr,b);CHKERRQ(ierr);
+    ierr = PetscLogStagePop();CHKERRQ(ierr);
+
+
     /* assemble tripod matrix */
+    ///*
     char rowFile[100] = "data/row/row.f3tTripod1";
     char colFile[100] = "data/col/col.f3tTripod1";
     char matFile[100] = "data/mat/mat.f3tTripod1";
     char rhsFile[100] = "data/rhs/rhs.f3tTripod1";
     char solFile[100] = "data/sol/sol.f3tTripod1";
     ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);CHKERRQ(ierr);
+    //*/
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
@@ -198,12 +209,14 @@ int main(int argc, char **args)
 	*/
 
     /* make predictions based on solution */
-    ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
+    ierr = PetscLogStagePush(stages[4]);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Analysing network...\n");CHKERRQ(ierr);
     ierr = networkAnalysis();CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     /* write out new network data file */
-    ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
+    ierr = PetscLogStagePush(stages[5]);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
     ierr = networkWrite(par_ptr->outputNetwork, box_ptr);CHKERRQ(ierr);
     ierr = destroyBox(box_ptr);CHKERRQ(ierr);
     ierr = destroyParameters(par_ptr);CHKERRQ(ierr);
