@@ -151,6 +151,7 @@ PetscScalar calculateVolume(Box *box_ptr)
 	PetscErrorCode 	ierr = 0;
     PetscScalar 	V = 1.0;
     PetscScalar 	xyzRange[DIMENSION];
+    PetscInt 		i;
 
     for (i = 0; i < DIMENSION; i++)
     {
@@ -173,7 +174,7 @@ PetscScalar calculateVolume(Box *box_ptr)
 	    V *= xyzRange[i]; 	/* starting from 1, multiple by each calculated range */
     }
 
-    checkVolume(V); 		/* basic checks for valid value */
+    checkVolume(box_ptr, V); 		/* basic checks for valid value */
 
 	return V;
 }
