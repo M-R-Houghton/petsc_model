@@ -3,8 +3,7 @@
 /* Initiates network read in routine */
 PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma)
 {
-	PetscErrorCode 	ierr;
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
+	PetscErrorCode 	ierr = 0;
 
 	/* declare array for storing line, pointer, and counter for current line */
 	char line[MAX_LENGTH], *line_ptr;

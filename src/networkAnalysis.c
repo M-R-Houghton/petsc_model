@@ -51,19 +51,19 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
 	{
 		/* calculate stretching energy from contributions of every fibre */
-		//par_ptr->energyStre += calculateStretchEnergy(box_ptr, par_ptr, fIndex);
+		par_ptr->energyStre += calculateStretchEnergy(box_ptr, par_ptr, fIndex);
 
 		/* calculate bending energy from contributions of every fibre */
 		if (SPAN == 2)
 		{
-			//par_ptr->energyBend += calculateBendEnergy(box_ptr, par_ptr, fIndex);
+			par_ptr->energyBend += calculateBendEnergy(box_ptr, par_ptr, fIndex);
 		}
 	}
 
-	//if (SPAN != 2) assert(par_ptr->energyBend == 0.0);
+	if (SPAN != 2) assert(par_ptr->energyBend == 0.0);
 
 	/* calculate total energy after looping over every fibre */
-	//par_ptr->energyTotl = par_ptr->energyStre + par_ptr->energyBend;
+	par_ptr->energyTotl = par_ptr->energyStre + par_ptr->energyBend;
 
 	return ierr;
 }

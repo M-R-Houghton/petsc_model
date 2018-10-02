@@ -54,10 +54,12 @@ int main(int argc, char **args)
 	ierr = PetscLogStageRegister("Network Analysis", &stages[4]);CHKERRQ(ierr);
 	ierr = PetscLogStageRegister("Network Write-out",&stages[5]);CHKERRQ(ierr);
 
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading parameter file...\n");CHKERRQ(ierr);
 	ierr = parameterRead(parFile, &par_ptr);CHKERRQ(ierr);
 
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
 	ierr = networkRead(par_ptr->inputNetwork, &box_ptr, par_ptr->gamma);CHKERRQ(ierr);
 	N 	 = box_ptr->nodeInternalCount;
 	n 	 = N * DIMENSION;

@@ -11,13 +11,11 @@ void checkFileNameLengths(const char *inputFileName, const char *outputFileName)
 /* Initiates parameter file read in routine */
 PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr)
 {
-	PetscErrorCode 	ierr;
+	PetscErrorCode 	ierr = 0;
 	PetscScalar 	gamma, youngsModulus;
 	FILE 			*file_ptr;
 	char 			inputNetwork[MAX_NAME];
 	char 			outputNetwork[MAX_NAME];
-
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading parameter file...\n");CHKERRQ(ierr);
 
 	/* these may be added in the parameter files later */
 	gamma 			= GAMMA;

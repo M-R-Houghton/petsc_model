@@ -22,12 +22,11 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
 
-	/*
+	/* should not be assigned by user */
 	par_ptr->energyStre = 0.0;
 	par_ptr->energyBend = 0.0;
 	par_ptr->energyTotl = 0.0;
 	par_ptr->shearModulus = 0.0;
-	 */
 
 	return par_ptr;
 }
