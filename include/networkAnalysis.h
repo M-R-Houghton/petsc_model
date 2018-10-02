@@ -65,6 +65,14 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr);
 PetscScalar calculateArea(Box *box_ptr);
 
 /**
+ * \brief Checks for a valid volume
+ * \param box_ptr Pointer to box containing dimensions.
+ * \param volume Volume to be checked.
+ * \return
+ */
+void checkVolume(Box *box_ptr, PetscScalar volume);
+
+/**
  * \brief Calculates the volume of a network
  * \param box_ptr
  * \return
@@ -77,7 +85,7 @@ PetscScalar calculateVolume(Box *box_ptr);
  * \param i, the index to distinguish x,y or z
  * \return
  */
-PetscScalar aperiodicRange(Box *box_ptr, PetscInt i);
+PetscScalar aperiodicRange(Box *box_ptr, PetscInt dim);
 
 /**
  * \brief Calculates the shear modulus of a network

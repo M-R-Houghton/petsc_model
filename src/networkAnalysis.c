@@ -3,7 +3,11 @@
 /* Initiates network analysis routine */
 PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 {
-	PetscErrorCode 	ierr = 0;
+	PetscErrorCode ierr;
+
+	ierr = calculateShearModulus(box_ptr, par_ptr);CHKERRQ(ierr);
+	
+	/* can add more measures of analysis into this function as needed */
 	
 	return ierr;
 }
@@ -136,15 +140,46 @@ PetscScalar calculateArea(Box *box_ptr)
 }
 
 
+void checkVolume(Box *box_ptr, PetscScalar volume)
+{
+	assert(volume >= 0);
+	assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
+}
+
 PetscScalar calculateVolume(Box *box_ptr)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+    PetscScalar 	V = 1.0;
+    PetscScalar 	xyzRange[DIMENSION];
 
-	return 0.0;
+    for (i = 0; i < DIMENSION; i++)
+    {
+    	/* cheats here by assuming y always spans height of domain
+    	 * WARNING: only true if we fix y=0 and shear in y=height */
+	    if (box_ptr->xyzPeriodic[i] == 1 || i == 1)     				/* i periodic */
+	    {
+	        xyzRange[i] = box_ptr->xyzDimension[i];
+	    }
+	    else if (box_ptr->xyzPeriodic[i] == 0)          				/* i aperiodic */
+	    {
+	        /* calculate max and min values for range */
+	        xyzRange[i] = aperiodicRange(box_ptr, i);
+	    }
+	    else
+	    {
+	        SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying periodicity type");
+	    }
+
+	    V *= xyzRange[i]; 	/* starting from 1, multiple by each calculated range */
+    }
+
+    checkVolume(V); 		/* basic checks for valid value */
+
+	return V;
 }
 
 
-PetscScalar aperiodicRange(Box *box_ptr, PetscInt i)
+PetscScalar aperiodicRange(Box *box_ptr, PetscInt dim)
 {
 	PetscErrorCode ierr = 0;
 
@@ -159,15 +194,8 @@ PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 
 	calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
 
-	/* currently need to use separate calculations for area and volume */
-	if (DIMENSION == 2)
-	{
-		V = calculateArea(box_ptr);
-	}
-	else if (DIMENSION == 3)
-	{
-		V = calculateVolume(box_ptr);
-	}
+	V = calculateVolume(box_ptr);
+
     /* use energy and volume/area to calculate the shear modulus */
     V = 1.0;
 	par_ptr->shearModulus = (2 * par_ptr->energyTotl) / (V * pow(par_ptr->gamma, 2));
