@@ -5,9 +5,11 @@
 
 /**
  * \brief Initiates network analysis routine.
+ * \param box_ptr
+ * \param par_ptr
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkAnalysis();
+PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr);
 
 /**
  * \brief Calculates the stretch energy of a given fibre segment
@@ -36,7 +38,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
  * \param fIndex
  * \return
  */
-PetscScalar calculateStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
 
 /**
  * \brief Calculates the bend energy of a given fibre
@@ -45,7 +47,7 @@ PetscScalar calculateStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt f
  * \param fIndex
  * \return
  */
-PetscScalar calculateBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
 
 /**
  * \brief Calculates the energy of an entire network
@@ -83,7 +85,7 @@ PetscScalar aperiodicRange(Box *box_ptr, PetscInt i);
  * \param par_ptr
  * \return
  */
-PetscScalar calculateShearModulus(Box *box_ptr, Parameters *par_ptr);
+PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr);
 
 
 #endif

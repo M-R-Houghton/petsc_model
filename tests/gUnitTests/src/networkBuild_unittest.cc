@@ -25,6 +25,11 @@ TEST(testMakeParameters, testValueAssignment)
 	EXPECT_EQ(par_ptr->gamma, 		  	 0.5);
 	EXPECT_EQ(par_ptr->youngsModulus, 	 1.0);
 
+	EXPECT_DOUBLE_EQ(par_ptr->energyStre, 0.0);
+	EXPECT_DOUBLE_EQ(par_ptr->energyBend, 0.0);
+	EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 0.0);
+	EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0);
+
 	free(par_ptr); par_ptr = NULL;
 	EXPECT_TRUE(par_ptr == NULL);
 }
