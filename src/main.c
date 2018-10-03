@@ -10,7 +10,7 @@ int main(int argc, char **args)
 	Parameters 	   *par_ptr;
 	Vec            x, b, u;      /* approx solution, RHS, exact solution */
   	Mat            A;            /* linear system matrix */
-  	KSP            ksp;          /* linear solver context */
+  	//KSP            ksp;          /* linear solver context */
 	//PC             pc;           /* preconditioner context */
   	//PetscReal      norm;         /* norm of solution error */
 	PetscErrorCode ierr;
@@ -171,14 +171,14 @@ int main(int argc, char **args)
 
 
     /* assemble tripod matrix */
-    ///*
+    /*
     char rowFile[100] = "data/row/row.f3tTripod1";
     char colFile[100] = "data/col/col.f3tTripod1";
     char matFile[100] = "data/mat/mat.f3tTripod1";
     char rhsFile[100] = "data/rhs/rhs.f3tTripod1";
     char solFile[100] = "data/sol/sol.f3tTripod1";
     ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,3);CHKERRQ(ierr);
-    //*/
+    */
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
@@ -230,7 +230,7 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Cleaning up...\n");CHKERRQ(ierr);
 	ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
 	ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
-	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+	//ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Finalising...\n");CHKERRQ(ierr);
 	ierr = PetscFinalize();
