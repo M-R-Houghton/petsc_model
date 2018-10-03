@@ -58,13 +58,6 @@ PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt
 PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr);
 
 /**
- * \brief Calculates the area of a network
- * \param box_ptr
- * \return
- */
-PetscScalar calculateArea(Box *box_ptr);
-
-/**
  * \brief Checks for a valid volume
  * \param box_ptr Pointer to box containing dimensions.
  * \param volume Volume to be checked.
@@ -85,7 +78,7 @@ PetscScalar calculateVolume(Box *box_ptr);
  * \param i, the index to distinguish x,y or z
  * \return
  */
-PetscScalar aperiodicRange(Box *box_ptr, PetscInt dim);
+PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim);
 
 /**
  * \brief Calculates the shear modulus of a network
