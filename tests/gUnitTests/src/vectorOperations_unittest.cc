@@ -81,10 +81,15 @@ TEST(testVec2DCrossProduct, testOutputValues)
 {
 	ASSERT_TRUE(DIMENSION == 2);
 
-	PetscScalar vec1[2] = {1.0, 2.0};
-	PetscScalar vec2[2] = {3.0, 4.0};
+	PetscScalar vec1[3];
+	PetscScalar vec2[2] = {1.0, 2.0};
+	PetscScalar vec3[2] = {3.0, 4.0};
 
-	EXPECT_TRUE(vec2DCrossProduct(vec1, vec2) == -2.0);
+	EXPECT_TRUE(vec2DCrossProduct(vec1, vec2, vec3) == 0);
+
+	EXPECT_DOUBLE_EQ(vec1[0],  0.0);
+	EXPECT_DOUBLE_EQ(vec1[1],  0.0);
+	EXPECT_DOUBLE_EQ(vec1[2], -2.0);
 }
 
 
