@@ -79,7 +79,7 @@ struct testAddFibreLocalStretch : ::testing::Test
 
 TEST_F(testAddFibreLocalStretch, testErrorOutput) 
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 0), 0);
     EXPECT_EQ(addFibreLocalStretch(box_ptr, par_ptr, testMatrix, testVector, 1), 0);
@@ -107,7 +107,7 @@ struct testMake2DStretchMat : ::testing::Test
 
 TEST_F(testMake2DStretchMat, testErrorOutput)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
     EXPECT_EQ(make2DStretchMat(1.0, tangVec, locMat), 0);
 }
@@ -115,7 +115,7 @@ TEST_F(testMake2DStretchMat, testErrorOutput)
 
 TEST_F(testMake2DStretchMat, testMatrixOutput)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
 
     make2DStretchMat(k, tangVec, locMat);
 
@@ -173,7 +173,7 @@ struct testMake2DStretchVec : ::testing::Test
 
 TEST_F(testMake2DStretchVec, testErrorOutput)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
 
     EXPECT_EQ(make2DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
 }
@@ -181,7 +181,7 @@ TEST_F(testMake2DStretchVec, testErrorOutput)
 
 TEST_F(testMake2DStretchVec, testOutputValues)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
 
     make2DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, k, tangVec, locVec);
 
@@ -212,7 +212,7 @@ struct testMake3DStretchMat : ::testing::Test
 
 TEST_F(testMake3DStretchMat, testErrorOutput)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
     EXPECT_EQ(make3DStretchMat(1.0, tangVec, locMat), 0);
 }
@@ -220,7 +220,7 @@ TEST_F(testMake3DStretchMat, testErrorOutput)
 
 TEST_F(testMake3DStretchMat, testMatrixOutput1)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     tangVec[0] = -0.4472135954999579;
     tangVec[1] =  0.8944271909999159;
@@ -274,7 +274,7 @@ TEST_F(testMake3DStretchMat, testMatrixOutput1)
 
 TEST_F(testMake3DStretchMat, testMatrixOutput2)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     tangVec[0] = 0.4082482904638631;
     tangVec[1] = 0.8164965809277261;
@@ -328,7 +328,7 @@ TEST_F(testMake3DStretchMat, testMatrixOutput2)
 
 TEST_F(testMake3DStretchMat, testMatrixOutput3)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     tangVec[0] =  0.4082482904638631;
     tangVec[1] =  0.8164965809277261;
@@ -409,7 +409,7 @@ struct testMake3DStretchVec : ::testing::Test
 
 TEST_F(testMake3DStretchVec, testOutputValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     EXPECT_EQ(make3DStretchVec(alpha_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 1.0, tangVec, locVec), 0);
 }

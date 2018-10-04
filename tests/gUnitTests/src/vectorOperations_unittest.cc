@@ -58,7 +58,7 @@ TEST(testMaxScalar, testOutputValues)
 
 TEST(testVecDotProduct, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2] = {1.0, 2.0};
 	PetscScalar vec2[2] = {3.0, 4.0};
@@ -68,7 +68,7 @@ TEST(testVecDotProduct, testOutputValuesFor2D)
 
 TEST(testVecDotProduct, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec3[3] = {1.0, 2.0, 3.0};
 	PetscScalar vec4[3] = {4.0, 5.0, 6.0};
@@ -79,7 +79,7 @@ TEST(testVecDotProduct, testOutputValuesFor3D)
 
 TEST(testVec2DCrossProduct, testOutputValues)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[3];
 	PetscScalar vec2[2] = {1.0, 2.0};
@@ -95,7 +95,7 @@ TEST(testVec2DCrossProduct, testOutputValues)
 
 TEST(testVec3DCrossProduct, testOutputValues)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec1[3];
 	PetscScalar vec2[3]  = {1.0, 2.0, 3.0};
@@ -111,7 +111,7 @@ TEST(testVec3DCrossProduct, testOutputValues)
 
 TEST(testVecMagnitude, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2] = {1.0, 2.0};
 
@@ -121,7 +121,7 @@ TEST(testVecMagnitude, testOutputValuesFor2D)
 
 TEST(testVecMagnitude, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec2[3] = {4.0, 2.0, 3.0};
 
@@ -131,7 +131,7 @@ TEST(testVecMagnitude, testOutputValuesFor3D)
 
 TEST(testVecAddition, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -155,7 +155,7 @@ TEST(testVecAddition, testOutputValuesFor2D)
 
 TEST(testVecAddition, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -182,7 +182,7 @@ TEST(testVecAddition, testOutputValuesFor3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -206,7 +206,7 @@ TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 10;
@@ -233,7 +233,7 @@ TEST(testMakeDistanceVec, testOutputValuesForMixedPeriodicityIn3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -257,7 +257,7 @@ TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -284,7 +284,7 @@ TEST(testMakeDistanceVec, testOutputValuesForPeriodicIn3D)
 
 TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -308,7 +308,7 @@ TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn2D)
 
 TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 		 		= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 5;
@@ -335,7 +335,7 @@ TEST(testMakeDistanceVec, testOutputValuesForAperiodicIn3D)
 
 TEST(testMakeTangentVec, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2];
 	PetscScalar vec2[2]  = {3.0, 4.0};
@@ -355,7 +355,7 @@ TEST(testMakeTangentVec, testOutputValuesFor2D)
 
 TEST(testMakeTangentVec, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec4[3];
 	PetscScalar vec5[3]  = {1.0, 2.0, 3.0};
@@ -377,7 +377,7 @@ TEST(testMakeTangentVec, testOutputValuesFor3D)
 
 TEST(testMakePositionVec, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -396,7 +396,7 @@ TEST(testMakePositionVec, testOutputValuesFor2D)
 
 TEST(testMakePositionVec, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -417,7 +417,7 @@ TEST(testMakePositionVec, testOutputValuesFor3D)
 
 TEST(testMakeDisplacementVec, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -436,7 +436,7 @@ TEST(testMakeDisplacementVec, testOutputValuesFor2D)
 
 TEST(testMakeDisplacementVec, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -457,7 +457,7 @@ TEST(testMakeDisplacementVec, testOutputValuesFor3D)
 
 TEST(testUpdatePositionVec, testOutputValuesFor2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	PetscScalar vec1[2];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -478,7 +478,7 @@ TEST(testUpdatePositionVec, testOutputValuesFor2D)
 
 TEST(testUpdatePositionVec, testOutputValuesFor3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	PetscScalar vec2[3];
 	Node *node_ptr 		 		 =  (Node *)malloc(sizeof(Node));
@@ -502,7 +502,7 @@ TEST(testUpdatePositionVec, testOutputValuesFor3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -523,7 +523,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -547,7 +547,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicXIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -568,7 +568,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -592,7 +592,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicXIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -613,7 +613,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -637,7 +637,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicYIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -658,7 +658,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn2D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -682,7 +682,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicYIn3D)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicZ)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -706,7 +706,7 @@ TEST(testNearestSegmentCopyDirN, testOutputValuesForPeriodicZ)
 
 TEST(testNearestSegmentCopyDirN, testOutputValuesForAperiodicZ)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	Box *box_ptr 				= (Box *)malloc(sizeof(Box));
 	box_ptr->xyzDimension[0] 	= 1;
@@ -749,7 +749,7 @@ struct testNearestSegmentCopy : ::testing::Test
 
 TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	box_ptr->xyzPeriodic[0] 	= 1;
 	box_ptr->xyzPeriodic[1] 	= 1;
@@ -764,7 +764,7 @@ TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn2D)
 
 TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	box_ptr->xyzPeriodic[0] 	= 1;
 	box_ptr->xyzPeriodic[1] 	= 1;
@@ -781,7 +781,7 @@ TEST_F(testNearestSegmentCopy, testOutputValuesForPeriodicIn3D)
 
 TEST_F(testNearestSegmentCopy, testOutputValuesForAPeriodicIn2D)
 {
-	ASSERT_TRUE(DIMENSION == 2);
+	if (DIMENSION != 2) GTEST_SKIP();
 
 	box_ptr->xyzPeriodic[0] 	= 0;
 	box_ptr->xyzPeriodic[1] 	= 0;
@@ -796,7 +796,7 @@ TEST_F(testNearestSegmentCopy, testOutputValuesForAPeriodicIn2D)
 
 TEST_F(testNearestSegmentCopy, testOutputValuesForAPeriodicIn3D)
 {
-	ASSERT_TRUE(DIMENSION == 3);
+	if (DIMENSION != 3) GTEST_SKIP();
 
 	box_ptr->xyzPeriodic[0] 	= 0;
 	box_ptr->xyzPeriodic[1] 	= 0;

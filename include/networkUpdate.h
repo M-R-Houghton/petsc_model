@@ -12,6 +12,13 @@
 PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U);
 
 /**
+ * \brief Checks for nans and infinite values.
+ * May replace this with something more graceful if the output file is needed in future.
+ * \param displacement The solved displacement that needs to be verified.
+ */
+void checkForValidDisplacement(PetscScalar displacement);
+
+/**
  * \brief Updates a single internal node with its relevant solved displacement 
  * \param node_ptr Pointer to the node that is to be updated.
  * \param N The internal node count.

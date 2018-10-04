@@ -56,6 +56,13 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 }
 
 
+void checkForValidDisplacement(PetscScalar displacement)
+{
+	assert(!isinf(displacement));
+	assert(!isnan(displacement));
+}
+
+
 /* Updates a single internal node with its relevant solved displacement */
 PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_U)
 {
@@ -72,6 +79,7 @@ PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_
     PetscInt i;
     for (i = 0; i < DIMENSION; i++)
     {
+    	checkForValidDisplacement(solArray[node_ptr->globalID + i*N]);
     	node_ptr->xyzDisplacement[i] += solArray[node_ptr->globalID + i*N];
     }
     

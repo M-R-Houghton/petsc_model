@@ -70,7 +70,7 @@ struct testAddFibreLocalBend : ::testing::Test
 
 TEST_F(testAddFibreLocalBend, testErrorOutput) 
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     EXPECT_EQ(addFibreLocalBend(box_ptr, par_ptr, testMatrix, testVector, 0), 0);
     EXPECT_EQ(addFibreLocalBend(box_ptr, par_ptr, testMatrix, testVector, 1), 0);
@@ -107,14 +107,14 @@ struct testMake2DBendMat : ::testing::Test
 
 TEST_F(testMake2DBendMat, testErrorOutput)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
     EXPECT_EQ(make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locMat), 0);
 }
 
 
 TEST_F(testMake2DBendMat, testOutputValues)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
     make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, locMat);
 
     EXPECT_DOUBLE_EQ(locMat[0][0],  1.388400918174489e-09);
@@ -201,7 +201,7 @@ struct testMake2DBendVec : ::testing::Test
 
 TEST_F(testMake2DBendVec, testErrorOutput)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
     EXPECT_EQ(make2DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
                             beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, 1.0, locVec), 0);
 }
@@ -209,7 +209,7 @@ TEST_F(testMake2DBendVec, testErrorOutput)
 
 TEST_F(testMake2DBendVec, testOutputValues)
 {
-    ASSERT_TRUE(DIMENSION == 2);
+    if (DIMENSION != 2) GTEST_SKIP();
     make2DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, 
                   beta_ptr->xyzDisplacement, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, locVec);
 
@@ -251,7 +251,7 @@ struct testMake3DBendMat : ::testing::Test
 
 TEST_F(testMake3DBendMat, testErrorOutput)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     s_alphOmeg[0] = 1.0;
     s_alphOmeg[1] = 2.0;
@@ -271,7 +271,7 @@ TEST_F(testMake3DBendMat, testErrorOutput)
 
 TEST_F(testMake3DBendMat, testMatrixOutputXRows)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
 
@@ -309,7 +309,7 @@ TEST_F(testMake3DBendMat, testMatrixOutputXRows)
 
 TEST_F(testMake3DBendMat, testMatrixOutputYRows)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
 
@@ -347,7 +347,7 @@ TEST_F(testMake3DBendMat, testMatrixOutputYRows)
 
 TEST_F(testMake3DBendMat, testMatrixOutputZRows)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locMat);
 
@@ -424,7 +424,7 @@ struct testMake3DBendVec : ::testing::Test
 
 TEST_F(testMake3DBendVec, testErrorOutput)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     s_alphOmeg[0] = 1.0;
     s_alphOmeg[1] = 2.0;
@@ -445,7 +445,7 @@ TEST_F(testMake3DBendVec, testErrorOutput)
 
 TEST_F(testMake3DBendVec, testOutputValues)
 {
-    ASSERT_TRUE(DIMENSION == 3);
+    if (DIMENSION != 3) GTEST_SKIP();
 
     make3DBendVec(alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement, 
                     s_alphOmeg, s_omegBeta, s_alphBeta, 1.43868205691714e-07, locVec);
