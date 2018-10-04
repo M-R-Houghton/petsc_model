@@ -201,28 +201,6 @@ TEST_F(testCalculateEnergy, testCalculatedValues)
 }
 
 
-struct testCalculateArea : ::testing::Test
-{
-    Box *box_ptr;
-    void SetUp()
-    {
-        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
-        networkRead(fileToRead, &box_ptr, 0.05);
-    }
-
-    void TearDown()
-    {
-        destroyBox(box_ptr);
-    }
-};
-
-
-TEST_F(testCalculateArea, testErrorOutput)
-{
-    EXPECT_DOUBLE_EQ(calculateArea(box_ptr), 0.0);
-}
-
-
 struct testCalculateVolume : ::testing::Test
 {
     Box *box_ptr;
@@ -241,14 +219,13 @@ struct testCalculateVolume : ::testing::Test
 
 TEST_F(testCalculateVolume, testErrorOutput)
 {
-    EXPECT_DOUBLE_EQ(calculateVolume(box_ptr), 0.0);
+    EXPECT_DOUBLE_EQ(calculateVolume(box_ptr), 0.25);
 }
 
 
-struct testAperiodicRange : ::testing::Test
+struct testCalculateAperiodicRange : ::testing::Test
 {
     Box *box_ptr;
-    PetscInt i;
     void SetUp()
     {
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
@@ -262,9 +239,21 @@ struct testAperiodicRange : ::testing::Test
 };
 
 
-TEST_F(testAperiodicRange, testErrorOutput)
+TEST_F(testCalculateAperiodicRange, testCalculatedXRange)
 {
-    EXPECT_DOUBLE_EQ(aperiodicRange(box_ptr, i), 0.0);
+    EXPECT_DOUBLE_EQ(calculateAperiodicRange(box_ptr, 0), 0.5);
+}
+
+
+TEST_F(testCalculateAperiodicRange, testCalculatedYRange)
+{
+    EXPECT_DOUBLE_EQ(calculateAperiodicRange(box_ptr, 1), 1.0);
+}
+
+
+TEST_F(testCalculateAperiodicRange, testCalculatedZRange)
+{
+    EXPECT_DOUBLE_EQ(calculateAperiodicRange(box_ptr, 2), 0.5);
 }
 
 

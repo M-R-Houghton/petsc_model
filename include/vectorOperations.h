@@ -49,7 +49,7 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
  * \param vec2_ptr
  * \return
  */
-PetscScalar vec2DCrossProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the cross product of two given 3D vectors

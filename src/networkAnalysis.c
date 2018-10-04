@@ -16,16 +16,121 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
 										Node *alph_ptr, Node *beta_ptr )
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+	PetscScalar		l_alphBeta, k;
+	PetscScalar 	u_dot_t, segEnergyStre;
 
-	return 0.0;
+	/* setup static vectors */
+    PetscScalar 	s_alph[DIMENSION];
+    PetscScalar 	s_beta[DIMENSION];
+    PetscScalar 	s_alphBeta[DIMENSION];
+    PetscScalar 	t_alphBeta[DIMENSION];
+
+    PetscScalar 	u_alph[DIMENSION];
+    PetscScalar 	u_beta[DIMENSION];
+    PetscScalar 	u_alphBeta[DIMENSION];
+
+    /* make position vectors for alpha and beta */
+    ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+    ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);		/* think this is basically beta_ptr->xyzCoord */
+
+    /* make distance vector between alpha and beta */
+    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
+
+    /* make tangent vector of segment */
+    ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
+
+    /* make displacement vectors for alpha and beta */
+    ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
+    ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
+
+    /* make distance vector between alpha and beta displacements */
+    ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr);CHKERRQ(ierr);
+
+    /* find length of segment */
+    l_alphBeta = vecMagnitude(s_alphBeta);
+
+    /* calculate stretching term k */
+    k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+
+    u_dot_t = vecDotProduct(u_alphBeta, t_alphBeta);
+
+    segEnergyStre = (k / 2) * pow(u_dot_t, 2);
+
+	return segEnergyStre;
 }
 
 
 PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
 									 Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr )
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+	PetscScalar		kappa;
+	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
+	PetscScalar		bConstNum, bConstDen, bConst;
+	PetscScalar 	phi, segEnergyBend;
+
+	/* declare static position vectors */
+    PetscScalar s_alph[DIMENSION];
+    PetscScalar s_omeg[DIMENSION];
+    PetscScalar s_beta[DIMENSION];
+    PetscScalar s_alphOmeg[DIMENSION];
+    PetscScalar s_omegBeta[DIMENSION];
+
+    /* declare static displacement vectors */
+    PetscScalar u_alph[DIMENSION];
+    PetscScalar u_omeg[DIMENSION];
+    PetscScalar u_beta[DIMENSION];
+    PetscScalar u_alphOmeg[DIMENSION];
+    PetscScalar u_omegBeta[DIMENSION];
+
+    /* declare static cross product vectors */
+    PetscScalar s_cross_u[DIMENSION];
+    PetscScalar u_cross_s[DIMENSION];
+
+    /* declare vector to store sum of cross products */
+    PetscScalar phiVec[DIMENSION];
+
+    /* make position vectors for alpha omega and beta */
+    ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+    ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
+    ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
+
+    /* make distance vectors */
+    ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr);CHKERRQ(ierr);
+
+    /* calculate segment lengths */
+	l_alphOmeg = vecMagnitude(s_alphOmeg);
+	l_omegBeta = vecMagnitude(s_omegBeta);	/* WARNING: do NOT assume that 			*/
+	l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alpBeta) */
+    
+    /* calculate bending modulus kappa */
+    kappa = calculateKappa(box_ptr, par_ptr, fIndex);
+
+	/* calculate bending constant */
+	bConstNum = 2 * kappa;
+	bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
+	bConst 	  = bConstNum / bConstDen;
+
+    /* make displacement vectors for alpha omega and beta */
+    ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
+    ierr = makeDisplacementVec(u_omeg, omeg_ptr);CHKERRQ(ierr);
+    ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
+
+    /* make distance vectors */
+    ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr);CHKERRQ(ierr);
+
+    /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
+    vec3DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
+    vec3DCrossProduct(u_cross_s, u_alphOmeg, s_omegBeta);
+
+    /* add the two crosses together and calculate the magnitude to get phi */
+    vecAddition(phiVec, s_cross_u, u_cross_s, box_ptr);
+    phi = vecMagnitude(phiVec);
+
+    segEnergyBend = bConst * pow(phi, 2);
 
 	return 0.0;
 }
@@ -132,14 +237,6 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 }
 
 
-PetscScalar calculateArea(Box *box_ptr)
-{
-	PetscErrorCode ierr = 0;
-
-	return 0.0;
-}
-
-
 void checkVolume(Box *box_ptr, PetscScalar volume)
 {
 	assert(volume >= 0);
@@ -164,7 +261,7 @@ PetscScalar calculateVolume(Box *box_ptr)
 	    else if (box_ptr->xyzPeriodic[i] == 0)          				/* i aperiodic */
 	    {
 	        /* calculate max and min values for range */
-	        xyzRange[i] = aperiodicRange(box_ptr, i);
+	        xyzRange[i] = calculateAperiodicRange(box_ptr, i);
 	    }
 	    else
 	    {
@@ -174,17 +271,51 @@ PetscScalar calculateVolume(Box *box_ptr)
 	    V *= xyzRange[i]; 	/* starting from 1, multiple by each calculated range */
     }
 
-    checkVolume(box_ptr, V); 		/* basic checks for valid value */
+    checkVolume(box_ptr, V); 	/* basic checks for valid value */
 
 	return V;
 }
 
 
-PetscScalar aperiodicRange(Box *box_ptr, PetscInt dim)
+PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode 	ierr = 0;
+	PetscScalar 	planarTol = 1e-8;
+	PetscScalar 	coordRange;
 
-	return 0.0;
+	/* set some worse case initial coordinate values */
+    PetscScalar 	minCoord = box_ptr->xyzDimension[dim];
+    PetscScalar 	maxCoord = 0;
+
+    /* add in aperiodic volume calculation */
+    PetscInt fID;
+    for (fID = 0; fID < box_ptr->fibreCount; fID++)
+    {
+        Fibre *fibre_ptr = &(box_ptr->masterFibreList[fID]);
+
+        /* find first and last node */
+        Node *n0_ptr = fibre_ptr->nodesOnFibreList[0];
+        Node *nk_ptr = fibre_ptr->nodesOnFibreList[fibre_ptr->nodesOnFibre-1];
+
+        /* use first node to update min and max coordinate */
+        minCoord = minScalar(minCoord, n0_ptr->xyzCoord[dim]);
+        maxCoord = maxScalar(maxCoord, n0_ptr->xyzCoord[dim]);
+
+        /* use last node to update min and max coordinate */
+        minCoord = minScalar(minCoord, nk_ptr->xyzCoord[dim]);
+        maxCoord = maxScalar(maxCoord, nk_ptr->xyzCoord[dim]);
+    }
+    /* difference max and min to get aperiodic range */
+    coordRange = maxCoord - minCoord;
+
+    /* set range to 1 if dealing with a x,y or z plane inside a 3D box */
+    if (coordRange < planarTol && coordRange > -planarTol) 
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[WARNING] Detected planar network in 3D.\n");CHKERRQ(ierr);
+        coordRange = 1.0;
+    }
+
+	return coordRange;
 }
 
 

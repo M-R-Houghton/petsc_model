@@ -58,12 +58,16 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 
 
 /* Calculates the cross product of two given 2D vectors */
-PetscScalar vec2DCrossProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 {
 	assert(DIMENSION == 2);		/* should not be calling this function in 3d case */
 
-	PetscScalar z = vec1_ptr[0] * vec2_ptr[1] - vec2_ptr[0] * vec1_ptr[1];
-	return z;
+	PetscErrorCode ierr = 0;
+	crossVec_ptr[0] 	= 0;
+	crossVec_ptr[1] 	= 0;
+	crossVec_ptr[2] 	= vec1_ptr[0]*vec2_ptr[1] - vec1_ptr[1]*vec2_ptr[0];
+
+	return ierr;
 }
 
 
