@@ -68,7 +68,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	PetscScalar		kappa;
 	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
 	PetscScalar		bConstNum, bConstDen, bConst;
-	PetscScalar 	phi, segEnergyBend;
+	PetscScalar 	phiMagnitude, segEnergyBend;
 
 	/* declare static position vectors */
     PetscScalar s_alph[DIMENSION];
@@ -89,7 +89,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     PetscScalar u_cross_s[DIMENSION];
 
     /* declare vector to store sum of cross products */
-    PetscScalar phiVec[DIMENSION];
+    PetscScalar phi[DIMENSION];
 
     /* make position vectors for alpha omega and beta */
     ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
@@ -126,13 +126,13 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     vec3DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
     vec3DCrossProduct(u_cross_s, u_alphOmeg, s_omegBeta);
 
-    /* add the two crosses together and calculate the magnitude to get phi */
-    vecAddition(phiVec, s_cross_u, u_cross_s, box_ptr);
-    phi = vecMagnitude(phiVec);
+    /* add the two crosses together and calculate the magnitude to get phi magnitude */
+    vecAddition(phi, s_cross_u, u_cross_s, box_ptr);
+    phiMagnitude = vecMagnitude(phi);
 
-    segEnergyBend = bConst * pow(phi, 2);
+    segEnergyBend = bConst * pow(phiMagnitude, 2);
 
-	return 0.0;
+	return segEnergyBend;
 }
 
 
