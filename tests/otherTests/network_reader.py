@@ -1,5 +1,5 @@
 #!python3
-# testForConflicts.py
+# network_reader.py
 
 #
 # Imports:
@@ -10,12 +10,12 @@ from common import *
 
 
 #
-# ConflictChecker class:
+# NetworkReader class:
 #
 
 # Sorting class:
 
-class ConflictChecker:
+class NetworkReader:
     """A class for reading in the data files
 
     Attributes:
@@ -137,78 +137,29 @@ class ConflictChecker:
 
 if __name__ == '__main__':
 
-    # Check testForConflicts.py has a valid number of arguments:
+    # Check network_reader.py has a valid number of arguments:
     if len(sys.argv) != 2:
-        sys.exit('Usage: testForConflicts.py <data_file>')
+        sys.exit('Usage: network_reader.py <data_file>')
 
     # Assign first argument:
     data_file = sys.argv[1]
 
+    print("READING: ", data_file)
+
     # Run the original case:
-    test_data = ConflictChecker(data_file)
+    test_data = NetworkReader(data_file)
     test_data.sorter()
 
-    print("TESTING: ", data_file)
-
-    # Test for consistent number of fibres and nodes
-    assert len(test_data.fibre_dict) == test_data.box.fibre_count, '(ERROR) Conflicting number of fibres'
-    assert len(test_data.node_dict) == test_data.box.node_count, '(ERROR) Conflicting number of nodes'
-
-    # Test for consistent fibres
+    # Print out all fibres
     for f1 in range(len(test_data.fibre_dict)):
 
         fibre1 = test_data.fibre_dict[f1]
 
-        #if len(fibre1.nodes) == 3:
-            #print("Found a fibre of length 3:")
-            #print(fibre1.id)
+        print(fibre1)
 
-        for f2 in range(len(test_data.fibre_dict)):
-
-            if f1 != f2:
-
-                fibre2 = test_data.fibre_dict[f2]
-
-                assert fibre1.radius == fibre2.radius, '(ERROR) Conflicting radius between two fibres (ID=%r and ID=%r).' % (fibre1.id, fibre2.id)
-
-                assert fibre1.id != fibre2.id, '(ERROR) Two fibres with the same ID (ID=%r).' % fibre1.id
-
-                if len(fibre1.nodes) == len(fibre2.nodes):
-
-                    same_node_list = True
-                    
-                    for n in range(len(fibre1.nodes)):
-
-                        if fibre1.nodes[n] != fibre2.nodes[n]:
-                            same_node_list = False
-
-                        # test for internally located boundary and dangling nodes
-                        if n > 0 and n < len(fibre1.nodes) - 1:
-                            nID = fibre1.nodes[n]
-                            assert test_data.node_dict[nID].type != 2, '(ERROR) Invalid boundary node (ID=%r) found.' % nID
-                            assert test_data.node_dict[nID].type != 1, '(ERROR) Invalid dangling node (ID=%r) found.' % nID
-
-
-                    assert same_node_list == False, '(ERROR) Two fibres with same node list.'
-
-
-    # Test for consistent x and y coordinates
+    # Print out all nodes
     for n1 in range(len(test_data.node_dict)):
 
         node1 = test_data.node_dict[n1]
 
-        for n2 in range(len(test_data.node_dict)):
-
-            if n1 != n2:
-
-                node2 = test_data.node_dict[n2]
-
-                assert node1.id != node2.id, '(ERROR) Two nodes with identical IDs (ID=%r).' % node1.id
-                #print("x1 = ", node1.x, "x2 = ", node2.x)
-                #print("y1 = ", node1.y, "y2 = ", node2.y)
-                #print("z1 = ", node1.z, "z2 = ", node2.z)
-                assert (node1.x != node2.x) or (node1.y != node2.y) or (node1.z != node2.z), '(ERROR) Two identical nodes (ID=%r and ID=%r).' % (node1.id, node2.id)
-
-    print("\tTEST SUCCESS")
-
-    # ADD FURTHER DEBUGGING PRINTS TO THIS...
+        print(node1)
