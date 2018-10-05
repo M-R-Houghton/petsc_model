@@ -5,6 +5,7 @@
 #
 # Imports:
 #
+import numpy as np
 
 # REQUIRED MODULES #
 
@@ -36,6 +37,10 @@ class Box:
         self.x_periodic = x_periodic
         self.y_periodic = y_periodic
         self.z_periodic = z_periodic
+
+        # added to original to make array manipulation easier
+        self.dimensions = np.array((x,y,z))
+        self.periodicity = np.array((x_periodic,y_periodic,z_periodic))
 
     def __str__(self):
         statement = 'Total nodes: \t' + str(self.node_count) + '\n' \
@@ -100,6 +105,10 @@ class Node:
         self.x = x
         self.y = y
         self.z = z
+
+        # added to original to make array manipulation easier
+        self.s_xyz = np.array((x,y,z))
+        self.u_xyz = np.array((0,0,0))
 
     def __str__(self):
         statement = 'Node ID: ' + str(self.id) + '\n' \
