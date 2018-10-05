@@ -38,6 +38,15 @@ class Box:
         self.y_periodic = y_periodic
         self.z_periodic = z_periodic
 
+        # added extra fibre counts
+        self.total_normal_fibres = 0
+        self.total_crosslink_fibres = 0
+
+        # added extra node counts
+        self.total_internal_node_count = 0
+        self.total_boundary_node_count = 0
+        self.total_dangling_node_count = 0
+
         # added to original to make array manipulation easier
         self.dimensions = np.array((x,y,z))
         self.periodicity = np.array((x_periodic,y_periodic,z_periodic))
