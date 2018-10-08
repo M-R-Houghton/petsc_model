@@ -78,6 +78,12 @@ struct fibre
 	PetscInt nodesOnFibre;
 	PetscScalar radius;
 	Node **nodesOnFibreList;
+
+	/*
+	PetscScalar fibreStreEnergy;
+	PetscScalar fibreBendEnergy;
+	PetscScalar fibreAffnEnergy;
+	 */
 };
 
 /* structure for sparse matrices */

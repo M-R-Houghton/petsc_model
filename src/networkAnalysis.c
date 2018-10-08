@@ -158,11 +158,14 @@ PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
         	beta_ptr->nodeType != NODE_DANGLING)
         {
             segEnergyStre = calculateSegStretchEnergy(box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr);
+            //fibre_ptr->fibreStreEnergy += segEnergyStre;
         }
 
         /*
          * affine energy is calculated regardless of node types 
          */
+        //segAffEnergyStre = calculateSegStretchEnergy(box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr);
+        //fibre_ptr->fibreAffnEnergy += segEnergyStre;
 
         /* add segment energy to total for fibre */
         fibEnergyStre += segEnergyStre;
@@ -197,6 +200,7 @@ PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt
             omeg_ptr->nodeType != NODE_BOUNDARY)		/* don't calculate energy for bending on boundary */
         {
             segEnergyBend = calculateSegBendEnergy(box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr);
+            //fibre_ptr->fibreBendEnergy += segEnergyBend;
         }
 
         /*

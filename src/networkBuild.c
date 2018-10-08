@@ -131,6 +131,12 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
+    /*
+    box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
+    box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
+    box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
+     */
+
     return ierr;
 }
 
