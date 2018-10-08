@@ -19,7 +19,7 @@ struct testNetworkAnalysis : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
     }
 
     void TearDown()
@@ -49,7 +49,7 @@ struct testCalculateSegStretchEnergy : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
         alph_ptr = &(box_ptr->masterNodeList[0]);
         beta_ptr = &(box_ptr->masterNodeList[4]);
@@ -65,9 +65,16 @@ struct testCalculateSegStretchEnergy : ::testing::Test
 };
 
 
-TEST_F(testCalculateSegStretchEnergy, testErrorOutput)
+TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes04)
 {
-    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 0.0);
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.513460725771494e-08);
+}
+
+TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes41)
+{
+    alph_ptr = &(box_ptr->masterNodeList[4]);
+    beta_ptr = &(box_ptr->masterNodeList[1]);
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.511354163195315e-0);
 }
 
 
@@ -84,7 +91,7 @@ struct testCalculateSegBendEnergy : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
         alph_ptr = &(box_ptr->masterNodeList[0]);
         omeg_ptr = &(box_ptr->masterNodeList[4]);
@@ -117,7 +124,7 @@ struct testCalculateFibreStretchEnergy : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
         fIndex = 0;
     }
@@ -146,7 +153,7 @@ struct testCalculateFibreBendEnergy : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
         fIndex = 0;
     }
@@ -174,7 +181,7 @@ struct testCalculateEnergy : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
     }
 
     void TearDown()
@@ -195,9 +202,9 @@ TEST_F(testCalculateEnergy, testCalculatedValues)
 {
     calculateEnergy(box_ptr, par_ptr);
 
-    EXPECT_DOUBLE_EQ(par_ptr->energyStre, 0.0);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 0.0);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 0.0);
+    EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
 }
 
 
@@ -266,7 +273,7 @@ struct testCalculateShearModulus : ::testing::Test
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
-        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+        par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
     }
 
     void TearDown()
@@ -287,11 +294,11 @@ TEST_F(testCalculateShearModulus, testCalculatedValues)
 {
     calculateShearModulus(box_ptr, par_ptr);
 
-    EXPECT_DOUBLE_EQ(par_ptr->energyStre, 0.0);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 0.0);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 0.0);
+    EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
 
-    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0);
+    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0002248502463944123);
 }
 
 } /* namespace */

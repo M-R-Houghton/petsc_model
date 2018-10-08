@@ -46,6 +46,9 @@ struct parameters
 	PetscScalar energyBend;
 	PetscScalar energyTotl;
 	PetscScalar shearModulus;
+
+	PetscScalar energyAffn;
+	PetscScalar shearModAffn;
 };
 
 /* structure for the domain */
@@ -79,11 +82,9 @@ struct fibre
 	PetscScalar radius;
 	Node **nodesOnFibreList;
 
-	/*
 	PetscScalar fibreStreEnergy;
 	PetscScalar fibreBendEnergy;
 	PetscScalar fibreAffnEnergy;
-	 */
 };
 
 /* structure for sparse matrices */

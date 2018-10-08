@@ -30,6 +30,9 @@ TEST(testMakeParameters, testValueAssignment)
 	EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 0.0);
 	EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0);
 
+	EXPECT_DOUBLE_EQ(par_ptr->energyAffn, 0.0);
+	EXPECT_DOUBLE_EQ(par_ptr->shearModAffn, 0.0);
+
 	free(par_ptr); par_ptr = NULL;
 	EXPECT_TRUE(par_ptr == NULL);
 }
@@ -153,6 +156,9 @@ TEST(testMakeFibre, testValueAssignment)
 	EXPECT_EQ(box_ptr->masterFibreList[0].radius, 				0.01);
 	EXPECT_EQ(box_ptr->masterFibreList[0].nodesOnFibreList[0], 	node1_ptr);
 	EXPECT_NE(box_ptr->masterFibreList[0].nodesOnFibreList[0], 	node2_ptr);
+	EXPECT_EQ(box_ptr->masterFibreList[0].fibreStreEnergy, 		0);
+	EXPECT_EQ(box_ptr->masterFibreList[0].fibreBendEnergy, 		0);
+	EXPECT_EQ(box_ptr->masterFibreList[0].fibreAffnEnergy, 		0);
 
 	/* change node in node list */
 	node_ptr_list[0] = &(box_ptr->masterNodeList[2]);
@@ -164,6 +170,9 @@ TEST(testMakeFibre, testValueAssignment)
 	EXPECT_EQ(box_ptr->masterFibreList[1].radius, 0.05);
 	EXPECT_NE(box_ptr->masterFibreList[1].nodesOnFibreList[0], node1_ptr);
 	EXPECT_NE(box_ptr->masterFibreList[1].nodesOnFibreList[0], node2_ptr);
+	EXPECT_EQ(box_ptr->masterFibreList[1].fibreStreEnergy, 		0);
+	EXPECT_EQ(box_ptr->masterFibreList[1].fibreBendEnergy, 		0);
+	EXPECT_EQ(box_ptr->masterFibreList[1].fibreAffnEnergy, 		0);
 
 	/* clean up */
 	free(box_ptr->masterNodeList); box_ptr->masterNodeList = NULL;

@@ -224,6 +224,7 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 	{
 		/* calculate stretching energy from contributions of every fibre */
 		par_ptr->energyStre += calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex);
+        //par_ptr->energyStre += (box_ptr->masterFibreList[fIndex])->fibreStreEnergy;
 
 		/* calculate bending energy from contributions of every fibre */
 		if (SPAN == 2)
@@ -333,7 +334,7 @@ PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 	V = calculateVolume(box_ptr);
 
     /* use energy and volume/area to calculate the shear modulus */
-    V = 1.0;
+    //V = 1.0;
 	par_ptr->shearModulus = (2 * par_ptr->energyTotl) / (V * pow(par_ptr->gamma, 2));
 
 	return ierr;

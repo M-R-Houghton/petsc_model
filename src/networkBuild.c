@@ -28,6 +28,11 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	par_ptr->energyTotl = 0.0;
 	par_ptr->shearModulus = 0.0;
 
+	/*
+	par_ptr->energyAffn = 0.0;
+	par_ptr->shearModAffn = 0.0;
+	 */
+
 	return par_ptr;
 }
 
