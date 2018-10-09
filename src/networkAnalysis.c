@@ -298,14 +298,17 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
 PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 {
 	PetscErrorCode 	ierr = 0;
-	PetscScalar 	V;
+	PetscScalar 	V, shearEqn;
 
 	calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
 
 	V = calculateVolume(box_ptr);
 
+    shearEqn = 2 / (V * pow(par_ptr->gamma, 2));
+
     /* use energy and volume/area to calculate the shear modulus */
-	par_ptr->shearModulus = (2 * par_ptr->energyTotl) / (V * pow(par_ptr->gamma, 2));
+	par_ptr->shearModulus = par_ptr->energyTotl * shearEqn;
+    par_ptr->shearModAffn = par_ptr->energyAffn * shearEqn;
 
 	return ierr;
 }
