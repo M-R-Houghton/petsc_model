@@ -53,6 +53,14 @@ struct testCalculateSegStretchEnergy : ::testing::Test
 
         alph_ptr = &(box_ptr->masterNodeList[0]);
         beta_ptr = &(box_ptr->masterNodeList[4]);
+        /*
+        alpha_ptr->xyzDisplacement[0] = 0;
+        alpha_ptr->xyzDisplacement[1] = 0;
+        alpha_ptr->xyzDisplacement[2] = 0;
+        */
+        beta_ptr->xyzDisplacement[0] = 0.01250598041564164;
+        beta_ptr->xyzDisplacement[1] = -0.006248884007600541;
+        beta_ptr->xyzDisplacement[2] = 0;
 
         fIndex = 0;
     }
@@ -74,7 +82,16 @@ TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes41)
 {
     alph_ptr = &(box_ptr->masterNodeList[4]);
     beta_ptr = &(box_ptr->masterNodeList[1]);
-    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.511354163195315e-0);
+
+    alph_ptr->xyzDisplacement[0] = 0.01250598041564164;
+    alph_ptr->xyzDisplacement[1] = -0.006248884007600541;
+    alph_ptr->xyzDisplacement[2] = 0;
+
+    beta_ptr->xyzDisplacement[0] = 0.05;
+    beta_ptr->xyzDisplacement[1] = 0;
+    beta_ptr->xyzDisplacement[2] = 0;
+
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.511354163195315e-08);
 }
 
 
@@ -96,6 +113,18 @@ struct testCalculateSegBendEnergy : ::testing::Test
         alph_ptr = &(box_ptr->masterNodeList[0]);
         omeg_ptr = &(box_ptr->masterNodeList[4]);
         beta_ptr = &(box_ptr->masterNodeList[1]);
+        /*
+        alpha_ptr->xyzDisplacement[0] = 0;
+        alpha_ptr->xyzDisplacement[1] = 0;
+        alpha_ptr->xyzDisplacement[2] = 0;
+        */
+        omeg_ptr->xyzDisplacement[0] = 0.01250598041564164;
+        omeg_ptr->xyzDisplacement[1] = -0.006248884007600541;
+        omeg_ptr->xyzDisplacement[2] = 0;
+
+        beta_ptr->xyzDisplacement[0] = 0.05;
+        beta_ptr->xyzDisplacement[1] = 0;
+        beta_ptr->xyzDisplacement[2] = 0;
 
         fIndex = 0;
     }
@@ -108,9 +137,9 @@ struct testCalculateSegBendEnergy : ::testing::Test
 };
 
 
-TEST_F(testCalculateSegBendEnergy, testErrorOutput)
+TEST_F(testCalculateSegBendEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 0.0);
+    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 1.75473419406617e-11);
 }
 
 
@@ -125,6 +154,8 @@ struct testCalculateFibreStretchEnergy : ::testing::Test
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
+
+        box_ptr->masterNodeList[1].xyzDisplacement[0] = 0.05;
 
         fIndex = 0;
     }
