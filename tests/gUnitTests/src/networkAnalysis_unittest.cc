@@ -75,7 +75,9 @@ struct testCalculateSegStretchEnergy : ::testing::Test
 
 TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes04)
 {
-    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.513460725771494e-08);
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, 
+                                                alph_ptr->xyzCoord, beta_ptr->xyzCoord, 
+                                                alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement ), 3.513460725771494e-08);
 }
 
 TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes41)
@@ -91,7 +93,9 @@ TEST_F(testCalculateSegStretchEnergy, testOutputValueNodes41)
     beta_ptr->xyzDisplacement[1] = 0;
     beta_ptr->xyzDisplacement[2] = 0;
 
-    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr ), 3.511354163195315e-08);
+    EXPECT_DOUBLE_EQ(calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, 
+                                                alph_ptr->xyzCoord, beta_ptr->xyzCoord, 
+                                                alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement ), 3.511354163195315e-08);
 }
 
 
@@ -139,7 +143,13 @@ struct testCalculateSegBendEnergy : ::testing::Test
 
 TEST_F(testCalculateSegBendEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 3.509468388132339e-11);
+    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, 
+                                                alph_ptr->xyzCoord, 
+                                                omeg_ptr->xyzCoord, 
+                                                beta_ptr->xyzCoord,
+                                                alph_ptr->xyzDisplacement, 
+                                                omeg_ptr->xyzDisplacement, 
+                                                beta_ptr->xyzDisplacement ), 3.509468388132339e-11);
 }
 
 
@@ -171,9 +181,16 @@ struct testCalculateFibreStretchEnergy : ::testing::Test
 };
 
 
+TEST_F(testCalculateFibreStretchEnergy, testErrorOutput)
+{
+    EXPECT_EQ(calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex), 0);
+}
+
+
 TEST_F(testCalculateFibreStretchEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex), 7.024814888966809e-08);
+    calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex);
+    EXPECT_DOUBLE_EQ(box_ptr->masterFibreList[0].fibreStreEnergy, 7.024814888966809e-08);
 }
 
 
@@ -205,9 +222,16 @@ struct testCalculateFibreBendEnergy : ::testing::Test
 };
 
 
+TEST_F(testCalculateFibreBendEnergy, testErrorOutput)
+{
+    EXPECT_DOUBLE_EQ(calculateFibreBendEnergy(box_ptr, par_ptr, fIndex), 0);
+}
+
+
 TEST_F(testCalculateFibreBendEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateFibreBendEnergy(box_ptr, par_ptr, fIndex), 3.509468388132339e-11);
+    calculateFibreBendEnergy(box_ptr, par_ptr, fIndex);
+    EXPECT_DOUBLE_EQ(box_ptr->masterFibreList[0].fibreBendEnergy, 3.509468388132339e-11);
 }
 
 

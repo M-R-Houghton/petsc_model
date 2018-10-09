@@ -19,7 +19,8 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr);
  * \return
  */
 PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-										Node *alph_ptr, Node *beta_ptr );
+										PetscScalar *s_alph, PetscScalar *s_beta,
+                                        PetscScalar *u_alph, PetscScalar *u_beta );
 
 /**
  * \brief Calculates the bend energy of a given fibre segment
@@ -29,7 +30,8 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
  * \return
  */
 PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-									 Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr );
+									 PetscScalar *s_alph, PetscScalar *s_omeg, PetscScalar *s_beta,
+                                     PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta );
 
 /**
  * \brief Calculates the stretch energy of a given fibre
@@ -38,7 +40,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
  * \param fIndex
  * \return
  */
-PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
 
 /**
  * \brief Calculates the bend energy of a given fibre
@@ -47,7 +49,7 @@ PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
  * \param fIndex
  * \return
  */
-PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
 
 /**
  * \brief Calculates the energy of an entire network

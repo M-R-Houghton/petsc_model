@@ -14,25 +14,26 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 
 
 PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-										Node *alph_ptr, Node *beta_ptr )
+										PetscScalar *s_alph, PetscScalar *s_beta,
+                                        PetscScalar *u_alph, PetscScalar *u_beta )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		l_alphBeta, k;
 	PetscScalar 	u_dot_t, segStreEnergy;
 
 	/* setup static vectors */
-    PetscScalar 	s_alph[DIMENSION];
-    PetscScalar 	s_beta[DIMENSION];
+    //PetscScalar 	s_alph[DIMENSION];
+    //PetscScalar 	s_beta[DIMENSION];
     PetscScalar 	s_alphBeta[DIMENSION];
     PetscScalar 	t_alphBeta[DIMENSION];
 
-    PetscScalar 	u_alph[DIMENSION];
-    PetscScalar 	u_beta[DIMENSION];
+    //PetscScalar 	u_alph[DIMENSION];
+    //PetscScalar 	u_beta[DIMENSION];
     PetscScalar 	u_alphBeta[DIMENSION];
 
     /* make position vectors for alpha and beta */
-    ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-    ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);		/* think this is basically beta_ptr->xyzCoord */
+    //ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+    //ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);		/* think this is basically beta_ptr->xyzCoord */
 
     /* make distance vector between alpha and beta */
     ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
@@ -40,12 +41,9 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
-    //PetscScalar *u_alph = alph_ptr->xyzDisplacement;
-    //PetscScalar *u_beta = beta_ptr->xyzDisplacement;
-
     /* make displacement vectors for alpha and beta */
-    ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
-    ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
+    //ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
+    //ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vector between alpha and beta displacements */
     ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr);CHKERRQ(ierr);
@@ -65,7 +63,8 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
 
 
 PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-									 Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr )
+									 PetscScalar *s_alph, PetscScalar *s_omeg, PetscScalar *s_beta,
+                                     PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		kappa;
@@ -74,16 +73,16 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	PetscScalar 	phiMagnitude, segBendEnergy;
 
 	/* declare static position vectors */
-    PetscScalar s_alph[DIMENSION];
-    PetscScalar s_omeg[DIMENSION];
-    PetscScalar s_beta[DIMENSION];
+    //PetscScalar s_alph[DIMENSION];
+    //PetscScalar s_omeg[DIMENSION];
+    //PetscScalar s_beta[DIMENSION];
     PetscScalar s_alphOmeg[DIMENSION];
     PetscScalar s_omegBeta[DIMENSION];
 
     /* declare static displacement vectors */
-    PetscScalar u_alph[DIMENSION];
-    PetscScalar u_omeg[DIMENSION];
-    PetscScalar u_beta[DIMENSION];
+    //PetscScalar u_alph[DIMENSION];
+    //PetscScalar u_omeg[DIMENSION];
+    //PetscScalar u_beta[DIMENSION];
     PetscScalar u_alphOmeg[DIMENSION];
     PetscScalar u_omegBeta[DIMENSION];
 
@@ -95,9 +94,9 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     PetscScalar phi[DIMENSION];
 
     /* make position vectors for alpha omega and beta */
-    ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-    ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
-    ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
+    //ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+    //ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
+    //ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vectors */
     ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr);CHKERRQ(ierr);
@@ -117,9 +116,9 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	bConst 	  = bConstNum / bConstDen;
 
     /* make displacement vectors for alpha omega and beta */
-    ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
-    ierr = makeDisplacementVec(u_omeg, omeg_ptr);CHKERRQ(ierr);
-    ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
+    //ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
+    //ierr = makeDisplacementVec(u_omeg, omeg_ptr);CHKERRQ(ierr);
+    //ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vectors */
     ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
@@ -139,10 +138,9 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 }
 
 
-PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
+PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
 {
 	PetscErrorCode  ierr = 0;
-	PetscScalar 	fibEnergyStre = 0.0;
 	PetscScalar 	segStreEnergy = 0.0;
     PetscScalar     segAffnEnergy = 0.0;
 
@@ -161,7 +159,9 @@ PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
         if (alph_ptr->nodeType != NODE_DANGLING && 
         	beta_ptr->nodeType != NODE_DANGLING)
         {
-            segStreEnergy = calculateSegStretchEnergy(box_ptr, par_ptr, fIndex, alph_ptr, beta_ptr);
+            /* add segment energy to total for fibre */
+            segStreEnergy = calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, beta_ptr->xyzCoord, 
+                                                        alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreStreEnergy += segStreEnergy;
         }
 
@@ -169,22 +169,18 @@ PetscScalar calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
          * affine energy is calculated regardless of node types 
          * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
          */
-        //segAffnEnergy = calculateSegStretchEnergy(box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, beta_ptr->xyzCoord,
-        //                                          alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement);
-        //fibre_ptr->fibreAffnEnergy += segAffnEnergy;
-
-        /* add segment energy to total for fibre */
-        fibEnergyStre += segStreEnergy;
+        segAffnEnergy = calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                   alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement );
+        fibre_ptr->fibreAffnEnergy += segAffnEnergy;
     }
 
-	return fibEnergyStre;
+	return ierr;
 }
 
 
-PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
+PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
 {
 	PetscErrorCode 	ierr = 0;
-	PetscScalar 	fibEnergyBend = 0.0;
 	PetscScalar 	segBendEnergy = 0.0;
 
     assert(DIMENSION==3);		/* re-assess whether this is still needed in the petsc model */
@@ -205,19 +201,18 @@ PetscScalar calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt
             beta_ptr->nodeType != NODE_DANGLING &&
             omeg_ptr->nodeType != NODE_BOUNDARY)		/* don't calculate energy for bending on boundary */
         {
-            segBendEnergy = calculateSegBendEnergy(box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr);
+            /* add segment energy to total for fibre */
+            segBendEnergy = calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, omeg_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                    alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
         }
 
         /*
-         * affine energy is calculated regardless of node types 
+         * affine energy is not calculated for bending
          */
-
-        /* add segment energy to total for fibre */
-        fibEnergyBend += segBendEnergy;
     }
 
-	return fibEnergyBend;
+	return ierr;
 }
 
 
@@ -229,15 +224,15 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 	for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
 	{
 		/* calculate stretching energy from contributions of every fibre */
-		par_ptr->energyStre += calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex);
-        //par_ptr->energyStre += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+		ierr = calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex);CHKERRQ(ierr);
+        par_ptr->energyStre += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
         par_ptr->energyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
 
 		/* calculate bending energy from contributions of every fibre */
 		if (SPAN == 2)
 		{
-			par_ptr->energyBend += calculateFibreBendEnergy(box_ptr, par_ptr, fIndex);
-            //par_ptr->energyBend += box_ptr->masterFibreList[fIndex].fibreBendEnergy;
+			ierr = calculateFibreBendEnergy(box_ptr, par_ptr, fIndex);CHKERRQ(ierr);
+            par_ptr->energyBend += box_ptr->masterFibreList[fIndex].fibreBendEnergy;
 		}
 	}
 

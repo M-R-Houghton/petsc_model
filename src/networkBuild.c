@@ -180,8 +180,8 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 	/* assign affine displacements like boundary nodes */
 	node_ptr->xyzAffDisplacement[0] = gamma * y;
-	node_ptr->xyzAffDisplacement[0] = 0;
-	node_ptr->xyzAffDisplacement[0] = 0; 	/* is node_ptr->xyzCoord[1] safer than y? */
+	node_ptr->xyzAffDisplacement[1] = 0;
+	node_ptr->xyzAffDisplacement[2] = 0; 	/* is node_ptr->xyzCoord[1] safer than y? */
 
 	/* NOTE: node displacement assumes boundary nodes are fixed at y=0...	*
 	 *		...and sheared at y=HEIGHT along the x-axis 					*/

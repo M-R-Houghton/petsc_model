@@ -28,9 +28,8 @@ TEST(testMakeParameters, testValueAssignment)
 	EXPECT_DOUBLE_EQ(par_ptr->energyStre, 0.0);
 	EXPECT_DOUBLE_EQ(par_ptr->energyBend, 0.0);
 	EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 0.0);
-	EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0);
-
 	EXPECT_DOUBLE_EQ(par_ptr->energyAffn, 0.0);
+	EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0);
 	EXPECT_DOUBLE_EQ(par_ptr->shearModAffn, 0.0);
 
 	free(par_ptr); par_ptr = NULL;
