@@ -7,7 +7,9 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 
 	ierr = calculateShearModulus(box_ptr, par_ptr);CHKERRQ(ierr);
 	
-	/* can add more measures of analysis into this function as needed */
+	/* 
+     * can add more measures of analysis into this function as needed 
+     */
 	
 	return ierr;
 }
@@ -22,28 +24,15 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
 	PetscScalar 	u_dot_t, segStreEnergy;
 
 	/* setup static vectors */
-    //PetscScalar 	s_alph[DIMENSION];
-    //PetscScalar 	s_beta[DIMENSION];
     PetscScalar 	s_alphBeta[DIMENSION];
     PetscScalar 	t_alphBeta[DIMENSION];
-
-    //PetscScalar 	u_alph[DIMENSION];
-    //PetscScalar 	u_beta[DIMENSION];
     PetscScalar 	u_alphBeta[DIMENSION];
-
-    /* make position vectors for alpha and beta */
-    //ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-    //ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);		/* think this is basically beta_ptr->xyzCoord */
 
     /* make distance vector between alpha and beta */
     ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
-
-    /* make displacement vectors for alpha and beta */
-    //ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
-    //ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vector between alpha and beta displacements */
     ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr);CHKERRQ(ierr);
@@ -72,17 +61,9 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	PetscScalar		bConstNum, bConstDen, bConst;
 	PetscScalar 	phiMagnitude, segBendEnergy;
 
-	/* declare static position vectors */
-    //PetscScalar s_alph[DIMENSION];
-    //PetscScalar s_omeg[DIMENSION];
-    //PetscScalar s_beta[DIMENSION];
+	/* declare static vectors */
     PetscScalar s_alphOmeg[DIMENSION];
     PetscScalar s_omegBeta[DIMENSION];
-
-    /* declare static displacement vectors */
-    //PetscScalar u_alph[DIMENSION];
-    //PetscScalar u_omeg[DIMENSION];
-    //PetscScalar u_beta[DIMENSION];
     PetscScalar u_alphOmeg[DIMENSION];
     PetscScalar u_omegBeta[DIMENSION];
 
@@ -92,11 +73,6 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 
     /* declare vector to store sum of cross products */
     PetscScalar phi[DIMENSION];
-
-    /* make position vectors for alpha omega and beta */
-    //ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-    //ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
-    //ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vectors */
     ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr);CHKERRQ(ierr);
@@ -114,11 +90,6 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	bConstNum = 2 * kappa;
 	bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
 	bConst 	  = bConstNum / bConstDen;
-
-    /* make displacement vectors for alpha omega and beta */
-    //ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
-    //ierr = makeDisplacementVec(u_omeg, omeg_ptr);CHKERRQ(ierr);
-    //ierr = makeDisplacementVec(u_beta, beta_ptr);CHKERRQ(ierr);
 
     /* make distance vectors */
     ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
@@ -206,10 +177,7 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
                                                     alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
         }
-
-        /*
-         * affine energy is not calculated for bending
-         */
+        /* NOTE: affine energy is not calculated for bending */
     }
 
 	return ierr;
