@@ -139,7 +139,7 @@ struct testCalculateSegBendEnergy : ::testing::Test
 
 TEST_F(testCalculateSegBendEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 1.75473419406617e-11);
+    EXPECT_DOUBLE_EQ(calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr, omeg_ptr, beta_ptr ), 3.509468388132339e-11);
 }
 
 
@@ -156,6 +156,9 @@ struct testCalculateFibreStretchEnergy : ::testing::Test
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
         box_ptr->masterNodeList[1].xyzDisplacement[0] = 0.05;
+        box_ptr->masterNodeList[4].xyzDisplacement[0] = 0.01250598041564164;
+        box_ptr->masterNodeList[4].xyzDisplacement[1] = -0.006248884007600541;
+        box_ptr->masterNodeList[4].xyzDisplacement[2] = 0;
 
         fIndex = 0;
     }
@@ -168,9 +171,9 @@ struct testCalculateFibreStretchEnergy : ::testing::Test
 };
 
 
-TEST_F(testCalculateFibreStretchEnergy, testErrorOutput)
+TEST_F(testCalculateFibreStretchEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex), 0.0);
+    EXPECT_DOUBLE_EQ(calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex), 7.024814888966809e-08);
 }
 
 
@@ -186,6 +189,11 @@ struct testCalculateFibreBendEnergy : ::testing::Test
 
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
 
+        box_ptr->masterNodeList[1].xyzDisplacement[0] = 0.05;
+        box_ptr->masterNodeList[4].xyzDisplacement[0] = 0.01250598041564164;
+        box_ptr->masterNodeList[4].xyzDisplacement[1] = -0.006248884007600541;
+        box_ptr->masterNodeList[4].xyzDisplacement[2] = 0;
+
         fIndex = 0;
     }
 
@@ -197,9 +205,9 @@ struct testCalculateFibreBendEnergy : ::testing::Test
 };
 
 
-TEST_F(testCalculateFibreBendEnergy, testErrorOutput)
+TEST_F(testCalculateFibreBendEnergy, testOutputValueNodes041)
 {
-    EXPECT_DOUBLE_EQ(calculateFibreBendEnergy(box_ptr, par_ptr, fIndex), 0.0);
+    EXPECT_DOUBLE_EQ(calculateFibreBendEnergy(box_ptr, par_ptr, fIndex), 3.509468388132339e-11);
 }
 
 
@@ -213,6 +221,11 @@ struct testCalculateEnergy : ::testing::Test
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
+
+        box_ptr->masterNodeList[1].xyzDisplacement[0] = 0.05;
+        box_ptr->masterNodeList[4].xyzDisplacement[0] = 0.01250598041564164;
+        box_ptr->masterNodeList[4].xyzDisplacement[1] = -0.006248884007600541;
+        box_ptr->masterNodeList[4].xyzDisplacement[2] = 0;
     }
 
     void TearDown()
@@ -234,8 +247,8 @@ TEST_F(testCalculateEnergy, testCalculatedValues)
     calculateEnergy(box_ptr, par_ptr);
 
     EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 3.509468388132339e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.02832493401945e-08);
 }
 
 
@@ -305,6 +318,11 @@ struct testCalculateShearModulus : ::testing::Test
         networkRead(fileToRead, &box_ptr, 0.05);
 
         par_ptr = makeParameters(fileToRead, fileToRead, 0.05, 1.0);
+
+        box_ptr->masterNodeList[1].xyzDisplacement[0] = 0.05;
+        box_ptr->masterNodeList[4].xyzDisplacement[0] = 0.01250598041564164;
+        box_ptr->masterNodeList[4].xyzDisplacement[1] = -0.006248884007600541;
+        box_ptr->masterNodeList[4].xyzDisplacement[2] = 0;
     }
 
     void TearDown()
@@ -326,10 +344,10 @@ TEST_F(testCalculateShearModulus, testCalculatedValues)
     calculateShearModulus(box_ptr, par_ptr);
 
     EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 3.509468388132339e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.02832493401945e-08);
 
-    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0002248502463944123);
+    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0002249063978886224);
 }
 
 } /* namespace */

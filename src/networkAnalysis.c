@@ -49,17 +49,11 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
 
     /* find length of segment */
     l_alphBeta = vecMagnitude(s_alphBeta);
-    printf("%g\n", l_alphBeta);
 
     /* calculate stretching term k */
     k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
-    printf("%g\n", k);
 
     u_dot_t = vecDotProduct(u_alphBeta, t_alphBeta);
-    printf("%g\n", u_dot_t);
-
-    printf("(%g,%g,%g)\n", u_alphBeta[0], u_alphBeta[1], u_alphBeta[2]);
-    printf("(%g,%g,%g)\n", t_alphBeta[0], t_alphBeta[1], t_alphBeta[2]);
 
     segEnergyStre = (k / 2) * pow(u_dot_t, 2);
 
@@ -110,19 +104,14 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	l_alphOmeg = vecMagnitude(s_alphOmeg);
 	l_omegBeta = vecMagnitude(s_omegBeta);	/* WARNING: do NOT assume that 			*/
 	l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alpBeta) */
-    printf("lao = %g\n", l_alphOmeg);
-    printf("lob = %g\n", l_omegBeta);
-    printf("lab = %g\n", l_alphBeta);
     
     /* calculate bending modulus kappa */
     kappa = calculateKappa(box_ptr, par_ptr, fIndex);
-    printf("kappa = %g\n", kappa);
 
 	/* calculate bending constant */
 	bConstNum = 2 * kappa;
 	bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
 	bConst 	  = bConstNum / bConstDen;
-    printf("bConst = %g\n", bConst);
 
     /* make displacement vectors for alpha omega and beta */
     ierr = makeDisplacementVec(u_alph, alph_ptr);CHKERRQ(ierr);
@@ -132,11 +121,6 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     /* make distance vectors */
     ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
     ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr);CHKERRQ(ierr);
-    printf("ua = (%g,%g,%g)\n", u_alph[0], u_alph[1], u_alph[2]);
-    printf("uo = (%g,%g,%g)\n", u_omeg[0], u_omeg[1], u_omeg[2]);
-    printf("ub = (%g,%g,%g)\n", u_beta[0], u_beta[1], u_beta[2]);
-    printf("uao = (%g,%g,%g)\n", u_alphOmeg[0], u_alphOmeg[1], u_alphOmeg[2]);
-    printf("uob = (%g,%g,%g)\n", u_omegBeta[0], u_omegBeta[1], u_omegBeta[2]);
 
     /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
     vec3DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
