@@ -30,6 +30,25 @@ PetscErrorCode networkWrite(const char *fileName, Box *box_ptr)
 }
 
 
+/* This function will be replaced with a parameter write out */
+PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr)
+{
+	PetscErrorCode ierr;
+
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"\n[STATUS]\tGamma \t\t= %g\n", par_ptr->gamma);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tYoungsModulus \t= %g\n", par_ptr->youngsModulus);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tRadius \t\t= %g\n", box_ptr->masterFibreList[0].radius);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyStre \t= %g\n", par_ptr->energyStre);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyBend \t= %g\n", par_ptr->energyBend);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyTotl \t= %g\n", par_ptr->energyTotl);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyAffn \t= %g\n", par_ptr->energyAffn);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModulus \t= %g\n", par_ptr->shearModulus);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModAffn \t= %g\n\n", par_ptr->shearModAffn);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
 /* Writes box information to file */
 PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr)
 {

@@ -23,15 +23,12 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	par_ptr->youngsModulus = yMod;
 
 	/* should not be assigned by user */
-	par_ptr->energyStre = 0.0;
-	par_ptr->energyBend = 0.0;
-	par_ptr->energyTotl = 0.0;
-	par_ptr->shearModulus = 0.0;
-
-	/*
-	par_ptr->energyAffn = 0.0;
-	par_ptr->shearModAffn = 0.0;
-	 */
+	par_ptr->energyStre = 0;
+	par_ptr->energyBend = 0;
+	par_ptr->energyTotl = 0;
+	par_ptr->energyAffn = 0;
+	par_ptr->shearModulus = 0;
+	par_ptr->shearModAffn = 0;
 
 	return par_ptr;
 }
@@ -136,11 +133,10 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
-    /*
+    /* addidtional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
-     */
 
     return ierr;
 }

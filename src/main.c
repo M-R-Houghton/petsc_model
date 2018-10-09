@@ -214,6 +214,8 @@ int main(int argc, char **args)
     ierr = PetscLogStagePush(stages[4]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Analysing network...\n");CHKERRQ(ierr);
     ierr = networkAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
+    ierr = printAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
+
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     /* write out new network data file */

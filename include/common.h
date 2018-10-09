@@ -45,9 +45,8 @@ struct parameters
 	PetscScalar energyStre;
 	PetscScalar energyBend;
 	PetscScalar energyTotl;
-	PetscScalar shearModulus;
-
 	PetscScalar energyAffn;
+	PetscScalar shearModulus;
 	PetscScalar shearModAffn;
 };
 

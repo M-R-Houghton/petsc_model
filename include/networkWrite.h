@@ -11,6 +11,9 @@
  */
 PetscErrorCode networkWrite(const char *fileName, Box *box_ptr);
 
+/* This function will be replaced with a parameter write out */
+PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
+
 /**
  * \brief Writes box information to file.
  * \param file_ptr Pointer to the file.
