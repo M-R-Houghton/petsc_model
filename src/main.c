@@ -59,7 +59,7 @@ int main(int argc, char **args)
 
 	/* read in network data file */
 	ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file...\n");CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file '%s'...\n", par_ptr->inputNetwork);CHKERRQ(ierr);
 	ierr = networkRead(par_ptr->inputNetwork, &box_ptr, par_ptr->gamma);CHKERRQ(ierr);
 	N 	 = box_ptr->nodeInternalCount;
 	n 	 = N * DIMENSION;
