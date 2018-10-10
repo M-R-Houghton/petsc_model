@@ -41,6 +41,8 @@ class NetworkAnalyser:
         self.global_fib_max = 0
         self.global_fib_avg = 0
 
+        self.boundary_fibres = []
+
 
     def find_mag(self, vec):
         return np.sqrt(vec.dot(vec))
@@ -185,6 +187,10 @@ class NetworkAnalyser:
 
                 global_fib_avg += mag_s_alph_beta
 
+                # store ID of boundary fibres
+                if alph.type == 2 and beta.type == 2:
+                    self.boundary_fibres.append(f_i)
+
         assert total_normal_fibres + total_crosslink_fibres == self.box.fibre_count, '(ERROR) Fibre not counted.'
 
         if total_normal_fibres != 0:
@@ -258,6 +264,8 @@ class NetworkAnalyser:
         print("Crosslink fibre max = %f" % self.global_fib_max)
         print("Crosslink fibre avg = %f" % self.global_fib_avg)
 
+        print("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
+
         return
 
 
@@ -287,6 +295,8 @@ class NetworkAnalyser:
         file.write("Crosslink fibre min = %f\n" % self.global_fib_min)
         file.write("Crosslink fibre max = %f\n" % self.global_fib_max)
         file.write("Crosslink fibre avg = %f\n" % self.global_fib_avg)
+
+        file.write("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
 
         return
 
@@ -330,6 +340,8 @@ if __name__ == '__main__':
     network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict)
     network_analyser.analyse_network()
     print("\tANALYSIS COMPLETE")
+
+    assert len(conflict_checker.boundary_fibres) == len(network_analyser.boundary_fibres), '(ERROR) Boundary fibre detected.'
 
     if len(sys.argv) == 3:
         output_file = sys.argv[2]
