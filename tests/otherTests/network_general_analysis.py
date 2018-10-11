@@ -41,6 +41,10 @@ class NetworkAnalyser:
         self.global_fib_max = 0
         self.global_fib_avg = 0
 
+        self.num_crosslink_min = self.box.node_count
+        self.num_crosslink_max = 0
+        self.num_crosslink_avg = 0
+
         self.boundary_fibres = []
 
 
@@ -245,7 +249,7 @@ class NetworkAnalyser:
         print("Total node count = %d" % self.box.node_count)
         print("Internal node count = %d" % self.box.total_internal_node_count)
         print("Boundary node count = %d" % self.box.total_boundary_node_count)
-        print("Danging node count = %d" % self.box.total_dangling_node_count)
+        print("Dangling node count = %d" % self.box.total_dangling_node_count)
         # number of nodes
         # total number of fibres
         # number of original fibres
@@ -256,15 +260,19 @@ class NetworkAnalyser:
 
     def print_crosslink_stats(self):
 
-        print("Segment min = %f" % self.global_seg_min)
-        print("Segment max = %f" % self.global_seg_max)
-        print("Segment avg = %f" % self.global_seg_avg)
+        print("Segment length min = %f" % self.global_seg_min)
+        print("Segment length max = %f" % self.global_seg_max)
+        print("Segment length avg = %f" % self.global_seg_avg)
 
-        print("Crosslink fibre min = %f" % self.global_fib_min)
-        print("Crosslink fibre max = %f" % self.global_fib_max)
-        print("Crosslink fibre avg = %f" % self.global_fib_avg)
+        print("Crosslink length min = %f" % self.global_fib_min)
+        print("Crosslink length max = %f" % self.global_fib_max)
+        print("Crosslink length avg = %f" % self.global_fib_avg)
 
-        print("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
+        print("Number of crosslinks per fibre min = %f" % self.num_crosslink_min)
+        print("Number of crosslinks per fibre max = %f" % self.num_crosslink_max)
+        print("Number of crosslinks per fibre avg = %f" % self.num_crosslink_avg)
+
+        print("Total boundary crosslinks = %d" % len(self.boundary_fibres))
 
         return
 
@@ -281,20 +289,20 @@ class NetworkAnalyser:
         file.write("Total node count = %d\n" % self.box.node_count)
         file.write("Internal node count = %d\n" % self.box.total_internal_node_count)
         file.write("Boundary node count = %d\n" % self.box.total_boundary_node_count)
-        file.write("Danging node count = %d\n" % self.box.total_dangling_node_count)
+        file.write("Dangling node count = %d\n" % self.box.total_dangling_node_count)
 
         return
 
 
     def write_crosslink_stats(self, file):
 
-        file.write("Segment min = %f\n" % self.global_seg_min)
-        file.write("Segment max = %f\n" % self.global_seg_max)
-        file.write("Segment avg = %f\n" % self.global_seg_avg)
+        file.write("Segment length min = %f\n" % self.global_seg_min)
+        file.write("Segment length max = %f\n" % self.global_seg_max)
+        file.write("Segment length avg = %f\n" % self.global_seg_avg)
 
-        file.write("Crosslink fibre min = %f\n" % self.global_fib_min)
-        file.write("Crosslink fibre max = %f\n" % self.global_fib_max)
-        file.write("Crosslink fibre avg = %f\n" % self.global_fib_avg)
+        file.write("Crosslink length min = %f\n" % self.global_fib_min)
+        file.write("Crosslink length max = %f\n" % self.global_fib_max)
+        file.write("Crosslink length avg = %f\n" % self.global_fib_avg)
 
         file.write("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
 
