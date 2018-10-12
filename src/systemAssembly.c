@@ -74,8 +74,8 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	/* dynamic allocation for larger problems */
 	PetscInt 		*colArray;
 	PetscScalar		*valArray;
-	ierr = PetscMalloc1(nz*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
-	ierr = PetscMalloc1(nz*sizeof(PetscScalar),&valArray);CHKERRQ(ierr);
+	ierr = PetscMalloc(nz*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
+	ierr = PetscMalloc(nz*sizeof(PetscScalar),&valArray);CHKERRQ(ierr);
 
 	/* Read in further files to arrays */
     ierr = readInt(colFile, colArray, nz);CHKERRQ(ierr);
@@ -137,7 +137,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
 
 	/* Choose matrix as it's own preconditioning matrix */
-	ierr = KSPSetOperators(ksp,H,H);CHKERRQ(ierr);
+	ierr = KSPSetOperators(ksp,H,H MATSTRUCT);CHKERRQ(ierr);
 
 	ierr = KSPSetType(ksp, KSPPREONLY);
 

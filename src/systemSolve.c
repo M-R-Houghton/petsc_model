@@ -17,7 +17,7 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
        Set operators. Here the matrix that defines the linear system
        also serves as the preconditioning matrix.
     */
-	ierr = KSPSetOperators(ksp,globalMat_H,globalMat_H);CHKERRQ(ierr);
+	ierr = KSPSetOperators(ksp,globalMat_H,globalMat_H MATSTRUCT);CHKERRQ(ierr);
 
 
 	/*
