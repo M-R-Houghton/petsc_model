@@ -68,7 +68,6 @@ class ConflictChecker:
                     if len(fibre1.nodes) == len(fibre2.nodes):
 
                         same_node_list = True
-                        boundary_fibre = True
                         
                         for n in range(len(fibre1.nodes)):
 
@@ -82,15 +81,7 @@ class ConflictChecker:
                                 assert self.node_dict[nID].type != 2, '(ERROR) Invalid boundary node (ID=%r) found.' % nID
                                 assert self.node_dict[nID].type != 1, '(ERROR) Invalid dangling node (ID=%r) found.' % nID
 
-                            if self.node_dict[nID].type != 2:
-                                boundary_fibre = False
-
-
                         assert same_node_list == False, '(ERROR) Two fibres with same node list.'
-
-            if boundary_fibre == True:
-                self.boundary_fibres.append(f1)
-
         return
 
 
@@ -116,12 +107,37 @@ class ConflictChecker:
         return
 
 
+    def check_for_boundary_fibres(self):
+        """Test for fibre lying entirely in a boundary."""
+
+        for f1 in range(len(self.fibre_dict)):
+
+            fibre1 = self.fibre_dict[f1]
+
+            nS = fibre1.nodes[0]
+            nE = fibre1.nodes[-1]
+
+            boundary_fibre = True
+            
+            for n in range(len(fibre1.nodes)):
+
+                nID = fibre1.nodes[n]
+
+                if self.node_dict[nID].type != 2:
+                    boundary_fibre = False
+
+            if boundary_fibre == True:
+                self.boundary_fibres.append(f1)
+
+
     def check_for_conflicts(self):
         """Performs assertions on box, fibres and nodes."""
 
         self.check_for_box_conflicts()
         self.check_for_fibre_conflicts()
         self.check_for_node_conflicts()
+
+        self.check_for_boundary_fibres()
 
         if len(self.boundary_fibres) > 0:
             print('(WARNING) %d fibre(s) entirely on boundary or spanning domain' % len(self.boundary_fibres))

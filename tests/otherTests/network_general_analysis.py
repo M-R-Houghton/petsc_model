@@ -122,6 +122,42 @@ class NetworkAnalyser:
         return
 
 
+    def analyse_segment_lengths(self, fibre, seg_min, seg_max, seg_avg):
+
+        for n in range(len(fibre.nodes) - 1):
+
+            alph = self.node_dict[fibre.nodes[n]]
+            beta = self.node_dict[fibre.nodes[n+1]]
+
+            s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
+
+            mag_s_alph_beta = self.find_mag(s_alph_beta)
+
+            seg_min = self.update_min(seg_min, mag_s_alph_beta)
+            seg_max = self.update_max(seg_max, mag_s_alph_beta)
+
+            seg_avg += mag_s_alph_beta
+
+        seg_avg /= float(len(fibre.nodes) - 1)
+
+        return {'min':seg_min, 'max':seg_max, 'avg':seg_avg}
+
+
+    def analyse_number_of_crosslinks(self, fibre):
+
+        num_crosslink = 0
+        for i in range(len(fibre.nodes)):
+
+            if self.node_dict[i].type != 1:
+                num_crosslink += 1
+
+        self.num_crosslink_min = self.update_min(self.num_crosslink_min, num_crosslink)
+        self.num_crosslink_max = self.update_max(self.num_crosslink_max, num_crosslink)
+        self.num_crosslink_avg += num_crosslink
+
+        return
+
+
     def analyse_crosslinks(self):
 
         # set sum of no. of crosslinks = 0
@@ -142,32 +178,18 @@ class NetworkAnalyser:
 
                 total_normal_fibres += 1
 
-                local_seg_min, local_seg_max, local_seg_avg = self.box.x+self.box.y, 0, 0
+                self.analyse_number_of_crosslinks(fibre_i)
 
-                for n in range(len(fibre_i.nodes) - 1):
+                local_seg = self.analyse_segment_lengths(fibre_i, self.box.x+self.box.y, 0, 0)
 
-                    alph = self.node_dict[fibre_i.nodes[n]]
-                    beta = self.node_dict[fibre_i.nodes[n+1]]
+                #print("local min = %f" % local_seg['min'])
+                #print("local max = %f" % local_seg['max'])
+                #print("local avg = %f" % local_seg['avg'])
 
-                    s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
+                global_seg_min = self.update_min(global_seg_min, local_seg['min'])
+                global_seg_max = self.update_max(global_seg_max, local_seg['max'])
 
-                    mag_s_alph_beta = self.find_mag(s_alph_beta)
-
-                    local_seg_min = self.update_min(local_seg_min, mag_s_alph_beta)
-                    local_seg_max = self.update_max(local_seg_max, mag_s_alph_beta)
-
-                    local_seg_avg += mag_s_alph_beta
-
-                local_seg_avg /= float(len(fibre_i.nodes) - 1)
-
-                #print("local min = %f" % local_seg_min)
-                #print("local max = %f" % local_seg_max)
-                #print("local avg = %f" % local_seg_avg)
-
-                global_seg_min = self.update_min(global_seg_min, local_seg_min)
-                global_seg_max = self.update_max(global_seg_max, local_seg_max)
-
-                global_seg_avg += local_seg_avg
+                global_seg_avg += local_seg['avg']
 
                 # store the node IDs corresponding to min/max
 
@@ -194,6 +216,8 @@ class NetworkAnalyser:
                 # store ID of boundary fibres
                 if alph.type == 2 and beta.type == 2:
                     self.boundary_fibres.append(f_i)
+
+        self.num_crosslink_avg /= total_normal_fibres
 
         assert total_normal_fibres + total_crosslink_fibres == self.box.fibre_count, '(ERROR) Fibre not counted.'
 
@@ -268,8 +292,8 @@ class NetworkAnalyser:
         print("Crosslink length max = %f" % self.global_fib_max)
         print("Crosslink length avg = %f" % self.global_fib_avg)
 
-        print("Number of crosslinks per fibre min = %f" % self.num_crosslink_min)
-        print("Number of crosslinks per fibre max = %f" % self.num_crosslink_max)
+        print("Number of crosslinks per fibre min = %d" % self.num_crosslink_min)
+        print("Number of crosslinks per fibre max = %d" % self.num_crosslink_max)
         print("Number of crosslinks per fibre avg = %f" % self.num_crosslink_avg)
 
         print("Total boundary crosslinks = %d" % len(self.boundary_fibres))
