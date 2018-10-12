@@ -6,6 +6,8 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	PetscErrorCode 	ierr;
 	KSP            	ksp;          /* linear solver context */
 	PC             	pc;           /* preconditioner context */
+	PetscInt 		its;
+	PetscReal 		norm; 		  /* norm of solution error */
 
 	/*
        Create linear solver context
@@ -55,6 +57,14 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	  print this info to the screen at the conclusion of KSPSolve().
 	*/
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	/* Get iteration count */
+	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Iterations %d\n",its);CHKERRQ(ierr);
+
+	/* Get (relative?) residual norm */
+	KSPGetResidualNorm(ksp,&norm);
+	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %e\n", (double)norm);CHKERRQ(ierr);
 
 	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
