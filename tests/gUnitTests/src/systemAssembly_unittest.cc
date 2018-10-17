@@ -10,18 +10,79 @@ extern "C"
 
 namespace {
 
-struct testSystemAssembly : ::testing::Test
+struct testParMetis : ::testing::Test
 {
-    Box *box_ptr;
-    Parameters *par_ptr;
-    Mat glbMat;
-    Vec glbVec;
-    PetscScalar locMat[6][6], locVec[6];
-    Node *alpha_ptr, *beta_ptr;
-    PetscInt N;
+    PetscMPIInt     size;
+    PetscInt mlocal[2],n;
 
     void SetUp()
     {
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
+
+        /*
+         Proc_0: mlocal=3,n=6,ja={3,4|4,5|3,4,5},ia={0,2,4,7}
+         Proc_1: mlocal=3,n=6,ja={0,2,4|0,1,2,3,5|1,2,4},ia={0,3,8,11}
+         */
+
+        int i;
+        for (i = 0; i < 2; i++) { mlocal[i] = 3; }
+    }
+
+    void TearDown()
+    {
+
+    }
+};
+
+
+TEST_F(testParMetis, testForMoreThanOneProcessor)
+{
+    if (size < 2) GTEST_SKIP();
+
+    EXPECT_EQ(size, 2);
+}
+
+
+TEST_F(testParMetis, testMetisObjectValues)
+{
+    if (size < 2) GTEST_SKIP();
+
+    EXPECT_EQ(mlocal[0], 3);
+
+    /*
+    Mat *Adj;
+    MatPartitioning *part;
+    IS *is, *isg;
+
+    MatCreateMPIAdj(PETSC_COMM_WORLD, mlocal, n, ia, ja, Adj);
+
+    MatPartitioningCreate(PETSC_COMM_WORLD, part);
+    MatPartitioningSetAdjacency(part, Adj);
+    MatPartitioningSetFromOptions(part);
+    MatPartitioningApply(part, is);
+    MatPartitioningDestroy(part);
+
+    MatDestroy(Adj);
+    ISPartitioningToNumbering(is, isg);
+
+     */
+}
+
+
+struct testSystemAssembly : ::testing::Test
+{
+    PetscMPIInt     size;
+    Box             *box_ptr;
+    Parameters      *par_ptr;
+    Mat             glbMat;
+    Vec             glbVec;
+    PetscScalar     locMat[6][6], locVec[6];
+    Node            *alpha_ptr, *beta_ptr;
+    PetscInt        N;
+
+    void SetUp()
+    {
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
         MatCreate(PETSC_COMM_WORLD,&glbMat);
         MatSetFromOptions(glbMat);
         MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
@@ -57,6 +118,8 @@ struct testSystemAssembly : ::testing::Test
 
 TEST_F(testSystemAssembly, testErrorOutput)
 {
+    if (size != 1) GTEST_SKIP();
+
     EXPECT_EQ(systemAssembly(box_ptr, par_ptr, glbMat, glbVec), 0);
 }
 
@@ -186,6 +249,7 @@ TEST(testWriteDbl, testSolFileWriteOut)
 struct testSolveAssembledMatrix : ::testing::Test
 {
     PetscErrorCode ierr;
+    PetscMPIInt size;
     PetscInt n;
     char const *rowFile;
     char const *colFile;
@@ -196,6 +260,7 @@ struct testSolveAssembledMatrix : ::testing::Test
     void SetUp()
     {
         /* set up */
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
         n       = 3;
         rowFile = "../../data/row/row.f3tTripod1";
         colFile = "../../data/col/col.f3tTripod1";
@@ -212,12 +277,16 @@ struct testSolveAssembledMatrix : ::testing::Test
 
 TEST_F(testSolveAssembledMatrix, testIfTripodCaseRuns)
 {
+    if (size != 1) GTEST_SKIP();
+
     ierr = solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
     EXPECT_EQ(ierr, 0);
 }
 
 TEST_F(testSolveAssembledMatrix, testTripodSolFileOutput)
 {
+    if (size != 1) GTEST_SKIP();
+
     PetscScalar array[n];
 
     solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
@@ -233,6 +302,7 @@ TEST_F(testSolveAssembledMatrix, testTripodSolFileOutput)
 struct testLattice2Solve : ::testing::Test
 {
     PetscErrorCode ierr;
+    PetscMPIInt size;
     PetscInt n;
     char const *rowFile;
     char const *colFile;
@@ -243,6 +313,7 @@ struct testLattice2Solve : ::testing::Test
     void SetUp()
     {
         /* set up */
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
         n       = 2355;
         rowFile = "../../data/row/row.f3tLat02";
         colFile = "../../data/col/col.f3tLat02";
@@ -259,6 +330,8 @@ struct testLattice2Solve : ::testing::Test
 
 TEST_F(testLattice2Solve, testLatticeSolFileOutput)
 {
+    if (size != 1) GTEST_SKIP();
+
     PetscScalar array[n];
 
     solveAssembledMatrix(rowFile,colFile,matFile,rhsFile,solFile,n);
