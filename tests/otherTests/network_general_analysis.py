@@ -328,6 +328,10 @@ class NetworkAnalyser:
         file.write("Crosslink length max = %f\n" % self.global_fib_max)
         file.write("Crosslink length avg = %f\n" % self.global_fib_avg)
 
+        file.write("Number of crosslinks per fibre min = %d\n" % self.num_crosslink_min)
+        file.write("Number of crosslinks per fibre max = %d\n" % self.num_crosslink_max)
+        file.write("Number of crosslinks per fibre avg = %f\n" % self.num_crosslink_avg)
+
         file.write("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
 
         return
