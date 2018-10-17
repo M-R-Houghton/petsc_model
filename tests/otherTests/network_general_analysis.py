@@ -146,7 +146,7 @@ class NetworkAnalyser:
     def analyse_number_of_crosslinks(self, fibre):
 
         num_crosslink = 0
-        for i in range(len(fibre.nodes)):
+        for i in fibre.nodes:
 
             if self.node_dict[i].type != 1:
                 num_crosslink += 1
