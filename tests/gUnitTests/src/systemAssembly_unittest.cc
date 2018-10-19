@@ -13,19 +13,10 @@ namespace {
 struct testParMetis : ::testing::Test
 {
     PetscMPIInt     size;
-    PetscInt mlocal[2],n;
 
     void SetUp()
     {
         MPI_Comm_size(PETSC_COMM_WORLD,&size);
-
-        /*
-         Proc_0: mlocal=3,n=6,ja={3,4|4,5|3,4,5},ia={0,2,4,7}
-         Proc_1: mlocal=3,n=6,ja={0,2,4|0,1,2,3,5|1,2,4},ia={0,3,8,11}
-         */
-
-        int i;
-        for (i = 0; i < 2; i++) { mlocal[i] = 3; }
     }
 
     void TearDown()
@@ -43,29 +34,66 @@ TEST_F(testParMetis, testForMoreThanOneProcessor)
 }
 
 
-TEST_F(testParMetis, testMetisObjectValues)
+TEST_F(testParMetis, testMetisSerialExample)
+{
+    if (size > 1) GTEST_SKIP();
+
+    PetscInt mlocal=7,n=7;
+    //PetscInt ia[8],ja[22];
+    PetscInt *ia, *ja;
+    PetscMalloc(8*sizeof(PetscInt), &ia);
+    PetscMalloc(22*sizeof(PetscInt), &ja);
+
+
+    /*
+     Proc_0: mlocal=7,n=7,ja={3,4|4,5|3,4,5},ia={0,2,4,7}
+     */
+
+    ia[0] = 0, ia[1] = 3, ia[2] = 6, ia[3] = 10, ia[4] = 14, ia[5] = 17, ia[6] = 20, ia[7] = 22;
+
+    ja[0]  = 1, ja[1]  = 2, ja[2]  = 4;
+    ja[3]  = 0, ja[4]  = 2, ja[5]  = 3;
+    ja[6]  = 0, ja[7]  = 1, ja[8]  = 3, ja[9]  = 4;
+    ja[10] = 1, ja[11] = 2, ja[12] = 5, ja[13] = 6;
+    ja[14] = 0, ja[15] = 2, ja[16] = 5;
+    ja[17] = 3, ja[18] = 4, ja[19] = 6;
+    ja[20] = 3, ja[21] = 5;
+
+    ///*
+    Mat Adj;
+    MatPartitioning part;
+    IS is, isg;
+
+    MatCreateMPIAdj(PETSC_COMM_WORLD, mlocal, n, ia, ja, NULL, &Adj);
+
+    MatPartitioningCreate(PETSC_COMM_WORLD, &part);
+    MatPartitioningSetAdjacency(part, Adj);
+    MatPartitioningSetFromOptions(part);
+    MatPartitioningApply(part, &is);
+    MatPartitioningDestroy(&part);
+
+    ISView(is,PETSC_VIEWER_STDOUT_WORLD);
+
+    MatDestroy(&Adj);
+    ISPartitioningToNumbering(is, &isg);
+
+    //*/
+
+    EXPECT_EQ(mlocal, 7);
+}
+
+
+TEST_F(testParMetis, testMetisParallelExample)
 {
     if (size < 2) GTEST_SKIP();
 
-    EXPECT_EQ(mlocal[0], 3);
-
     /*
-    Mat *Adj;
-    MatPartitioning *part;
-    IS *is, *isg;
-
-    MatCreateMPIAdj(PETSC_COMM_WORLD, mlocal, n, ia, ja, Adj);
-
-    MatPartitioningCreate(PETSC_COMM_WORLD, part);
-    MatPartitioningSetAdjacency(part, Adj);
-    MatPartitioningSetFromOptions(part);
-    MatPartitioningApply(part, is);
-    MatPartitioningDestroy(part);
-
-    MatDestroy(Adj);
-    ISPartitioningToNumbering(is, isg);
-
+     Proc_0: mlocal=3,n=6,ja={3,4|4,5|3,4,5},ia={0,2,4,7}
+     Proc_1: mlocal=3,n=6,ja={0,2,4|0,1,2,3,5|1,2,4},ia={0,3,8,11}
      */
+
+    EXPECT_EQ(2, 3);
+
 }
 
 
