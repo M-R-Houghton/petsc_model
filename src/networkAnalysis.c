@@ -87,7 +87,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     kappa = calculateKappa(box_ptr, par_ptr, fIndex);
 
 	/* calculate bending constant */
-	bConstNum = 2 * kappa;
+	bConstNum = kappa;     /* NOTE: this was x2 but this is only correct for derivative calcs */
 	bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
 	bConst 	  = bConstNum / bConstDen;
 
