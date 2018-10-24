@@ -96,8 +96,16 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr);CHKERRQ(ierr);
 
     /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
-    vec3DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
-    vec3DCrossProduct(u_cross_s, u_alphOmeg, s_omegBeta);
+    if (DIMENSION == 3)
+    {
+        vec3DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
+        vec3DCrossProduct(u_cross_s, u_alphOmeg, s_omegBeta);
+    }
+    else
+    {
+        vec2DCrossProduct(s_cross_u, s_alphOmeg, u_omegBeta);
+        vec2DCrossProduct(u_cross_s, u_alphOmeg, s_omegBeta);
+    }
 
     /* add the two crosses together and calculate the magnitude to get phi magnitude */
     vecAddition(phi, s_cross_u, u_cross_s, box_ptr);
@@ -115,7 +123,7 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
 	PetscScalar 	segStreEnergy = 0.0;
     PetscScalar     segAffnEnergy = 0.0;
 
-    assert(DIMENSION==3);	/* re-assess whether this is still needed in the petsc model */
+    //assert(DIMENSION==3);	/* re-assess whether this is still needed in the petsc model */
 
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
@@ -154,7 +162,7 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	segBendEnergy = 0.0;
 
-    assert(DIMENSION==3);		/* re-assess whether this is still needed in the petsc model */
+    //assert(DIMENSION==3);		/* re-assess whether this is still needed in the petsc model */
 
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
@@ -216,7 +224,8 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 void checkVolume(Box *box_ptr, PetscScalar volume)
 {
 	assert(volume >= 0);
-	assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
+	if (DIMENSION==2) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]);
+    if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
 }
 
 PetscScalar calculateVolume(Box *box_ptr)
@@ -225,6 +234,11 @@ PetscScalar calculateVolume(Box *box_ptr)
     PetscScalar 	V = 1.0;
     PetscScalar 	xyzRange[DIMENSION];
     PetscInt 		i;
+
+    if (DIMENSION != 3) 
+    { 
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[WARNING] Energy values still to be tested in 2D.\n");CHKERRQ(ierr);
+    }
 
     for (i = 0; i < DIMENSION; i++)
     {
