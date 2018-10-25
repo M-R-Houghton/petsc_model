@@ -97,6 +97,7 @@ struct sparseMat
 	PetscScalar *mat;  					/* (0<nz)  matrix entry */
 };
 
+/* set macros for compatibility between 3.4 and 3.10 */
 #if (PETSC_VERSION_MAJOR==3 && PETSC_VERSION_MINOR<5)
 #define MATSTRUCT , SAME_NONZERO_PATTERN
 #define GETOPTS 

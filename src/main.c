@@ -98,6 +98,7 @@ int main(int argc, char **args)
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
 	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
+	ierr = applyElasticMedium(A);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/*

@@ -12,11 +12,12 @@ namespace {
 
 struct testParMetis : ::testing::Test
 {
-    PetscMPIInt     size;
+    PetscMPIInt size, rank;
 
     void SetUp()
     {
         MPI_Comm_size(PETSC_COMM_WORLD,&size);
+        MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
     }
 
     void TearDown()
@@ -39,7 +40,8 @@ TEST_F(testParMetis, testMetisSerialExample)
     if (size > 1) GTEST_SKIP();
 
     PetscInt mlocal=7,n=7;
-    //PetscInt ia[8],ja[22];
+
+    /* I think this needs to be dynamic allocation when partitioning */
     PetscInt *ia, *ja;
     PetscMalloc(8*sizeof(PetscInt), &ia);
     PetscMalloc(22*sizeof(PetscInt), &ja);
@@ -59,6 +61,9 @@ TEST_F(testParMetis, testMetisSerialExample)
     ja[17] = 3, ja[18] = 4, ja[19] = 6;
     ja[20] = 3, ja[21] = 5;
 
+    /*
+     * Running but don't think this is working yet
+     */
     ///*
     Mat Adj;
     MatPartitioning part;
@@ -77,23 +82,61 @@ TEST_F(testParMetis, testMetisSerialExample)
     MatDestroy(&Adj);
     ISPartitioningToNumbering(is, &isg);
 
-    //*/
-
-    EXPECT_EQ(mlocal, 7);
+    FAIL();
+     //*/
 }
 
 
 TEST_F(testParMetis, testMetisParallelExample)
 {
-    if (size < 2) GTEST_SKIP();
+    if (size != 2) GTEST_SKIP();
+
+    PetscInt mlocal=3,n=6;
+
+    /* I think this needs to be dynamic allocation when partitioning */
+    PetscInt *ia, *ja;
+    PetscMalloc(4*sizeof(PetscInt), &ia);
+    PetscMalloc(11*sizeof(PetscInt), &ja);
 
     /*
      Proc_0: mlocal=3,n=6,ja={3,4|4,5|3,4,5},ia={0,2,4,7}
      Proc_1: mlocal=3,n=6,ja={0,2,4|0,1,2,3,5|1,2,4},ia={0,3,8,11}
      */
 
-    EXPECT_EQ(2, 3);
+    if (!rank)
+    {
+        ia[0] = 0, ia[1] = 2, ia[2] = 4, ia[3] = 7;
+        ja[0] = 3, ja[1] = 4, ja[2] = 4, ja[3] = 5, ja[4] = 3, ja[5] = 4, ja[6] = 5;
+    }
+    else
+    {
+        ia[0] = 0, ia[1] = 3, ia[2] = 8, ia[3] = 11;
+        ja[0] = 0, ja[1] = 2, ja[2] = 4, ja[3] = 0, ja[4] = 1, ja[5] = 2, ja[6] = 3, ja[7] = 5, ja[8] = 1, ja[9] = 2, ja[10] = 4;
+    }
 
+    /*
+     * Running but don't think this is working yet
+     */
+    ///*
+    Mat Adj;
+    MatPartitioning part;
+    IS is, isg;
+
+    MatCreateMPIAdj(PETSC_COMM_WORLD, mlocal, n, ia, ja, NULL, &Adj);
+
+    MatPartitioningCreate(PETSC_COMM_WORLD, &part);
+    MatPartitioningSetAdjacency(part, Adj);
+    MatPartitioningSetFromOptions(part);
+    MatPartitioningApply(part, &is);
+    MatPartitioningDestroy(&part);
+
+    ISView(is,PETSC_VIEWER_STDOUT_WORLD);
+
+    MatDestroy(&Adj);
+    ISPartitioningToNumbering(is, &isg);
+
+    FAIL();
+    //*/
 }
 
 
@@ -189,6 +232,68 @@ TEST_F(testSystemAssembly, DISABLED_testGlobalRHSVecValues)
      2.221441469078285e-09 
     */
 }
+
+
+struct testApplyElasticMedium : ::testing::Test
+{
+    PetscMPIInt     size;
+    Box             *box_ptr;
+    Parameters      *par_ptr;
+    Mat             glbMat;
+    Vec             glbVec;
+    PetscInt        N;
+
+    void SetUp()
+    {
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
+        MatCreate(PETSC_COMM_WORLD,&glbMat);
+        MatSetFromOptions(glbMat);
+        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
+        MatSetUp(glbMat);
+
+        MatZeroEntries(glbMat);
+
+        MatAssemblyBegin(glbMat,MAT_FINAL_ASSEMBLY);
+        MatAssemblyEnd(glbMat,MAT_FINAL_ASSEMBLY);
+
+        VecCreate(PETSC_COMM_WORLD,&glbVec);
+        VecSetFromOptions(glbVec);
+        VecSetSizes(glbVec,PETSC_DECIDE,6);
+
+        N = 2;
+    }
+
+    void TearDown()
+    {
+        MatDestroy(&glbMat);
+    }
+};
+
+
+TEST_F(testApplyElasticMedium, testErrorOutput)
+{
+    if (size != 1) GTEST_SKIP();
+
+    EXPECT_EQ(applyElasticMedium(glbMat), 0);
+}
+
+
+TEST_F(testApplyElasticMedium, testDiagonalValues)
+{
+    if (size != 1) GTEST_SKIP();
+
+    applyElasticMedium(glbMat);
+
+    PetscScalar *diagonal;
+    MatGetDiagonal(glbMat,glbVec);
+
+    VecGetArray(glbVec, &diagonal);
+    EXPECT_DOUBLE_EQ(diagonal[0], -1e-5);
+    EXPECT_DOUBLE_EQ(diagonal[1], -1e-5);
+    EXPECT_DOUBLE_EQ(diagonal[2], -1e-5);
+    VecRestoreArray(glbVec, &diagonal);
+}
+
 
 TEST(testReadInt, testRowFileReadIn) 
 {

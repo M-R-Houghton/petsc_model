@@ -11,6 +11,13 @@
 PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
 
 /**
+ * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
+ * \param H Global matrix to be shifted
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMedium(Mat H);
+
+/**
  * \brief Solves a matrix from pre-assembled arrays.
  * \param rowFile String representing name of row pointer file to be read in.
  * \param colFile String representing name of column index file to be read in.

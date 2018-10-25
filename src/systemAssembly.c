@@ -46,6 +46,18 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 }
 
 
+/* Applies a uniform force such that the network behaves suspended in an elastic medium */
+PetscErrorCode applyElasticMedium(Mat H)
+{
+	PetscErrorCode 	ierr;
+	PetscScalar 	lambda = -1e-5;
+
+	ierr = MatShift(H, lambda);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
 /* Solves a matrix from pre-assembled arrays */
 PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
 									char const *rhsFile, char const *solFile, PetscInt n)
