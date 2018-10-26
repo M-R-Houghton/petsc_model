@@ -46,13 +46,48 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 }
 
 
+PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda)
+{
+	PetscErrorCode ierr;
+
+	ierr = MatShift(H, lambda);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda)
+{
+	PetscErrorCode 	ierr;
+	PetscInt 		i,j;
+	PetscInt 		N = box_ptr->nodeInternalCount;
+
+	for (i = 0; i < box_ptr->nodeCount; i++)
+	{
+		Node *node = &(box_ptr->masterNodeList[i]);
+		if (node->globalID != 1)
+		{
+			for (j = 0; j < DIMENSION; j++)
+			{
+				ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+				CHKERRQ(ierr);
+			}
+		}
+	}
+
+	return ierr;
+}
+
+
 /* Applies a uniform force such that the network behaves suspended in an elastic medium */
 PetscErrorCode applyElasticMedium(Mat H)
 {
 	PetscErrorCode 	ierr;
 	PetscScalar 	lambda = -1e-5;
 
-	ierr = MatShift(H, lambda);CHKERRQ(ierr);
+	ierr = applyElasticMediumToMatrix(H, lambda);
+
+	//ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
 	return ierr;
 }

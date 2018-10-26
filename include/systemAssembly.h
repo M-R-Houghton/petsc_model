@@ -11,6 +11,23 @@
 PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
 
 /**
+ * \brief Applies a uniform force to the global matrix 
+ * \param H Global matrix to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda);
+
+/**
+ * \brief Applies a uniform force to the global RHS vector
+ * \param box The box pointer used to loop over the internal nodes
+ * \param B Global vector to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda);
+
+/**
  * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
  * \param H Global matrix to be shifted
  * \return Index to represent Petsc error code

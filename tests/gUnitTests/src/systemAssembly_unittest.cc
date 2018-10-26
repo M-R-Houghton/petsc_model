@@ -234,6 +234,106 @@ TEST_F(testSystemAssembly, DISABLED_testGlobalRHSVecValues)
 }
 
 
+struct testApplyElasticMediumToMatrix : ::testing::Test
+{
+    PetscMPIInt     size;
+    Box             *box_ptr;
+    Parameters      *par_ptr;
+    Mat             glbMat;
+    Vec             glbVec;
+    PetscScalar     lambda;
+
+    void SetUp()
+    {
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
+        MatCreate(PETSC_COMM_WORLD,&glbMat);
+        MatSetFromOptions(glbMat);
+        MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
+        MatSetUp(glbMat);
+
+        MatZeroEntries(glbMat);
+
+        MatAssemblyBegin(glbMat,MAT_FINAL_ASSEMBLY);
+        MatAssemblyEnd(glbMat,MAT_FINAL_ASSEMBLY);
+
+        VecCreate(PETSC_COMM_WORLD,&glbVec);
+        VecSetFromOptions(glbVec);
+        VecSetSizes(glbVec,PETSC_DECIDE,6);
+
+        lambda = -1e-5;
+    }
+
+    void TearDown()
+    {
+        MatDestroy(&glbMat);
+    }
+};
+
+
+TEST_F(testApplyElasticMediumToMatrix, testErrorOutput)
+{
+    if (size != 1) GTEST_SKIP();
+
+    EXPECT_EQ(applyElasticMediumToMatrix(glbMat, lambda), 0);
+}
+
+
+TEST_F(testApplyElasticMediumToMatrix, testDiagonalValues)
+{
+    if (size != 1) GTEST_SKIP();
+
+    applyElasticMediumToMatrix(glbMat, lambda);
+
+    PetscScalar *diagonal;
+    MatGetDiagonal(glbMat,glbVec);
+
+    VecGetArray(glbVec, &diagonal);
+    EXPECT_DOUBLE_EQ(diagonal[0], -1e-5);
+    EXPECT_DOUBLE_EQ(diagonal[1], -1e-5);
+    EXPECT_DOUBLE_EQ(diagonal[2], -1e-5);
+    VecRestoreArray(glbVec, &diagonal);
+}
+
+
+struct testApplyElasticMediumToRHSVector : ::testing::Test
+{
+    PetscMPIInt     size;
+    Box             *box_ptr;
+    Parameters      *par_ptr;
+    Mat             glbMat;
+    Vec             glbVec;
+    PetscScalar     lambda;
+
+    void SetUp()
+    {
+        MPI_Comm_size(PETSC_COMM_WORLD,&size);
+
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+        VecCreate(PETSC_COMM_WORLD,&glbVec);
+        VecSetFromOptions(glbVec);
+        VecSetSizes(glbVec,PETSC_DECIDE,6);
+
+        lambda = -1e-5;
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+        VecDestroy(&glbVec);
+    }
+};
+
+
+TEST_F(testApplyElasticMediumToRHSVector, testErrorOutput)
+{
+    if (size != 1) GTEST_SKIP();
+
+    EXPECT_EQ(applyElasticMediumToRHSVector(box_ptr, glbVec, lambda), 0);
+}
+
+
 struct testApplyElasticMedium : ::testing::Test
 {
     PetscMPIInt     size;
