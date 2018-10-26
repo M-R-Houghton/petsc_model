@@ -29,10 +29,13 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 
 /**
  * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
+ * \param box The box pointer used to loop over the internal nodes
  * \param H Global matrix to be shifted
+ * \param B Global vector to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMedium(Mat H);
+PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
 
 /**
  * \brief Solves a matrix from pre-assembled arrays.

@@ -65,7 +65,7 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 	for (i = 0; i < box_ptr->nodeCount; i++)
 	{
 		Node *node = &(box_ptr->masterNodeList[i]);
-		if (node->globalID != 1)
+		if (node->globalID != -1)
 		{
 			for (j = 0; j < DIMENSION; j++)
 			{
@@ -80,10 +80,9 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 
 
 /* Applies a uniform force such that the network behaves suspended in an elastic medium */
-PetscErrorCode applyElasticMedium(Mat H)
+PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda)
 {
 	PetscErrorCode 	ierr;
-	PetscScalar 	lambda = -1e-5;
 
 	ierr = applyElasticMediumToMatrix(H, lambda);
 

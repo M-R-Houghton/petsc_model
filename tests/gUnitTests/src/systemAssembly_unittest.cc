@@ -342,10 +342,15 @@ struct testApplyElasticMedium : ::testing::Test
     Mat             glbMat;
     Vec             glbVec;
     PetscInt        N;
+    PetscScalar     lambda;
 
     void SetUp()
     {
         MPI_Comm_size(PETSC_COMM_WORLD,&size);
+
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
         MatCreate(PETSC_COMM_WORLD,&glbMat);
         MatSetFromOptions(glbMat);
         MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,6,6);
@@ -361,11 +366,14 @@ struct testApplyElasticMedium : ::testing::Test
         VecSetSizes(glbVec,PETSC_DECIDE,6);
 
         N = 2;
+        lambda = -1e-5;
     }
 
     void TearDown()
     {
+        destroyBox(box_ptr);
         MatDestroy(&glbMat);
+        VecDestroy(&glbVec);
     }
 };
 
@@ -374,7 +382,7 @@ TEST_F(testApplyElasticMedium, testErrorOutput)
 {
     if (size != 1) GTEST_SKIP();
 
-    EXPECT_EQ(applyElasticMedium(glbMat), 0);
+    EXPECT_EQ(applyElasticMedium(box_ptr, glbMat, glbVec, lambda), 0);
 }
 
 
@@ -382,7 +390,7 @@ TEST_F(testApplyElasticMedium, testDiagonalValues)
 {
     if (size != 1) GTEST_SKIP();
 
-    applyElasticMedium(glbMat);
+    applyElasticMedium(box_ptr, glbMat, glbVec, lambda);
 
     PetscScalar *diagonal;
     MatGetDiagonal(glbMat,glbVec);
