@@ -303,19 +303,38 @@ struct testApplyElasticMediumToRHSVector : ::testing::Test
     Mat             glbMat;
     Vec             glbVec;
     PetscScalar     lambda;
+    Node            *node0, *node2, *node5;
 
     void SetUp()
     {
         MPI_Comm_size(PETSC_COMM_WORLD,&size);
 
-        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        const char fileToRead[] = "data/exElasticMediumNetwork.dat";
         networkRead(fileToRead, &box_ptr, 0.05);
 
         VecCreate(PETSC_COMM_WORLD,&glbVec);
         VecSetFromOptions(glbVec);
-        VecSetSizes(glbVec,PETSC_DECIDE,6);
+        VecSetSizes(glbVec,PETSC_DECIDE,9);
+
+        for (int i = 0; i < 9; i++) VecSetValue(glbVec, i, 2.0*i, ADD_VALUES);
 
         lambda = -1e-5;
+
+        node0 = &(box_ptr->masterNodeList[0]);
+        node2 = &(box_ptr->masterNodeList[2]);
+        node5 = &(box_ptr->masterNodeList[5]);
+
+        node0->xyzAffDisplacement[0] = 0.1;
+        node0->xyzAffDisplacement[1] = 0.2;
+        node0->xyzAffDisplacement[2] = 0.3;
+
+        node2->xyzAffDisplacement[0] = 0.21;
+        node2->xyzAffDisplacement[1] = 0.22;
+        node2->xyzAffDisplacement[2] = 0.23;
+
+        node5->xyzAffDisplacement[0] = 0.51;
+        node5->xyzAffDisplacement[1] = 0.52;
+        node5->xyzAffDisplacement[2] = 0.53;
     }
 
     void TearDown()
@@ -331,6 +350,63 @@ TEST_F(testApplyElasticMediumToRHSVector, testErrorOutput)
     if (size != 1) GTEST_SKIP();
 
     EXPECT_EQ(applyElasticMediumToRHSVector(box_ptr, glbVec, lambda), 0);
+}
+
+
+TEST_F(testApplyElasticMediumToRHSVector, testVectorValuesWithoutLambda)
+{
+    if (size != 1) GTEST_SKIP();
+
+    PetscScalar *array;
+    lambda = 1.0;
+
+    VecGetArray(glbVec, &array);
+    EXPECT_FLOAT_EQ(array[0],  0.0);
+    EXPECT_FLOAT_EQ(array[1],  2.0);
+    EXPECT_FLOAT_EQ(array[2],  4.0);
+    EXPECT_FLOAT_EQ(array[3],  6.0);
+    EXPECT_FLOAT_EQ(array[4],  8.0);
+    EXPECT_FLOAT_EQ(array[5], 10.0);
+    EXPECT_FLOAT_EQ(array[6], 12.0);
+    EXPECT_FLOAT_EQ(array[7], 14.0);
+    EXPECT_FLOAT_EQ(array[8], 16.0);
+    VecRestoreArray(glbVec, &array);
+
+    applyElasticMediumToRHSVector(box_ptr, glbVec, lambda);
+
+    VecGetArray(glbVec, &array);
+    EXPECT_FLOAT_EQ(array[0],  0.1);
+    EXPECT_FLOAT_EQ(array[1],  2.21);
+    EXPECT_FLOAT_EQ(array[2],  4.51);
+    EXPECT_FLOAT_EQ(array[3],  6.2);
+    EXPECT_FLOAT_EQ(array[4],  8.22);
+    EXPECT_FLOAT_EQ(array[5], 10.52);
+    EXPECT_FLOAT_EQ(array[6], 12.3);
+    EXPECT_FLOAT_EQ(array[7], 14.23);
+    EXPECT_FLOAT_EQ(array[8], 16.53);
+    VecRestoreArray(glbVec, &array);
+}
+
+
+TEST_F(testApplyElasticMediumToRHSVector, testVectorValuesWithLambda)
+{
+    if (size != 1) GTEST_SKIP();
+
+    PetscScalar *array;
+
+    applyElasticMediumToRHSVector(box_ptr, glbVec, lambda);
+
+    VecGetArray(glbVec, &array);
+    EXPECT_FLOAT_EQ(array[0],  0.0 - 1e-5*0.1   );
+    EXPECT_FLOAT_EQ(array[1],  2.0 - 1e-5*0.21  );
+    EXPECT_FLOAT_EQ(array[2],  4.0 - 1e-5*0.51  );
+    EXPECT_FLOAT_EQ(array[3],  6.0 - 1e-5*0.2   );
+    EXPECT_FLOAT_EQ(array[4],  8.0 - 1e-5*0.22  );
+    EXPECT_FLOAT_EQ(array[5], 10.0 - 1e-5*0.52  );
+    EXPECT_FLOAT_EQ(array[6], 12.0 - 1e-5*0.3   );
+    EXPECT_FLOAT_EQ(array[7], 14.0 - 1e-5*0.23  );
+    EXPECT_FLOAT_EQ(array[8], 16.0 - 1e-5*0.53  );
+    VecRestoreArray(glbVec, &array);
 }
 
 
