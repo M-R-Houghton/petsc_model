@@ -48,6 +48,8 @@ PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tE_Aff-E \t= %g\n", par_ptr->energyAffn-par_ptr->energyTotl);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tG_Aff-G \t= %g\n", par_ptr->shearModAffn-par_ptr->shearModulus);CHKERRQ(ierr);
 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\t(E-E_Aff)/E_Aff \t= %g\n", (par_ptr->energyTotl-par_ptr->energyAffn)/par_ptr->energyAffn);CHKERRQ(ierr);
+
 	return ierr;
 }
 

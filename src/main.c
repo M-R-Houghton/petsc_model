@@ -218,6 +218,8 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Analysing network...\n");CHKERRQ(ierr);
     ierr = networkAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
     ierr = printAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tLambda \t= %g\n\n", lambda);CHKERRQ(ierr);
+
 
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
