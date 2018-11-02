@@ -98,10 +98,10 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		/* calculate stretching modulus */
 		//k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
 
-        printf("k = %0.16g\n", k);
-        printf("t[0] = %0.16g\n", t_alphBeta[0]);
-        printf("t[1] = %0.16g\n", t_alphBeta[1]);
-        printf("t[2] = %0.16g\n", t_alphBeta[2]);
+        //printf("k = %0.16g\n", k);
+        //printf("t[0] = %0.16g\n", t_alphBeta[0]);
+        //printf("t[1] = %0.16g\n", t_alphBeta[1]);
+        //printf("t[2] = %0.16g\n", t_alphBeta[2]);
 
         PetscScalar *u_alph = alph_ptr->xyzDisplacement;    /* need to decide if it's safer to use makeDisplacementVec() here */
         PetscScalar *u_beta = beta_ptr->xyzDisplacement;
