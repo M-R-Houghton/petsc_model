@@ -22,6 +22,20 @@ void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength);
 PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, PetscScalar segLength);
 
 /**
+ * \brief Calculates information about the current fibre segment pair 
+ * \param box_ptr
+ * \param par_ptr
+ * \param s_alph
+ * \param s_beta
+ * \param k
+ * \param t_alphBeta
+ * \param fIndex
+ * \return Petsc error code
+ */
+PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
+                                        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex );
+
+/**
  * \brief Adds local stretch information for a single fibre to global system
  * Loops through a fibre in pairs
  * \param box_ptr

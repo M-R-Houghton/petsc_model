@@ -44,6 +44,126 @@ TEST(testCalculateK, testOutputKValue)
 }
 
 
+struct testCalculateSegPairInfo : ::testing::Test
+{
+    Box *box_ptr;
+    Parameters *par_ptr;
+    PetscInt fCount;
+    Node *alph_ptr;
+    Node *beta_ptr;
+    PetscScalar t_alphBeta[DIMENSION];
+    PetscScalar k;
+
+    void SetUp()
+    {
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+        par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
+
+        alph_ptr = &(box_ptr->masterNodeList[0]);
+        beta_ptr = &(box_ptr->masterNodeList[4]);
+        t_alphBeta[DIMENSION];
+        k = 1.0;
+    }
+
+    void TearDown()
+    {
+        /* clean up */
+        destroyBox(box_ptr);
+        destroyParameters(par_ptr);
+    }
+};
+
+
+TEST_F(testCalculateSegPairInfo, testErrorOutput) 
+{
+    EXPECT_EQ(calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0), 0);
+}
+
+
+TEST_F(testCalculateSegPairInfo, testKValue) 
+{
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(k, 0.0005619851784832581);
+
+    alph_ptr = &(box_ptr->masterNodeList[4]);
+    beta_ptr = &(box_ptr->masterNodeList[1]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(k, 0.0005619851784832581);
+
+    alph_ptr = &(box_ptr->masterNodeList[2]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 1);
+    EXPECT_DOUBLE_EQ(k, 0.0005130199320647457);
+
+    alph_ptr = &(box_ptr->masterNodeList[3]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 2);
+    EXPECT_DOUBLE_EQ(k, 0.0005130199320647457);
+}
+
+
+TEST_F(testCalculateSegPairInfo, testTangentValue2D) 
+{
+    if (DIMENSION != 2) GTEST_SKIP();
+
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0], -0.4472135954999579);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8944271909999159);
+
+    alph_ptr = &(box_ptr->masterNodeList[4]);
+    beta_ptr = &(box_ptr->masterNodeList[1]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0], -0.4472135954999579);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8944271909999159);
+
+    alph_ptr = &(box_ptr->masterNodeList[2]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 1);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0],  0.4082482904638631);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8164965809277261);
+
+    alph_ptr = &(box_ptr->masterNodeList[3]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 2);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0],  0.4082482904638631);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8164965809277261);
+}
+
+
+TEST_F(testCalculateSegPairInfo, testTangentValue3D) 
+{
+    if (DIMENSION != 3) GTEST_SKIP();
+    
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0], -0.4472135954999579);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8944271909999159);
+    EXPECT_DOUBLE_EQ(t_alphBeta[2],  0);
+
+    alph_ptr = &(box_ptr->masterNodeList[4]);
+    beta_ptr = &(box_ptr->masterNodeList[1]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0], -0.4472135954999579);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8944271909999159);
+    EXPECT_DOUBLE_EQ(t_alphBeta[2],  0);
+
+    alph_ptr = &(box_ptr->masterNodeList[2]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 1);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0],  0.4082482904638631);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8164965809277261);
+    EXPECT_DOUBLE_EQ(t_alphBeta[2],  0.4082482904638631);
+
+    alph_ptr = &(box_ptr->masterNodeList[3]);
+    beta_ptr = &(box_ptr->masterNodeList[4]);
+    calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 2);
+    EXPECT_DOUBLE_EQ(t_alphBeta[0],  0.4082482904638631);
+    EXPECT_DOUBLE_EQ(t_alphBeta[1],  0.8164965809277261);
+    EXPECT_DOUBLE_EQ(t_alphBeta[2], -0.4082482904638631);
+}
+
+
 struct testAddFibreLocalStretch : ::testing::Test
 {
     Box *box_ptr;
