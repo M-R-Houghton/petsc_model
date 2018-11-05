@@ -36,8 +36,13 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 	i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
 	ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); // where &i is an array of i
 	*/
+
 	ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+	/* zero entries for elastic medium validation only */
+	ierr = VecZeroEntries(b);CHKERRQ(ierr);
+	ierr = MatZeroEntries(H);CHKERRQ(ierr);
 
 	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
@@ -86,7 +91,7 @@ PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda
 
 	ierr = applyElasticMediumToMatrix(H, lambda);
 
-	//ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
+	ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
 	return ierr;
 }
