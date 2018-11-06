@@ -19,7 +19,7 @@ struct testParameterRead : ::testing::Test
     void SetUp()
     {
         // open file, read in line and close
-        fileToRead = "../../data/par/tri_3d_01.par";
+        fileToRead = "../../data/par/tri/tri_3d_01.par";
     }
 
     void TearDown()
