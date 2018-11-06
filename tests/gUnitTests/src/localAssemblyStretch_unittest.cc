@@ -63,7 +63,6 @@ struct testCalculateSegPairInfo : ::testing::Test
 
         alph_ptr = &(box_ptr->masterNodeList[0]);
         beta_ptr = &(box_ptr->masterNodeList[4]);
-        t_alphBeta[DIMENSION];
         k = 1.0;
     }
 
