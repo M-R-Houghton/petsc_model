@@ -149,7 +149,7 @@ TEST_F(testCalculateSegBendEnergy, testOutputValueNodes041)
                                                 beta_ptr->xyzCoord,
                                                 alph_ptr->xyzDisplacement, 
                                                 omeg_ptr->xyzDisplacement, 
-                                                beta_ptr->xyzDisplacement ), 3.509468388132339e-11);
+                                                beta_ptr->xyzDisplacement ), 1.75473419406617e-11);
 }
 
 
@@ -231,7 +231,7 @@ TEST_F(testCalculateFibreBendEnergy, testErrorOutput)
 TEST_F(testCalculateFibreBendEnergy, testOutputValueNodes041)
 {
     calculateFibreBendEnergy(box_ptr, par_ptr, fIndex);
-    EXPECT_DOUBLE_EQ(box_ptr->masterFibreList[0].fibreBendEnergy, 3.509468388132339e-11);
+    EXPECT_DOUBLE_EQ(box_ptr->masterFibreList[0].fibreBendEnergy, 1.75473419406617e-11);
 }
 
 
@@ -271,8 +271,8 @@ TEST_F(testCalculateEnergy, testCalculatedValues)
     calculateEnergy(box_ptr, par_ptr);
 
     EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 3.509468388132339e-11);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.02832493401945e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
 }
 
 
@@ -368,10 +368,10 @@ TEST_F(testCalculateShearModulus, testCalculatedValues)
     calculateShearModulus(box_ptr, par_ptr);
 
     EXPECT_DOUBLE_EQ(par_ptr->energyStre, 7.024815465631318e-08);
-    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 3.509468388132339e-11);
-    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.02832493401945e-08);
+    EXPECT_DOUBLE_EQ(par_ptr->energyBend, 1.75473419406617e-11);
+    EXPECT_DOUBLE_EQ(par_ptr->energyTotl, 7.026570199825385e-08);
 
-    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0002249063978886224);
+    EXPECT_DOUBLE_EQ(par_ptr->shearModulus, 0.0002248502463944123);
 }
 
 } /* namespace */
