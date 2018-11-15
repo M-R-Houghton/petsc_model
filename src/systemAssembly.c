@@ -41,8 +41,8 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 	ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
 	/* zero entries for elastic medium validation only */
-	ierr = VecZeroEntries(b);CHKERRQ(ierr);
-	ierr = MatZeroEntries(H);CHKERRQ(ierr);
+	//ierr = VecZeroEntries(b);CHKERRQ(ierr);
+	//ierr = MatZeroEntries(H);CHKERRQ(ierr);
 
 	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
@@ -64,8 +64,8 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda)
 PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda)
 {
 	PetscErrorCode 	ierr;
-	PetscInt 		i,j;
-	PetscInt 		N = box_ptr->nodeInternalCount;
+	PetscInt        i,j;
+	PetscInt        N = box_ptr->nodeInternalCount;
 
 	for (i = 0; i < box_ptr->nodeCount; i++)
 	{

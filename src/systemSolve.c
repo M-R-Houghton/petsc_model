@@ -71,3 +71,29 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	return ierr;
 }
 
+
+/* Initiates time-stepping solve routine */
+PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
+{
+    PetscErrorCode  ierr = 0;
+    PetscInt        steps = 0;
+    PetscReal       normF = 0;
+    Vec             globalVec_F;
+
+    VecDuplicate(globalVec_U, &globalVec_F);
+    VecSet(globalVec_F, 0.0);
+    
+    while (steps < MAX_STEPS)
+    {
+        ierr = VecScale(globalVec_B, 1.0);CHKERRQ(ierr);
+        ierr = MatMultAdd(globalMat_H, globalVec_U, globalVec_B, globalVec_F);CHKERRQ(ierr); 
+        VecView(globalVec_U, PETSC_VIEWER_STDOUT_WORLD);
+        ierr = VecAXPY(globalVec_U, -1e-4, globalVec_F);CHKERRQ(ierr);
+        ierr = VecNorm(globalVec_F, NORM_2, &normF);CHKERRQ(ierr);
+        printf("Norm = %g\n", normF);
+        if (normF < F_TOL) break;
+        steps += 1;
+    }
+
+    return ierr;
+}

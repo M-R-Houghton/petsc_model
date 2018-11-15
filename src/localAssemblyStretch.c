@@ -74,29 +74,29 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
 
-        ierr = calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
+        //ierr = calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
 
 		/* make position vectors for alpha and beta */
-		//ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-		//ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
+		ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
+		ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
 		/* make distance vector between position vectors */
-		//ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
+		ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
 
         //PetscScalar test[DIMENSION];
         //makeTangentVec(test, s_alphBeta);
         //assert(t_alphBeta[0] == test[0]);
 
 		/* make tangent vector of segment */
-		//ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
+		ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
 		/* calculate segment length */
-		//l_alphBeta = vecMagnitude(s_alphBeta);
+		l_alphBeta = vecMagnitude(s_alphBeta);
 
         //assert(k == calculateK(box_ptr, par_ptr, fIndex, l_alphBeta));
 
 		/* calculate stretching modulus */
-		//k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+		k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
 
         //printf("k = %0.16g\n", k);
         //printf("t[0] = %0.16g\n", t_alphBeta[0]);

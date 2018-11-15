@@ -100,7 +100,7 @@ int main(int argc, char **args)
 	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
 	//PetscScalar 	lambda = -1e-5;
 	PetscScalar 	lambda = atof(args[2]);
-	ierr = applyElasticMedium(box_ptr, A, x, lambda);CHKERRQ(ierr);
+	//ierr = applyElasticMedium(box_ptr, A, x, lambda);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/*
