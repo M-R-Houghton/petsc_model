@@ -164,18 +164,18 @@ int main(int argc, char **args)
 	/* solve linear system */
 	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
+    //ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
 
     /* set initial U and begin time stepping */
     ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
     ierr = systemTimeStepSolve(matH,vecB,vecX);CHKERRQ(ierr);
 
-    /* check the error */
+    /* check the error *//*
     ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
     ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error %g\n",(double)norm);CHKERRQ(ierr);
 
-    /* beware that copy may need modifying in parallel */
+    *//* beware that copy may need modifying in parallel */
     ierr = VecCopy(vecX, vecU);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 

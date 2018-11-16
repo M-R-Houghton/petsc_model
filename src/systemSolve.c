@@ -77,7 +77,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
 {
     PetscErrorCode  ierr = 0;
     PetscInt        steps = 0;
-    PetscReal       normF = 0;
+    PetscReal       initialNormF,normF = 0;
     Vec             globalVec_F;
 
     VecDuplicate(globalVec_U, &globalVec_F);
@@ -94,14 +94,20 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         ierr = MatMultAdd(globalMat_H, globalVec_U, globalVec_B, globalVec_F);CHKERRQ(ierr); 
         ierr = VecScale(globalVec_F, -1.0);CHKERRQ(ierr);
         ierr = VecAXPY(globalVec_U, ALPHA, globalVec_F);CHKERRQ(ierr);
-        ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
 
+        ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
         if (steps%10000 == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
+        if (steps==0) initialNormF = normF;
         
         if (normF < F_TOL) 
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
+            break;
+        }
+        else if (normF > 10*initialNormF)   /* if norm is growing kill early */
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try ALPHA<%g",ALPHA);CHKERRQ(ierr);
             break;
         }
         steps += 1;
