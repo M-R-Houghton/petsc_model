@@ -82,18 +82,30 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
 
     VecDuplicate(globalVec_U, &globalVec_F);
     VecSet(globalVec_F, 0.0);
+    PetscPrintf(PETSC_COMM_WORLD,"ALPHA = %g\n",ALPHA);
     
+    ierr = VecScale(globalVec_B, -1.0);CHKERRQ(ierr);
     while (steps < MAX_STEPS)
     {
-        ierr = VecScale(globalVec_B, 1.0);CHKERRQ(ierr);
         ierr = MatMultAdd(globalMat_H, globalVec_U, globalVec_B, globalVec_F);CHKERRQ(ierr); 
-        VecView(globalVec_U, PETSC_VIEWER_STDOUT_WORLD);
-        ierr = VecAXPY(globalVec_U, -1e-4, globalVec_F);CHKERRQ(ierr);
-        ierr = VecNorm(globalVec_F, NORM_2, &normF);CHKERRQ(ierr);
-        printf("Norm = %g\n", normF);
-        if (normF < F_TOL) break;
+        ierr = VecScale(globalVec_F, -1.0);CHKERRQ(ierr);
+        ierr = VecAXPY(globalVec_U, ALPHA, globalVec_F);CHKERRQ(ierr);
+        ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
+
+        if (steps%10000 == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
+        
+        if (normF < F_TOL) 
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
+            break;
+        }
         steps += 1;
     }
 
+    /* Use for debugging small cases */
+    //ierr = VecView(globalVec_U, PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    
+    VecDestroy(&globalVec_F);
     return ierr;
 }

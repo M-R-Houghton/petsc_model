@@ -56,6 +56,7 @@ TEST_F(testSystemSolve, testErrorOutput)
     EXPECT_EQ(systemSolve(glbMat, glbRhs, glbSol), 0);
 }
 
+
 TEST_F(testSystemSolve, testTripodSolve)
 {
     MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,3,3);
@@ -133,6 +134,7 @@ struct testSystemTimeStepSolve : ::testing::Test
 
 TEST_F(testSystemTimeStepSolve, testErrorOutput)
 {
+    // Set H to the identity matrix
     MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,2,2);
     MatSetUp(glbMat);
 
@@ -145,16 +147,61 @@ TEST_F(testSystemTimeStepSolve, testErrorOutput)
     MatAssemblyEnd(glbMat,MAT_FINAL_ASSEMBLY);
 
 	MatView(glbMat,PETSC_VIEWER_STDOUT_WORLD);
+    
     // Reset to identity matrix
     //MatZeroEntries(glbMat);
     //MatShift(glbMat, 1.0);
 
+    // Set up rhs B vector
     VecSetSizes(glbRhs,PETSC_DECIDE,2);
     VecSet(glbRhs,1.0);
     VecDuplicate(glbRhs,&glbSol);
-    VecSet(glbSol,2.0);
+
+    // Initial guess for U
+    VecSet(glbSol,0.0);
 
     EXPECT_EQ(systemTimeStepSolve(glbMat, glbRhs, glbSol), 0);
 }
+
+
+TEST_F(testSystemTimeStepSolve, testTripodSolve)
+{
+    MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,3,3);
+    MatSetUp(glbMat);
+    MatSetValue(glbMat, 0, 0,   0.0003959445836206, INSERT_VALUES); 
+    MatSetValue(glbMat, 0, 1,  -0.0001075029206406, INSERT_VALUES); 
+    MatSetValue(glbMat, 0, 2,   0.0000000000000000, INSERT_VALUES); 
+    MatSetValue(glbMat, 1, 0,  -0.0001075029206406, INSERT_VALUES); 
+    MatSetValue(glbMat, 1, 1,   0.0015832388287110, INSERT_VALUES); 
+    MatSetValue(glbMat, 1, 2,   0.0000000000000000, INSERT_VALUES); 
+    MatSetValue(glbMat, 2, 0,   0.0000000000000000, INSERT_VALUES); 
+    MatSetValue(glbMat, 2, 1,   0.0000000000000000, INSERT_VALUES); 
+    MatSetValue(glbMat, 2, 2,   0.0001711864792787, INSERT_VALUES); 
+
+    MatAssemblyBegin(glbMat,MAT_FINAL_ASSEMBLY);
+    MatAssemblyEnd(glbMat,MAT_FINAL_ASSEMBLY);
+
+    // Set up rhs B
+    VecSetSizes(glbRhs,PETSC_DECIDE,3);
+    VecSetValue(glbRhs, 0,  5.623448489974873e-06, INSERT_VALUES);
+    VecSetValue(glbRhs, 1, -1.123790521709401e-05, INSERT_VALUES);
+    VecSetValue(glbRhs, 2,  0.000000000000000e+00, INSERT_VALUES);
+
+    // Set up initial U
+    VecDuplicate(glbRhs,&glbSol);
+    VecSet(glbSol,0.0);
+
+    // Time step solve
+    systemTimeStepSolve(glbMat, glbRhs, glbSol);
+
+    // Check values against direct solve
+    PetscScalar *sol;
+    VecGetArray(glbSol, &sol);
+    EXPECT_FLOAT_EQ(sol[0],  1.2505980415641637e-02);
+    EXPECT_FLOAT_EQ(sol[1], -6.2488840076005414e-03);
+    EXPECT_FLOAT_EQ(sol[2],  0.0000000000000000e+00);
+    VecRestoreArray(glbSol, &sol);
+}
+
 
 } /* namespace */

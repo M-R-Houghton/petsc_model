@@ -12,7 +12,7 @@ int main(int argc, char **args)
   	Mat            A;            /* linear system matrix */
   	//KSP            ksp;          /* linear solver context */
 	//PC             pc;           /* preconditioner context */
-  	//PetscReal      norm;         /* norm of solution error */
+  	PetscReal      norm;         /* norm of solution error */
 	PetscErrorCode ierr;
 	PetscInt       n,N;
 	//PetscInt 	   its;
@@ -165,6 +165,27 @@ int main(int argc, char **args)
 	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
     ierr = systemSolve(A,x,b);CHKERRQ(ierr);
+
+    PetscInt i,j;
+	for (i = 0; i < box_ptr->nodeCount; i++)
+	{
+		Node *node = &(box_ptr->masterNodeList[i]);
+		if (node->globalID != -1)
+		{
+			for (j = 0; j < DIMENSION; j++)
+			{
+				ierr = VecSetValue(u, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+				CHKERRQ(ierr);
+			}
+		}
+	}
+    ierr = VecSet(u, 0.0);CHKERRQ(ierr);
+    ierr = systemTimeStepSolve(A,x,u);CHKERRQ(ierr);
+
+    /* check the error */
+    ierr = VecAXPY(b,-1.0,u);CHKERRQ(ierr);
+    ierr = VecNorm(b,NORM_2,&norm);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error %g\n",(double)norm);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
