@@ -8,8 +8,8 @@ int main(int argc, char **args)
 {
 	Box  		   *box_ptr;
 	Parameters 	   *par_ptr;
-	Vec            x, b, u;      /* approx solution, RHS, exact solution */
-  	Mat            A;            /* linear system matrix */
+	Vec            vecB, vecU, vecX;      /* approx solution, RHS, exact solution */
+  	Mat            matH;            /* linear system matrix */
   	//KSP            ksp;          /* linear solver context */
 	//PC             pc;           /* preconditioner context */
   	PetscReal      norm;         /* norm of solution error */
@@ -72,46 +72,46 @@ int main(int argc, char **args)
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Compute the matrix and right-hand-side vector that define
-         	the linear system, Ax = b.
+         	the linear system, matHvecB = vecU.
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     /* allocate memory for global rhs and solution vectors and set them up */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
-	ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
-	//ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
-	ierr = VecSetSizes(x,PETSC_DECIDE,n);CHKERRQ(ierr);
-	ierr = VecSetFromOptions(x);CHKERRQ(ierr);
-	ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
-	ierr = VecDuplicate(x,&u);CHKERRQ(ierr);
+	ierr = VecCreate(PETSC_COMM_WORLD,&vecB);CHKERRQ(ierr);
+	//ierr = PetscObjectSetName((PetscObject) vecB, "Solution");CHKERRQ(ierr);
+	ierr = VecSetSizes(vecB,PETSC_DECIDE,n);CHKERRQ(ierr);
+	ierr = VecSetFromOptions(vecB);CHKERRQ(ierr);
+	ierr = VecDuplicate(vecB,&vecU);CHKERRQ(ierr);
+	ierr = VecDuplicate(vecB,&vecX);CHKERRQ(ierr);
 
-	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	//ierr = VecView(u,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(vecB,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(vecU,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(vecX,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* allocate memory for global matrix and set it up */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up matrix...\n");CHKERRQ(ierr);
-	ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
-	ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
-	ierr = MatSetFromOptions(A);CHKERRQ(ierr);
-	ierr = MatSetUp(A);CHKERRQ(ierr);
+	ierr = MatCreate(PETSC_COMM_WORLD,&matH);CHKERRQ(ierr);
+	ierr = MatSetSizes(matH,PETSC_DECIDE,PETSC_DECIDE,n,n);CHKERRQ(ierr);
+	ierr = MatSetFromOptions(matH);CHKERRQ(ierr);
+	ierr = MatSetUp(matH);CHKERRQ(ierr);
 
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
-	ierr = systemAssembly(box_ptr,par_ptr,A,x);CHKERRQ(ierr);
+	ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
 	//PetscScalar 	lambda = -1e-5;
 	PetscScalar 	lambda = atof(args[2]);
-	//ierr = applyElasticMedium(box_ptr, A, x, lambda);CHKERRQ(ierr);
+	//ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/*
        Set exact solution; then compute right-hand-side vector.
     */
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting exact solution...\n");CHKERRQ(ierr);
-    ierr = VecSet(u,one);CHKERRQ(ierr);
-    ierr = MatMult(A,u,b);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting exact solution...\n");CHKERRQ(ierr);
+    //ierr = VecSet(vecX,one);CHKERRQ(ierr);
+    //ierr = MatMult(matH,vecX,vecU);CHKERRQ(ierr);
 
-    //ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-    //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(vecB,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    //ierr = VecView(vecU,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Create the linear solver and set various options
@@ -126,7 +126,7 @@ int main(int argc, char **args)
        Set operators. Here the matrix that defines the linear system
        also serves as the preconditioning matrix.
     */
-	//ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
+	//ierr = KSPSetOperators(ksp,matH,matH);CHKERRQ(ierr);
 
 	/*
 	  Set linear solver defaults for this problem (optional).
@@ -156,7 +156,7 @@ int main(int argc, char **args)
     if (nonzeroguess) 
     {
 		PetscScalar p = .5;
-		ierr = VecSet(x,p);CHKERRQ(ierr);
+		ierr = VecSet(vecB,p);CHKERRQ(ierr);
 		ierr = KSPSetInitialGuessNonzero(ksp,PETSC_TRUE);CHKERRQ(ierr);
 	}
 	*/
@@ -164,33 +164,24 @@ int main(int argc, char **args)
 	/* solve linear system */
 	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    ierr = systemSolve(A,x,b);CHKERRQ(ierr);
+    ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
 
-    PetscInt i,j;
-	for (i = 0; i < box_ptr->nodeCount; i++)
-	{
-		Node *node = &(box_ptr->masterNodeList[i]);
-		if (node->globalID != -1)
-		{
-			for (j = 0; j < DIMENSION; j++)
-			{
-				ierr = VecSetValue(u, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
-				CHKERRQ(ierr);
-			}
-		}
-	}
-    ierr = VecSet(u, 0.0);CHKERRQ(ierr);
-    ierr = systemTimeStepSolve(A,x,u);CHKERRQ(ierr);
+    /* set initial U and begin time stepping */
+    ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
+    ierr = systemTimeStepSolve(matH,vecB,vecX);CHKERRQ(ierr);
 
     /* check the error */
-    ierr = VecAXPY(b,-1.0,u);CHKERRQ(ierr);
-    ierr = VecNorm(b,NORM_2,&norm);CHKERRQ(ierr);
+    ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
+    ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error %g\n",(double)norm);CHKERRQ(ierr);
+
+    /* beware that copy may need modifying in parallel */
+    ierr = VecCopy(vecX, vecU);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Updating network...\n");CHKERRQ(ierr);
-    ierr = networkUpdate(box_ptr,b);CHKERRQ(ierr);
+    ierr = networkUpdate(box_ptr,vecU);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 
@@ -210,7 +201,7 @@ int main(int argc, char **args)
     /*
 	  Solve linear system
 	*/
-	//ierr = KSPSolve(ksp,x,b);CHKERRQ(ierr);
+	//ierr = KSPSolve(ksp,vecB,vecU);CHKERRQ(ierr);
 
 	/*
 	  View solver info; we could instead use the option -ksp_view to
@@ -218,8 +209,8 @@ int main(int argc, char **args)
 	*/
 	//ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	//ierr = VecView(x,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(vecB,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	//ierr = VecView(vecU,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         	Check solution and clean up
@@ -228,8 +219,8 @@ int main(int argc, char **args)
       Check the error
     */
     /*
-    ierr = VecAXPY(x,-1.0,u);CHKERRQ(ierr);
-    ierr = VecNorm(x,NORM_2,&norm);CHKERRQ(ierr);
+    ierr = VecAXPY(vecB,-1.0,vecX);CHKERRQ(ierr);
+    ierr = VecNorm(vecB,NORM_2,&norm);CHKERRQ(ierr);
     ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Norm of error %g, Iterations %D\n",(double)norm,its);CHKERRQ(ierr);
 	*/
@@ -256,8 +247,8 @@ int main(int argc, char **args)
 	 * Free work space.
 	 */
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Cleaning up...\n");CHKERRQ(ierr);
-	ierr = VecDestroy(&x);CHKERRQ(ierr); ierr = VecDestroy(&u);CHKERRQ(ierr);
-	ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
+	ierr = VecDestroy(&vecB);CHKERRQ(ierr); ierr = VecDestroy(&vecX);CHKERRQ(ierr);
+	ierr = VecDestroy(&vecU);CHKERRQ(ierr); ierr = MatDestroy(&matH);CHKERRQ(ierr);
 	//ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Finalising...\n");CHKERRQ(ierr);
