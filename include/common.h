@@ -30,7 +30,7 @@
 #define YOUNGS_MOD 1.0
 
 /* time stepping definitions */
-#define ALPHA 1e1
+#define ALPHA 1e-1
 #define F_TOL 1e-12
 #define MAX_STEPS 1e8
 
