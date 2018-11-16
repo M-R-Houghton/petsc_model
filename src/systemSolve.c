@@ -85,6 +85,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     
     PetscPrintf(PETSC_COMM_WORLD,"ALPHA = %g\n",ALPHA);
     PetscPrintf(PETSC_COMM_WORLD,"F_TOL = %g\n",F_TOL);
+    PetscPrintf(PETSC_COMM_WORLD,"MAX_STEPS = %d\n",MAX_STEPS);
     
     /* set B'= -B */
     ierr = VecScale(globalVec_B, -1.0);CHKERRQ(ierr);
