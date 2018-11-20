@@ -23,7 +23,7 @@ int main(int argc, char **args)
 
 	PetscScalar     lambda   = -1e-5;       /* set EM and TS default values */
     PetscScalar     alpha    = ALPHA;
-    PetscScalar     normTolF = F_NORM;
+    PetscScalar     normTolF = F_TOL;
     PetscInt        maxSteps = MAX_STEPS;
 
 #if defined(PETSC_USE_LOG)
@@ -180,7 +180,21 @@ int main(int argc, char **args)
 
     /* set initial U and begin time stepping */
     ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
-    ierr = systemTimeStepSolve(matH,vecB,vecX);CHKERRQ(ierr);
+    PetscInt i,j;
+
+	for (i = 0; i < box_ptr->nodeCount; i++)
+	{
+		Node *node = &(box_ptr->masterNodeList[i]);
+		if (node->globalID != -1)
+		{
+			for (j = 0; j < DIMENSION; j++)
+			{
+				ierr = VecSetValue(vecX, node->globalID + j*N, node->xyzAffDisplacement[j], ADD_VALUES);
+				CHKERRQ(ierr);
+			}
+		}
+	}
+    ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
 
     /* check the error *//*
     ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
