@@ -73,7 +73,8 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 
 
 /* Initiates time-stepping solve routine */
-PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
+PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U, 
+                                    PetscScalar alpha, PetscScalar normTolF, PetscInt maxSteps)
 {
     PetscErrorCode  ierr = 0;
     PetscInt        steps = 0;
@@ -83,23 +84,23 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     VecDuplicate(globalVec_U, &globalVec_F);
     VecSet(globalVec_F, 0.0);
     
-    PetscPrintf(PETSC_COMM_WORLD,"ALPHA = %g\n",ALPHA);
-    PetscPrintf(PETSC_COMM_WORLD,"F_TOL = %g\n",F_TOL);
-    PetscPrintf(PETSC_COMM_WORLD,"MAX_STEPS = %d\n",MAX_STEPS);
+    PetscPrintf(PETSC_COMM_WORLD,"alpha = %g\n",alpha);
+    PetscPrintf(PETSC_COMM_WORLD,"normTolF = %g\n",normTolF);
+    PetscPrintf(PETSC_COMM_WORLD,"maxSteps = %d\n",maxSteps);
     
     /* set B'= -B */
     ierr = VecScale(globalVec_B, -1.0);CHKERRQ(ierr);
-    while (steps < MAX_STEPS)
+    while (steps < maxSteps)
     {
         ierr = MatMultAdd(globalMat_H, globalVec_U, globalVec_B, globalVec_F);CHKERRQ(ierr); 
         ierr = VecScale(globalVec_F, -1.0);CHKERRQ(ierr);
-        ierr = VecAXPY(globalVec_U, ALPHA, globalVec_F);CHKERRQ(ierr);
+        ierr = VecAXPY(globalVec_U, alpha, globalVec_F);CHKERRQ(ierr);
 
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
         if (steps%10000 == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
         if (steps==0) initialNormF = normF;
         
-        if (normF < F_TOL) 
+        if (normF < normTolF) 
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
@@ -107,7 +108,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         }
         else if (normF > 10*initialNormF)   /* if norm is growing kill early */
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try ALPHA<%g",ALPHA);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g",alpha);CHKERRQ(ierr);
             break;
         }
         steps += 1;

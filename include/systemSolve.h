@@ -19,6 +19,7 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U);
  * \param globalVec_U The global system solution vector
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U);
+PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U, 
+                                    PetscScalar alpha, PetscScalar normTolF, PetscInt maxSteps);
 
 #endif
