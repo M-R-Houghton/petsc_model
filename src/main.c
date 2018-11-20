@@ -6,20 +6,21 @@ static char help[] = "The first draft of the PETSc model.\n\n";
 
 int main(int argc, char **args)
 {
-	Box  		   *box_ptr;
-	Parameters 	   *par_ptr;
-	Vec            vecB, vecU, vecX;      /* approx solution, RHS, exact solution */
-  	Mat            matH;            /* linear system matrix */
-  	//KSP            ksp;          /* linear solver context */
-	//PC             pc;           /* preconditioner context */
-  	PetscReal      norm;         /* norm of solution error */
-	PetscErrorCode ierr;
-	PetscInt       n,N;
-	//PetscInt 	   its;
-	PetscMPIInt    size;
-	PetscScalar    one = 1.0;
-	PetscBool      nonzeroguess = PETSC_FALSE;
-	//PetscBool 	   changepcside = PETSC_FALSE;
+	Box  		    *box_ptr;
+	Parameters 	    *par_ptr;
+	Vec             vecB, vecU, vecX;       /* approx solution, RHS, exact solution */
+  	Mat             matH;                   /* linear system matrix */
+  	//KSP            ksp;          
+	//PC             pc;          
+  	PetscReal       norm;                   /* norm of solution error */
+	PetscErrorCode  ierr;
+	PetscInt        n,N;
+	//PetscInt 	    its;
+	PetscMPIInt     size;
+	PetscScalar     one = 1.0;
+	PetscScalar     lambda = -1e-5;
+	PetscBool       nonzeroguess = PETSC_FALSE;
+	//PetscBool 	    changepcside = PETSC_FALSE;
 #if defined(PETSC_USE_LOG)
 	PetscLogStage stages[6];
 #endif
@@ -42,6 +43,9 @@ int main(int argc, char **args)
   	if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
 	ierr = PetscOptionsGetInt(GETOPTS NULL,"-n",&n,NULL);CHKERRQ(ierr);
 	ierr = PetscOptionsGetBool(GETOPTS NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
+    
+    /* set up options for elastic medium */
+    ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
 	/* perform all unit tests */
 	ierr = runIntegrationTests();CHKERRQ(ierr);
@@ -98,8 +102,6 @@ int main(int argc, char **args)
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
 	ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
-	//PetscScalar 	lambda = -1e-5;
-	PetscScalar 	lambda = atof(args[2]);
 	//ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
