@@ -18,9 +18,14 @@ int main(int argc, char **args)
 	//PetscInt 	    its;
 	PetscMPIInt     size;
 	PetscScalar     one = 1.0;
-	PetscScalar     lambda = -1e-5;
 	PetscBool       nonzeroguess = PETSC_FALSE;
 	//PetscBool 	    changepcside = PETSC_FALSE;
+
+	PetscScalar     lambda   = -1e-5;       /* set EM and TS default values */
+    PetscScalar     alpha    = ALPHA;
+    PetscScalar     normTolF = F_NORM;
+    PetscInt        maxSteps = MAX_STEPS;
+
 #if defined(PETSC_USE_LOG)
 	PetscLogStage stages[6];
 #endif
@@ -41,11 +46,16 @@ int main(int argc, char **args)
 	ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
 	ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
   	if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
-	ierr = PetscOptionsGetInt(GETOPTS NULL,"-n",&n,NULL);CHKERRQ(ierr);
-	ierr = PetscOptionsGetBool(GETOPTS NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
+	ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
+	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
     /* set up options for elastic medium */
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
+
+    /* set up options for time stepping */
+    ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-f_tol",&normTolF,NULL);CHKERRQ(ierr);
 
 	/* perform all unit tests */
 	ierr = runIntegrationTests();CHKERRQ(ierr);
