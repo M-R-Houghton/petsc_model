@@ -112,7 +112,11 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
         if (steps%printSteps == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
-        if (steps == 0) initialNormF = normF;
+        if (steps == 0) 
+        {
+            initialNormF = normF;
+            prevNormF = normF;
+        }
         
         if (normF < normTolF)   /* stop when norm is below tolerance */ 
         {
