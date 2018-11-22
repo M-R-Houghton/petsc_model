@@ -85,7 +85,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     PetscErrorCode  ierr = 0;
     PetscInt        steps = 0;
     PetscInt        printSteps = 10000;
-    PetscReal       initialNormF,normF = 0;
+    PetscReal       initialNormF,prevNormF,normF = 0;
     Vec             globalVec_F;
 
     /* set up F */
@@ -114,18 +114,19 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         if (steps%printSteps == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
         if (steps == 0) initialNormF = normF;
         
-        if (normF < normTolF)               /* stop when norm is below tolerance */ 
+        if (normF < normTolF)   /* stop when norm is below tolerance */ 
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
             break;
         }
-        else if (normF > 10*initialNormF)   /* or if norm is growing */
+        else if (normF > 1*initialNormF || normF > prevNormF)   /* or if norm is growing */
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g",alpha);CHKERRQ(ierr);
             break;
         }
         steps += 1;
+        prevNormF = normF;
     }
 
     /* use for debugging small cases */
