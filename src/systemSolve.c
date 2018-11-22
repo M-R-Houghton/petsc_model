@@ -120,13 +120,22 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
             break;
         }
-        else if (normF > 1*initialNormF || normF > prevNormF)   /* or if norm is growing */
+        else if (normF > 10*initialNormF)   /* or if norm grows beyond starting value */
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g",alpha);CHKERRQ(ierr);
             break;
         }
+
+        if (steps%printSteps == 0)
+        {
+            if (normF > prevNormF)  /* also check for divergence periodically */
+            {
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.");CHKERRQ(ierr);
+                break;
+            }
+            prevNormF = normF;
+        }
         steps += 1;
-        prevNormF = normF;
     }
 
     /* use for debugging small cases */
