@@ -86,7 +86,11 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     PetscInt        steps = 0;
     PetscInt        printSteps = 10000;
     PetscReal       initialNormF,prevNormF,normF = 0;
-    Vec             globalVec_F;
+    Vec             globalVec_F,globalVec_U_prev;
+    PetscViewer     viewer;
+
+    /* set up U_prev */
+    VecDuplicate(globalVec_U, &globalVec_U_prev);
 
     /* set up F */
     VecDuplicate(globalVec_U, &globalVec_F);
@@ -126,19 +130,32 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         }
         else if (normF > 10*initialNormF)   /* or if norm grows beyond starting value */
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g",alpha);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g\n",alpha);CHKERRQ(ierr);
+            ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
             break;
         }
 
-        if (steps%printSteps == 0)
-        {
+        /* 
+         * sort this mess out!
+         */
+        //if (steps%printSteps == 0)
+        //{
             if (normF > prevNormF)  /* also check for divergence periodically */
             {
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.");CHKERRQ(ierr);
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.\n");CHKERRQ(ierr);
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
+                ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
                 break;
             }
-            prevNormF = normF;
-        }
+            else
+            {
+                //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
+                ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+                ierr = VecView(globalVec_U,viewer);
+                ierr = PetscViewerDestroy(&viewer);
+            }
+        //}
+        prevNormF = normF;
         steps += 1;
     }
 

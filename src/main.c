@@ -19,12 +19,14 @@ int main(int argc, char **args)
 	PetscMPIInt     size;
 	PetscScalar     one = 1.0;
 	PetscBool       nonzeroguess = PETSC_FALSE;
+    PetscViewer     viewer;
 	//PetscBool 	    changepcside = PETSC_FALSE;
 
 	PetscScalar     lambda   = -1e-5;       /* set EM and TS default values */
     PetscScalar     alpha    = 1e-1;
     PetscScalar     normTolF = 1e-12;
     PetscInt        maxSteps = 1000000;
+    PetscBool       newTS    = PETSC_TRUE;
 
 #if defined(PETSC_USE_LOG)
 	PetscLogStage stages[6];
@@ -53,6 +55,7 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
     /* set up options for time stepping */
+    ierr = PetscOptionsGetBool(NULL,NULL,"-new_ts",&newTS,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-f_tol",&normTolF,NULL);CHKERRQ(ierr);
@@ -176,57 +179,32 @@ int main(int argc, char **args)
 	/* solve linear system */
 	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
-
-    PetscInt VecSize;
-    Vec vecX1;
-    PetscScalar const *testVals1;
-    PetscScalar const *testVals2;
-
-    ierr = VecDuplicate(vecX, &vecX1);CHKERRQ(ierr);
-    ierr = assembleAffineDisplacementVector(box_ptr, vecX1);CHKERRQ(ierr);
-
+    //ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
+    
     /* set initial U and begin time stepping */
     ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
+    ierr = assembleAffineDisplacementVector(box_ptr, vecX);CHKERRQ(ierr);
 
-    PetscInt i,j;
-	for (i = 0; i < box_ptr->nodeCount; i++)
-	{
-		Node *node = &(box_ptr->masterNodeList[i]);
-		if (node->globalID != -1)
-		{
-			for (j = 0; j < DIMENSION; j++)
-			{
-				ierr = VecSetValue(vecX, node->globalID + j*N, node->xyzAffDisplacement[j], ADD_VALUES);
-				CHKERRQ(ierr);
-			}
-		}
-	}
-
-    ierr = VecGetArrayRead(vecX, &testVals1);CHKERRQ(ierr);
-    ierr = VecGetArrayRead(vecX1, &testVals2);CHKERRQ(ierr);
-   
-    for (i = 0; i < box_ptr->nodeInternalCount; i++)
+    if (newTS == PETSC_FALSE)
     {
-        if (testVals1[i] != testVals2[i])
-        {
-            PetscPrintf(PETSC_COMM_WORLD, "Vecs are not the same!!!!!\n");CHKERRQ(ierr);
-        }
-        else
-        {
-            PetscPrintf(PETSC_COMM_WORLD, "YES Vecs are the same!!!!!\n");CHKERRQ(ierr);
-        }
+        PetscPrintf(PETSC_COMM_WORLD,"reading vector in binary from vector.dat ...\n");
+        PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_READ,&viewer);
+        VecCreate(PETSC_COMM_WORLD,&vecX);
+        VecLoad(vecX,viewer);
+        PetscViewerDestroy(&viewer);
     }
-
-    ierr = VecRestoreArrayRead(vecX, &testVals1);CHKERRQ(ierr);
-    ierr = VecRestoreArrayRead(vecX1, &testVals2);CHKERRQ(ierr);
 
     ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
 
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
+    //ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+    //ierr = VecView(vecX,viewer);
+    //ierr = PetscViewerDestroy(&viewer);
+
     /* check the error */
-    ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
-    ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error against LU = %g\n",(double)norm);CHKERRQ(ierr);
+    //ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
+    //ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error against LU = %g\n",(double)norm);CHKERRQ(ierr);
 
     /* beware that copy may need modifying in parallel */
     ierr = VecCopy(vecX, vecU);
