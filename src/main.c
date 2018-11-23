@@ -22,9 +22,9 @@ int main(int argc, char **args)
 	//PetscBool 	    changepcside = PETSC_FALSE;
 
 	PetscScalar     lambda   = -1e-5;       /* set EM and TS default values */
-    PetscScalar     alpha    = ALPHA;
-    PetscScalar     normTolF = F_TOL;
-    PetscInt        maxSteps = MAX_STEPS;
+    PetscScalar     alpha    = 1e-1;
+    PetscScalar     normTolF = 1e-12;
+    PetscInt        maxSteps = 1000000;
 
 #if defined(PETSC_USE_LOG)
 	PetscLogStage stages[6];
@@ -178,10 +178,18 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
     ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
 
+    PetscInt VecSize;
+    Vec vecX1;
+    PetscScalar const *testVals1;
+    PetscScalar const *testVals2;
+
+    ierr = VecDuplicate(vecX, &vecX1);CHKERRQ(ierr);
+    ierr = assembleAffineDisplacementVector(box_ptr, vecX1);CHKERRQ(ierr);
+
     /* set initial U and begin time stepping */
     ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
-    PetscInt i,j;
 
+    PetscInt i,j;
 	for (i = 0; i < box_ptr->nodeCount; i++)
 	{
 		Node *node = &(box_ptr->masterNodeList[i]);
@@ -194,6 +202,25 @@ int main(int argc, char **args)
 			}
 		}
 	}
+
+    ierr = VecGetArrayRead(vecX, &testVals1);CHKERRQ(ierr);
+    ierr = VecGetArrayRead(vecX1, &testVals2);CHKERRQ(ierr);
+   
+    for (i = 0; i < box_ptr->nodeInternalCount; i++)
+    {
+        if (testVals1[i] != testVals2[i])
+        {
+            PetscPrintf(PETSC_COMM_WORLD, "Vecs are not the same!!!!!\n");CHKERRQ(ierr);
+        }
+        else
+        {
+            PetscPrintf(PETSC_COMM_WORLD, "YES Vecs are the same!!!!!\n");CHKERRQ(ierr);
+        }
+    }
+
+    ierr = VecRestoreArrayRead(vecX, &testVals1);CHKERRQ(ierr);
+    ierr = VecRestoreArrayRead(vecX1, &testVals2);CHKERRQ(ierr);
+
     ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
 
     /* check the error */

@@ -38,6 +38,14 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
 
 /**
+ * \brief Assembles a global vector from the affine displacements of every internal node 
+ * \param box The box pointer used to loop over the internal nodes
+ * \param U_aff The global displacement vector to be assembled
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff);
+
+/**
  * \brief Solves a matrix from pre-assembled arrays.
  * \param rowFile String representing name of row pointer file to be read in.
  * \param colFile String representing name of column index file to be read in.

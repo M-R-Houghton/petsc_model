@@ -97,6 +97,30 @@ PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda
 }
 
 
+/* Assembles a global vector from the affine displacements of every internal node */
+PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)
+{
+    PetscErrorCode  ierr;
+    PetscErrorCode  i,j;
+    PetscInt        N = box_ptr->nodeInternalCount;
+
+	for (i = 0; i < box_ptr->nodeCount; i++)
+	{
+		Node *node = &(box_ptr->masterNodeList[i]);
+		if (node->globalID != -1)
+		{
+			for (j = 0; j < DIMENSION; j++)
+			{
+				ierr = VecSetValue(U_aff, node->globalID + j*N, node->xyzAffDisplacement[j], INSERT_VALUES);
+				CHKERRQ(ierr);
+			}
+		}
+	}
+
+    return ierr;
+}
+
+
 /* Solves a matrix from pre-assembled arrays */
 PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
 									char const *rhsFile, char const *solFile, PetscInt n)
