@@ -18,11 +18,14 @@ int main(int argc, char **args)
 	PetscBool       nonzeroguess = PETSC_FALSE;
     PetscViewer     viewer;
 
-	PetscScalar     lambda   = -1e-5;       /* set EM and TS default values */
-    PetscScalar     alpha    = 1e-1;
+    /* set EM and TS default values */
+    PetscBool       EM = PETSC_FALSE;
+	PetscScalar     lambda = 1e-5;       
+    PetscBool       TS = PETSC_FALSE;
+    PetscScalar     alpha = 1e-1;
     PetscScalar     normTolF = 1e-12;
     PetscInt        maxSteps = 1000000;
-    PetscBool       restartTS    = PETSC_TRUE;
+    PetscBool       restartTS = PETSC_TRUE;
 
 #if defined(PETSC_USE_LOG)
 	PetscLogStage stages[6];
@@ -51,9 +54,11 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
     /* set up options for elastic medium */
+    ierr = PetscOptionsGetBool(NULL,NULL,"-em",&EM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
     /* set up options for time stepping */
+    ierr = PetscOptionsGetBool(NULL,NULL,"-ts",&TS,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetBool(NULL,NULL,"-ts_restart",&restartTS,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
@@ -111,7 +116,10 @@ int main(int argc, char **args)
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
 	ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
-	//ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
+	if (EM == PETSC_TRUE)
+    {
+        ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
+    }
 	ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,13 +150,13 @@ int main(int argc, char **args)
     //ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error against LU = %g\n",(double)norm);CHKERRQ(ierr);
 
-	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            Update the network and analyse
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     /* beware that copy may need modifying in parallel */
     ierr = VecCopy(vecX, vecU);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Update the network and analyse
+     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Updating network...\n");CHKERRQ(ierr);
     ierr = networkUpdate(box_ptr,vecU);CHKERRQ(ierr);

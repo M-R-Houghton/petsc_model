@@ -115,13 +115,18 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
 
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
-        if (steps%printSteps == 0) PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
+
         if (steps == 0) 
         {
             initialNormF = normF;
             prevNormF = normF;
+            PetscPrintf(PETSC_COMM_WORLD,"Initial Res. Norm = %g\n",initialNormF);
         }
-        
+        else if (steps%printSteps == 0) 
+        {
+            PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
+        }
+
         if (normF < normTolF)   /* stop when norm is below tolerance */ 
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
@@ -138,23 +143,21 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         /* 
          * sort this mess out!
          */
-        //if (steps%printSteps == 0)
-        //{
-            if (normF > prevNormF)  /* also check for divergence periodically */
-            {
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.\n");CHKERRQ(ierr);
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
-                ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
-                break;
-            }
-            else
-            {
-                //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
-                ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
-                ierr = VecView(globalVec_U,viewer);
-                ierr = PetscViewerDestroy(&viewer);
-            }
-        //}
+        if (normF > prevNormF)  /* also check for divergence periodically */
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.\n");CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
+            ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
+            break;
+        }
+        else
+        {
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            ierr = VecView(globalVec_U,viewer);
+            ierr = PetscViewerDestroy(&viewer);
+        }
+
         prevNormF = normF;
         steps += 1;
     }
@@ -164,6 +167,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     
     /* clean up */
     VecDestroy(&globalVec_F);
+    VecDestroy(&globalVec_U_prev);
 
     return ierr;
 }
