@@ -19,9 +19,10 @@ int main(int argc, char **args)
     PetscViewer     viewer;
 
     /* set EM and TS default values */
-    PetscBool       EM = PETSC_FALSE;
+    PetscBool       useKSP = PETSC_TRUE;
+    PetscBool       useEM = PETSC_FALSE;
 	PetscScalar     lambda = 1e-5;       
-    PetscBool       TS = PETSC_FALSE;
+    PetscBool       useTS = PETSC_FALSE;
     PetscScalar     alpha = 1e-1;
     PetscScalar     normTolF = 1e-12;
     PetscInt        maxSteps = 1000000;
@@ -54,11 +55,14 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
     /* set up options for elastic medium */
-    ierr = PetscOptionsGetBool(NULL,NULL,"-em",&EM,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
+    /* set up options for solving with KSP */
+    ierr = PetscOptionsGetBool(NULL,NULL,"-use_ksp",&useKSP,NULL);CHKERRQ(ierr);
+
     /* set up options for time stepping */
-    ierr = PetscOptionsGetBool(NULL,NULL,"-ts",&TS,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(NULL,NULL,"-use_ts",&useTS,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetBool(NULL,NULL,"-ts_restart",&restartTS,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
@@ -116,7 +120,7 @@ int main(int argc, char **args)
 	/* assemble sparse structure and assemble linear system */
 	ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
 	ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
-	if (EM == PETSC_TRUE)
+	if (useEM)
     {
         ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
     }
@@ -125,34 +129,53 @@ int main(int argc, char **args)
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-	/* solve linear system via matrix inversion */
 	ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    //ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
+	/* solve linear system via matrix inversion */
+    if (useKSP)
+    {
+        ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
+    }
     
     /* solve the linear system via time stepping */
-    /* set initial U and begin time stepping */
-    ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
-    ierr = assembleAffineDisplacementVector(box_ptr, vecX);CHKERRQ(ierr);
-
-    if (restartTS == PETSC_FALSE)
+    if (useTS)
     {
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"reading vector in binary from vector.dat ...\n");CHKERRQ(ierr);
-        ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
-        ierr = VecCreate(PETSC_COMM_WORLD,&vecX);CHKERRQ(ierr);
-        ierr = VecLoad(vecX,viewer);CHKERRQ(ierr);
-        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        /* set initial U and begin time stepping */
+        ierr = VecSet(vecX, 0.0);CHKERRQ(ierr);
+
+        if (restartTS)
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting initial U to U_aff...\n");CHKERRQ(ierr);
+            ierr = assembleAffineDisplacementVector(box_ptr, vecX);CHKERRQ(ierr);
+        }
+        else 
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading vector.dat into initial U...\n");CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
+            ierr = VecCreate(PETSC_COMM_WORLD,&vecX);CHKERRQ(ierr);
+            ierr = VecLoad(vecX,viewer);CHKERRQ(ierr);
+            ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        }
+
+        ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
+
+        /* check the error if using both methods */
+        if (useKSP)
+        {
+            ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
+            ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error against LU = %g\n",(double)norm);
+            CHKERRQ(ierr);
+        }
+
+        /* beware that copy may need modifying in parallel */
+        ierr = VecCopy(vecX, vecU);
     }
 
-    ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
-
-    /* check the error */
-    //ierr = VecAXPY(vecU,-1.0,vecX);CHKERRQ(ierr);
-    //ierr = VecNorm(vecU,NORM_2,&norm);CHKERRQ(ierr);
-    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Norm of error against LU = %g\n",(double)norm);CHKERRQ(ierr);
-
-    /* beware that copy may need modifying in parallel */
-    ierr = VecCopy(vecX, vecU);
+    if (!useKSP && !useTS)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Need to solve with KSP or TS");CHKERRQ(ierr); 
+    }
     ierr = PetscLogStagePop();CHKERRQ(ierr);
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
