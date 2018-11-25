@@ -141,6 +141,7 @@ int main(int argc, char **args)
         ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_READ,&viewer);CHKERRQ(ierr);
         ierr = VecCreate(PETSC_COMM_WORLD,&vecX);CHKERRQ(ierr);
         ierr = VecLoad(vecX,viewer);CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
     }
 
     ierr = systemTimeStepSolve(matH,vecB,vecX,alpha,normTolF,maxSteps);CHKERRQ(ierr);
@@ -186,7 +187,6 @@ int main(int argc, char **args)
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Cleaning up...\n");CHKERRQ(ierr);
 	ierr = VecDestroy(&vecB);CHKERRQ(ierr); ierr = VecDestroy(&vecX);CHKERRQ(ierr);
 	ierr = VecDestroy(&vecU);CHKERRQ(ierr); ierr = MatDestroy(&matH);CHKERRQ(ierr);
-    ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Finalising...\n");CHKERRQ(ierr);
 	ierr = PetscFinalize();
