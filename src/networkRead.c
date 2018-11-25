@@ -4,6 +4,7 @@
 PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma)
 {
 	PetscErrorCode 	ierr = 0;
+    PetscBool       coupledSystem = PETSC_FALSE;
 
 	/* declare array for storing line, pointer, and counter for current line */
 	char line[MAX_LENGTH], *line_ptr;
@@ -22,9 +23,12 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
 	{
 		/* read in line and increment line number */
-		readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);
+		ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
 		line_number += 1;
 	}
+
+    /* produce numbering for internal nodes */
+    ierr = setInternalNodeIndices(*box_ptr_ptr, coupledSystem);CHKERRQ(ierr);
 
 	/* use final global index to set total internal nodes */
 	(*box_ptr_ptr)->nodeInternalCount = gIndex;
@@ -33,6 +37,23 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	fclose(fp);
 
 	return ierr;
+}
+
+
+PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
+{
+    PetscErrorCode ierr = 0;
+
+    if (coupledSystem)
+    {
+        /* coupled numbering */
+    }
+    else 
+    {
+        /* standard numbering */
+    }
+
+    return ierr;
 }
 
 

@@ -22,6 +22,8 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
  */
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
 
+PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem);
+
 /**
  * \brief Reads box information from a given line pointer
  * \param line_ptr Pointer to the line.
