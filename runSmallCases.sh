@@ -11,3 +11,6 @@
 #make clean && make
 #mpiexec -n 1 ./model -ksp_type gmres -pc_type bjacobi -pc_bjacobi_blocks 9 -sub_ksp_type preonly -sub_pc_type lu
 mpiexec -n 1 ./model data/par/tri/tri_3d_01.par -log_view
+mpiexec -n 1 ./model data/par/tri/tri_3d_01.par -use_ts false -use_ksp false
+mpiexec -n 1 ./model data/par/tri/tri_3d_01.par -use_ts true -use_ksp false
+mpiexec -n 1 ./model data/par/tri/tri_3d_01.par -use_ts true -alpha 1e1 -f_tol 1e-12
