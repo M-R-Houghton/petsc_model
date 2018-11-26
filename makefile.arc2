@@ -17,8 +17,8 @@ OBJ 			 = $(patsubst %.c,%.o,$(SRC))
 TEST_SRC 		 = $(wildcard $(TEST_SRC_DIR)/*.c)
 TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 
-include ${PETSC_DIR}/conf/variables
-include ${PETSC_DIR}/conf/rules
+include ${PETSC_DIR}/lib/petsc/conf/variables
+include ${PETSC_DIR}/lib/petsc/conf/rules
 
 model: $(OBJ) $(TEST_OBJ) chkopts
 	${CLINKER} -o model $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB} 
