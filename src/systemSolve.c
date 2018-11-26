@@ -113,6 +113,12 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         ierr = VecScale(globalVec_F, -1.0);CHKERRQ(ierr);
         ierr = VecAXPY(globalVec_U, alpha, globalVec_F);CHKERRQ(ierr);
 
+        if (steps == 0)
+        {
+            ierr = VecCopy(globalVec_U_prev, globalVec_U);CHKERRQ(ierr);
+        }
+
+
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
 
@@ -145,8 +151,8 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
          */
         if (normF > prevNormF)  /* also check for divergence periodically */
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence.\n");CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Unstable Res. Norm = %g\n", normF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",prevNormF);CHKERRQ(ierr);
             ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
             break;
         }
@@ -154,12 +160,17 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         {
             //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
-            ierr = VecView(globalVec_U,viewer);
+            ierr = VecView(globalVec_U_prev,viewer);
             ierr = PetscViewerDestroy(&viewer);
         }
 
         prevNormF = normF;
         steps += 1;
+
+        if (steps > 0)
+        {
+            ierr = VecCopy(globalVec_U_prev, globalVec_U);CHKERRQ(ierr);
+        }
     }
 
     /* use for debugging small cases */
