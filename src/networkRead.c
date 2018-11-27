@@ -57,6 +57,18 @@ PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
 }
 
 
+PetscErrorCode setStandardInternalNodeIndices(Box *box_ptr)
+{
+    PetscErrorCode ierr = 0;
+    
+    /* loop over every node of the network */
+
+    /* if global index is -2 then update index */
+
+    return ierr;
+}
+
+
 /* Reads network data from a given line pointer */
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
@@ -177,6 +189,22 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 
 	/* assign scanned values to a node */
 	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+/* Reads node coupling information from a given line pointer */
+PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr)
+{
+	PetscErrorCode 	ierr;
+  	PetscInt 		nID1, nID2;
+
+	/* read in a node coupling line */
+	sscanf(line_ptr, "%d %d", &nID1, &nID2);
+
+	/* assign scanned values to a node */
+//	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
 
 	return ierr;
 }
