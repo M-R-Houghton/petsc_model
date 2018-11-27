@@ -111,6 +111,72 @@ TEST_F(testNetworkRead, testReadNodeValues)
 }
 
 
+struct testSetInternalNodeIndices : ::testing::Test
+{
+    Box  *box_ptr;
+
+    void SetUp()
+    {
+        // open file, read in line and close
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+    }
+};
+
+
+TEST_F(testSetInternalNodeIndices, testErrorOutput)
+{
+    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE), 0);
+    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE), 0);
+}
+
+
+TEST_F(testSetInternalNodeIndices, testNumberingBefore)
+{
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_EQ(node->globalID, -2);
+        }
+    }
+}
+
+
+TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
+{
+    setStandardInternalNodeIndices(box_ptr);
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_NE(node->globalID, -2);
+        }
+    }
+}
+
+
+TEST_F(testSetInternalNodeIndices, testCoupledNumberingAfter)
+{
+    //setStandardInternalNodeIndices(box_ptr);
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_NE(node->globalID, -2);
+        }
+    }
+}
+
+
 struct testReadDataLine : ::testing::Test
 {
     Box         *box_ptr;

@@ -51,6 +51,7 @@ PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
     else 
     {
         /* standard numbering */
+        ierr = setStandardInternalNodeIndices(box_ptr);CHKERRQ(ierr);
     }
 
     return ierr;
@@ -59,11 +60,19 @@ PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
 
 PetscErrorCode setStandardInternalNodeIndices(Box *box_ptr)
 {
-    PetscErrorCode ierr = 0;
-    
+    PetscErrorCode  ierr = 0;
+    PetscInt        i, newIndex=0;
     /* loop over every node of the network */
-
-    /* if global index is -2 then update index */
+    for (i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node_ptr = &(box_ptr->masterNodeList[i]);
+        if (node_ptr->globalID == -2)
+        {
+            assert(node_ptr->nodeType == NODE_INTERNAL);
+            node_ptr->globalID = newIndex;
+            newIndex += 1;
+        }
+    }        
 
     return ierr;
 }
@@ -197,7 +206,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 /* Reads node coupling information from a given line pointer */
 PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr)
 {
-	PetscErrorCode 	ierr;
+	PetscErrorCode 	ierr = 0;
   	PetscInt 		nID1, nID2;
 
 	/* read in a node coupling line */
