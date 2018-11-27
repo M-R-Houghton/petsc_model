@@ -143,6 +143,7 @@ TEST_F(testSetInternalNodeIndices, testNumberingBefore)
         Node *node = &(box_ptr->masterNodeList[i]);
         if (node->nodeType == NODE_INTERNAL)
         {
+            printf("TESTING ID %d with gID %d\n",node->nodeID,node->globalID);
             EXPECT_EQ(node->globalID, -2);
         }
     }
