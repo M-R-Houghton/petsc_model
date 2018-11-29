@@ -62,9 +62,21 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Iterations %d\n",its);CHKERRQ(ierr);
 
+    /* Manual residual norm calculation */
+    /*
+    PetscReal   myNorm;
+    Vec         v,w,V;
+    ierr = KSPSetNormType(ksp, KSP_NORM_UNPRECONDITIONED);
+    ierr = KSPBuildResidual(ksp,v,w,&V);CHKERRQ(ierr);
+    ierr = VecNorm(V, NORM_INFINITY, &myNorm);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Actual norm = %g\n",(double)myNorm);CHKERRQ(ierr);
+    VecDestroy(&v);
+    VecDestroy(&w);
+    */
+
 	/* Get (relative?) residual norm */
 	KSPGetResidualNorm(ksp,&norm);
-	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %e\n", (double)norm);CHKERRQ(ierr);
+	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %g\n", (double)norm);CHKERRQ(ierr);
 
 	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
@@ -155,6 +167,9 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Min val = %g, at index = %d\n",(double)minVal,minInd);CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            ierr = VecView(globalVec_pU,viewer);
+            ierr = PetscViewerDestroy(&viewer);
             break;
         }
         else                                /* if no termination then write U from 2 steps ago */
