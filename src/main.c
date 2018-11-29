@@ -174,19 +174,20 @@ int main(int argc, char **args)
 
         PetscInt nodeInd = 21553 % box_ptr->nodeInternalCount;
 
+        /* this needs to loop to find the internal node id not general id */
         Node *node_ptr = &(box_ptr->masterNodeList[nodeInd]);
 
-        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d",node_ptr->nodeID);
-        PetscPrintf(PETSC_COMM_WORLD,"Node type \t= %d",node_ptr->nodeType);
-        PetscPrintf(PETSC_COMM_WORLD,"Internal ID \t= %d",node_ptr->globalID);
-        PetscPrintf(PETSC_COMM_WORLD,"Sxyz \t= (%g,%g,%g)", node_ptr->xyzCoord[0],
+        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d\n",node_ptr->nodeID);
+        PetscPrintf(PETSC_COMM_WORLD,"Node type \t= %d\n",node_ptr->nodeType);
+        PetscPrintf(PETSC_COMM_WORLD,"Internal ID \t= %d\n",node_ptr->globalID);
+        PetscPrintf(PETSC_COMM_WORLD,"Sxyz \t= (%g,%g,%g)\n", node_ptr->xyzCoord[0],
                                                             node_ptr->xyzCoord[1],
                                                             node_ptr->xyzCoord[2]);
-        PetscPrintf(PETSC_COMM_WORLD,"Uxyz \t= (%g,%g,%g)", node_ptr->xyzDisplacement[0],
+        PetscPrintf(PETSC_COMM_WORLD,"Uxyz \t= (%g,%g,%g)\n", node_ptr->xyzDisplacement[0],
                                                             node_ptr->xyzDisplacement[1],
                                                             node_ptr->xyzDisplacement[2]);
-        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d",node_ptr->nodeID);
-        PetscPrintf(PETSC_COMM_WORLD,"Uxyz_aff \t= (%g,%g,%g)", node_ptr->xyzAffDisplacement[0],
+        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d\n",node_ptr->nodeID);
+        PetscPrintf(PETSC_COMM_WORLD,"Uxyz_aff \t= (%g,%g,%g)\n", node_ptr->xyzAffDisplacement[0],
                                                             node_ptr->xyzAffDisplacement[1],
                                                             node_ptr->xyzAffDisplacement[2]);
     }

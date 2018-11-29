@@ -152,7 +152,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = VecCopy(globalVec_ppU, globalVec_U);CHKERRQ(ierr);
             ierr = VecAbs(globalVec_F);CHKERRQ(ierr);
             ierr = VecMax(globalVec_F,&maxInd,&maxVal);CHKERRQ(ierr);
-            ierr = VecMax(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
+            ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Min val = %g, at index = %d\n",(double)minVal,minInd);CHKERRQ(ierr);
             break;
