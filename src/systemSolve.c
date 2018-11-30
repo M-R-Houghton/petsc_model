@@ -167,6 +167,8 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Min val = %g, at index = %d\n",(double)minVal,minInd);CHKERRQ(ierr);
+
+            /* additional FINAL write that is just for testing */
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
             ierr = VecView(globalVec_pU,viewer);
             ierr = PetscViewerDestroy(&viewer);

@@ -172,24 +172,6 @@ int main(int argc, char **args)
         ierr = VecCopy(vecX, vecU);
 
 
-        PetscInt nodeInd = 21553 % box_ptr->nodeInternalCount;
-
-        /* this needs to loop to find the internal node id not general id */
-        Node *node_ptr = &(box_ptr->masterNodeList[nodeInd]);
-
-        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d\n",node_ptr->nodeID);
-        PetscPrintf(PETSC_COMM_WORLD,"Node type \t= %d\n",node_ptr->nodeType);
-        PetscPrintf(PETSC_COMM_WORLD,"Internal ID \t= %d\n",node_ptr->globalID);
-        PetscPrintf(PETSC_COMM_WORLD,"Sxyz \t= (%g,%g,%g)\n", node_ptr->xyzCoord[0],
-                                                            node_ptr->xyzCoord[1],
-                                                            node_ptr->xyzCoord[2]);
-        PetscPrintf(PETSC_COMM_WORLD,"Uxyz \t= (%g,%g,%g)\n", node_ptr->xyzDisplacement[0],
-                                                            node_ptr->xyzDisplacement[1],
-                                                            node_ptr->xyzDisplacement[2]);
-        PetscPrintf(PETSC_COMM_WORLD,"Node ID \t= %d\n",node_ptr->nodeID);
-        PetscPrintf(PETSC_COMM_WORLD,"Uxyz_aff \t= (%g,%g,%g)\n", node_ptr->xyzAffDisplacement[0],
-                                                            node_ptr->xyzAffDisplacement[1],
-                                                            node_ptr->xyzAffDisplacement[2]);
     }
 
     if (!useKSP && !useTS)
@@ -213,6 +195,45 @@ int main(int argc, char **args)
     ierr = printAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tLambda \t= %g\n\n", lambda);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
+
+    // START: DEBUGGING BAD NODES
+    PetscInt vals = 2;
+    PetscInt valInd[vals], nodeInd[vals], xyz[vals];
+    valInd[0] = 21553;
+    valInd[1] = 23337;
+
+    int nd;
+    for (nd = 0; nd < vals; nd++)
+    {
+        nodeInd[nd]= valInd[nd] % box_ptr->nodeInternalCount;
+        xyz[nd] = valInd[nd] / box_ptr->nodeInternalCount;
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"xyz = %d\n",xyz[nd]);CHKERRQ(ierr);
+        /* this needs to loop to find the internal node id not general id */
+        int i;
+        for (i = 0; i < box_ptr->nodeCount; i++)
+        {
+            Node *node_ptr = &(box_ptr->masterNodeList[i]);
+            if (node_ptr->globalID == nodeInd[nd])
+            {
+                ierr = printNodeInfo(node_ptr);CHKERRQ(ierr);
+            }
+        }
+
+        int j,k;
+        for (j = 0; j < box_ptr->fibreCount; j++)
+        {
+            Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
+            for (k = 0; k < fibre_ptr->nodesOnFibre; k++)
+            {
+                Node *node_ptr = fibre_ptr->nodesOnFibreList[k];
+                if (node_ptr->globalID == nodeInd[nd])
+                {
+                    ierr = printFibreInfo(fibre_ptr);CHKERRQ(ierr);
+                }
+            }
+        }
+    }
+    // END: DEBUGGING BAD NODES
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network write out to file
