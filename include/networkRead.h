@@ -5,7 +5,7 @@
 
 /**
  * \brief Initiates network read in routine.
- * \param line_ptr Pointer to the file to be read.
+ * \param fileToRead_ptr Pointer to the file to be read.
  * \param box_ptr Pointer to box for data to be written to.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
@@ -16,11 +16,20 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param gIndex_ptr Pointer to the current global index.
+ * \param cIndex_ptr Pointer to the current coupling index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, PetscScalar gamma);
+
+/**
+ * \brief Reads coupling data from a given network
+ * \param fileToRead_ptr Pointer to the file to be read.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \param cCount Number of couples
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network
@@ -28,21 +37,21 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_
  * \param coupledSystem Petsc boolean indicating whether the network has coupled nodes.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem);
+PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a standard network
  * \param box_ptr Pointer to box containing the internal nodes.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode setStandardInternalNodeIndices(Box *box_ptr);
+PetscInt setStandardInternalNodeIndices(Box *box_ptr);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a coupled network
  * \param box_ptr Pointer to box containing the internal nodes.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode setCoupledInternalNodeIndices(Box *box_ptr);
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr);
 
 /**
  * \brief Reads box information from a given line pointer

@@ -144,12 +144,11 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 
 /* Checks node arguments are all legal */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	assert(box_ptr != NULL);
 	assert(nID >= 0);
 	assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
-	assert(gIndex_ptr != NULL);
 }
 
 
@@ -160,7 +159,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	PetscErrorCode ierr = 0;
 
 	/* validate arguments */
-	checkNodeArguments(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);
+	checkNodeArguments(box_ptr, nID, nType, x, y, z, gamma);
 
 	/* create shortcut for readability */
 	Node *node_ptr = &(box_ptr->masterNodeList[nID]);
@@ -192,7 +191,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 			/* add global ID */
             node_ptr->globalID = -2;
 			//node_ptr->globalID = *gIndex_ptr;
-			*gIndex_ptr += 1;
+			//*gIndex_ptr += 1;
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */

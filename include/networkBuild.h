@@ -91,7 +91,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
  * \param gamma
  */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType, 
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma);
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
 
 /**
  * \brief Creates a node within its allocated location in a box
