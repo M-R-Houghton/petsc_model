@@ -190,9 +190,8 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	{
 		case NODE_INTERNAL:
 			/* add global ID */
-            //node_ptr->globalID = -2;
-            //printf("HERE! ID %d has gID %d\n",node_ptr->nodeID,node_ptr->globalID);
-			node_ptr->globalID = *gIndex_ptr;
+            node_ptr->globalID = -2;
+			//node_ptr->globalID = *gIndex_ptr;
 			*gIndex_ptr += 1;
 			break;
 		case NODE_BOUNDARY:
