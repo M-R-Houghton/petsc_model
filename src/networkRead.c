@@ -81,7 +81,8 @@ PetscErrorCode setStandardInternalNodeIndices(Box *box_ptr)
 /* Reads network data from a given line pointer */
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode  ierr = 0;
+    PetscBool       coupledSystem = PETSC_FALSE;
 
 	/* collect initial character and move pointer to where cropped line begins */
     char *tkn_ptr        = strtok(line_ptr, " ");
@@ -102,6 +103,10 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *gIndex_
 			/* pass line pointer to node line reader */
 			readNodeLine(lineCrop_ptr, *box_ptr_ptr, gIndex_ptr, gamma);
 			break;
+        case 'c':
+            coupledSystem = PETSC_TRUE;
+            // cplCount += 1;
+            break;
 		default:
 			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
 	}
