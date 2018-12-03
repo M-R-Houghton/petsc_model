@@ -77,9 +77,7 @@ PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscI
 	    switch (*tkn_ptr)
 	    {
 	    	case 'b':
-	    		break;
 	    	case 'f':
-	    		break;
 	    	case 'n':
 	    		break;
             case 'c':
