@@ -34,11 +34,13 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
      * WARNING: Don't forget to also add in the unit tests as you go!
      * WARNING: Get rid of as much of the duplication as possible!
      */
+    /*
     if (coupledSystem)
     {
         assert(gIndex != 0);
         ierr = readCouplingData(fileToRead_ptr, *box_ptr_ptr, gIndex);CHKERRQ(ierr);
     }
+    */
 
     /* produce numbering for internal nodes */
     gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem);CHKERRQ(ierr);
