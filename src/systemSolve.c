@@ -84,6 +84,88 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 }
 
 
+PetscErrorCode printLargeVecValues(Vec globalVec_F)
+{
+    PetscErrorCode  ierr = 0;
+    PetscReal       largeVal;
+    PetscInt        i,nlocal;
+    PetscInt        c3e7=0,c2e7=0,c1e7=0;
+    PetscInt        ce8=0,ce9=0,ce10=0,ce11=0,ce12=0;
+    PetscInt        cOther=0;
+    PetscScalar     const *array;
+    Vec             absVec_F;
+
+    ierr = VecDuplicate(globalVec_F, &absVec_F);CHKERRQ(ierr);
+    ierr = VecCopy(globalVec_F, absVec_F);CHKERRQ(ierr);
+    ierr = VecAbs(absVec_F);CHKERRQ(ierr);
+
+    ierr = VecGetLocalSize(absVec_F,&nlocal);
+    ierr = VecGetArrayRead(absVec_F,&array);CHKERRQ(ierr);
+    for (i = 0; i < nlocal; i++)
+    {
+        if (array[i] >= 3e-7)
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n", i, array[i]);CHKERRQ(ierr);
+            c3e7 += 1;
+        }
+        else if (2e-7 <= array[i] && array[i] < 3e-7)
+        {              
+            c2e7 += 1; 
+        }              
+        else if (1e-7 <= array[i] && array[i] < 2e-7)
+        {              
+            c1e7 += 1; 
+        }              
+        else if (1e-8 <= array[i] && array[i] < 1e-7)
+        {              
+            ce8 += 1; 
+        }              
+        else if (1e-9 <= array[i] && array[i] < 1e-8)
+        {
+            ce9 += 1;
+        }
+        else if (1e-10 <= array[i] && array[i] < 1e-9)
+        {
+            ce10 += 1;
+        }
+        else if (1e-11 <= array[i] && array[i] < 1e-10)
+        {
+            ce11 += 1;
+        }
+        else if (1e-12 <= array[i] && array[i] < 1e-11)
+        {
+            ce12 += 1;
+        }
+        else if (array[i] < 1e-12)
+        {
+            cOther += 1;
+        }
+        
+        
+
+    }
+    ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Counts are:\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c3e7);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c2e7);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c1e7);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce8);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce9);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce10);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce11);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n\n",ce12);CHKERRQ(ierr);
+
+    PetscInt nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12; 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking consistency:\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d = %d\n", nodeSum, nlocal);CHKERRQ(ierr);
+
+    VecDestroy(&absVec_F);
+
+    return ierr;
+}
+
+
 /* Initiates time-stepping solve routine */
 PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U, 
                                     PetscScalar alpha, PetscScalar normTolF, PetscInt maxSteps)
@@ -167,6 +249,8 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Min val = %g, at index = %d\n",(double)minVal,minInd);CHKERRQ(ierr);
+
+            ierr = printLargeVecValues(globalVec_F);CHKERRQ(ierr);
 
             /* additional FINAL write that is just for testing */
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
