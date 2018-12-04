@@ -105,7 +105,7 @@ PetscErrorCode printLargeVecValues(Vec globalVec_F)
     {
         if (array[i] >= 3e-7)
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n", i, array[i]);CHKERRQ(ierr);
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n", i, array[i]);CHKERRQ(ierr);
             c3e7 += 1;
         }
         else if (2e-7 <= array[i] && array[i] < 3e-7)
@@ -147,16 +147,11 @@ PetscErrorCode printLargeVecValues(Vec globalVec_F)
     ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Counts are:\n");CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c3e7);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c2e7);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",c1e7);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce8);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce9);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce10);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n",ce11);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n\n",ce12);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",c3e7,c2e7,c1e7);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce8,ce9,ce10);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce11,ce12,cOther);CHKERRQ(ierr);
 
-    PetscInt nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12; 
+    PetscInt nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12+cOther; 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking consistency:\n");CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"%d = %d\n", nodeSum, nlocal);CHKERRQ(ierr);
 
@@ -241,14 +236,15 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         else if (normF > prevNormF)         /* check for divergence at every step */
         {
             /* if divergence then analyse U from 2 steps ago (after termination of this function) */
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Unstable Res. Norm = %g\n", normF);CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",prevNormF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence at step %d. Unstable Res. Norm = %g\n",steps,normF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Prev. (step %d) Res. Norm = %g\n",steps-1,prevNormF);CHKERRQ(ierr);
             ierr = VecCopy(globalVec_ppU, globalVec_U);CHKERRQ(ierr);
+
             ierr = VecAbs(globalVec_F);CHKERRQ(ierr);
             ierr = VecMax(globalVec_F,&maxInd,&maxVal);CHKERRQ(ierr);
             ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Min val = %g, at index = %d\n",(double)minVal,minInd);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Max val = %g, at index = %d\n",steps,(double)maxVal,maxInd);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Min val = %g, at index = %d\n",steps,(double)minVal,minInd);CHKERRQ(ierr);
 
             ierr = printLargeVecValues(globalVec_F);CHKERRQ(ierr);
 
