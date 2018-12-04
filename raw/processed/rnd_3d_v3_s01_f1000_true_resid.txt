@@ -1,0 +1,154 @@
+
+====================================================
+  NO PRECONDITIONING
+====================================================
+  0 KSP preconditioned resid norm 1.712902514541e-03 true resid norm 1.712902514541e-03 ||r(i)||/||b|| 1.000000000000e+00
+  1 KSP preconditioned resid norm 8.145255009130e-04 true resid norm 8.145255009130e-04 ||r(i)||/||b|| 4.755235595713e-01
+  2 KSP preconditioned resid norm 4.723762032597e-04 true resid norm 4.723762032597e-04 ||r(i)||/||b|| 2.757752990901e-01
+  3 KSP preconditioned resid norm 3.129834122124e-04 true resid norm 3.129834122124e-04 ||r(i)||/||b|| 1.827210886524e-01
+  4 KSP preconditioned resid norm 2.387469687552e-04 true resid norm 2.387469687552e-04 ||r(i)||/||b|| 1.393815273949e-01
+  5 KSP preconditioned resid norm 1.890291180278e-04 true resid norm 1.890291180278e-04 ||r(i)||/||b|| 1.103560281003e-01
+  6 KSP preconditioned resid norm 1.563001922298e-04 true resid norm 1.563001922298e-04 ||r(i)||/||b|| 9.124873768530e-02
+  7 KSP preconditioned resid norm 1.340256986800e-04 true resid norm 1.340256986800e-04 ||r(i)||/||b|| 7.824479066514e-02
+  8 KSP preconditioned resid norm 1.164707898132e-04 true resid norm 1.164707898132e-04 ||r(i)||/||b|| 6.799615788086e-02
+  9 KSP preconditioned resid norm 1.045354043548e-04 true resid norm 1.045354043548e-04 ||r(i)||/||b|| 6.102822750705e-02
+ 10 KSP preconditioned resid norm 9.387607708072e-05 true resid norm 9.387607708073e-05 ||r(i)||/||b|| 5.480526549749e-02
+KSP Object: 1 MPI processes
+  type: gmres
+    restart=30, using Classical (unmodified) Gram-Schmidt Orthogonalization with no iterative refinement
+    happy breakdown tolerance 1e-30
+  maximum iterations=10, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-08, divergence=10000.
+  left preconditioning
+  using PRECONDITIONED norm type for convergence test
+PC Object: 1 MPI processes
+  type: none
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=20016, cols=20016
+    total: nonzeros=326466, allocated nonzeros=442350
+    total number of mallocs used during MatSetValues calls =22818
+      not using I-node routines
+[STATUS] Iterations 10
+[STATUS] Residual norm = 9.387608e-05
+
+====================================================
+  JACOBI
+====================================================
+  0 KSP preconditioned resid norm 2.000065421729e-01 true resid norm 1.712902514541e-03 ||r(i)||/||b|| 1.000000000000e+00
+  1 KSP preconditioned resid norm 7.775407747868e-02 true resid norm 8.033916696649e-04 ||r(i)||/||b|| 4.690235800607e-01
+  2 KSP preconditioned resid norm 4.678592326389e-02 true resid norm 4.640281444682e-04 ||r(i)||/||b|| 2.709016657568e-01
+  3 KSP preconditioned resid norm 3.084877198374e-02 true resid norm 3.066235343181e-04 ||r(i)||/||b|| 1.790081640463e-01
+  4 KSP preconditioned resid norm 2.377188983764e-02 true resid norm 2.315010807112e-04 ||r(i)||/||b|| 1.351513461776e-01
+  5 KSP preconditioned resid norm 1.883018961480e-02 true resid norm 1.799915310779e-04 ||r(i)||/||b|| 1.050798452042e-01
+  6 KSP preconditioned resid norm 1.560365931490e-02 true resid norm 1.484027974089e-04 ||r(i)||/||b|| 8.663820395444e-02
+  7 KSP preconditioned resid norm 1.342686604573e-02 true resid norm 1.267114260673e-04 ||r(i)||/||b|| 7.397468623674e-02
+  8 KSP preconditioned resid norm 1.148813723869e-02 true resid norm 1.087293481932e-04 ||r(i)||/||b|| 6.347667031262e-02
+  9 KSP preconditioned resid norm 9.994189569008e-03 true resid norm 9.562293239668e-05 ||r(i)||/||b|| 5.582508729186e-02
+ 10 KSP preconditioned resid norm 8.919271983934e-03 true resid norm 8.362809381522e-05 ||r(i)||/||b|| 4.882244792410e-02
+KSP Object: 1 MPI processes
+  type: gmres
+    restart=30, using Classical (unmodified) Gram-Schmidt Orthogonalization with no iterative refinement
+    happy breakdown tolerance 1e-30
+  maximum iterations=10, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-08, divergence=10000.
+  left preconditioning
+  using PRECONDITIONED norm type for convergence test
+PC Object: 1 MPI processes
+  type: jacobi
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=20016, cols=20016
+    total: nonzeros=326466, allocated nonzeros=442350
+    total number of mallocs used during MatSetValues calls =22818
+      not using I-node routines
+[STATUS] Iterations 10
+[STATUS] Residual norm = 8.919272e-03
+
+====================================================
+  ILU
+====================================================
+  0 KSP preconditioned resid norm 1.072469236069e+02 true resid norm 1.712902514541e-03 ||r(i)||/||b|| 1.000000000000e+00
+  1 KSP preconditioned resid norm 8.147458879767e+01 true resid norm 1.712897402184e-03 ||r(i)||/||b|| 9.999970153839e-01
+  2 KSP preconditioned resid norm 5.261554974623e+01 true resid norm 1.713128470937e-03 ||r(i)||/||b|| 1.000131914335e+00
+  3 KSP preconditioned resid norm 5.182356076790e+01 true resid norm 1.713205996332e-03 ||r(i)||/||b|| 1.000177174001e+00
+  4 KSP preconditioned resid norm 4.448178680275e+01 true resid norm 1.713042363724e-03 ||r(i)||/||b|| 1.000081644566e+00
+  5 KSP preconditioned resid norm 4.097734797675e+01 true resid norm 1.712965541204e-03 ||r(i)||/||b|| 1.000036795242e+00
+  6 KSP preconditioned resid norm 4.041823848574e+01 true resid norm 1.712859284199e-03 ||r(i)||/||b|| 9.999747619367e-01
+  7 KSP preconditioned resid norm 3.733064525120e+01 true resid norm 1.712868613655e-03 ||r(i)||/||b|| 9.999802085144e-01
+  8 KSP preconditioned resid norm 2.742710220879e+01 true resid norm 1.712752719840e-03 ||r(i)||/||b|| 9.999125491968e-01
+  9 KSP preconditioned resid norm 2.277156246910e+01 true resid norm 1.713754267216e-03 ||r(i)||/||b|| 1.000497256947e+00
+ 10 KSP preconditioned resid norm 2.249013092658e+01 true resid norm 1.713859945189e-03 ||r(i)||/||b|| 1.000558952211e+00
+KSP Object: 1 MPI processes
+  type: gmres
+    restart=30, using Classical (unmodified) Gram-Schmidt Orthogonalization with no iterative refinement
+    happy breakdown tolerance 1e-30
+  maximum iterations=10, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-08, divergence=10000.
+  left preconditioning
+  using PRECONDITIONED norm type for convergence test
+PC Object: 1 MPI processes
+  type: ilu
+    out-of-place factorization
+    0 levels of fill
+    tolerance for zero pivot 2.22045e-14
+    matrix ordering: natural
+    factor fill ratio given 1., needed 1.
+      Factored matrix follows:
+        Mat Object: 1 MPI processes
+          type: seqaij
+          rows=20016, cols=20016
+          package used to perform factorization: petsc
+          total: nonzeros=326466, allocated nonzeros=326466
+          total number of mallocs used during MatSetValues calls =0
+            not using I-node routines
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=20016, cols=20016
+    total: nonzeros=326466, allocated nonzeros=442350
+    total number of mallocs used during MatSetValues calls =22818
+      not using I-node routines
+[STATUS] Iterations 10
+[STATUS] Residual norm = 2.249013e+01
+
+====================================================
+  SOR
+====================================================
+  0 KSP preconditioned resid norm 1.796881465802e-01 true resid norm 1.712902514541e-03 ||r(i)||/||b|| 1.000000000000e+00
+  1 KSP preconditioned resid norm 4.540988522266e-02 true resid norm 3.654987041541e-04 ||r(i)||/||b|| 2.133797463962e-01
+  2 KSP preconditioned resid norm 2.606420216900e-02 true resid norm 1.912189116745e-04 ||r(i)||/||b|| 1.116344392347e-01
+  3 KSP preconditioned resid norm 1.706491491114e-02 true resid norm 1.306784472391e-04 ||r(i)||/||b|| 7.629065059439e-02
+  4 KSP preconditioned resid norm 1.139678490195e-02 true resid norm 8.632268962267e-05 ||r(i)||/||b|| 5.039556477376e-02
+  5 KSP preconditioned resid norm 9.150445516057e-03 true resid norm 6.103446262061e-05 ||r(i)||/||b|| 3.563218694730e-02
+  6 KSP preconditioned resid norm 8.868089735926e-03 true resid norm 5.313584978469e-05 ||r(i)||/||b|| 3.102094213397e-02
+  7 KSP preconditioned resid norm 8.565062350842e-03 true resid norm 5.782480782260e-05 ||r(i)||/||b|| 3.375837640013e-02
+  8 KSP preconditioned resid norm 6.934736232496e-03 true resid norm 5.365728098645e-05 ||r(i)||/||b|| 3.132535595631e-02
+  9 KSP preconditioned resid norm 5.361673183450e-03 true resid norm 4.074754790190e-05 ||r(i)||/||b|| 2.378859716534e-02
+ 10 KSP preconditioned resid norm 4.175660493252e-03 true resid norm 3.087643976920e-05 ||r(i)||/||b|| 1.802580094728e-02
+KSP Object: 1 MPI processes
+  type: gmres
+    restart=30, using Classical (unmodified) Gram-Schmidt Orthogonalization with no iterative refinement
+    happy breakdown tolerance 1e-30
+  maximum iterations=10, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-08, divergence=10000.
+  left preconditioning
+  using PRECONDITIONED norm type for convergence test
+PC Object: 1 MPI processes
+  type: sor
+    type = local_symmetric, iterations = 1, local iterations = 1, omega = 1.
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=20016, cols=20016
+    total: nonzeros=326466, allocated nonzeros=442350
+    total number of mallocs used during MatSetValues calls =22818
+      not using I-node routines
+[STATUS] Iterations 10
+[STATUS] Residual norm = 4.175660e-03
+
+
+
+
