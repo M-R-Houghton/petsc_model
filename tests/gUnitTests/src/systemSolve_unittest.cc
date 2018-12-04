@@ -103,6 +103,8 @@ struct testSystemTimeStepSolve : ::testing::Test
     Vec             glbRhs;
     Vec             glbSol;
     PetscInt        N;
+    PetscScalar     alpha, normTolF;
+    PetscInt        maxSteps;
 
     void SetUp()
     {
@@ -119,6 +121,9 @@ struct testSystemTimeStepSolve : ::testing::Test
         par_ptr = makeParameters(fileToRead, fileToRead, 1.0, 1.0);
 
         N = 1;
+        alpha = 1e3;
+        normTolF = 1e-12;
+        maxSteps = 1000000;
     }
 
     void TearDown()
@@ -134,6 +139,8 @@ struct testSystemTimeStepSolve : ::testing::Test
 
 TEST_F(testSystemTimeStepSolve, testErrorOutput)
 {
+    alpha = 1e0;
+
     // Set H to the identity matrix
     MatSetSizes(glbMat,PETSC_DECIDE,PETSC_DECIDE,2,2);
     MatSetUp(glbMat);
@@ -160,7 +167,7 @@ TEST_F(testSystemTimeStepSolve, testErrorOutput)
     // Initial guess for U
     VecSet(glbSol,0.0);
 
-    EXPECT_EQ(systemTimeStepSolve(glbMat, glbRhs, glbSol), 0);
+    EXPECT_EQ(systemTimeStepSolve(glbMat, glbRhs, glbSol, alpha, normTolF, maxSteps), 0);
 }
 
 
@@ -192,7 +199,7 @@ TEST_F(testSystemTimeStepSolve, testTripodSolve)
     VecSet(glbSol,0.0);
 
     // Time step solve
-    systemTimeStepSolve(glbMat, glbRhs, glbSol);
+    systemTimeStepSolve(glbMat, glbRhs, glbSol, alpha, normTolF, maxSteps);
 
     // Check values against direct solve
     PetscScalar *sol;

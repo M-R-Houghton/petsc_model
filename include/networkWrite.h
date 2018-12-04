@@ -11,6 +11,20 @@
  */
 PetscErrorCode networkWrite(const char *fileName, Box *box_ptr);
 
+/**
+ * \brief Prints out fibre information
+ * \param fibre_ptr Fibre to be printed
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode printFibreInfo(Fibre *fibre_ptr);
+
+/**
+ * \brief Prints out node information
+ * \param node_ptr Node to be printed
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode printNodeInfo(Node *node_ptr);
+
 /* This function will be replaced with a parameter write out */
 PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
 

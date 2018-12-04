@@ -47,6 +47,7 @@ class NetworkAnalyser:
 
         self.boundary_fibres = []
 
+        self.further_analysis = False
 
     def find_mag(self, vec):
         return np.sqrt(vec.dot(vec))
@@ -261,6 +262,58 @@ class NetworkAnalyser:
         return
 
 
+    def analyse_node(self, nodeID):
+
+        fID = []
+        nid_all_lists = []
+        seg_all_lists = []
+        seg_avg_lists = []
+
+        # for the fibres that contain the node of interest
+        for f_i in range(len(self.fibre_dict)):
+
+            fibre_i = self.fibre_dict[f_i]
+
+            for n_j in fibre_i.nodes:
+
+                if n_j == nodeID:
+                    fID.append(f_i)
+                    segs = self.analyse_fibre(n_j, f_i)
+                    nid_all_lists.append(segs['nid'])
+                    seg_all_lists.append(segs['all'])
+                    seg_avg_lists.append(segs['avg'])
+
+        return {'fid':fID, 'nid':nid_all_lists, 'seg_all':seg_all_lists, 'seg_avg':seg_avg_lists}
+
+
+    def analyse_fibre(self, nodeID, fibreID):
+
+        fibre = self.fibre_dict[fibreID]
+
+        ids_all = []
+        seg_all = []
+        seg_avg = 0
+
+        for n in range(len(fibre.nodes) - 1):
+
+            alph = self.node_dict[fibre.nodes[n]]
+            beta = self.node_dict[fibre.nodes[n+1]]
+
+            s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
+
+            mag_s_alph_beta = self.find_mag(s_alph_beta)
+
+            ids_all.append(fibre.nodes[n])
+            seg_all.append(mag_s_alph_beta)
+            seg_avg += mag_s_alph_beta
+
+        ids_all.append(fibre.nodes[-1])
+
+        seg_avg /= float(len(fibre.nodes) - 1)
+        
+        return {'nid':ids_all, 'all':seg_all, 'avg':seg_avg}
+
+
     def print_basic_stats(self):
 
         print("Dimensions:\t(%f, %f, %f)" % (self.box.x, self.box.y, self.box.z))
@@ -337,6 +390,37 @@ class NetworkAnalyser:
         return
 
 
+
+
+    def write_node_stats(self, nodeID, file):
+        
+        file.write("Node ID = %d\n" % nodeID)
+        
+        segs = self.analyse_node(nodeID)
+
+        for f in range(len(segs['fid'])):
+            
+            file.write("Fibre ID = %d\n" % segs['fid'][f])
+            file.write("Node IDs are:\n")
+            file.write("\t"+str(segs['nid'][f])+"\n")
+            file.write("Segment lengths are:\n")
+            file.write("\t"+str(segs['seg_all'][f])+"\n")
+            file.write("Segment Avg = %.4f\n" % segs['seg_avg'][f])
+            #l = [float('%.6g' % 1.0/i) for i in segs['seg_all'][f]]
+            l = [1.0/i for i in segs['seg_all'][f]]
+            l_avg = sum(l)/len(l)
+            file.write("1/l is:\n")
+            file.write("\t"+str(l)+"\n")
+            file.write("1/l avg is: %.4f\n" % l_avg)
+            #l3 = [float('%.6g' % 1.0/(i**3)) for i in segs['seg_all'][f]]
+            l3 = [1.0/(i**3) for i in segs['seg_all'][f]]
+            l3_avg = sum(l3)/len(l3)
+            file.write("1/l**3 is:\n")
+            file.write("\t"+str(l3)+"\n")
+            file.write("1/l**3 avg is: %.4f\n" % l3_avg)
+        return
+
+
     def write_network_stats(self, output_file):
 
         new_file = open(output_file, 'w')
@@ -347,6 +431,11 @@ class NetworkAnalyser:
         # write crosslink analysis
         self.write_crosslink_stats(new_file)
 
+        if self.further_analysis:
+            # write out additional data
+            for i in self.nodes_to_analyse:
+                self.write_node_stats(i, new_file)
+
         new_file.close()
 
         return
@@ -355,7 +444,7 @@ class NetworkAnalyser:
 if __name__ == '__main__':
 
     # Check network_general_analysis.py has a valid number of arguments:
-    if (len(sys.argv) != 2) and (len(sys.argv) != 3):
+    if (len(sys.argv) < 2) or (len(sys.argv) > 4):
         sys.exit('Usage: network_general_analysis.py <input_file> [output_file]')
 
     # Assign first argument:
@@ -379,10 +468,24 @@ if __name__ == '__main__':
 
     assert len(conflict_checker.boundary_fibres) == len(network_analyser.boundary_fibres), '(ERROR) Boundary fibre detected.'
 
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 4:
+        id_list = map(int, sys.argv[3].strip('[]').split(','))
+        print("FURTHER ANALYSIS: ")
+        network_analyser.further_analysis = True
+        network_analyser.nodes_to_analyse = id_list
+        print("\tFURTHER ANALYSIS")
+
+    if len(sys.argv) > 2:
         output_file = sys.argv[2]
         print("WRITING LOG FILE: ", output_file)
         network_analyser.write_network_stats(output_file)
         print("\tWRITING COMPLETE")
 
     # ADD FURTHER DEBUGGING PRINTS TO THIS...
+
+
+
+
+
+
+

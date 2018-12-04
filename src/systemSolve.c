@@ -62,13 +62,102 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Iterations %d\n",its);CHKERRQ(ierr);
 
+    /* Manual residual norm calculation */
+    /*
+    PetscReal   myNorm;
+    Vec         v,w,V;
+    ierr = KSPSetNormType(ksp, KSP_NORM_UNPRECONDITIONED);
+    ierr = KSPBuildResidual(ksp,v,w,&V);CHKERRQ(ierr);
+    ierr = VecNorm(V, NORM_INFINITY, &myNorm);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Actual norm = %g\n",(double)myNorm);CHKERRQ(ierr);
+    VecDestroy(&v);
+    VecDestroy(&w);
+    */
+
 	/* Get (relative?) residual norm */
 	KSPGetResidualNorm(ksp,&norm);
-	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %e\n", (double)norm);CHKERRQ(ierr);
+	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %g\n", (double)norm);CHKERRQ(ierr);
 
 	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	return ierr;
+}
+
+
+PetscErrorCode printLargeVecValues(Vec globalVec_F)
+{
+    PetscErrorCode  ierr = 0;
+    PetscReal       largeVal;
+    PetscInt        i,nlocal;
+    PetscInt        c3e7=0,c2e7=0,c1e7=0;
+    PetscInt        ce8=0,ce9=0,ce10=0,ce11=0,ce12=0;
+    PetscInt        cOther=0;
+    PetscScalar     const *array;
+    Vec             absVec_F;
+
+    ierr = VecDuplicate(globalVec_F, &absVec_F);CHKERRQ(ierr);
+    ierr = VecCopy(globalVec_F, absVec_F);CHKERRQ(ierr);
+    ierr = VecAbs(absVec_F);CHKERRQ(ierr);
+
+    ierr = VecGetLocalSize(absVec_F,&nlocal);
+    ierr = VecGetArrayRead(absVec_F,&array);CHKERRQ(ierr);
+    for (i = 0; i < nlocal; i++)
+    {
+        if (array[i] >= 3e-7)
+        {
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n", i, array[i]);CHKERRQ(ierr);
+            c3e7 += 1;
+        }
+        else if (2e-7 <= array[i] && array[i] < 3e-7)
+        {              
+            c2e7 += 1; 
+        }              
+        else if (1e-7 <= array[i] && array[i] < 2e-7)
+        {              
+            c1e7 += 1; 
+        }              
+        else if (1e-8 <= array[i] && array[i] < 1e-7)
+        {              
+            ce8 += 1; 
+        }              
+        else if (1e-9 <= array[i] && array[i] < 1e-8)
+        {
+            ce9 += 1;
+        }
+        else if (1e-10 <= array[i] && array[i] < 1e-9)
+        {
+            ce10 += 1;
+        }
+        else if (1e-11 <= array[i] && array[i] < 1e-10)
+        {
+            ce11 += 1;
+        }
+        else if (1e-12 <= array[i] && array[i] < 1e-11)
+        {
+            ce12 += 1;
+        }
+        else if (array[i] < 1e-12)
+        {
+            cOther += 1;
+        }
+        
+        
+
+    }
+    ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Counts are:\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",c3e7,c2e7,c1e7);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce8,ce9,ce10);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce11,ce12,cOther);CHKERRQ(ierr);
+
+    PetscInt nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12+cOther; 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking consistency:\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d = %d\n", nodeSum, nlocal);CHKERRQ(ierr);
+
+    VecDestroy(&absVec_F);
+
+    return ierr;
 }
 
 
@@ -84,21 +173,26 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
 
     PetscErrorCode  ierr = 0;
     PetscInt        steps = 0;
-    PetscInt        printSteps = 10000;
+    PetscInt        printSteps = 1000;
+    PetscInt        maxInd, minInd;
+    PetscReal       maxVal, minVal;
     PetscReal       initialNormF,prevNormF,normF = 0;
-    Vec             globalVec_F,globalVec_U_prev;
+    Vec             globalVec_F,globalVec_pU,globalVec_ppU;
     PetscViewer     viewer;
 
-    /* set up U_prev */
-    VecDuplicate(globalVec_U, &globalVec_U_prev);
+    /* set up vecs for storing prev U and prev prev U */
+    ierr = VecDuplicate(globalVec_U, &globalVec_pU);CHKERRQ(ierr);      /* duplicate vec size and type */
+    ierr = VecDuplicate(globalVec_U, &globalVec_ppU);CHKERRQ(ierr);
+    ierr = VecCopy(globalVec_U, globalVec_pU);CHKERRQ(ierr);            /* copy contents of vec to another */
+    ierr = VecCopy(globalVec_U, globalVec_ppU);CHKERRQ(ierr);
 
     /* set up F */
-    VecDuplicate(globalVec_U, &globalVec_F);
-    VecSet(globalVec_F, 0.0);
+    ierr = VecDuplicate(globalVec_U, &globalVec_F);CHKERRQ(ierr);
+    ierr = VecSet(globalVec_F, 0.0);CHKERRQ(ierr);
     
-    PetscPrintf(PETSC_COMM_WORLD,"alpha = %g\n",alpha);
-    PetscPrintf(PETSC_COMM_WORLD,"normTolF = %g\n",normTolF);
-    PetscPrintf(PETSC_COMM_WORLD,"maxSteps = %d\n",maxSteps);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"alpha = %g\n",alpha);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"normTolF = %g\n",normTolF);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"maxSteps = %d\n",maxSteps);CHKERRQ(ierr);
    
     /* set B' = -B */
     ierr = VecScale(globalVec_B, -1.0);CHKERRQ(ierr);
@@ -113,64 +207,74 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         ierr = VecScale(globalVec_F, -1.0);CHKERRQ(ierr);
         ierr = VecAXPY(globalVec_U, alpha, globalVec_F);CHKERRQ(ierr);
 
-        if (steps == 0)
-        {
-            ierr = VecCopy(globalVec_U_prev, globalVec_U);CHKERRQ(ierr);
-        }
-
-
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
 
+        /* previous normF is set initially the same as normF */
         if (steps == 0) 
         {
-            initialNormF = normF;
+            initialNormF = normF;           /* initialNormF no longer needed - used only for printing */
             prevNormF = normF;
-            PetscPrintf(PETSC_COMM_WORLD,"Initial Res. Norm = %g\n",initialNormF);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Initial Res. Norm = %g\n",initialNormF);CHKERRQ(ierr);
         }
         else if (steps%printSteps == 0) 
         {
-            PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Res. Norm at %d = %g\n",steps,normF);CHKERRQ(ierr);
         }
 
-        if (normF < normTolF)   /* stop when norm is below tolerance */ 
+        /* check for termination */
+        if (normF < normTolF)               /* stop when norm is below tolerance */ 
         {
+            /* if no divergence then analyse current U (after termination of this function) */
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",normF);CHKERRQ(ierr);
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
+            ierr = VecAbs(globalVec_F);CHKERRQ(ierr);
+            ierr = VecMax(globalVec_F,&maxInd,&maxVal);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
             break;
         }
-        else if (normF > 10*initialNormF)   /* or if norm grows beyond starting value */
+        else if (normF > prevNormF)         /* check for divergence at every step */
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Try alpha<%g\n",alpha);CHKERRQ(ierr);
-            ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
-            break;
-        }
+            /* if divergence then analyse U from 2 steps ago (after termination of this function) */
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence at step %d. Unstable Res. Norm = %g\n",steps,normF);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Prev. (step %d) Res. Norm = %g\n",steps-1,prevNormF);CHKERRQ(ierr);
+            ierr = VecCopy(globalVec_ppU, globalVec_U);CHKERRQ(ierr);
 
-        /* 
-         * sort this mess out!
-         */
-        if (normF > prevNormF)  /* also check for divergence periodically */
-        {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence. Unstable Res. Norm = %g\n", normF);CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Final Res. Norm = %g\n",prevNormF);CHKERRQ(ierr);
-            ierr = VecCopy(globalVec_U, globalVec_U_prev);CHKERRQ(ierr);
+            ierr = VecAbs(globalVec_F);CHKERRQ(ierr);
+            ierr = VecMax(globalVec_F,&maxInd,&maxVal);CHKERRQ(ierr);
+            ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Max val = %g, at index = %d\n",steps,(double)maxVal,maxInd);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Min val = %g, at index = %d\n",steps,(double)minVal,minInd);CHKERRQ(ierr);
+
+            ierr = printLargeVecValues(globalVec_F);CHKERRQ(ierr);
+
+            /* additional FINAL write that is just for testing */
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            ierr = VecView(globalVec_pU,viewer);
+            ierr = PetscViewerDestroy(&viewer);
             break;
         }
-        else
+        else                                /* if no termination then write U from 2 steps ago */
         {
-            //ierr = PetscPrintf(PETSC_COMM_WORLD,"writing vector in binary to vector.dat ...\n");CHKERRQ(ierr);
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
-            ierr = VecView(globalVec_U_prev,viewer);
+            ierr = VecView(globalVec_ppU,viewer);
             ierr = PetscViewerDestroy(&viewer);
         }
 
+        /* update ppU after 2 steps and pU after 1 step */
+        if (steps > 1)
+        {
+            ierr = VecCopy(globalVec_pU, globalVec_ppU);CHKERRQ(ierr);
+            ierr = VecCopy(globalVec_U, globalVec_pU);CHKERRQ(ierr);
+        }
+        else if (steps > 0)
+        {
+            ierr = VecCopy(globalVec_U, globalVec_pU);CHKERRQ(ierr);
+        }
+
+        /* update prevNormF after every step and increment */
         prevNormF = normF;
         steps += 1;
-
-        if (steps > 0)
-        {
-            ierr = VecCopy(globalVec_U_prev, globalVec_U);CHKERRQ(ierr);
-        }
     }
 
     /* use for debugging small cases */
@@ -178,7 +282,8 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
     
     /* clean up */
     VecDestroy(&globalVec_F);
-    VecDestroy(&globalVec_U_prev);
+    VecDestroy(&globalVec_pU);
+    VecDestroy(&globalVec_ppU);
 
     return ierr;
 }
