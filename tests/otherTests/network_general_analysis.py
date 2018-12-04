@@ -262,6 +262,58 @@ class NetworkAnalyser:
         return
 
 
+    def analyse_node(self, nodeID):
+
+        fID = []
+        nid_all_lists = []
+        seg_all_lists = []
+        seg_avg_lists = []
+
+        # for the fibres that contain the node of interest
+        for f_i in range(len(self.fibre_dict)):
+
+            fibre_i = self.fibre_dict[f_i]
+
+            for n_j in fibre_i.nodes:
+
+                if n_j == nodeID:
+                    fID.append(f_i)
+                    segs = self.analyse_fibre(n_j, f_i)
+                    nid_all_lists.append(segs['nid'])
+                    seg_all_lists.append(segs['all'])
+                    seg_avg_lists.append(segs['avg'])
+
+        return {'fid':fID, 'nid':nid_all_lists, 'seg_all':seg_all_lists, 'seg_avg':seg_avg_lists}
+
+
+    def analyse_fibre(self, nodeID, fibreID):
+
+        fibre = self.fibre_dict[fibreID]
+
+        ids_all = []
+        seg_all = []
+        seg_avg = 0
+
+        for n in range(len(fibre.nodes) - 1):
+
+            alph = self.node_dict[fibre.nodes[n]]
+            beta = self.node_dict[fibre.nodes[n+1]]
+
+            s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
+
+            mag_s_alph_beta = self.find_mag(s_alph_beta)
+
+            ids_all.append(fibre.nodes[n])
+            seg_all.append(mag_s_alph_beta)
+            seg_avg += mag_s_alph_beta
+
+        ids_all.append(fibre.nodes[-1])
+
+        seg_avg /= float(len(fibre.nodes) - 1)
+        
+        return {'nid':ids_all, 'all':seg_all, 'avg':seg_avg}
+
+
     def print_basic_stats(self):
 
         print("Dimensions:\t(%f, %f, %f)" % (self.box.x, self.box.y, self.box.z))
@@ -338,56 +390,6 @@ class NetworkAnalyser:
         return
 
 
-    def analyse_node(self, nodeID):
-
-        fID = []
-        nid_all_lists = []
-        seg_all_lists = []
-        seg_avg_lists = []
-
-        # for the fibres that contain the node of interest
-        for f_i in range(len(self.fibre_dict)):
-
-            fibre_i = self.fibre_dict[f_i]
-
-            for n_j in fibre_i.nodes:
-
-                if n_j == nodeID:
-                    fID.append(f_i)
-                    segs = self.analyse_fibre(n_j, f_i)
-                    nid_all_lists.append(segs['nid'])
-                    seg_all_lists.append(segs['all'])
-                    seg_avg_lists.append(segs['avg'])
-
-        return {'fid':fID, 'nid':nid_all_lists, 'seg_all':seg_all_lists, 'seg_avg':seg_avg_lists}
-
-
-    def analyse_fibre(self, nodeID, fibreID):
-
-        fibre = self.fibre_dict[fibreID]
-
-        ids_all = []
-        seg_all = []
-        seg_avg = 0
-
-        for n in range(len(fibre.nodes) - 1):
-
-            alph = self.node_dict[fibre.nodes[n]]
-            beta = self.node_dict[fibre.nodes[n+1]]
-
-            s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
-
-            mag_s_alph_beta = self.find_mag(s_alph_beta)
-
-            ids_all.append(fibre.nodes[n])
-            seg_all.append(mag_s_alph_beta)
-            seg_avg += mag_s_alph_beta
-
-        ids_all.append(fibre.nodes[-1])
-
-        seg_avg /= float(len(fibre.nodes) - 1)
-        
-        return {'nid':ids_all, 'all':seg_all, 'avg':seg_avg}
 
 
     def write_node_stats(self, nodeID, file):
@@ -403,7 +405,19 @@ class NetworkAnalyser:
             file.write("\t"+str(segs['nid'][f])+"\n")
             file.write("Segment lengths are:\n")
             file.write("\t"+str(segs['seg_all'][f])+"\n")
-            file.write("Segment Avg = %f\n" % segs['seg_avg'][f])
+            file.write("Segment Avg = %.4f\n" % segs['seg_avg'][f])
+            #l = [float('%.6g' % 1.0/i) for i in segs['seg_all'][f]]
+            l = [1.0/i for i in segs['seg_all'][f]]
+            l_avg = sum(l)/len(l)
+            file.write("1/l is:\n")
+            file.write("\t"+str(l)+"\n")
+            file.write("1/l avg is: %.4f\n" % l_avg)
+            #l3 = [float('%.6g' % 1.0/(i**3)) for i in segs['seg_all'][f]]
+            l3 = [1.0/(i**3) for i in segs['seg_all'][f]]
+            l3_avg = sum(l3)/len(l3)
+            file.write("1/l**3 is:\n")
+            file.write("\t"+str(l3)+"\n")
+            file.write("1/l**3 avg is: %.4f\n" % l3_avg)
         return
 
 
