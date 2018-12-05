@@ -87,11 +87,11 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 PetscErrorCode printLargeVecValues(Vec globalVec_F)
 {
     PetscErrorCode  ierr = 0;
-    PetscReal       largeVal;
     PetscInt        i,nlocal;
     PetscInt        c3e7=0,c2e7=0,c1e7=0;
     PetscInt        ce8=0,ce9=0,ce10=0,ce11=0,ce12=0;
     PetscInt        cOther=0;
+    PetscInt        nodeSum;    
     PetscScalar     const *array;
     Vec             absVec_F;
 
@@ -146,14 +146,14 @@ PetscErrorCode printLargeVecValues(Vec globalVec_F)
     }
     ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Counts are:\n");CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",c3e7,c2e7,c1e7);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce8,ce9,ce10);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce11,ce12,cOther);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"Counts are:\n");CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",c3e7,c2e7,c1e7);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce8,ce9,ce10);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"%d\n%d\n%d\n",ce11,ce12,cOther);CHKERRQ(ierr);
 
-    PetscInt nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12+cOther; 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking consistency:\n");CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"%d = %d\n", nodeSum, nlocal);CHKERRQ(ierr);
+    nodeSum = c3e7+c2e7+c1e7+ce8+ce9+ce10+ce11+ce12+cOther; 
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking consistency:\n");CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"%d = %d\n", nodeSum, nlocal);CHKERRQ(ierr);
 
     VecDestroy(&absVec_F);
 
@@ -173,7 +173,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
 
     PetscErrorCode  ierr = 0;
     PetscInt        steps = 0;
-    PetscInt        printSteps = 1000;
+    PetscInt        printSteps = 10000;
     PetscInt        maxInd, minInd;
     PetscReal       maxVal, minVal;
     PetscReal       initialNormF,prevNormF,normF = 0;
@@ -230,7 +230,9 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = PetscPrintf(PETSC_COMM_WORLD,"After %d Steps.\n",steps);CHKERRQ(ierr);
             ierr = VecAbs(globalVec_F);CHKERRQ(ierr);
             ierr = VecMax(globalVec_F,&maxInd,&maxVal);CHKERRQ(ierr);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Max val = %g, at index = %d\n",(double)maxVal,maxInd);CHKERRQ(ierr);
+            ierr = VecMin(globalVec_F,&minInd,&minVal);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Max val = %g, at index = %d\n",steps,(double)maxVal,maxInd);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Min val = %g, at index = %d\n",steps,(double)minVal,minInd);CHKERRQ(ierr);
             break;
         }
         else if (normF > prevNormF)         /* check for divergence at every step */
@@ -249,9 +251,9 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = printLargeVecValues(globalVec_F);CHKERRQ(ierr);
 
             /* additional FINAL write that is just for testing */
-            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
-            ierr = VecView(globalVec_pU,viewer);
-            ierr = PetscViewerDestroy(&viewer);
+            //ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            //ierr = VecView(globalVec_pU,viewer);
+            //ierr = PetscViewerDestroy(&viewer);
             break;
         }
         else                                /* if no termination then write U from 2 steps ago */

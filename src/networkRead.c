@@ -59,7 +59,7 @@ PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscI
 
 	/* declare array for storing line, pointer, and counter for current line */
 	char line[MAX_LENGTH], *line_ptr;
-	PetscInt line_number = 0;
+	//PetscInt line_number = 0;
 	FILE *fp;
     
     //box_ptr->masterCoupleList = (Couple*)calloc(cCount, sizeof(Couple));
@@ -73,7 +73,7 @@ PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscI
 	{
 	    /* collect initial character and move pointer to where cropped line begins */
         char *tkn_ptr        = strtok(line_ptr, " ");
-        char *lineCrop_ptr   = tkn_ptr + 2;
+        //char *lineCrop_ptr   = tkn_ptr + 2;
 	    
 	    /* switch over different line types */
 	    switch (*tkn_ptr)

@@ -14,7 +14,7 @@ int main(int argc, char **args)
 	PetscErrorCode  ierr;
 	PetscInt        n,N;
 	PetscMPIInt     size;
-	PetscScalar     one = 1.0;
+	//PetscScalar     one = 1.0;
 	PetscBool       nonzeroguess = PETSC_FALSE;
     PetscViewer     viewer;
 
@@ -170,10 +170,9 @@ int main(int argc, char **args)
 
         /* beware that copy may need modifying in parallel */
         ierr = VecCopy(vecX, vecU);
-
-
     }
 
+    /* check for no solving technique selection */
     if (!useKSP && !useTS)
     {
         ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Need to solve with KSP or TS");CHKERRQ(ierr); 
@@ -207,7 +206,7 @@ int main(int argc, char **args)
     {
         nodeInd[nd]= valInd[nd] % box_ptr->nodeInternalCount;
         xyz[nd] = valInd[nd] / box_ptr->nodeInternalCount;
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"xyz = %d\n",xyz[nd]);CHKERRQ(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD,"xyz = %d\n",xyz[nd]);CHKERRQ(ierr);
         /* this needs to loop to find the internal node id not general id */
         int i;
         for (i = 0; i < box_ptr->nodeCount; i++)
@@ -215,7 +214,7 @@ int main(int argc, char **args)
             Node *node_ptr = &(box_ptr->masterNodeList[i]);
             if (node_ptr->globalID == nodeInd[nd])
             {
-                ierr = printNodeInfo(node_ptr);CHKERRQ(ierr);
+                //ierr = printNodeInfo(node_ptr);CHKERRQ(ierr);
             }
         }
 
@@ -228,7 +227,7 @@ int main(int argc, char **args)
                 Node *node_ptr = fibre_ptr->nodesOnFibreList[k];
                 if (node_ptr->globalID == nodeInd[nd])
                 {
-                    ierr = printFibreInfo(fibre_ptr);CHKERRQ(ierr);
+                    //ierr = printFibreInfo(fibre_ptr);CHKERRQ(ierr);
                 }
             }
         }
