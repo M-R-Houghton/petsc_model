@@ -111,6 +111,8 @@ TEST_F(testUpdateDanglingNodeDisp, testErrorOutput)
 
 TEST_F(testUpdateDanglingNodeDisp, testOutputValues)
 {
+    if (DIMENSION != 3) GTEST_SKIP();
+
     box_ptr->xyzDimension[0] = 20.0;
     box_ptr->xyzDimension[1] = 20.0;
     box_ptr->xyzDimension[2] = 20.0;
@@ -137,9 +139,9 @@ TEST_F(testUpdateDanglingNodeDisp, testOutputValues)
 
     updateDanglingNodeDisp(box_ptr, alph_ptr, beta_ptr, delt_ptr);
 
-    PetscScalar t_nalpBeta[DIMENSION], s_nalpBeta[DIMENSION];
+    PetscScalar t_nalpBeta[3], s_nalpBeta[3];
     int i;
-    for (i = 0; i < DIMENSION; i++)
+    for (i = 0; i < 3; i++)
     {
         s_nalpBeta[i] = (beta_ptr->xyzCoord[i] + beta_ptr->xyzDisplacement[i]) 
                         - (alph_ptr->xyzCoord[i] + alph_ptr->xyzDisplacement[i]);

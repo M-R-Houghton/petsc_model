@@ -191,7 +191,7 @@ TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
 }
 
 
-TEST_F(testSetInternalNodeIndices, testCoupledNumberingAfter)
+TEST_F(testSetInternalNodeIndices, DISABLED_testCoupledNumberingAfter)
 {
     //setStandardInternalNodeIndices(box_ptr);
     for (int i = 0; i < box_ptr->nodeCount; i++)

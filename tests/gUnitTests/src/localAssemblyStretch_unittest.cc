@@ -51,7 +51,7 @@ struct testCalculateSegPairInfo : ::testing::Test
     PetscInt fCount;
     Node *alph_ptr;
     Node *beta_ptr;
-    PetscScalar t_alphBeta[DIMENSION];
+    PetscScalar t_alphBeta[3];
     PetscScalar k;
 
     void SetUp()
@@ -83,6 +83,9 @@ TEST_F(testCalculateSegPairInfo, testErrorOutput)
 
 TEST_F(testCalculateSegPairInfo, testKValue) 
 {
+    // This is not well defined for the current test data file in 2D
+    if (DIMENSION != 3) GTEST_SKIP();
+
     calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
     EXPECT_DOUBLE_EQ(k, 0.0005619851784832581);
 
@@ -105,7 +108,8 @@ TEST_F(testCalculateSegPairInfo, testKValue)
 
 TEST_F(testCalculateSegPairInfo, testTangentValue2D) 
 {
-    if (DIMENSION != 2) GTEST_SKIP();
+    // This is not well defined for the current test data file in 2D
+    if (DIMENSION != 3) GTEST_SKIP();
 
     calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, 0);
     EXPECT_DOUBLE_EQ(t_alphBeta[0], -0.4472135954999579);
@@ -314,7 +318,7 @@ TEST_F(testMake2DStretchVec, testOutputValues)
 struct testMake3DStretchMat : ::testing::Test
 {
     PetscScalar locMat[6][6];
-    PetscScalar tangVec[DIMENSION];
+    PetscScalar tangVec[3];
     void SetUp()
     {
         tangVec[0] = 1.0;
@@ -505,7 +509,7 @@ struct testMake3DStretchVec : ::testing::Test
     Node *alpha_ptr;
     Node *beta_ptr;
     PetscScalar locVec[6];
-    PetscScalar tangVec[DIMENSION];
+    PetscScalar tangVec[3];
     void SetUp()
     {
         tangVec[0] = 1.0;

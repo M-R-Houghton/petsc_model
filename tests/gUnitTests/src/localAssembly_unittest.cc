@@ -53,8 +53,12 @@ TEST_F(testAddLocalContributions, testErrorOutput)
 }
 
 
+//
+// Need to add equivalent 2D test
+//
 TEST_F(testAddLocalContributions, testMatrixValues) 
 {
+    if (DIMENSION != 3) GTEST_SKIP();
     addLocalContributions(box_ptr, par_ptr, testMatrix, testVector);
 
     MatAssemblyBegin(testMatrix,MAT_FINAL_ASSEMBLY);

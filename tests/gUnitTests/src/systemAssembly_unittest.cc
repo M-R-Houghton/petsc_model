@@ -35,7 +35,7 @@ TEST_F(testParMetis, testForMoreThanOneProcessor)
 }
 
 
-TEST_F(testParMetis, testMetisSerialExample)
+TEST_F(testParMetis, DISABLED_testMetisSerialExample)
 {
     if (size > 1) GTEST_SKIP();
 
@@ -367,9 +367,12 @@ TEST_F(testApplyElasticMediumToRHSVector, testVectorValuesWithoutLambda)
     EXPECT_FLOAT_EQ(array[3],  6.0);
     EXPECT_FLOAT_EQ(array[4],  8.0);
     EXPECT_FLOAT_EQ(array[5], 10.0);
-    EXPECT_FLOAT_EQ(array[6], 12.0);
-    EXPECT_FLOAT_EQ(array[7], 14.0);
-    EXPECT_FLOAT_EQ(array[8], 16.0);
+    if (DIMENSION == 3)
+    {
+        EXPECT_FLOAT_EQ(array[6], 12.0);
+        EXPECT_FLOAT_EQ(array[7], 14.0);
+        EXPECT_FLOAT_EQ(array[8], 16.0);
+    }
     VecRestoreArray(glbVec, &array);
 
     applyElasticMediumToRHSVector(box_ptr, glbVec, lambda);
@@ -381,9 +384,12 @@ TEST_F(testApplyElasticMediumToRHSVector, testVectorValuesWithoutLambda)
     EXPECT_FLOAT_EQ(array[3],  6.2);
     EXPECT_FLOAT_EQ(array[4],  8.22);
     EXPECT_FLOAT_EQ(array[5], 10.52);
-    EXPECT_FLOAT_EQ(array[6], 12.3);
-    EXPECT_FLOAT_EQ(array[7], 14.23);
-    EXPECT_FLOAT_EQ(array[8], 16.53);
+    if (DIMENSION == 3)
+    {
+        EXPECT_FLOAT_EQ(array[6], 12.3);
+        EXPECT_FLOAT_EQ(array[7], 14.23);
+        EXPECT_FLOAT_EQ(array[8], 16.53);
+    }
     VecRestoreArray(glbVec, &array);
 }
 
@@ -403,9 +409,12 @@ TEST_F(testApplyElasticMediumToRHSVector, testVectorValuesWithLambda)
     EXPECT_FLOAT_EQ(array[3],  6.0 - 1e-5*0.2   );
     EXPECT_FLOAT_EQ(array[4],  8.0 - 1e-5*0.22  );
     EXPECT_FLOAT_EQ(array[5], 10.0 - 1e-5*0.52  );
-    EXPECT_FLOAT_EQ(array[6], 12.0 - 1e-5*0.3   );
-    EXPECT_FLOAT_EQ(array[7], 14.0 - 1e-5*0.23  );
-    EXPECT_FLOAT_EQ(array[8], 16.0 - 1e-5*0.53  );
+    if (DIMENSION == 3)
+    {
+        EXPECT_FLOAT_EQ(array[6], 12.0 - 1e-5*0.3   );
+        EXPECT_FLOAT_EQ(array[7], 14.0 - 1e-5*0.23  );
+        EXPECT_FLOAT_EQ(array[8], 16.0 - 1e-5*0.53  );
+    }
     VecRestoreArray(glbVec, &array);
 }
 

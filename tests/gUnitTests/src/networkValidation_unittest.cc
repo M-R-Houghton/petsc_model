@@ -118,7 +118,7 @@ TEST_F(testFileEquality, testTripod4Results)
 }
 
 
-TEST_F(testFileEquality, testTripodAdd1Results) 
+TEST_F(testFileEquality, DISABLED_testTripodAdd1Results) 
 {
     if (GAMMA != 0.05) FAIL();
     oldFile = "../../data/dat/ref/f3tLoose1_out.dat";
@@ -139,7 +139,7 @@ TEST_F(testFileEquality, testTripodAdd1Results)
 }
 
 
-TEST_F(testFileEquality, testTripodAdd2Results) 
+TEST_F(testFileEquality, DISABLED_testTripodAdd2Results) 
 {
     if (GAMMA != 0.05) FAIL();
     oldFile = "../../data/dat/ref/f3tLoose2_out.dat";
@@ -160,7 +160,7 @@ TEST_F(testFileEquality, testTripodAdd2Results)
 }
 
 
-TEST_F(testFileEquality, testTripodAdd3Results) 
+TEST_F(testFileEquality, DISABLED_testTripodAdd3Results) 
 {
     if (GAMMA != 0.05) FAIL();
     oldFile = "../../data/dat/ref/f3tLoose3_out.dat";
@@ -181,7 +181,7 @@ TEST_F(testFileEquality, testTripodAdd3Results)
 }
 
 
-TEST_F(testFileEquality, testTripodAdd4Results) 
+TEST_F(testFileEquality, DISABLED_testTripodAdd4Results) 
 {
     if (GAMMA != 0.05) FAIL();
     oldFile = "../../data/dat/ref/f3tLoose4_out.dat";

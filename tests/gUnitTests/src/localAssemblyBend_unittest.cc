@@ -224,9 +224,9 @@ TEST_F(testMake2DBendVec, testOutputValues)
 struct testMake3DBendMat : ::testing::Test
 {
     PetscScalar locMat[9][9];
-    PetscScalar s_alphOmeg[DIMENSION];
-    PetscScalar s_omegBeta[DIMENSION];
-    PetscScalar s_alphBeta[DIMENSION];
+    PetscScalar s_alphOmeg[3];
+    PetscScalar s_omegBeta[3];
+    PetscScalar s_alphBeta[3];
     void SetUp()
     {
         s_alphOmeg[0] = -0.25;
@@ -390,9 +390,9 @@ struct testMake3DBendVec : ::testing::Test
     Node *omeg_ptr;
     Node *beta_ptr;
     PetscScalar locVec[9];
-    PetscScalar s_alphOmeg[DIMENSION];
-    PetscScalar s_omegBeta[DIMENSION];
-    PetscScalar s_alphBeta[DIMENSION];
+    PetscScalar s_alphOmeg[3];
+    PetscScalar s_omegBeta[3];
+    PetscScalar s_alphBeta[3];
     void SetUp()
     {
         s_alphOmeg[0] = -0.25;
