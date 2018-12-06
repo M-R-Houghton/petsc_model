@@ -301,7 +301,7 @@ class NetworkAnalyser:
 
             s_alph_beta = self.find_dist_vec(alph.s_xyz, beta.s_xyz)
 
-            mag_s_alph_beta = self.find_mag(s_alph_beta)
+            mag_s_alph_beta = float('%.4g'%self.find_mag(s_alph_beta))
 
             ids_all.append(fibre.nodes[n])
             seg_all.append(mag_s_alph_beta)
@@ -394,30 +394,41 @@ class NetworkAnalyser:
 
     def write_node_stats(self, nodeID, file):
         
-        file.write("Node ID = %d\n" % nodeID)
+        file.write("--------------------------\n")
+        file.write("-- NODE ------------------\n")
+        file.write("--------------------------\n")
+        file.write("Node ID = %d\n\n" % nodeID)
         
         segs = self.analyse_node(nodeID)
 
         for f in range(len(segs['fid'])):
             
             file.write("Fibre ID = %d\n" % segs['fid'][f])
-            file.write("Node IDs are:\n")
-            file.write("\t"+str(segs['nid'][f])+"\n")
-            file.write("Segment lengths are:\n")
-            file.write("\t"+str(segs['seg_all'][f])+"\n")
-            file.write("Segment Avg = %.4f\n" % segs['seg_avg'][f])
-            #l = [float('%.6g' % 1.0/i) for i in segs['seg_all'][f]]
+            file.write("No. of nodes = %d\n" % len(segs['nid'][f]))
+            file.write("No. of segs = %d\n" % len(segs['seg_all'][f]))
+            file.write("End "+str(segs['nid'][f][0])+" has type "+str(self.node_dict[segs['nid'][f][0]].type)+"\n")
+            file.write("End "+str(segs['nid'][f][-1])+" has type "+str(self.node_dict[segs['nid'][f][-1]].type)+"\n\n")
+
+            file.write("Nodes = ")
+            file.write(str(segs['nid'][f])+"\n")
+
+            file.write("Seg = ")
+            file.write(str(segs['seg_all'][f])+"\n")
+            file.write("Seg avg = %.4f\n" % segs['seg_avg'][f])
+
             l = [1.0/i for i in segs['seg_all'][f]]
+            l = [float('%.4g'%i) for i in l]
             l_avg = sum(l)/len(l)
-            file.write("1/l is:\n")
-            file.write("\t"+str(l)+"\n")
-            file.write("1/l avg is: %.4f\n" % l_avg)
-            #l3 = [float('%.6g' % 1.0/(i**3)) for i in segs['seg_all'][f]]
+            file.write("1/l =")
+            file.write(str(l)+"\n")
+            file.write("1/l avg = %.4f\n" % l_avg)
+
             l3 = [1.0/(i**3) for i in segs['seg_all'][f]]
+            l3 = [float('%.4g'%i) for i in l3]
             l3_avg = sum(l3)/len(l3)
-            file.write("1/l**3 is:\n")
-            file.write("\t"+str(l3)+"\n")
-            file.write("1/l**3 avg is: %.4f\n" % l3_avg)
+            file.write("1/l**3 = ")
+            file.write(str(l3)+"\n")
+            file.write("1/l**3 avg = %.4f\n\n" % l3_avg)
         return
 
 
