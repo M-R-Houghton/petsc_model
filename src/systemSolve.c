@@ -258,6 +258,15 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         }
         else                                /* if no termination then write U from 2 steps ago */
         {
+            
+            //PetscInt        nlocal;
+            //PetscScalar     const *array;
+
+            //ierr = VecGetLocalSize(absVec_F,&nlocal);
+            //ierr = VecGetArrayRead(absVec_F,&array);CHKERRQ(ierr);
+
+            //ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
+
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
             ierr = VecView(globalVec_ppU,viewer);
             ierr = PetscViewerDestroy(&viewer);
