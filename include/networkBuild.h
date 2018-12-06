@@ -108,5 +108,25 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma);
 
+/**
+ * \brief Checks couple arguments are all legal
+ * \param box_ptr
+ * \param cID
+ * \param nInCouple
+ * \param nID1
+ * \param nID2
+ */
+void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2);
+
+/**
+ * \brief Creates a couple within its allocated location in a box
+ * \param box_ptr
+ * \param cID
+ * \param nInCouple
+ * \param nID1
+ * \param nID2
+ */
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2);
+
 #endif
 

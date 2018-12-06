@@ -103,6 +103,9 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
 	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
+    /* couple list memory should be allocated after no. of couples is known */
+    box_ptr->masterCoupleList = NULL;
+
 	return box_ptr;
 }
 
@@ -141,6 +144,10 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
     return ierr;
 }
 
+void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
+{
+
+}
 
 /* Checks node arguments are all legal */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,

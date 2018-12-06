@@ -68,6 +68,7 @@ struct box
 struct couple
 {
     PetscInt coupleID;
+    PetscInt nodesInCouple;
     PetscInt nodeID[2];
 };
 
