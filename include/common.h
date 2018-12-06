@@ -26,7 +26,7 @@
 #define SPAN 2
 
 /* may remove and add back into .par files */
-#define GAMMA 0.02
+#define GAMMA 0.05
 #define YOUNGS_MOD 1.0
 
 typedef struct parameters Parameters;
