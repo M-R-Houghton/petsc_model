@@ -258,14 +258,17 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         }
         else                                /* if no termination then write U from 2 steps ago */
         {
-            
-            //PetscInt        nlocal;
+            /* node displacement oscillation check */
+            //PetscInt        index=4177;
             //PetscScalar     const *array;
 
-            //ierr = VecGetLocalSize(absVec_F,&nlocal);
-            //ierr = VecGetArrayRead(absVec_F,&array);CHKERRQ(ierr);
-
-            //ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
+            //ierr = VecGetArrayRead(globalVec_U,&array);CHKERRQ(ierr);
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n",index,array[index]);CHKERRQ(ierr);
+            //index = 12865;      // i.e. 4177 + 8688*1
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n",index,array[index]);CHKERRQ(ierr);
+            //index = 21553;      // i.e. 4177 + 8688*2
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %g\n",index,array[index]);CHKERRQ(ierr);
+            //ierr = VecRestoreArrayRead(globalVec_U,&array);CHKERRQ(ierr);
 
             ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,"vector.dat",FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
             ierr = VecView(globalVec_ppU,viewer);
