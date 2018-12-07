@@ -241,23 +241,26 @@ TEST(testMakeCouple, testValueAssignment)
 	/* make some nodes */
 	makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
 	makeNode(box_ptr,0,0,2,3,4,myInt_ptr,0.25);
-	makeNode(box_ptr,2,1,4,5,6,myInt_ptr,0.2);
+	makeNode(box_ptr,2,1,1,2,3,myInt_ptr,0.2);
+
+    /* allocate memory for couples */
+    box_ptr->masterCoupleList = (Couple*)calloc(2, sizeof(Couple));
 
     /* make some couples */
     makeCouple(box_ptr,0,1,0);
     makeCouple(box_ptr,1,0,2);
 
 	/* test node values */
-	EXPECT_EQ(box_ptr->masterCoupleList[1].coupleID, 0);
-	EXPECT_EQ(box_ptr->masterCoupleList[1].nodesInCouple, 2);
-	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[0], 1);
-	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1], 0);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].coupleID, 0);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodesInCouple, 2);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[0], 1);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[1], 0);
 
 	/* test node values */
-	EXPECT_EQ(box_ptr->masterCoupleList[0].coupleID, 1);
-	EXPECT_EQ(box_ptr->masterCoupleList[0].nodesInCouple, 2);
-	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[0], 0);
-	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[1], 2);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].coupleID, 1);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodesInCouple, 2);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[0], 0);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1], 2);
 
 	/* clean up */
 	free(box_ptr->masterNodeList); box_ptr->masterNodeList = NULL;
