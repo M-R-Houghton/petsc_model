@@ -222,7 +222,7 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscI
 }
 
 
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2)
 {
     PetscErrorCode ierr = 0;
    
@@ -232,7 +232,7 @@ PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscI
     Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
     
     couple_ptr->coupleID = cID;
-    couple_ptr->nodesInCouple = nInCouple;
+    couple_ptr->nodesInCouple = 2;
     couple_ptr->nodeID[0] = nID1;
     couple_ptr->nodeID[1] = nID2;
 

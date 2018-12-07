@@ -122,11 +122,10 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscI
  * \brief Creates a couple within its allocated location in a box
  * \param box_ptr Box containing the relevant data to represent the given network.
  * \param cID
- * \param nInCouple
  * \param nID1
  * \param nID2
  */
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2);
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2);
 
 #endif
 
