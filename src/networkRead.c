@@ -29,6 +29,8 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	/* close file */
 	fclose(fp);
 
+    /* read data line counts the number of couples in gIndex_ptr */ 
+
     /* 
      * WARNING: This is all still very messy and needs to be made much cleaner!!!
      * WARNING: Don't forget to also add in the unit tests as you go!
@@ -38,7 +40,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     if (coupledSystem)
     {
         assert(gIndex != 0);
-        ierr = readCouplingData(fileToRead_ptr, *box_ptr_ptr, gIndex);CHKERRQ(ierr);
+        ierr = readCoupleData(fileToRead_ptr, *box_ptr_ptr, gIndex);CHKERRQ(ierr);
     }
     */
 
@@ -53,16 +55,16 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 }
 
 
-PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount)
+PetscErrorCode readCoupleData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount)
 {
     PetscErrorCode  ierr = 0;
 
 	/* declare array for storing line, pointer, and counter for current line */
 	char line[MAX_LENGTH], *line_ptr;
-	//PetscInt line_number = 0;
+	PetscInt line_number = 0;
 	FILE *fp;
     
-    //box_ptr->masterCoupleList = (Couple*)calloc(cCount, sizeof(Couple));
+    box_ptr->masterCoupleList = (Couple*)calloc(cCount, sizeof(Couple));
 
 	/* open file and check whether successful */
 	fp = fopen(fileToRead_ptr, "r");
@@ -73,7 +75,7 @@ PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscI
 	{
 	    /* collect initial character and move pointer to where cropped line begins */
         char *tkn_ptr        = strtok(line_ptr, " ");
-        //char *lineCrop_ptr   = tkn_ptr + 2;
+        char *lineCrop_ptr   = tkn_ptr + 2;
 	    
 	    /* switch over different line types */
 	    switch (*tkn_ptr)
@@ -84,7 +86,7 @@ PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscI
 	    		break;
             case 'c':
 	            /* read in line and increment line number */
-                //ierr = readCouplingLine(lineCrop_ptr, box_ptr, cCount);CHKERRQ(ierr);
+                ierr = readCoupleLine(lineCrop_ptr, box_ptr, cCount);CHKERRQ(ierr);
                 break;
 	    	default:
 	    		SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
@@ -265,13 +267,13 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 }
 
 
-/* Reads node coupling information from a given line pointer */
-PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr)
+/* Reads node couple information from a given line pointer */
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr)
 {
 	PetscErrorCode 	ierr = 0;
   	PetscInt 		nID1, nID2;
 
-	/* read in a node coupling line */
+	/* read in a node couple line */
 	sscanf(line_ptr, "%d %d", &nID1, &nID2);
 
 	/* assign scanned values to a node */

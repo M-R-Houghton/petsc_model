@@ -16,20 +16,20 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param cIndex_ptr Pointer to the current coupling index.
+ * \param cIndex_ptr Pointer to the current couple index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, PetscScalar gamma);
 
 /**
- * \brief Reads coupling data from a given network
+ * \brief Reads couple data from a given network
  * \param fileToRead_ptr Pointer to the file to be read.
  * \param box_ptr Pointer to box for data to be written to.
  * \param cCount Number of couples
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCouplingData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount);
+PetscErrorCode readCoupleData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network
@@ -79,12 +79,13 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr);
 PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
 
 /**
- * \brief Reads coupling information from a given line pointer
+ * \brief Reads couple information from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
+ * \param cIndex_ptr Pointer to the current global couple index.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr);
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr);
 
 /**
  * \brief Removes trailing whitespace on the right-hand side of a string
