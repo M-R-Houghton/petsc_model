@@ -145,24 +145,6 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 }
 
 
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
-{
-    PetscErrorCode ierr = 0;
-   
-    /* validate arguments */
-    checkCoupleArguments(box_ptr, cID, nInCouple, nID1, nID2);
-
-    Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
-    
-    couple_ptr->coupleID = cID;
-    couple_ptr->nodesInCouple = nInCouple;
-    couple_ptr->nodeID[0] = nID1;
-    couple_ptr->nodeID[1] = nID2;
-
-    return 0;
-}
-
-
 /* Checks node arguments are all legal */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
@@ -240,4 +222,20 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscI
 }
 
 
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
+{
+    PetscErrorCode ierr = 0;
+   
+    /* validate arguments */
+    checkCoupleArguments(box_ptr, cID, nInCouple, nID1, nID2);
+
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
+    
+    couple_ptr->coupleID = cID;
+    couple_ptr->nodesInCouple = nInCouple;
+    couple_ptr->nodeID[0] = nID1;
+    couple_ptr->nodeID[1] = nID2;
+
+    return ierr;
+}
 
