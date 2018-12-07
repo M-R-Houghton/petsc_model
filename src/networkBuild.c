@@ -136,7 +136,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
-    /* addidtional attributes not to be assigned by user */
+    /* additional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
@@ -144,10 +144,24 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
     return ierr;
 }
 
-void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
-{
 
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
+{
+    PetscErrorCode ierr = 0;
+   
+    /* validate arguments */
+    checkCoupleArguments(box_ptr, cID, nInCouple, nID1, nID2);
+
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
+    
+    couple_ptr->coupleID = cID;
+    couple_ptr->nodesInCouple = nInCouple;
+    couple_ptr->nodeID[0] = nID1;
+    couple_ptr->nodeID[1] = nID2;
+
+    return 0;
 }
+
 
 /* Checks node arguments are all legal */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
@@ -215,3 +229,15 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 	return ierr;
 }
+
+
+/* Checks couple arguments are all legal */
+void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscInt nID1, PetscInt nID2)
+{
+    assert(box_ptr != NULL);
+    assert(cID >= 0);
+    assert(nID1 >= 0 && nID2 >= 0);
+}
+
+
+

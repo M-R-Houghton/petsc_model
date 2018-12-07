@@ -58,7 +58,7 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 
 /**
  * \brief Checks fibre arguments are all legal
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param fID
  * \param nOnFibre
  * \param radius
@@ -69,7 +69,7 @@ void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 
 /**
  * \brief Creates a fibre within its allocated location in a box
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param fID
  * \param nOnFibre
  * \param radius
@@ -81,7 +81,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 
 /**
  * \brief Checks node arguments are all legal
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param nID
  * \param nType
  * \param x
@@ -95,7 +95,7 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 /**
  * \brief Creates a node within its allocated location in a box
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param nID
  * \param nType
  * \param x
@@ -110,7 +110,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 /**
  * \brief Checks couple arguments are all legal
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param cID
  * \param nInCouple
  * \param nID1
@@ -120,7 +120,7 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nInCouple, PetscI
 
 /**
  * \brief Creates a couple within its allocated location in a box
- * \param box_ptr
+ * \param box_ptr Box containing the relevant data to represent the given network.
  * \param cID
  * \param nInCouple
  * \param nID1
