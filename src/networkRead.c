@@ -266,17 +266,16 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 
 
 /* Reads node coupling information from a given line pointer */
-PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr)
+PetscErrorCode readCouplingLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr)
 {
 	PetscErrorCode 	ierr = 0;
   	PetscInt 		nID1, nID2;
-
 
 	/* read in a node coupling line */
 	sscanf(line_ptr, "%d %d", &nID1, &nID2);
 
 	/* assign scanned values to a node */
-//	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
+	ierr = makeCouple(box_ptr, *cIndex_ptr, nID1, nID2);CHKERRQ(ierr);
 
 	return ierr;
 }
