@@ -114,6 +114,8 @@ TEST_F(testNetworkRead, testReadNodeValues)
 struct testSetInternalNodeIndices : ::testing::Test
 {
     Box  *box_ptr;
+	PetscInt gIndex;
+	PetscInt *gIndex_ptr;
 
     void SetUp()
     {
@@ -128,8 +130,8 @@ struct testSetInternalNodeIndices : ::testing::Test
 	    FILE *fp;
 
 	    /* setup global index */
-	    PetscInt gIndex = 0;
-	    PetscInt *gIndex_ptr = &gIndex;
+	    gIndex = 0;
+	    gIndex_ptr = &gIndex;
 
 	    /* open file and check whether successful */
 	    fp = fopen(fileToRead, "r");
@@ -159,8 +161,8 @@ struct testSetInternalNodeIndices : ::testing::Test
 
 TEST_F(testSetInternalNodeIndices, testOutput)
 {
-    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE), 0);
-    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE), 1);
+    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE, *gIndex_ptr), 0);
+    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE, *gIndex_ptr), 1);
 }
 
 
