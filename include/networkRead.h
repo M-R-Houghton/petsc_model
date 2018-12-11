@@ -29,7 +29,7 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_
  * \param cCount Number of couples
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCoupleData(char *line_ptr, Box **box_ptr, PetscInt cCount);
+PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network

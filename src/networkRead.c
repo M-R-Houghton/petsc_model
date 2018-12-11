@@ -48,13 +48,19 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         fp = fopen(fileToRead_ptr, "r");
         if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
+        (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
+        *gIndex_ptr = 0;
         /* ignore all entries except for the couple lines */
         while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
         {
-            ierr = readCoupleData(line_ptr, box_ptr_ptr, gIndex);CHKERRQ(ierr);
+            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
         }
         /* close file */
         fclose(fp);
+
+        PetscInt i=0;
+        Couple *cpl = &((*box_ptr_ptr)->masterCoupleList[i]);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
     }
 
     /* produce numbering for internal nodes */
@@ -183,11 +189,9 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_
 
 
 /* Reads box information from a given line pointer */
-PetscErrorCode readCoupleData(char *line_ptr, Box **box_ptr, PetscInt cCount)
+PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount)
 {
     PetscErrorCode  ierr = 0;
-
-    (*box_ptr)->masterCoupleList = (Couple*)calloc(cCount, sizeof(Couple));
 
 	/* collect initial character and move pointer to where cropped line begins */
     char *tkn_ptr        = strtok(line_ptr, " ");
@@ -202,11 +206,16 @@ PetscErrorCode readCoupleData(char *line_ptr, Box **box_ptr, PetscInt cCount)
 			break;
         case 'c':
 	        /* read in line and increment line number */
-            ierr = readCoupleLine(lineCrop_ptr, *box_ptr, cCount);CHKERRQ(ierr);
+            ierr = readCoupleLine(lineCrop_ptr, box_ptr, *cCount);CHKERRQ(ierr);
+            *cCount += 1;
             break;
 		default:
 			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
 	}
+
+    PetscInt i=0;
+    Couple *cpl = &(box_ptr->masterCoupleList[i]);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
 
     return ierr;
 }
@@ -315,6 +324,10 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
 
 	/* assign scanned values to a node */
 	ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
+
+    PetscInt i=0;
+    Couple *cpl = &(box_ptr->masterCoupleList[i]);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
 
 	return ierr;
 }
