@@ -55,7 +55,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     }
 
     /* produce numbering for internal nodes */
-    gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem);CHKERRQ(ierr);
+    gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem, gIndex);CHKERRQ(ierr);
 
     // need to change args above and add assertion between the internalCount and coupleCount
 
@@ -67,15 +67,17 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 }
 
 
-PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
+PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool const coupledSystem, PetscInt coupleCount)
 {
     PetscInt totalInternalNodes = 0;
-    PetscInt coupleCount = 0;           // bring this out as an argument and assert on value
 
     if (coupledSystem)
     {
         /* coupled numbering */
         totalInternalNodes = setCoupledInternalNodesIndices(box_ptr, coupleCount);
+
+        /* sanity check: inconsistent numbering if these are different */
+        assert(coupleCount == totalInternalNodes);
     }
     else 
     {
@@ -84,32 +86,6 @@ PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
     }
 
     return totalInternalNodes;
-}
-
-
-PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt coupleCount)
-{
-    PetscInt    i,j,newIndex=0;
-
-    for (i = 0; i < coupleCount; i++)
-    {
-        Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
-        
-        /* loop over couple in the unlikely case that there is a '3rd' coupled node */
-        for (j = 0; j < couple_ptr->nodesInCouple; j++)
-        {
-            /* reference the node with the corresponding ID */
-            Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->nodeID[j]]);
-
-            /* sanity check, should match up */
-            assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
-
-            /* reassign internal node ID once happy it is the right node */
-            node_ptr->globalID = newIndex;
-        }
-        newIndex += 1;
-    }
-    return newIndex;
 }
 
 
@@ -128,6 +104,32 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr)
         }
     }        
 
+    return newIndex;
+}
+
+
+PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount)
+{
+    PetscInt    i,j,newIndex=0;
+
+    for (i = 0; i < coupleCount; i++)
+    {
+        Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
+        
+        /* loop over couple in the unlikely case that there is a '3rd' coupled node */
+        for (j = 0; j < couple_ptr->nodesInCouple; j++)
+        {
+            /* reference the node with the corresponding ID */
+            Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->nodeID[j]]);
+
+            /* sanity check: should always match by definition */
+            assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
+
+            /* reassign internal node ID once happy it is the right node */
+            node_ptr->globalID = newIndex;
+        }
+        newIndex += 1;
+    }
     return newIndex;
 }
 
