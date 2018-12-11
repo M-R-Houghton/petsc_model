@@ -134,10 +134,10 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt coupleCount)
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
             /* reference the node with the corresponding ID */
-            Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->node[j]]);
+            Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->nodeID[j]]);
 
             /* sanity check, should match up */
-            assert(node_ptr->nodeID == couple_ptr->node[j]);
+            assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
 
             /* reassign internal node ID once happy it is the right node */
             node_ptr->globalID = newIndex;
@@ -298,7 +298,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 
 
 /* Reads node couple information from a given line pointer */
-PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr)
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupleID)
 {
 	PetscErrorCode 	ierr = 0;
   	PetscInt 		nID1, nID2;
@@ -307,7 +307,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr
 	sscanf(line_ptr, "%d %d", &nID1, &nID2);
 
 	/* assign scanned values to a node */
-	ierr = makeCouple(box_ptr, *cIndex_ptr, nID1, nID2);CHKERRQ(ierr);
+	ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
 
 	return ierr;
 }

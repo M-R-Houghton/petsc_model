@@ -83,10 +83,10 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
  * \brief Reads couple information from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param cIndex_ptr Pointer to the current global couple index.
+ * \param coupleID Integer representing the global couple ID.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt *cIndex_ptr);
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupleID);
 
 /**
  * \brief Removes trailing whitespace on the right-hand side of a string

@@ -116,7 +116,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
  * \param nID1
  * \param nID2
  */
-void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2);
+void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2);
 
 /**
  * \brief Creates a couple within its allocated location in a box
@@ -125,7 +125,7 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nI
  * \param nID1
  * \param nID2
  */
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2);
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2);
 
 #endif
 

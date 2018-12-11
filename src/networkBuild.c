@@ -214,7 +214,7 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 
 /* Checks couple arguments are all legal */
-void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2)
+void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
 {
     assert(box_ptr != NULL);
     assert(cID >= 0);
@@ -222,7 +222,7 @@ void checkCoupleArguments(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nI
 }
 
 
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt cID, PetscInt nID1, PetscInt nID2)
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
 {
     PetscErrorCode ierr = 0;
    
