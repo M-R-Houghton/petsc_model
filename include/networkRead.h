@@ -49,9 +49,10 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr);
 /**
  * \brief Sets the global indices of all the internal nodes of a coupled network
  * \param box_ptr Pointer to box containing the internal nodes.
+ * \param coupleCount An integer counter for the number of couples in the network.
  * \return Index to represent Petsc error code.
  */
-PetscInt setCoupledInternalNodeIndices(Box *box_ptr);
+PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt coupleCount);
 
 /**
  * \brief Reads box information from a given line pointer

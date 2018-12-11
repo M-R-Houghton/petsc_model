@@ -118,9 +118,35 @@ PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
 }
 
 
+PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt coupleCount)
+{
+    PetscInt    i,j,newIndex=0;
+
+    for (i = 0; i < coupleCount; i++)
+    {
+        Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
+        
+        /* loop over couple in the unlikely case that there is a '3rd' coupled node */
+        for (j = 0; j < couple_ptr->nodesInCouple; j++)
+        {
+            /* reference the node with the corresponding ID */
+            Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->node[j]]);
+
+            /* sanity check, should match up */
+            assert(node_ptr->nodeID == couple_ptr->node[j]);
+
+            /* reassign internal node ID once happy it is the right node */
+            node_ptr->globalID = newIndex;
+        }
+        newIndex += 1;
+    }
+    return totalInternalNodes;
+}
+
+
 PetscInt setStandardInternalNodeIndices(Box *box_ptr)
 {
-    PetscInt        i, newIndex=0;
+    PetscInt    i, newIndex=0;
     /* loop over every node of the network */
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
