@@ -47,6 +47,8 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     /* produce numbering for internal nodes */
     gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem);CHKERRQ(ierr);
 
+    // need to change args above and add assertion between the internalCount and coupleCount
+
 	/* use final global index to set total internal nodes */
 	(*box_ptr_ptr)->nodeInternalCount = gIndex;
 
@@ -103,7 +105,7 @@ PetscErrorCode readCoupleData(const char *fileToRead_ptr, Box *box_ptr, PetscInt
 PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
 {
     PetscInt totalInternalNodes = 0;
-    PetscInt coupleCount = 0;
+    PetscInt coupleCount = 0;           // bring this out as an argument and assert on value
 
     if (coupledSystem)
     {
