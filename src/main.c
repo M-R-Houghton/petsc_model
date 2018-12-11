@@ -69,7 +69,7 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetReal(NULL,NULL,"-f_tol",&normTolF,NULL);CHKERRQ(ierr);
 
 	/* perform all unit tests */
-	ierr = runIntegrationTests();CHKERRQ(ierr);
+	//ierr = runIntegrationTests();CHKERRQ(ierr);
 
 	/* Register stages for separate profiling */
 	ierr = PetscLogStageRegister("Network Read-in",  &stages[0]);CHKERRQ(ierr);
