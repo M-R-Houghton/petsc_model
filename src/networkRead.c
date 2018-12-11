@@ -103,10 +103,12 @@ PetscErrorCode readCoupleData(const char *fileToRead_ptr, Box *box_ptr, PetscInt
 PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool coupledSystem)
 {
     PetscInt totalInternalNodes = 0;
+    PetscInt coupleCount = 0;
 
     if (coupledSystem)
     {
         /* coupled numbering */
+        totalInternalNodes = setCoupledInternalNodesIndices(box_ptr, coupleCount);
     }
     else 
     {
@@ -140,7 +142,7 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt coupleCount)
         }
         newIndex += 1;
     }
-    return totalInternalNodes;
+    return newIndex;
 }
 
 
