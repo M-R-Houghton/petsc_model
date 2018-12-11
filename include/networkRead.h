@@ -24,12 +24,12 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_
 
 /**
  * \brief Reads couple data from a given network
- * \param fileToRead_ptr Pointer to the file to be read.
+ * \param line_ptr Pointer to the file to be read.
  * \param box_ptr Pointer to box for data to be written to.
  * \param cCount Number of couples
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCoupleData(const char *fileToRead_ptr, Box *box_ptr, PetscInt cCount);
+PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt cCount);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network
