@@ -29,7 +29,7 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_
  * \param cCount Number of couples
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt cCount);
+PetscErrorCode readCoupleData(char *line_ptr, Box **box_ptr, PetscInt cCount);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network
@@ -53,6 +53,13 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr);
  * \return Index to represent Petsc error code.
  */
 PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount);
+
+/**
+ * \brief Checks global indices of all internal nodes have been set 
+ * \param box_ptr Pointer to box containing the internal nodes.
+ * \return Index to represent Petsc error code.
+ */
+void checkInternalNodeIndices(Box const *box_ptr);
 
 /**
  * \brief Reads box information from a given line pointer
