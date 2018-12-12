@@ -239,7 +239,7 @@ PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1,
     PetscInt i=0;
     ierr = PetscPrintf(PETSC_COMM_WORLD,"cID = %d\n",cID);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"actual couple %d has node %d and %d\n",couple_ptr->coupleID,couple_ptr->nodeID[0],couple_ptr->nodeID[1]);CHKERRQ(ierr);
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < 1; i++)
     {
         Couple *cpl = &(box_ptr->masterCoupleList[i]);
         ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
