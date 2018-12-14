@@ -44,12 +44,16 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         /* sanity check: couples not counted if this fails */
         assert(gIndex != 0);
 
+        /* use counted couples to allocate master couple array */
+        (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
+
+        /* couple count now to be used as index */
+        *gIndex_ptr = 0;
+
         /* re-open file */
         fp = fopen(fileToRead_ptr, "r");
         if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
-        (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
-        *gIndex_ptr = 0;
         /* ignore all entries except for the couple lines */
         while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
         {
@@ -59,9 +63,14 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         fclose(fp);
 
         PetscInt i=0;
-        Couple *cpl = &((*box_ptr_ptr)->masterCoupleList[i]);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
+        for (i = 0; i < 10; i++)
+        {
+            Couple *cpl = &((*box_ptr_ptr)->masterCoupleList[i]);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
+        }
     }
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g_ptr = %d\n", *gIndex_ptr);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
 
     /* produce numbering for internal nodes */
     gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem, gIndex);CHKERRQ(ierr);
@@ -212,10 +221,6 @@ PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount)
 		default:
 			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
 	}
-
-    PetscInt i=0;
-    Couple *cpl = &(box_ptr->masterCoupleList[i]);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
 
     return ierr;
 }
