@@ -325,10 +325,45 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
   	PetscInt 		nID1, nID2;
 
 	/* read in a node couple line */
-	sscanf(line_ptr, "%d %d", &nID1, &nID2);
+	//sscanf(line_ptr, "%d %d", &nID1, &nID2);
+
+/* START: temporary read-in of variable node on couple numbers */
+	/* preprocess line by removing rhs trailing whitespace */
+	char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
+	
+	/* declare array to store tokens of fibre information */
+	char *cplInfoArray[strlen(trimmedLine_ptr)+1];
+
+	/* split string once and store token */
+	char *tkn_ptr = strtok(trimmedLine_ptr, " ");
+
+	PetscInt splitCounter = 0;
+	while(tkn_ptr != NULL)	/* while token exists */
+	{
+		/* add token to array and split string again */
+		cplInfoArray[splitCounter] = tkn_ptr;
+		tkn_ptr = strtok(NULL, " ");
+		splitCounter += 1;
+	}
+
+	/* total nodes is total splits -0 
+	 * ...where total splits includes split at end of line     */
+	PetscInt nodesOnCouple 	= splitCounter;
+/* END: temporary read-in of variable node on couple numbers */
+
+/* START: temporary makeCouple w/ variable couple length */
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
+    couple_ptr->coupleID = coupleID;
+    couple_ptr->nodesInCouple = nodesOnCouple;
+	PetscInt nID;
+	for (nID = 0; nID < splitCounter; nID++)
+	{
+        couple_ptr->nodeID[nID] = atoi(cplInfoArray[nID]);
+	}
+/* END: temporary makeCouple w/ variable couple length */
 
 	/* assign scanned values to a node */
-	ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
+	//ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
 
     PetscInt i=0;
     Couple *cpl = &(box_ptr->masterCoupleList[i]);
