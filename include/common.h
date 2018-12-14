@@ -69,7 +69,7 @@ struct couple
 {
     PetscInt coupleID;
     PetscInt nodesInCouple;
-    PetscInt nodeID[2];
+    PetscInt nodeID[200];
 };
 
 /* structure for nodes */
