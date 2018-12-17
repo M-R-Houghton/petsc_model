@@ -104,7 +104,8 @@ class ConflictChecker:
                     #print("x1 = ", node1.x, "x2 = ", node2.x)
                     #print("y1 = ", node1.y, "y2 = ", node2.y)
                     #print("z1 = ", node1.z, "z2 = ", node2.z)
-                    assert (node1.x != node2.x) or (node1.y != node2.y) or (node1.z != node2.z), '(ERROR) Two identical nodes (ID=%r and ID=%r).' % (node1.id, node2.id)
+                    if len(self.link_dict) > 0:
+                        assert (node1.x != node2.x) or (node1.y != node2.y) or (node1.z != node2.z), '(ERROR) Two identical nodes (ID=%r and ID=%r).' % (node1.id, node2.id)
 
         return
 
