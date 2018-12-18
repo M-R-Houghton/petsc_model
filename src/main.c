@@ -18,6 +18,10 @@ int main(int argc, char **args)
 	PetscBool       nonzeroguess = PETSC_FALSE;
     PetscViewer     viewer;
 
+    /* set up default values for general params */
+    PetscScalar     gamma = 0.02;
+    PetscScalar     yMod = 1.0;
+
     /* set EM and TS default values */
     PetscBool       useKSP = PETSC_TRUE;
     PetscBool       useEM = PETSC_FALSE;
@@ -54,6 +58,9 @@ int main(int argc, char **args)
 	ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
 	ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
+    /* set up options for general usage */
+    ierr = PetscOptionsGetReal(NULL,NULL,"-gamma",&gamma,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-y_mod",&yMod,NULL);CHKERRQ(ierr);
     /* set up options for elastic medium */
     ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
