@@ -2,11 +2,10 @@
 
 cd ../../
 
-tri_tests=$(ls data/par/tri/tri_3d_cv*.par)
-
 #make clean && make
 
 echo 'TESTING TRIPOD CASES...'
+tri_tests=$(ls data/par/tri/tri_3d_cv*.par)
 mpirun -n 1 ./model data/par/tri/tri_3d_01.par | tail -17 | head -11 > tmp_base.txt
 
 for t in $tri_tests
