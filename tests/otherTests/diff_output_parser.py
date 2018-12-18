@@ -16,7 +16,7 @@ if __name__ == '__main__':
         with open(diff_output_file, 'r') as fileObject:
             diff_output = fileObject.readlines()
 
-    if diff_output == []:
+    if diff_output == "" or diff_output == []:
         print("[PASSED]")
     else:
         print("[FAILED]")
