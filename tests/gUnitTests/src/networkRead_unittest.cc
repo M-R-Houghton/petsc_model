@@ -499,13 +499,13 @@ struct testReadNodeLine : ::testing::Test
 
 TEST_F(testReadNodeLine, testErrorOutput)
 {
-    EXPECT_EQ(readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05), 0);
+    EXPECT_EQ(readNodeLine(lineCrop_ptr, box_ptr, 0.05), 0);
 }
 
 
 TEST_F(testReadNodeLine, testReadValues)
 {
-    readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05);
+    readNodeLine(lineCrop_ptr, box_ptr, 0.05);
 
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeType,  2);
