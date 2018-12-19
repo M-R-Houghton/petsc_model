@@ -80,11 +80,10 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr);
  * \brief Reads node information from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param gIndex_ptr Pointer to the current global index.
  * \param gamma Node's gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma);
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma);
 
 /**
  * \brief Reads couple information from a given line pointer

@@ -183,7 +183,7 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_
 			break;
 		case 'n':
 			/* pass line pointer to node line reader */
-			ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, cIndex_ptr, gamma);CHKERRQ(ierr);
+			ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, gamma);CHKERRQ(ierr);
 			break;
         case 'c':
             coupledSystem = PETSC_TRUE;
@@ -302,7 +302,7 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
 
 
 /* Reads node information from a given line pointer */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, PetscScalar gamma)
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 {
 	PetscErrorCode 	ierr;
   	PetscInt 		nID, nType;
