@@ -189,7 +189,6 @@ TEST(testMakeNode, testValueAssignment)
 {
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
-	PetscInt myInt = 1;
 
 	/* make some nodes */
 	makeNode(box_ptr,1,2,3,4,5,0.5);
@@ -234,7 +233,6 @@ TEST(testMakeCouple, testValueAssignment)
 {
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
-	PetscInt myInt = 1;
 
 	/* make some nodes */
 	makeNode(box_ptr,1,2,3,4,5,0.5);
