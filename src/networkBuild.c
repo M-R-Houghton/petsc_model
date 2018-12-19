@@ -157,7 +157,7 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 /* Creates a node within its allocated location in a box */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	PetscErrorCode ierr = 0;
 
@@ -193,8 +193,6 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 		case NODE_INTERNAL:
 			/* add global ID */
             node_ptr->globalID = -2;
-			//node_ptr->globalID = *gIndex_ptr;
-			//*gIndex_ptr += 1;
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */

@@ -101,12 +101,11 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
  * \param x
  * \param y
  * \param z
- * \param gIndex_ptr
  * \param gamma
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma);
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
 
 /**
  * \brief Checks couple arguments are all legal
