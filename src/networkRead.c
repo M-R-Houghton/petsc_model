@@ -312,7 +312,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscInt *gIndex_ptr, 
 	sscanf(line_ptr, "%d %d %lf %lf %lf", &nID, &nType, &x, &y, &z);
 
 	/* assign scanned values to a node */
-	ierr = makeNode(box_ptr, nID, nType, x, y, z, gIndex_ptr, gamma);CHKERRQ(ierr);
+	ierr = makeNode(box_ptr, nID, nType, x, y, z, gamma);CHKERRQ(ierr);
 
 	return ierr;
 }
