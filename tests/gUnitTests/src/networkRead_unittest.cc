@@ -269,10 +269,17 @@ struct testSetInternalNodeIndices : ::testing::Test
 };
 
 
-TEST_F(testSetInternalNodeIndices, testOutput)
+TEST_F(testSetInternalNodeIndices, testStandardOutput)
 {
-    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE, *gIndex_ptr), 0);
     EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE, *gIndex_ptr), 1);
+}
+
+
+TEST_F(testSetInternalNodeIndices, testCoupledOutput)
+{
+    // This test fails the assertion. Force fail is cleaner until fixed.
+    //EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE, *gIndex_ptr), 0);
+    FAIL();
 }
 
 
