@@ -190,11 +190,10 @@ TEST(testMakeNode, testValueAssignment)
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
 	PetscInt myInt = 1;
-	PetscInt *myInt_ptr = &myInt;
 
 	/* make some nodes */
-	makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
-	makeNode(box_ptr,0,1,2,3,4,myInt_ptr,0.25);
+	makeNode(box_ptr,1,2,3,4,5,0.5);
+	makeNode(box_ptr,0,1,2,3,4,0.25);
 
 	/* test node values */
 	EXPECT_EQ(box_ptr->masterNodeList[1].nodeID, 1);
@@ -236,12 +235,11 @@ TEST(testMakeCouple, testValueAssignment)
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
 	PetscInt myInt = 1;
-	PetscInt *myInt_ptr = &myInt;
 
 	/* make some nodes */
-	makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
-	makeNode(box_ptr,0,0,2,3,4,myInt_ptr,0.25);
-	makeNode(box_ptr,2,1,1,2,3,myInt_ptr,0.2);
+	makeNode(box_ptr,1,2,3,4,5,0.5);
+	makeNode(box_ptr,0,0,2,3,4,0.25);
+	makeNode(box_ptr,2,1,1,2,3,0.2);
 
     /* allocate memory for couples */
     box_ptr->masterCoupleList = (Couple*)calloc(2, sizeof(Couple));
