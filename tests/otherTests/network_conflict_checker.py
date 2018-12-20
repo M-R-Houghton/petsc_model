@@ -22,9 +22,10 @@ class ConflictChecker:
         box: an instance of the Box() class.
         fibre_dict: a dictionary to be filled with fibre data.
         node_dict: a dictionary to be filled with node data.
+        link_dict: a dictionary to be filled with link data.
     """
 
-    def __init__(self, box, fibre_dict, node_dict):
+    def __init__(self, box, fibre_dict, node_dict, link_dict):
 
         # Set a default instance of the box class:
         self.box = box
@@ -32,6 +33,7 @@ class ConflictChecker:
         # Set up the dictionaries:
         self.fibre_dict = fibre_dict
         self.node_dict = node_dict
+        self.link_dict = link_dict
 
         self.boundary_fibres = []
 
@@ -102,9 +104,26 @@ class ConflictChecker:
                     #print("x1 = ", node1.x, "x2 = ", node2.x)
                     #print("y1 = ", node1.y, "y2 = ", node2.y)
                     #print("z1 = ", node1.z, "z2 = ", node2.z)
-                    assert (node1.x != node2.x) or (node1.y != node2.y) or (node1.z != node2.z), '(ERROR) Two identical nodes (ID=%r and ID=%r).' % (node1.id, node2.id)
+                    if len(self.link_dict) == 0:
+                        assert (node1.x != node2.x) or (node1.y != node2.y) or (node1.z != node2.z), '(ERROR) Two identical nodes (ID=%r and ID=%r).' % (node1.id, node2.id)
 
         return
+
+
+    def check_for_link_conflicts(self):
+
+        if len(self.link_dict) == 0:
+            print("\tNo linked nodes to check.")
+            return
+
+        known_links = []
+        for l in self.link_dict:
+
+            for n in self.link_dict[l].nodes:
+                
+                assert n not in known_links, '(ERROR) Two links with the same node.'
+
+                known_links.append(n)
 
 
     def check_for_boundary_fibres(self):
@@ -136,6 +155,7 @@ class ConflictChecker:
         self.check_for_box_conflicts()
         self.check_for_fibre_conflicts()
         self.check_for_node_conflicts()
+        self.check_for_link_conflicts()
 
         self.check_for_boundary_fibres()
 
@@ -159,7 +179,7 @@ if __name__ == '__main__':
     read_data.sorter()
 
     print("TESTING: ", data_file)
-    test_data = ConflictChecker(read_data.box, read_data.fibre_dict, read_data.node_dict)
+    test_data = ConflictChecker(read_data.box, read_data.fibre_dict, read_data.node_dict, read_data.link_dict)
     test_data.check_for_conflicts()
     print("\tTEST SUCCESS")
 

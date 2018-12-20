@@ -189,12 +189,10 @@ TEST(testMakeNode, testValueAssignment)
 {
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
-	PetscInt myInt = 1;
-	PetscInt *myInt_ptr = &myInt;
 
 	/* make some nodes */
-	makeNode(box_ptr,1,2,3,4,5,myInt_ptr,0.5);
-	makeNode(box_ptr,0,1,2,3,4,myInt_ptr,0.25);
+	makeNode(box_ptr,1,2,3,4,5,0.5);
+	makeNode(box_ptr,0,1,2,3,4,0.25);
 
 	/* test node values */
 	EXPECT_EQ(box_ptr->masterNodeList[1].nodeID, 1);
@@ -229,5 +227,48 @@ TEST(testMakeNode, testValueAssignment)
     free(box_ptr); box_ptr = NULL;
     EXPECT_TRUE(box_ptr == NULL);
 }
+
+
+TEST(testMakeCouple, testValueAssignment)
+{
+	/* set up test */
+	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
+
+	/* make some nodes */
+	makeNode(box_ptr,1,2,3,4,5,0.5);
+	makeNode(box_ptr,0,0,2,3,4,0.25);
+	makeNode(box_ptr,2,1,1,2,3,0.2);
+
+    /* allocate memory for couples */
+    box_ptr->masterCoupleList = (Couple*)calloc(2, sizeof(Couple));
+
+    /* make some couples */
+    makeCouple(box_ptr,0,1,0);
+    makeCouple(box_ptr,1,0,2);
+
+	/* test node values */
+	EXPECT_EQ(box_ptr->masterCoupleList[0].coupleID, 0);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodesInCouple, 2);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[0], 1);
+	EXPECT_EQ(box_ptr->masterCoupleList[0].nodeID[1], 0);
+
+	/* test node values */
+	EXPECT_EQ(box_ptr->masterCoupleList[1].coupleID, 1);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodesInCouple, 2);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[0], 0);
+	EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1], 2);
+
+	/* clean up */
+	free(box_ptr->masterNodeList); box_ptr->masterNodeList = NULL;
+	for (int f = 0; f < box_ptr->fibreCount; f++)
+	{
+        free(box_ptr->masterFibreList[f].nodesOnFibreList);	
+        box_ptr->masterFibreList[f].nodesOnFibreList = NULL;
+	}
+	free(box_ptr->masterFibreList); box_ptr->masterFibreList = NULL;
+    free(box_ptr); box_ptr = NULL;
+    EXPECT_TRUE(box_ptr == NULL);
+}
+
 
 } /* namespace */

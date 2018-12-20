@@ -33,6 +33,7 @@ typedef struct parameters Parameters;
 typedef struct box Box;
 typedef struct node Node;
 typedef struct fibre Fibre;
+typedef struct couple Couple;
 typedef struct sparseMat Sparse;
 
 /* structure for storing variables */
@@ -60,6 +61,15 @@ struct box
 	PetscInt xyzPeriodic[3];
 	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
 	Fibre *masterFibreList;
+    Couple *masterCoupleList;
+};
+
+/* structure for coupled nodes */
+struct couple
+{
+    PetscInt coupleID;
+    PetscInt nodesInCouple;
+    PetscInt nodeID[200];
 };
 
 /* structure for nodes */

@@ -103,6 +103,9 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
 	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
+    /* couple list memory should be allocated after no. of couples is known */
+    box_ptr->masterCoupleList = NULL;
+
 	return box_ptr;
 }
 
@@ -133,7 +136,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
-    /* addidtional attributes not to be assigned by user */
+    /* additional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
@@ -154,7 +157,7 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 /* Creates a node within its allocated location in a box */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	PetscErrorCode ierr = 0;
 
@@ -190,8 +193,6 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 		case NODE_INTERNAL:
 			/* add global ID */
             node_ptr->globalID = -2;
-			//node_ptr->globalID = *gIndex_ptr;
-			//*gIndex_ptr += 1;
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */
@@ -208,3 +209,40 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 	return ierr;
 }
+
+
+/* Checks couple arguments are all legal */
+void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
+{
+    assert(box_ptr != NULL);
+    assert(cID >= 0);
+    assert(nID1 >= 0 && nID2 >= 0);
+}
+
+
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
+{
+    PetscErrorCode ierr = 0;
+   
+    /* validate arguments */
+    checkCoupleArguments(box_ptr, cID, nID1, nID2);
+
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
+    
+    couple_ptr->coupleID = cID;
+    couple_ptr->nodesInCouple = 2;
+    couple_ptr->nodeID[0] = nID1;
+    couple_ptr->nodeID[1] = nID2;
+
+    PetscInt i=0;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"cID = %d\n",cID);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"actual couple %d has node %d and %d\n",couple_ptr->coupleID,couple_ptr->nodeID[0],couple_ptr->nodeID[1]);CHKERRQ(ierr);
+    for (i = 0; i < 1; i++)
+    {
+        Couple *cpl = &(box_ptr->masterCoupleList[i]);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
+    }
+
+    return ierr;
+}
+

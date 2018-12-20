@@ -111,100 +111,6 @@ TEST_F(testNetworkRead, testReadNodeValues)
 }
 
 
-struct testSetInternalNodeIndices : ::testing::Test
-{
-    Box  *box_ptr;
-
-    void SetUp()
-    {
-        // open file, read in line and close
-        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
-        networkRead(fileToRead, &box_ptr, 0.05);
-
-	    /* declare array for storing line, pointer, and counter for current line */
-	    char line[MAX_LENGTH], *line_ptr;
-	    PetscInt line_number = 0;
-        PetscScalar gamma = 1.0;
-	    FILE *fp;
-
-	    /* setup global index */
-	    PetscInt gIndex = 0;
-	    PetscInt *gIndex_ptr = &gIndex;
-
-	    /* open file and check whether successful */
-	    fp = fopen(fileToRead, "r");
-	    if (fp == NULL) FAIL();
-
-	    /* read in line by line until EOF is reached */
-	    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
-	    {
-	    	/* read in line and increment line number */
-	    	readDataLine(line_ptr, &box_ptr, gIndex_ptr, gamma);
-	    	line_number += 1;
-	    }
-
-	    /* use final global index to set total internal nodes */
-	    box_ptr->nodeInternalCount = gIndex;
-
-	    /* close file */
-	    fclose(fp);
-    }
-
-    void TearDown()
-    {
-        destroyBox(box_ptr);
-    }
-};
-
-
-TEST_F(testSetInternalNodeIndices, testOutput)
-{
-    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE), 0);
-    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE), 1);
-}
-
-
-TEST_F(testSetInternalNodeIndices, testNumberingBefore)
-{
-    for (int i = 0; i < box_ptr->nodeCount; i++)
-    {
-        Node *node = &(box_ptr->masterNodeList[i]);
-        if (node->nodeType == NODE_INTERNAL)
-        {
-            EXPECT_EQ(node->globalID, -2);
-        }
-    }
-}
-
-
-TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
-{
-    setStandardInternalNodeIndices(box_ptr);
-    for (int i = 0; i < box_ptr->nodeCount; i++)
-    {
-        Node *node = &(box_ptr->masterNodeList[i]);
-        if (node->nodeType == NODE_INTERNAL)
-        {
-            EXPECT_NE(node->globalID, -2);
-        }
-    }
-}
-
-
-TEST_F(testSetInternalNodeIndices, DISABLED_testCoupledNumberingAfter)
-{
-    //setStandardInternalNodeIndices(box_ptr);
-    for (int i = 0; i < box_ptr->nodeCount; i++)
-    {
-        Node *node = &(box_ptr->masterNodeList[i]);
-        if (node->nodeType == NODE_INTERNAL)
-        {
-            EXPECT_NE(node->globalID, -2);
-        }
-    }
-}
-
-
 struct testReadDataLine : ::testing::Test
 {
     Box         *box_ptr;
@@ -315,6 +221,147 @@ TEST_F(testReadDataLine, testReadNodeValues)
 }
 
 
+struct testSetInternalNodeIndices : ::testing::Test
+{
+    Box  *box_ptr;
+	PetscInt gIndex;
+	PetscInt *gIndex_ptr;
+
+    void SetUp()
+    {
+        // open file, read in line and close
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        networkRead(fileToRead, &box_ptr, 0.05);
+
+	    /* declare array for storing line, pointer, and counter for current line */
+	    char line[MAX_LENGTH], *line_ptr;
+	    PetscInt line_number = 0;
+        PetscScalar gamma = 1.0;
+	    FILE *fp;
+
+	    /* setup global index */
+	    gIndex = 0;
+	    gIndex_ptr = &gIndex;
+
+	    /* open file and check whether successful */
+	    fp = fopen(fileToRead, "r");
+	    if (fp == NULL) FAIL();
+
+	    /* read in line by line until EOF is reached */
+	    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+	    {
+	    	/* read in line and increment line number */
+	    	readDataLine(line_ptr, &box_ptr, gIndex_ptr, gamma);
+	    	line_number += 1;
+	    }
+
+	    /* use final global index to set total internal nodes */
+	    box_ptr->nodeInternalCount = gIndex;
+
+	    /* close file */
+	    fclose(fp);
+    }
+
+    void TearDown()
+    {
+        destroyBox(box_ptr);
+    }
+};
+
+
+TEST_F(testSetInternalNodeIndices, testStandardOutput)
+{
+    EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE, *gIndex_ptr), 1);
+}
+
+
+TEST_F(testSetInternalNodeIndices, testCoupledOutput)
+{
+    // This test fails the assertion. Force fail is cleaner until fixed.
+    //EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_TRUE, *gIndex_ptr), 0);
+    FAIL();
+}
+
+
+TEST_F(testSetInternalNodeIndices, testNumberingBefore)
+{
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_EQ(node->globalID, -2);
+        }
+    }
+}
+
+
+TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
+{
+    setStandardInternalNodeIndices(box_ptr);
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_NE(node->globalID, -2);
+        }
+    }
+}
+
+
+TEST_F(testSetInternalNodeIndices, DISABLED_testCoupledNumberingAfter)
+{
+    //setStandardInternalNodeIndices(box_ptr);
+    for (int i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->nodeType == NODE_INTERNAL)
+        {
+            EXPECT_NE(node->globalID, -2);
+        }
+    }
+}
+
+
+struct testSetStandardInternalNodeIndices : ::testing::Test
+{
+    void SetUp()
+    {
+
+    }
+    void TearDown()
+    {
+
+    }
+};
+
+
+TEST_F(testSetStandardInternalNodeIndices, testOutput)
+{
+    FAIL();
+}
+
+
+struct testSetCoupledInternalNodeIndices : ::testing::Test
+{
+    void SetUp()
+    {
+
+    }
+    void TearDown()
+    {
+
+    }
+};
+
+
+TEST_F(testSetCoupledInternalNodeIndices, testOutput)
+{
+    FAIL();
+}
+
+
 struct testReadBoxLine : ::testing::Test
 {
     Box  *box_ptr;
@@ -419,30 +466,6 @@ TEST_F(testReadFibreLine, testReadValues)
 }
 
 
-TEST(testTrimRightWhitespace, testOutputValue)
-{
-    // set up comparison strings
-    char exampleString1[100] = "some example string";
-    char exampleString2[100] = "a_different string_ex";
-
-    EXPECT_STRNE(exampleString1, exampleString2);
-
-    // set up test strings to be trimmed
-    char withSpace1[100] = "some example string        ";
-    char withSpace2[100] = "a_different string_ex         ";
-
-    EXPECT_STRNE(exampleString1, withSpace1);
-    EXPECT_STRNE(exampleString2, withSpace2);
-
-    // trim strings
-    char *noSpace1 = trimRightWhitespace(withSpace1);
-    char *noSpace2 = trimRightWhitespace(withSpace2);
-
-    EXPECT_STREQ(exampleString1, noSpace1);
-    EXPECT_STREQ(exampleString2, noSpace2);
-}
-
-
 struct testReadNodeLine : ::testing::Test
 {
     Box         *box_ptr;
@@ -476,13 +499,13 @@ struct testReadNodeLine : ::testing::Test
 
 TEST_F(testReadNodeLine, testErrorOutput)
 {
-    EXPECT_EQ(readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05), 0);
+    EXPECT_EQ(readNodeLine(lineCrop_ptr, box_ptr, 0.05), 0);
 }
 
 
 TEST_F(testReadNodeLine, testReadValues)
 {
-    readNodeLine(lineCrop_ptr, box_ptr, gIndex_ptr, 0.05);
+    readNodeLine(lineCrop_ptr, box_ptr, 0.05);
 
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeID,    3);
     EXPECT_EQ(box_ptr->masterNodeList[3].nodeType,  2);
@@ -496,5 +519,44 @@ TEST_F(testReadNodeLine, testReadValues)
     EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[1], 0.00);
     EXPECT_DOUBLE_EQ(box_ptr->masterNodeList[3].xyzDisplacement[2], 0.00);
 }
+
+
+struct testReadCoupleLine : ::testing::Test
+{
+    void SetUp()
+    {
+        
+    }
+
+    void TearDown()
+    {
+        
+    }
+};
+
+
+TEST(testTrimRightWhitespace, testOutputValue)
+{
+    // set up comparison strings
+    char exampleString1[100] = "some example string";
+    char exampleString2[100] = "a_different string_ex";
+
+    EXPECT_STRNE(exampleString1, exampleString2);
+
+    // set up test strings to be trimmed
+    char withSpace1[100] = "some example string        ";
+    char withSpace2[100] = "a_different string_ex         ";
+
+    EXPECT_STRNE(exampleString1, withSpace1);
+    EXPECT_STRNE(exampleString2, withSpace2);
+
+    // trim strings
+    char *noSpace1 = trimRightWhitespace(withSpace1);
+    char *noSpace2 = trimRightWhitespace(withSpace2);
+
+    EXPECT_STREQ(exampleString1, noSpace1);
+    EXPECT_STREQ(exampleString2, noSpace2);
+}
+
 
 } /* namespace */

@@ -188,9 +188,9 @@ struct testWriteFibreLine : ::testing::Test
         gIndex_ptr  = &gIndex;
 
         // make sure node slots aren't empty
-        makeNode(box_ptr,0,2,3,4,5,gIndex_ptr,0.25);
-        makeNode(box_ptr,1,0,6,7,8,gIndex_ptr,0.25);
-        makeNode(box_ptr,2,1,9,1,2,gIndex_ptr,0.25);
+        makeNode(box_ptr,0,2,3,4,5,0.25);
+        makeNode(box_ptr,1,0,6,7,8,0.25);
+        makeNode(box_ptr,2,1,9,1,2,0.25);
 
         makeFibre(box_ptr,1,3,0.05,node_ptr_list);
     }
@@ -249,7 +249,7 @@ struct testWriteNodeLine : ::testing::Test
         gIndex      = 0;
         gIndex_ptr  = &gIndex;
 
-        makeNode(box_ptr,1,2,3,4,5,gIndex_ptr,0.25);
+        makeNode(box_ptr,1,2,3,4,5,0.25);
     }
 
     void TearDown()

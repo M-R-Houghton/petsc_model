@@ -24,7 +24,7 @@ class NetworkAnalyser:
         node_dict: a dictionary to be filled with node data.
     """
 
-    def __init__(self, box, fibre_dict, node_dict):
+    def __init__(self, box, fibre_dict, node_dict, link_dict):
 
         # set a default instance of the box class:
         self.box = box
@@ -32,6 +32,7 @@ class NetworkAnalyser:
         # set up the dictionaries:
         self.fibre_dict = fibre_dict
         self.node_dict = node_dict
+        self.link_dict = link_dict
 
         self.global_seg_min = 0
         self.global_seg_max = 0
@@ -468,12 +469,12 @@ if __name__ == '__main__':
     print("\tREADING COMPLETE")
 
     print("TESTING: ", data_file)
-    conflict_checker = ConflictChecker(network_reader.box, network_reader.fibre_dict, network_reader.node_dict)
+    conflict_checker = ConflictChecker(network_reader.box, network_reader.fibre_dict, network_reader.node_dict, network_reader.link_dict)
     conflict_checker.check_for_conflicts()
     print("\tTEST SUCCESS")
 
     print("ANALYSING: ", data_file)
-    network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict)
+    network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict, network_reader.link_dict)
     network_analyser.analyse_network()
     print("\tANALYSIS COMPLETE")
 

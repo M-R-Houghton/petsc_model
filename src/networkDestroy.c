@@ -66,6 +66,10 @@ PetscErrorCode destroyBox(Box *box_ptr)
 	/* free the master list of fibres */
 	free(box_ptr->masterFibreList);
 	box_ptr->masterFibreList = NULL; assert(box_ptr->masterFibreList == NULL);
+
+    /* free the master list of couples */
+    free(box_ptr->masterCoupleList);
+    box_ptr->masterCoupleList = NULL; assert(box_ptr->masterCoupleList == NULL);
      
     /* free the remaining box */
 	free(box_ptr);
