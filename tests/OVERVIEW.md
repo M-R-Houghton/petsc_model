@@ -12,6 +12,6 @@ d: Decoupled version of a given test case network.
 c: Coupled version of a given test case network.
 
 | First | Second |
-------------------
-|       |        |
-|       |        |
+| ----- | ------ |
+|       |       |
+|       |       |
