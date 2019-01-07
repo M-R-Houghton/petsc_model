@@ -140,9 +140,6 @@ PetscErrorCode printLargeVecValues(Vec globalVec_F)
         {
             cOther += 1;
         }
-        
-        
-
     }
     ierr = VecRestoreArrayRead(absVec_F,&array);CHKERRQ(ierr);
 
