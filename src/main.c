@@ -55,6 +55,10 @@ int main(int argc, char **args)
     ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
     ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
     if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
+
+    /* 
+     * START: to be put in own function 
+     */
     ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
@@ -74,6 +78,9 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-f_tol",&normTolF,NULL);CHKERRQ(ierr);
+    /* 
+     * END: to be put in own function 
+     */
     
     /* perform all unit tests */
     //ierr = runIntegrationTests();CHKERRQ(ierr);
@@ -202,7 +209,9 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tLambda \t= %g\n\n", lambda);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
-    // START: DEBUGGING BAD NODES
+    /*
+     * START: DEBUGGING BAD NODES
+     */
     PetscInt vals = 2;
     PetscInt valInd[vals], nodeInd[vals], xyz[vals];
     valInd[0] = 14638;
@@ -242,8 +251,10 @@ int main(int argc, char **args)
             }
         }
     }
-    // END: DEBUGGING BAD NODES
-    
+    /* 
+     * END: DEBUGGING BAD NODES
+     */
+
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network write out to file
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
