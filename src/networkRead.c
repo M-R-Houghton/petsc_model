@@ -322,7 +322,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupleID)
 {
 	PetscErrorCode 	ierr = 0;
-  	PetscInt 		nID1, nID2;
+  	//PetscInt 		nID1, nID2;
 
 	/* read in a node couple line */
 	//sscanf(line_ptr, "%d %d", &nID1, &nID2);
