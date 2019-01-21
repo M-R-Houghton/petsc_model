@@ -15,6 +15,8 @@ struct testParameterRead : ::testing::Test
 {
     Parameters  *par_ptr;
     const char *fileToRead;
+    const PetscScalar myGamma = 0.05; 
+    const PetscScalar myYM = 1.0; 
 
     void SetUp()
     {
@@ -31,7 +33,7 @@ struct testParameterRead : ::testing::Test
 
 TEST_F(testParameterRead, testErrorOutput)
 {
-    EXPECT_EQ(parameterRead(fileToRead, &par_ptr), 0);
+    EXPECT_EQ(parameterRead(fileToRead, &par_ptr, myGamma, myYM), 0);
 }
 
 
@@ -39,12 +41,12 @@ TEST_F(testParameterRead, testOutputValues)
 {
     const char input[]  = "data/dat/tri/tri_3d_01_in.dat";
     const char output[] = "data/dat/tri/tri_3d_01_out.dat";
-    parameterRead(fileToRead, &par_ptr);
+    parameterRead(fileToRead, &par_ptr, myGamma, myYM);
 
     EXPECT_STREQ(par_ptr->inputNetwork,     input);
     EXPECT_STREQ(par_ptr->outputNetwork,    output);
-    EXPECT_EQ(par_ptr->gamma,               GAMMA);
-    EXPECT_EQ(par_ptr->youngsModulus,       YOUNGS_MOD);
+    EXPECT_EQ(par_ptr->gamma,               myGamma);
+    EXPECT_EQ(par_ptr->youngsModulus,       myYM);
 }
 
 } /* namespace */
