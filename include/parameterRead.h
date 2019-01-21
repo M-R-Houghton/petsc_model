@@ -14,8 +14,11 @@ void checkFileNameLengths(const char *inputFileName, const char *outputFileName)
  * \brief Initiates parameter file read in routine
  * \param fileToRead_ptr Pointer to the file to be read.
  * \param par_ptr Pointer to parameter struct to be built.
+ * \param gamma Value of gamma to be assigned.
+ * \param youngsModulus Value of Youngs Modulus to be assigned.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr);
+PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr,
+                                const PetscScalar gamma, const PetscScalar youngsModulus);
 
 #endif
