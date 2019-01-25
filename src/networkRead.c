@@ -82,6 +82,35 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 }
 
 
+PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
+                                PetscBool readCouplesOnly, PetscInt *gIndex_ptr, PetscScalar gamma)
+{
+    PetscErrorCode ierr = 0;
+    FILE *fp;
+	char line[MAX_LENGTH], *line_ptr;
+
+    /* open file */
+    fp = fopen(fileToRead_ptr, "r");
+    if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
+
+    /* ignore all entries except for the couple lines */
+    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+    {
+        if (!readCouplesOnly)   /* if first pass, read everything but don't build couples */
+        {
+		    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+        }
+        else                    /* if second pass only read couples and build couple information */
+        {
+            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+        }
+    }
+    /* collect file close return code */
+    ierr = fclose(fp);
+    
+    return ierr;
+}
+
 void checkInternalNodeIndices(Box const *box_ptr)
 {
     PetscInt i;
