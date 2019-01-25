@@ -15,19 +15,20 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	PetscInt gIndex = 0;
 	PetscInt *gIndex_ptr = &gIndex;
 
-	/* open file and check whether successful */
-	fp = fopen(fileToRead_ptr, "r");
-	if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
+    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, gIndex_ptr, gamma);
+	///* open file and check whether successful */
+	//fp = fopen(fileToRead_ptr, "r");
+	//if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
-	/* read in line by line until EOF is reached */
-	while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
-	{
-		/* read in line and increment line number */
-		ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
-		line_number += 1;
-	}
-	/* close file */
-	fclose(fp);
+	///* read in line by line until EOF is reached */
+	//while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+	//{
+	//	/* read in line and increment line number */
+	//	ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+	//	line_number += 1;
+	//}
+	///* close file */
+	//fclose(fp);
 
     /* read data line counts the number of couples in gIndex_ptr */ 
     if (*gIndex_ptr > 0) coupledSystem = PETSC_TRUE;
@@ -50,17 +51,18 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         /* couple count now to be used as index */
         *gIndex_ptr = 0;
 
-        /* re-open file */
-        fp = fopen(fileToRead_ptr, "r");
-        if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
+        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, gIndex_ptr, gamma);
+        ///* re-open file */
+        //fp = fopen(fileToRead_ptr, "r");
+        //if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
-        /* ignore all entries except for the couple lines */
-        while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
-        {
-            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
-        }
-        /* close file */
-        fclose(fp);
+        ///* ignore all entries except for the couple lines */
+        //while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+        //{
+        //    ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+        //}
+        ///* close file */
+        //fclose(fp);
 
         PetscInt i=0;
         for (i = 0; i < 10; i++)
