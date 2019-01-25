@@ -97,7 +97,7 @@ int main(int argc, char **args)
             Network read in
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading parameter file...\n");CHKERRQ(ierr);
-    ierr = parameterRead(parFile, &par_ptr);CHKERRQ(ierr);
+    ierr = parameterRead(parFile, &par_ptr, gamma, yMod);CHKERRQ(ierr);
     
     /* read in network data file */
     ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
