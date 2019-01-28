@@ -13,6 +13,7 @@
 #define DIMENSION 3
 #define MAX_LENGTH 10000
 #define MAX_NAME 100
+#define MAX_NODES_ON_COUPLE 200
 #define PARAMETERS 8
 #define NODE_INTERNAL 0
 #define NODE_DANGLING 1
@@ -69,7 +70,7 @@ struct couple
 {
     PetscInt coupleID;
     PetscInt nodesInCouple;
-    PetscInt nodeID[200];
+    PetscInt nodeID[MAX_NODES_ON_COUPLE];
 };
 
 /* structure for nodes */
