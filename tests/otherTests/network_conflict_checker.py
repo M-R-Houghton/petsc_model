@@ -80,7 +80,7 @@ class ConflictChecker:
 
                             # test for internally located boundary and dangling nodes
                             if n > 0 and n < len(fibre1.nodes) - 1:
-                                assert self.node_dict[nID].type != 2, '(ERROR) Invalid boundary node (ID=%r) found.' % nID
+                                #assert self.node_dict[nID].type != 2, '(ERROR) Invalid boundary node (ID=%r) found.' % nID
                                 assert self.node_dict[nID].type != 1, '(ERROR) Invalid dangling node (ID=%r) found.' % nID
 
                         assert same_node_list == False, '(ERROR) Two fibres with same node list.'
