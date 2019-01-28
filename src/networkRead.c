@@ -44,6 +44,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 
         /* sanity check: couples not counted if this fails */
         assert(gIndex != 0);
+        assert(gIndex == *gIndex_ptr);
 
         /* use counted couples to allocate master couple array */
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
@@ -63,6 +64,17 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         //}
         ///* close file */
         //fclose(fp);
+        
+        // For debugging only 
+        int c,counter=0;
+        for (c = 0; c < (*box_ptr_ptr)->nodeCount; c++)
+        {
+            if ((*box_ptr_ptr)->masterNodeList[c].nodeType == 0)
+            {
+                counter++;
+            }
+        }
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"tot couple node things = %d\n", counter);CHKERRQ(ierr);
 
         PetscInt i=0;
         for (i = 0; i < 10; i++)
@@ -119,6 +131,12 @@ void checkInternalNodeIndices(Box const *box_ptr)
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
         Node *node_ptr = &(box_ptr->masterNodeList[i]);
+        if (node_ptr->globalID == -2) 
+        {
+            PetscPrintf(PETSC_COMM_WORLD,"index is %d\n", i);
+        }
+        if (node_ptr->globalID == -2) 
+            PetscPrintf(PETSC_COMM_WORLD,"node type is: %d\n", node_ptr->nodeType);
         assert(node_ptr->globalID != -2);
     }
 }
@@ -169,6 +187,7 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
 {
     PetscInt    i,j,newIndex=0;
 
+    int counter = 0;
     for (i = 0; i < coupleCount; i++)
     {
         Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
@@ -182,11 +201,18 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
             /* sanity check: should always match by definition */
             assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
 
+            if (node_ptr->nodeType == 0)
+                counter++;
+
             /* reassign internal node ID once happy it is the right node */
             node_ptr->globalID = newIndex;
         }
         newIndex += 1;
     }
+
+
+    PetscInt ierr;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Total internal couple nodes = %d\n", counter);CHKERRQ(ierr);
     return newIndex;
 }
 
@@ -361,6 +387,8 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
 /* START: temporary read-in of variable node on couple numbers */
 	/* preprocess line by removing rhs trailing whitespace */
 	char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
+
+    int arraySize  = strlen(trimmedLine_ptr) + 1;
 	
 	/* declare array to store tokens of fibre information */
 	char *cplInfoArray[strlen(trimmedLine_ptr)+1];
@@ -377,6 +405,8 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
 		splitCounter += 1;
 	}
 
+    assert(arraySize > splitCounter);
+
 	/* total nodes is total splits -0 
 	 * ...where total splits includes split at end of line     */
 	PetscInt nodesOnCouple 	= splitCounter;
@@ -389,6 +419,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
 	PetscInt nID;
 	for (nID = 0; nID < splitCounter; nID++)
 	{
+        assert(nID < MAX_NODES_ON_COUPLE);
         couple_ptr->nodeID[nID] = atoi(cplInfoArray[nID]);
 	}
 /* END: temporary makeCouple w/ variable couple length */
