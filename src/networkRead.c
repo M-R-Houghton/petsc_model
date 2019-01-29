@@ -151,7 +151,7 @@ PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool const coupledSystem, Pet
         /* coupled numbering */
         totalInternalNodes = setCoupledInternalNodesIndices(box_ptr, coupleCount);
         /* sanity check: inconsistent numbering if these are different */
-        assert(coupleCount == totalInternalNodes);
+        //assert(coupleCount == totalInternalNodes);
     }
     else 
     {
@@ -187,9 +187,10 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
 {
     PetscInt    i,j,newIndex=0;
 
-    int counter = 0;
+    int internalCountInCouples = 0;
     for (i = 0; i < coupleCount; i++)
     {
+        PetscBool boundaryCouple = PETSC_FALSE;
         Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
         
         /* loop over couple in the unlikely case that there is a '3rd' coupled node */
@@ -201,18 +202,34 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
             /* sanity check: should always match by definition */
             assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
 
-            if (node_ptr->nodeType == 0)
-                counter++;
+            /* shouldn't encounter any dangling nodes in couples */
+            assert(node_ptr->nodeType != 1);
 
-            /* reassign internal node ID once happy it is the right node */
-            node_ptr->globalID = newIndex;
+            if (node_ptr->nodeType == 0)
+            {
+                /* shouldn't assign new ID to anything but new internal nodes */
+                assert(node_ptr->globalID == -2);
+
+                /* reassign internal node ID once happy it is the right node */
+                node_ptr->globalID = newIndex;
+
+                internalCountInCouples++;
+            }
+            else if (node_ptr->nodeType == 2)
+            {
+                /* found boundary couple */
+                boundaryCouple = PETSC_TRUE;
+                PetscPrintf(PETSC_COMM_WORLD,"Skipping boundary couple.\n");
+                break;
+            }
+
         }
-        newIndex += 1;
+        /* only increment index when couple is composed of internal nodes */
+        if (!boundaryCouple) newIndex += 1;
     }
 
-
     PetscInt ierr;
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Total internal couple nodes = %d\n", counter);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Total internal couple nodes = %d\n", internalCountInCouples);CHKERRQ(ierr);
     return newIndex;
 }
 
