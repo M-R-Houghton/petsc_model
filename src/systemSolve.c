@@ -232,7 +232,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Min val = %g, at index = %d\n",steps,(double)minVal,minInd);CHKERRQ(ierr);
             break;
         }
-        else if (normF > prevNormF)         /* check for divergence at every step */
+        else if (normF > 10*prevNormF)         /* check for divergence at every step */
         {
             /* if divergence then analyse U from 2 steps ago (after termination of this function) */
             ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence at step %d. Unstable Res. Norm = %g\n",steps,normF);CHKERRQ(ierr);
