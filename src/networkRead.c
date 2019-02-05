@@ -193,7 +193,6 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
         PetscBool boundaryCouple = PETSC_FALSE;
         Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
         
-        PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: ", i);
         /* loop over couple in the unlikely case that there is a '3rd' coupled node */
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
@@ -222,16 +221,16 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount
             {
                 /* found boundary couple */
                 boundaryCouple = PETSC_TRUE;
-                PetscPrintf(PETSC_COMM_WORLD,"Skipping boundary couple.\n");
-                PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: %d-%d\n", i, couple_ptr->nodeID[0], couple_ptr->nodeID[j]);
-                assert(i == 148);
-                break;
+                PetscPrintf(PETSC_COMM_WORLD,"\nSkipping boundary couple.\n");
+                PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: %d-%d\n\n", i, couple_ptr->nodeID[0], couple_ptr->nodeID[j]);
+                node_ptr->globalID = -1;
+                //break;
             }
 
         }
-        PetscPrintf(PETSC_COMM_WORLD,"\n");
         /* only increment index when couple is composed of internal nodes */
-        if (!boundaryCouple) newIndex += 1;
+        //if (!boundaryCouple) newIndex += 1;
+        newIndex += 1;
     }
 
     PetscInt ierr;
