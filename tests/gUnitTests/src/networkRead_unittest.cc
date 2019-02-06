@@ -539,13 +539,15 @@ struct testReadCoupleLine : ::testing::Test
 
 TEST_F(testReadCoupleLine, testErrorOutput)
 {
-    char *cpl     = "123 456 ";
+    char cpl[] = "c 123 456 ";
     const PetscInt cID  = 3;
 
     EXPECT_NE(box_ptr->masterFibreList, nullptr);
     EXPECT_NE(box_ptr->masterNodeList, nullptr);
     EXPECT_EQ(box_ptr->masterCoupleList, nullptr);
 
+    
+    PetscPrintf(PETSC_COMM_WORLD,"allocating memory\n");
     box_ptr->masterCoupleList = (Couple*)calloc(5, sizeof(Couple));
     EXPECT_NE(box_ptr->masterCoupleList, nullptr);
     EXPECT_NE(readCoupleLine(cpl, box_ptr, cID), 0);
