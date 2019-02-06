@@ -125,6 +125,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
     return ierr;
 }
 
+
 void checkInternalNodeIndices(const Box *box_ptr)
 {
     PetscInt i;
@@ -144,29 +145,36 @@ void checkInternalNodeIndices(const Box *box_ptr)
 
 PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
 {
-    PetscInt totalInternalNodes = 0;
+    PetscInt totalInternalIndices = 0;
 
     if (coupledSystem)
     {
+        PetscInt totalInternalCouples;
+
         /* coupled numbering */
-        totalInternalNodes = setCoupledInternalNodesIndices(box_ptr, coupleCount);
-        /* sanity check: inconsistent numbering if these are different */
-        //assert(coupleCount == totalInternalNodes);
+        totalInternalCouples = setCoupledInternalNodesIndices(box_ptr, coupleCount);
+        totalInternalIndices = setStandardInternalNodeIndices(box_ptr, totalInternalCouples);
+
+        /* if no stray internal nodes are found, count should match last given index */
+        if (totalInternalCouples == totalInternalIndices)
+        {
+            assert(coupleCount == totalInternalIndices);
+        }
     }
     else 
     {
         /* standard numbering */
-        totalInternalNodes = setStandardInternalNodeIndices(box_ptr);
+        totalInternalIndices = setStandardInternalNodeIndices(box_ptr, 0);
     }
     checkInternalNodeIndices(box_ptr);
 
-    return totalInternalNodes;
+    return totalInternalIndices;
 }
 
 
-PetscInt setStandardInternalNodeIndices(Box *box_ptr)
+PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
 {
-    PetscInt    i, newIndex=0;
+    PetscInt i;
     /* loop over every node of the network */
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
@@ -231,6 +239,8 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount
         /* only increment index when couple is composed of internal nodes */
         //if (!boundaryCouple) newIndex += 1;
         newIndex += 1;
+
+        /* WARNING: Uncaught possibility when all nodes in couple are boundary! */
     }
 
     PetscInt ierr;

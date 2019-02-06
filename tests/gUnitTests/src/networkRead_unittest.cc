@@ -298,7 +298,7 @@ TEST_F(testSetInternalNodeIndices, testNumberingBefore)
 
 TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
 {
-    setStandardInternalNodeIndices(box_ptr);
+    setStandardInternalNodeIndices(box_ptr, 0);
     for (int i = 0; i < box_ptr->nodeCount; i++)
     {
         Node *node = &(box_ptr->masterNodeList[i]);
@@ -312,7 +312,7 @@ TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
 
 TEST_F(testSetInternalNodeIndices, DISABLED_testCoupledNumberingAfter)
 {
-    //setStandardInternalNodeIndices(box_ptr);
+    //setStandardInternalNodeIndices(box_ptr, 0);
     for (int i = 0; i < box_ptr->nodeCount; i++)
     {
         Node *node = &(box_ptr->masterNodeList[i]);

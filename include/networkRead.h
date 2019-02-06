@@ -53,11 +53,15 @@ PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount);
 PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount);
 
 /**
- * \brief Sets the global indices of all the internal nodes of a standard network
+ * \brief Sets the global indices of all the standard internal nodes of a network
+ * This can be used for indexing an uncoupled newtork, or for indexing any remaining 
+ * internal nodes not associated with couples AFTER couple internal nodes have been 
+ * given a shared index.
  * \param box_ptr Pointer to box containing the internal nodes.
+ * \param newIndex The starting index to be assigned to all found internal nodes
  * \return Index to represent Petsc error code.
  */
-PetscInt setStandardInternalNodeIndices(Box *box_ptr);
+PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a coupled network
