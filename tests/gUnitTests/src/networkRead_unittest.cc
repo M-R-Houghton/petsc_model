@@ -523,16 +523,33 @@ TEST_F(testReadNodeLine, testReadValues)
 
 struct testReadCoupleLine : ::testing::Test
 {
+    Box *box_ptr;
     void SetUp()
     {
         
+        box_ptr = makeBox(0,0,1,2,3,1,1,1);
     }
 
     void TearDown()
     {
-        
+        destroyBox(box_ptr);
     }
 };
+
+
+TEST_F(testReadCoupleLine, testErrorOutput)
+{
+    char *cpl     = "123 456 ";
+    const PetscInt cID  = 3;
+
+    EXPECT_NE(box_ptr->masterFibreList, nullptr);
+    EXPECT_NE(box_ptr->masterNodeList, nullptr);
+    EXPECT_EQ(box_ptr->masterCoupleList, nullptr);
+
+    box_ptr->masterCoupleList = (Couple*)calloc(5, sizeof(Couple));
+    EXPECT_NE(box_ptr->masterCoupleList, nullptr);
+    EXPECT_NE(readCoupleLine(cpl, box_ptr, cID), 0);
+}
 
 
 TEST(testTrimRightWhitespace, testOutputValue)
