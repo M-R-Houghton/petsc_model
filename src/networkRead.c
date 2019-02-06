@@ -125,7 +125,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
     return ierr;
 }
 
-void checkInternalNodeIndices(Box const *box_ptr)
+void checkInternalNodeIndices(const Box *box_ptr)
 {
     PetscInt i;
     for (i = 0; i < box_ptr->nodeCount; i++)
@@ -142,7 +142,7 @@ void checkInternalNodeIndices(Box const *box_ptr)
 }
 
 
-PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool const coupledSystem, PetscInt coupleCount)
+PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
 {
     PetscInt totalInternalNodes = 0;
 
@@ -183,7 +183,7 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr)
 }
 
 
-PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount)
+PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount)
 {
     PetscInt    i,j,newIndex=0;
 
@@ -398,7 +398,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 
 
 /* Reads node couple information from a given line pointer */
-PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupleID)
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)
 {
 	PetscErrorCode 	ierr = 0;
   	//PetscInt 		nID1, nID2;
