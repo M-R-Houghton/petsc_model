@@ -449,6 +449,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     couple_ptr->coupleID = coupleID;
     couple_ptr->nodesInCouple = nodesOnCouple;
 	PetscInt nID;
+
 	for (nID = 0; nID < splitCounter; nID++)
 	{
         assert(nID < MAX_NODES_ON_COUPLE);
@@ -458,6 +459,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
 
 	/* assign scanned values to a node */
 	//ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
+
 
     PetscInt i=0;
     Couple *cpl = &(box_ptr->masterCoupleList[i]);
