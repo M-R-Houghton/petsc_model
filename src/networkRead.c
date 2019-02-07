@@ -89,6 +89,9 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     /* produce numbering for internal nodes */
     gIndex = setInternalNodeIndices(*box_ptr_ptr, coupledSystem, gIndex);CHKERRQ(ierr);
 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g_ptr = %d\n", *gIndex_ptr);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
+
 	/* use final global index to set total internal nodes */
 	(*box_ptr_ptr)->nodeInternalCount = gIndex;
 
@@ -146,6 +149,7 @@ void checkInternalNodeIndices(const Box *box_ptr)
 PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
 {
     PetscInt totalInternalIndices = 0;
+    PetscErrorCode ierr;
 
     if (coupledSystem)
     {
@@ -153,7 +157,9 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
 
         /* coupled numbering */
         totalInternalCouples = setCoupledInternalNodesIndices(box_ptr, coupleCount);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"count after couple stuff %d\n",totalInternalCouples);CHKERRQ(ierr);
         totalInternalIndices = setStandardInternalNodeIndices(box_ptr, totalInternalCouples);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"count after additional stuff %d\n",totalInternalIndices);CHKERRQ(ierr);
 
         /* if no stray internal nodes are found, count should match last given index */
         if (totalInternalCouples == totalInternalIndices)
@@ -175,18 +181,24 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
 PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
 {
     PetscInt i;
+    PetscErrorCode ierr;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"\nstarting val= %d\n", newIndex);CHKERRQ(ierr);
     /* loop over every node of the network */
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
         Node *node_ptr = &(box_ptr->masterNodeList[i]);
         if (node_ptr->globalID == -2)
         {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Found an additional internal node.\n");CHKERRQ(ierr);
+
             assert(node_ptr->nodeType == NODE_INTERNAL);
             node_ptr->globalID = newIndex;
             newIndex += 1;
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"incremented val = %d\n", newIndex);CHKERRQ(ierr);
         }
     }        
 
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"ending val = %d\n", newIndex);CHKERRQ(ierr);
     return newIndex;
 }
 
@@ -199,6 +211,7 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount
     for (i = 0; i < coupleCount; i++)
     {
         PetscBool boundaryCouple = PETSC_FALSE;
+        PetscBool allBoundary    = PETSC_TRUE;
         Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
         
         /* loop over couple in the unlikely case that there is a '3rd' coupled node */
@@ -217,6 +230,7 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount
 
             if (node_ptr->nodeType == 0)
             {
+                allBoundary = PETSC_FALSE;
                 /* shouldn't assign new ID to anything but new internal nodes */
                 assert(node_ptr->globalID == -2);
 
@@ -228,23 +242,37 @@ PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount
             else if (node_ptr->nodeType == 2)
             {
                 /* found boundary couple */
-                boundaryCouple = PETSC_TRUE;
-                PetscPrintf(PETSC_COMM_WORLD,"\nSkipping boundary couple.\n");
-                PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: %d-%d\n\n", i, couple_ptr->nodeID[0], couple_ptr->nodeID[j]);
-                node_ptr->globalID = -1;
-                //break;
+                assert(node_ptr->globalID == -1);
+                /* now obsolete */
+                /*
+                 * boundaryCouple = PETSC_TRUE;
+                 * PetscPrintf(PETSC_COMM_WORLD,"\nSkipping boundary couple.\n");
+                 * PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: %d-%d\n\n", i, couple_ptr->nodeID[0], couple_ptr->nodeID[j]);
+                 * node_ptr->globalID = -1;
+                 * //break;
+                 */
             }
 
         }
         /* only increment index when couple is composed of internal nodes */
         //if (!boundaryCouple) newIndex += 1;
-        newIndex += 1;
+        //newIndex += 1;
+
+        if (allBoundary)
+        {
+            PetscErrorCode ierr;
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"Found an all boundary fibre.\n");CHKERRQ(ierr);
+        }
+        else
+        {
+            newIndex += 1;
+        }
 
         /* WARNING: Uncaught possibility when all nodes in couple are boundary! */
     }
 
     PetscInt ierr;
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Total internal couple nodes = %d\n", internalCountInCouples);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"\nTotal internal couple nodes = %d\n", internalCountInCouples);CHKERRQ(ierr);
     return newIndex;
 }
 
