@@ -207,6 +207,10 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
 
+        /* catches cases that divergence test cannot */
+	    assert(!isinf(normF));
+	    assert(!isnan(normF));
+
         /* previous normF is set initially the same as normF */
         if (steps == 0) 
         {
