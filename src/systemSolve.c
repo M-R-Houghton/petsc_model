@@ -207,10 +207,6 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
         /* calculate the norm */
         ierr = VecNorm(globalVec_F, NORM_INFINITY, &normF);CHKERRQ(ierr);
 
-        /* catches cases that divergence test cannot */
-	    assert(!isinf(normF));
-	    assert(!isnan(normF));
-
         /* previous normF is set initially the same as normF */
         if (steps == 0) 
         {
@@ -236,7 +232,7 @@ PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalV
             ierr = PetscPrintf(PETSC_COMM_WORLD,"(step %d) Min val = %g, at index = %d\n",steps,(double)minVal,minInd);CHKERRQ(ierr);
             break;
         }
-        else if (normF > 10*prevNormF)         /* check for divergence at every step */
+        else if (normF > 10*prevNormF || isinf(normF) || isnan(normF))         /* check for divergence at every step */
         {
             /* if divergence then analyse U from 2 steps ago (after termination of this function) */
             ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Divergence at step %d. Unstable Res. Norm = %g\n",steps,normF);CHKERRQ(ierr);
