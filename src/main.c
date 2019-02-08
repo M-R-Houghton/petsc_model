@@ -29,7 +29,7 @@ int main(int argc, char **args)
     PetscBool       useTS = PETSC_FALSE;
     PetscScalar     alpha = 1e-1;
     PetscScalar     normTolF = 1e-12;
-    PetscInt        maxSteps = 1000000;
+    PetscInt        maxSteps = 10000000;
     PetscBool       restartTS = PETSC_TRUE;
 
 #if defined(PETSC_USE_LOG)
