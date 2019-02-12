@@ -547,7 +547,6 @@ TEST_F(testReadCoupleLine, testErrorOutput)
     EXPECT_NE(box_ptr->masterNodeList, nullptr);
     EXPECT_EQ(box_ptr->masterCoupleList, nullptr);
 
-    PetscPrintf(PETSC_COMM_WORLD,"allocating memory\n");
     box_ptr->masterCoupleList = (Couple*)calloc(5, sizeof(Couple));
     EXPECT_NE(box_ptr->masterCoupleList, nullptr);
     EXPECT_EQ(readCoupleLine(cpl, box_ptr, cID), 0);
@@ -556,10 +555,11 @@ TEST_F(testReadCoupleLine, testErrorOutput)
 
 TEST_F(testReadCoupleLine, testPair)
 {
+    EXPECT_EQ(box_ptr->masterCoupleList, nullptr);
     box_ptr->masterCoupleList = (Couple*)calloc(5, sizeof(Couple));
     EXPECT_NE(box_ptr->masterCoupleList, nullptr);
 
-    char cpl2[] = "c 153 46 ";
+    char cpl2[] = "153 46";
     cID = 2;
     readCoupleLine(cpl2, box_ptr, cID);
     EXPECT_EQ(box_ptr->masterCoupleList[cID].coupleID, 2);
@@ -567,7 +567,7 @@ TEST_F(testReadCoupleLine, testPair)
     EXPECT_EQ(box_ptr->masterCoupleList[cID].nodeID[0], 153);
     EXPECT_EQ(box_ptr->masterCoupleList[cID].nodeID[1], 46);
 
-    char cpl1[] = "c 582 673 ";
+    char cpl1[] = " 582 673 ";
     cID = 1;
     readCoupleLine(cpl1, box_ptr, cID);
     EXPECT_EQ(box_ptr->masterCoupleList[cID].coupleID, 1);
@@ -575,7 +575,7 @@ TEST_F(testReadCoupleLine, testPair)
     EXPECT_EQ(box_ptr->masterCoupleList[cID].nodeID[0], 582);
     EXPECT_EQ(box_ptr->masterCoupleList[cID].nodeID[1], 673);
 
-    char cpl4[] = "c 9 98421 ";
+    char cpl4[] = "9 98421 ";
     cID = 4;
     readCoupleLine(cpl4, box_ptr, cID);
     EXPECT_EQ(box_ptr->masterCoupleList[cID].coupleID, 4);
@@ -597,9 +597,9 @@ TEST_F(testReadCoupleLine, testMultipleNodeCouples)
     box_ptr->masterCoupleList = (Couple*)calloc(4, sizeof(Couple));
     EXPECT_NE(box_ptr->masterCoupleList, nullptr);
 
-    char cpl1[] = "c 8 582 7 673 ";
-    char cpl2[] = "c 153 46 9 2 11";
-    char cpl3[] = "c 9 98421 51 ";
+    char cpl1[] = " 8 582 7 673 ";
+    char cpl2[] = " 163 46 9 2 11";
+    char cpl3[] = "9 98421 51 ";
 
     readCoupleLine(cpl2, box_ptr, 2);
     readCoupleLine(cpl1, box_ptr, 1);
@@ -607,27 +607,24 @@ TEST_F(testReadCoupleLine, testMultipleNodeCouples)
 
     EXPECT_EQ(box_ptr->masterCoupleList[1].coupleID, 1);
     EXPECT_EQ(box_ptr->masterCoupleList[1].nodesInCouple, 4);
-    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[0], 153);
-    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1],  46);
-    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1],   9);
-    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1],   2);
-    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1],  11);
+    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[0],   8);
+    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[1], 582);
+    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[2],   7);
+    EXPECT_EQ(box_ptr->masterCoupleList[1].nodeID[3], 673);
 
     EXPECT_EQ(box_ptr->masterCoupleList[2].coupleID, 2);
     EXPECT_EQ(box_ptr->masterCoupleList[2].nodesInCouple, 5);
-    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[0], 153);
+    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[0], 163);
     EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[1],  46);
-    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[1],   9);
-    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[1],   2);
-    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[1],  11);
+    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[2],   9);
+    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[3],   2);
+    EXPECT_EQ(box_ptr->masterCoupleList[2].nodeID[4],  11);
 
-    EXPECT_EQ(box_ptr->masterCoupleList[3].coupleID, 2);
+    EXPECT_EQ(box_ptr->masterCoupleList[3].coupleID, 3);
     EXPECT_EQ(box_ptr->masterCoupleList[3].nodesInCouple, 3);
-    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[0], 153);
-    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[1],  46);
-    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[1],   9);
-    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[1],   2);
-    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[1],  11);
+    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[0],     9);
+    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[1], 98421);
+    EXPECT_EQ(box_ptr->masterCoupleList[3].nodeID[2],    51);
 }
 
 
