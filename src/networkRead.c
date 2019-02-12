@@ -415,10 +415,6 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)
 {
 	PetscErrorCode 	ierr = 0;
-  	//PetscInt 		nID1, nID2;
-
-	/* read in a node couple line */
-	//sscanf(line_ptr, "%d %d", &nID1, &nID2);
 
 /* START: temporary read-in of variable node on couple numbers */
 	/* preprocess line by removing rhs trailing whitespace */
@@ -460,6 +456,11 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
         couple_ptr->nodeID[nID] = atoi(cplInfoArray[nID]);
 	}
 /* END: temporary makeCouple w/ variable couple length */
+
+  	//PetscInt 		nID1, nID2;
+
+	/* read in a node couple line */
+	//sscanf(line_ptr, "%d %d", &nID1, &nID2);
 
 	/* assign scanned values to a node */
 	//ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
