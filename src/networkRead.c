@@ -465,6 +465,8 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
 	/* assign scanned values to a node */
 	//ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
 
+    /* need to implement updated couple builder */
+	//ierr = makeCouple(box_ptr, coupleID, nodesInCouple, cplInfoArray);CHKERRQ(ierr);
 
     /*
     PetscInt i=0;
