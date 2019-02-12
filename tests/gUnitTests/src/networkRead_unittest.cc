@@ -223,7 +223,7 @@ TEST_F(testReadDataLine, testReadNodeValues)
 
 struct testSetInternalNodeIndices : ::testing::Test
 {
-    Box  *box_ptr;
+    Box  *box_ptr, *cBox_ptr;
 	PetscInt gIndex;
 	PetscInt *gIndex_ptr;
     PetscBool coupledSystem;
@@ -237,21 +237,26 @@ struct testSetInternalNodeIndices : ::testing::Test
         // open file, read in line and close
         const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
         readInputFile(fileToRead, &box_ptr, coupledSystem, gIndex_ptr, 0.05);
-	    
+
 	    // use final global index to set total internal nodes
 	    box_ptr->nodeInternalCount = gIndex;
+
+        gIndex = 0;
+        const char cFileToRead[] = "data/test_chainMix_merged.dat";
+        readInputFile(cFileToRead, &cBox_ptr, coupledSystem, gIndex_ptr, 0.05);
+	    
     }
 
     void TearDown()
     {
         destroyBox(box_ptr);
+        destroyBox(cBox_ptr);
     }
 };
 
 
 TEST_F(testSetInternalNodeIndices, testStandardOutput)
 {
-    EXPECT_TRUE(!coupledSystem);
     EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE, *gIndex_ptr), 1);
 }
 
@@ -291,12 +296,12 @@ TEST_F(testSetInternalNodeIndices, testStandardNumberingAfter)
 }
 
 
-TEST_F(testSetInternalNodeIndices, DISABLED_testCoupledNumberingAfter)
+TEST_F(testSetInternalNodeIndices, testCoupledNumberingAfter)
 {
-    //setStandardInternalNodeIndices(box_ptr, 0);
-    for (int i = 0; i < box_ptr->nodeCount; i++)
+    setCoupledInternalNodesIndices(cBox_ptr, 0);
+    for (int i = 0; i < cBox_ptr->nodeCount; i++)
     {
-        Node *node = &(box_ptr->masterNodeList[i]);
+        Node *node = &(cBox_ptr->masterNodeList[i]);
         if (node->nodeType == NODE_INTERNAL)
         {
             EXPECT_NE(node->globalID, -2);
