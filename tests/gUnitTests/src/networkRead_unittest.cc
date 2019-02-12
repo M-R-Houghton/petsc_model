@@ -226,40 +226,20 @@ struct testSetInternalNodeIndices : ::testing::Test
     Box  *box_ptr;
 	PetscInt gIndex;
 	PetscInt *gIndex_ptr;
+    PetscBool coupledSystem;
 
     void SetUp()
     {
-        // open file, read in line and close
-        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
-        networkRead(fileToRead, &box_ptr, 0.05);
-
-	    /* declare array for storing line, pointer, and counter for current line */
-	    char line[MAX_LENGTH], *line_ptr;
-	    PetscInt line_number = 0;
-        PetscScalar gamma = 1.0;
-	    FILE *fp;
-
-	    /* setup global index */
+        coupledSystem = PETSC_FALSE;
 	    gIndex = 0;
 	    gIndex_ptr = &gIndex;
 
-	    /* open file and check whether successful */
-	    fp = fopen(fileToRead, "r");
-	    if (fp == NULL) FAIL();
-
-	    /* read in line by line until EOF is reached */
-	    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
-	    {
-	    	/* read in line and increment line number */
-	    	readDataLine(line_ptr, &box_ptr, gIndex_ptr, gamma);
-	    	line_number += 1;
-	    }
-
-	    /* use final global index to set total internal nodes */
+        // open file, read in line and close
+        const char fileToRead[] = "../../data/dat/tri/tri_3d_01_in.dat";
+        readInputFile(fileToRead, &box_ptr, coupledSystem, gIndex_ptr, 0.05);
+	    
+	    // use final global index to set total internal nodes
 	    box_ptr->nodeInternalCount = gIndex;
-
-	    /* close file */
-	    fclose(fp);
     }
 
     void TearDown()
@@ -271,6 +251,7 @@ struct testSetInternalNodeIndices : ::testing::Test
 
 TEST_F(testSetInternalNodeIndices, testStandardOutput)
 {
+    EXPECT_TRUE(!coupledSystem);
     EXPECT_EQ(setInternalNodeIndices(box_ptr, PETSC_FALSE, *gIndex_ptr), 1);
 }
 
