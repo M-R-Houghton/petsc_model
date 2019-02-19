@@ -1,4 +1,4 @@
-#!python3
+#!/usr/bin/env python3
 # generate_par_file.py
 
 # Imports
