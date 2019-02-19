@@ -14,7 +14,7 @@ INC_DIR			 = include
 TEST_SRC_DIR 	 = tests/integrationTests/src
 TEST_INC_DIR 	 = tests/integrationTests/include
 
-DAT 			 = $(wildcard $(DAT_DIR)/lmb/*_in.dat)
+DAT 			 = $(wildcard $(DAT_DIR)/lat3D/*_in.dat)
 PAR              = $(patsubst %_in.dat, %.par, $(DAT))
 
 SRC 			 = $(wildcard $(SRC_DIR)/*.c)
@@ -28,6 +28,7 @@ include ${PETSC_DIR}/lib/petsc/conf/rules
 
 %.par: %_in.dat 
 	@echo "Generating $@ from $<" 
+	cd $(PAR_DIR); python3 generate_par_file.py $<
 
 parfiles: $(PAR)
 	@echo "Generating par files $(PAR)"
