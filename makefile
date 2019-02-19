@@ -29,7 +29,7 @@ include ${PETSC_DIR}/lib/petsc/conf/rules
 %.par: %_in.dat 
 	@echo "[WARNING] Needs python3 alias!" 
 	@echo "Generating $@ from $<" 
-	cd $(PAR_DIR); python3 generate_par_file.py $<
+	cd $(PAR_DIR); ./generate_par_file.py $<
 
 parfiles: $(PAR)
 	@echo "Generating par files $(PAR)"
