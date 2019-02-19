@@ -27,11 +27,6 @@ class ParGenerator:
 
     def write_par_file(self):
 
-        print(os.path.split(os.path.dirname(self.filename_in_dat))[-1])
-        print(os.path.abspath(os.path.join(self.filename_in_dat, os.pardir)))
-        print("In: " + self.filename_in_dat)
-        print("Writing to " + self.filename_par)
-
         with open(self.filename_par, 'w') as f_object:
             f_object.write(self.filename_in_dat+'\n')
             f_object.write(self.filename_out_dat+'\n')
