@@ -26,8 +26,10 @@
 #define SPAN 2
 
 /* may remove and add back into .par files */
+/* WARNING: These are now overwritten in main.c */
 #define GAMMA 0.02
 #define YOUNGS_MOD 1.0
+/* CHECK FOR DEPENDENCIES AND REMOVE */
 
 typedef struct parameters Parameters;
 typedef struct box Box;
