@@ -10,8 +10,30 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 	/* 
      * can add more measures of analysis into this function as needed 
      */
+    ierr = stretchCompressionAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
 	
 	return ierr;
+}
+
+
+PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
+{
+    PetscErrorCode ierr;
+
+	Node *n0 = &(box_ptr->masterNodeList[0]);	
+    Node *n1 = &(box_ptr->masterNodeList[1]);
+	Node *n2 = &(box_ptr->masterNodeList[2]);
+	Node *n3 = &(box_ptr->masterNodeList[3]);
+
+    PetscScalar s_02[DIMENSION], sp02[DIMENSION];
+    PetscScalar s_12[DIMENSION], sp12[DIMENSION];
+    PetscScalar s_23[DIMENSION], sp23[DIMENSION];
+
+    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr);
+
+    assert(sqrt(2.0) == vecMagnitude(s_02));
+
+    return ierr;
 }
 
 
