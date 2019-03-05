@@ -16,6 +16,27 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 }
 
 
+PetscErrorCode printStretchOrCompression(PetscScalar *s_old, PetscScalar *s_new)
+{
+    PetscErrorCode ierr;
+
+    if (vecMagnitude(s_old) < vecMagnitude(s_new))
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Segment has stretched.\n");CHKERRQ(ierr);
+    }
+    else if (vecMagnitude(s_old) > vecMagnitude(s_new))
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Segment has compressed.\n");CHKERRQ(ierr);
+    }
+    else
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Segment is unchanged.\n");CHKERRQ(ierr);
+    }
+
+    return ierr;
+}
+
+
 PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
 {
     PetscErrorCode ierr;
@@ -25,13 +46,39 @@ PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
 	Node *n2 = &(box_ptr->masterNodeList[2]);
 	Node *n3 = &(box_ptr->masterNodeList[3]);
 
+    PetscScalar sp0[DIMENSION], sp1[DIMENSION], sp2[DIMENSION], sp3[DIMENSION];
+
     PetscScalar s_02[DIMENSION], sp02[DIMENSION];
     PetscScalar s_12[DIMENSION], sp12[DIMENSION];
     PetscScalar s_23[DIMENSION], sp23[DIMENSION];
 
-    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr);
+    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
 
     assert(sqrt(2.0) == vecMagnitude(s_02));
+    assert(sqrt(2.0) == vecMagnitude(s_12));
+    assert(sqrt(2.0) == vecMagnitude(s_23));
+
+    int i;
+    for (i = 0; i < DIMENSION; i++)
+    {
+        sp0[i] = n0->xyzCoord[i] + n0->xyzDisplacement[i];
+        sp1[i] = n1->xyzCoord[i] + n1->xyzDisplacement[i];
+        sp2[i] = n2->xyzCoord[i] + n2->xyzDisplacement[i];
+        sp3[i] = n3->xyzCoord[i] + n3->xyzDisplacement[i];
+    }
+
+    ierr = makeDistanceVec(sp02, sp0, sp2, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(sp12, sp1, sp2, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(sp23, sp2, sp3, box_ptr);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n0, n2)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_02, sp02);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n1, n2)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_12, sp12);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n2, n3)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_23, sp23);CHKERRQ(ierr);
 
     return ierr;
 }

@@ -91,7 +91,16 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim);
 PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr);
 
 /**
- * \brief Prints out stretching/compression stats
+ * \brief Prints whether a segment is stretched/compressed 
+ * NOTE: Currently just used for debugging some simple lambda cases, but may be expanded.
+ * \param s_old The old segment vector.
+ * \param s_new The new segment vector.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode printStretchOrCompression(PetscScalar *s_old, PetscScalar *s_new);
+
+/**
+ * \brief Calculates stretching/compression stats
  * NOTE: Currently just used for debugging some simple lambda cases, but may be expanded.
  * \param box_ptr
  * \param par_ptr
