@@ -10,7 +10,8 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)
 	/* 
      * can add more measures of analysis into this function as needed 
      */
-    ierr = stretchCompressionAnalysis(box_ptr, par_ptr);CHKERRQ(ierr);
+    //ierr = stretchCompressionBaseLmb(box_ptr, par_ptr);CHKERRQ(ierr);
+    ierr = stretchCompressionOfpVarLmb(box_ptr, par_ptr);CHKERRQ(ierr);
 	
 	return ierr;
 }
@@ -24,6 +25,7 @@ PetscErrorCode printStretchOrCompression(PetscScalar *s_ab, PetscScalar *u_ab)
     ierr = makeTangentVec(t_ab, s_ab);CHKERRQ(ierr);
     
     PetscScalar dl = vecDotProduct(t_ab, u_ab);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"delta_l = %g\n", dl);CHKERRQ(ierr);
 
     if (vecMagnitude(s_ab) < vecMagnitude(s_ab) + dl)
     {
@@ -42,7 +44,7 @@ PetscErrorCode printStretchOrCompression(PetscScalar *s_ab, PetscScalar *u_ab)
 }
 
 
-PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
+PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
 {
     PetscErrorCode ierr;
 
@@ -61,7 +63,7 @@ PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
     ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
     ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
 
-    assert(sqrt(2.0) == vecMagnitude(s_02));
+//    assert(sqrt(2.0) == vecMagnitude(s_02));
     assert(sqrt(2.0) == vecMagnitude(s_12));
     assert(sqrt(2.0) == vecMagnitude(s_23));
 
@@ -82,12 +84,69 @@ PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr)
     ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
     ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n0, n2)...\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,w)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_02, u_02);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n1, n2)...\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (a,w)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_12, u_12);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (n2, n3)...\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (w,b)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_23, u_23);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_stre_ew = %g\n", box_ptr->masterFibreList[0].fibreStreEnergy);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_stre_awb = %g\n", box_ptr->masterFibreList[1].fibreStreEnergy);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_bend_awb = %g\n", box_ptr->masterFibreList[1].fibreBendEnergy);CHKERRQ(ierr);
+
+    return ierr;
+}
+
+
+PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
+{
+    PetscErrorCode ierr;
+
+	Node *n0 = &(box_ptr->masterNodeList[0]);	
+    Node *n1 = &(box_ptr->masterNodeList[1]);
+	Node *n2 = &(box_ptr->masterNodeList[2]);
+	Node *n3 = &(box_ptr->masterNodeList[3]);
+	Node *n4 = &(box_ptr->masterNodeList[4]);
+	Node *n5 = &(box_ptr->masterNodeList[5]);
+
+    PetscScalar s_04[DIMENSION], sp04[DIMENSION], u_04[DIMENSION];
+    PetscScalar s_42[DIMENSION], sp42[DIMENSION], u_42[DIMENSION];
+    PetscScalar s_12[DIMENSION], sp12[DIMENSION], u_12[DIMENSION];
+    PetscScalar s_23[DIMENSION], sp23[DIMENSION], u_23[DIMENSION];
+    PetscScalar s_45[DIMENSION], sp45[DIMENSION], u_45[DIMENSION];
+
+    ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_45, n4->xyzCoord, n5->xyzCoord, box_ptr);CHKERRQ(ierr);
+
+//    assert(sqrt(2.0) == vecMagnitude(s_02));
+    assert(sqrt(2.0) == vecMagnitude(s_12));
+    assert(sqrt(2.0) == vecMagnitude(s_23));
+
+    ierr = makeDistanceVec(u_04, n0->xyzDisplacement, n4->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_42, n4->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_45, n4->xyzDisplacement, n5->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,p)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_04, u_04);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (p,w)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_42, u_42);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (a,w)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_12, u_12);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (w,b)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_23, u_23);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (s,p)...\n");CHKERRQ(ierr);
+    ierr = printStretchOrCompression(s_45, u_45);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_stre_epw = %g\n", box_ptr->masterFibreList[0].fibreStreEnergy);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_bend_epw = %g\n", box_ptr->masterFibreList[0].fibreBendEnergy);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_stre_awb = %g\n", box_ptr->masterFibreList[1].fibreStreEnergy);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"E_bend_awb = %g\n", box_ptr->masterFibreList[1].fibreBendEnergy);CHKERRQ(ierr);
 
     return ierr;
 }
