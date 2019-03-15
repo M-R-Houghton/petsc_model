@@ -98,6 +98,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
         //printf("l_omegBeta: %0.16g\n", l_omegBeta);
         //printf("l_alphBeta: %0.16g\n", l_alphBeta);
 
+        /*
         int i;
         for (i = 0; i < DIMENSION; i++)
         {
@@ -111,9 +112,10 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
         {
             printf("s_alphBeta: %0.16g\n", s_alphBeta[i]);
         }
+        */
 
         /* for debugging purposes */
-        ///*
+        /*
         for (i = 0; i < 9; i++)
         {
             int j;
@@ -123,7 +125,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
             }
             ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRQ(ierr);
         }
-        //*/
+        */
 
 		/* determine contributions and add to the global system */
         ierr = addBendContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 

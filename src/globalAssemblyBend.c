@@ -53,11 +53,11 @@ PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9],
 		{
 			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 3*i][lInd_B + 3*j], ADD_VALUES);CHKERRQ(ierr);
 			/* WARNING: For debugging ONLY */
-			ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lInd_A + 3*i][lInd_B + 3*j]);CHKERRQ(ierr);
+			//ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lInd_A + 3*i][lInd_B + 3*j]);CHKERRQ(ierr);
 		}
-		ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+		//ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 	}
-	ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+	//ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
 	return ierr;
 }
@@ -113,14 +113,13 @@ PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N
 		 * add matrix contributions
 		 */
 
-		ierr = PetscPrintf(PETSC_COMM_WORLD,"IDs: %d, %d, %d\n", alph_ptr->nodeID, omeg_ptr->nodeID, beta_ptr->nodeID);CHKERRQ(ierr);
+		//ierr = PetscPrintf(PETSC_COMM_WORLD,"IDs: %d, %d, %d\n", alph_ptr->nodeID, omeg_ptr->nodeID, beta_ptr->nodeID);CHKERRQ(ierr);
 
 		/* add (omega,omega) matrix contributions */
 		ierr = addMatSingleBendCont(globalMat_H, localMat, N, omeg_gID, omeg_gID, omeg_lID, omeg_lID);CHKERRQ(ierr);
 
 		if (alph_ptr->nodeType == NODE_INTERNAL)
 		{
-			ierr = PetscPrintf(PETSC_COMM_WORLD,"alph I\n");
 			/* add (alpha,alpha) matrix contributions */
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, alph_gID, alph_gID, alph_lID, alph_lID);CHKERRQ(ierr);
 
@@ -131,7 +130,6 @@ PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N
 
 		if (beta_ptr->nodeType == NODE_INTERNAL)
 		{
-			ierr = PetscPrintf(PETSC_COMM_WORLD,"beta I\n");
 			/* add (beta,beta) matrix contributions */
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, beta_gID, beta_gID, beta_lID, beta_lID);CHKERRQ(ierr);
 
@@ -143,7 +141,6 @@ PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N
 		if (alph_ptr->nodeType == NODE_INTERNAL &&
 			beta_ptr->nodeType == NODE_INTERNAL)
 		{
-			ierr = PetscPrintf(PETSC_COMM_WORLD,"mixed I\n");
 			/* add (alpha,beta) and (beta,alpha) mixed matrix contributions */
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, alph_gID, beta_gID, alph_lID, beta_lID);CHKERRQ(ierr);
 			ierr = addMatSingleBendCont(globalMat_H, localMat, N, beta_gID, alph_gID, beta_lID, alph_lID);CHKERRQ(ierr);
