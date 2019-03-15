@@ -49,6 +49,11 @@ PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
     PetscErrorCode ierr;
 
     /* this function is only meaningful for the correct input data */
+    if (strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_p01_in.dat") != 0)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Incorrect data for stretch/compression analysis.\n");CHKERRQ(ierr);
+        return ierr;
+    }
     assert(strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_p01_in.dat") == 0);
 
 	Node *n0 = &(box_ptr->masterNodeList[0]);	
@@ -107,6 +112,11 @@ PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
     PetscErrorCode ierr;
 
     /* this function is only meaningful for the correct input data */
+    if (strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_ofp1_in.dat") != 0)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"Incorrect data for stretch/compression analysis.\n");CHKERRQ(ierr);
+        return ierr;
+    }
     assert(strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_ofp1_in.dat") == 0);
 
 	Node *n0 = &(box_ptr->masterNodeList[0]);	
@@ -116,11 +126,11 @@ PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
 	Node *n4 = &(box_ptr->masterNodeList[4]);
 	Node *n5 = &(box_ptr->masterNodeList[5]);
 
-    PetscScalar s_04[DIMENSION], sp04[DIMENSION], u_04[DIMENSION];
-    PetscScalar s_42[DIMENSION], sp42[DIMENSION], u_42[DIMENSION];
-    PetscScalar s_12[DIMENSION], sp12[DIMENSION], u_12[DIMENSION];
-    PetscScalar s_23[DIMENSION], sp23[DIMENSION], u_23[DIMENSION];
-    PetscScalar s_45[DIMENSION], sp45[DIMENSION], u_45[DIMENSION];
+    PetscScalar s_04[DIMENSION], u_04[DIMENSION];
+    PetscScalar s_42[DIMENSION], u_42[DIMENSION];
+    PetscScalar s_12[DIMENSION], u_12[DIMENSION];
+    PetscScalar s_23[DIMENSION], u_23[DIMENSION];
+    PetscScalar s_45[DIMENSION], u_45[DIMENSION];
 
     ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr);CHKERRQ(ierr);
     ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
