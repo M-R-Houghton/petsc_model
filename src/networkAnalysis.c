@@ -48,6 +48,9 @@ PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
 {
     PetscErrorCode ierr;
 
+    /* this function is only meaningful for the correct input data */
+    assert(strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_p01_in.dat") == 0);
+
 	Node *n0 = &(box_ptr->masterNodeList[0]);	
     Node *n1 = &(box_ptr->masterNodeList[1]);
 	Node *n2 = &(box_ptr->masterNodeList[2]);
@@ -102,6 +105,9 @@ PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
 PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
 {
     PetscErrorCode ierr;
+
+    /* this function is only meaningful for the correct input data */
+    assert(strcmp(par_ptr->inputNetwork, "data/dat/lmb/lmb_3d_ofp1_in.dat") == 0);
 
 	Node *n0 = &(box_ptr->masterNodeList[0]);	
     Node *n1 = &(box_ptr->masterNodeList[1]);
