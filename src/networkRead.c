@@ -367,7 +367,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupl
 
     PetscInt i=0;
     Couple *cpl = &(box_ptr->masterCoupleList[i]);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
 
 	return ierr;
 }
