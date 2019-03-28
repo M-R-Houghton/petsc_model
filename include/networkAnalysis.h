@@ -100,12 +100,21 @@ PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr);
 PetscErrorCode printStretchOrCompression(PetscScalar *s_ab, PetscScalar *u_ab);
 
 /**
- * \brief Calculates stretching/compression stats
+ * \brief Calculates stretching/compression stats for the base lmb case
  * NOTE: Currently just used for debugging some simple lambda cases, but may be expanded.
  * \param box_ptr
  * \param par_ptr
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode stretchCompressionAnalysis(Box *box_ptr, Parameters *par_ptr);
+PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr);
+
+/**
+ * \brief Calculates stretching/compression stats for the off plane lmb variant
+ * NOTE: Currently just used for debugging some simple lambda cases, but may be expanded.
+ * \param box_ptr
+ * \param par_ptr
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr);
 
 #endif
