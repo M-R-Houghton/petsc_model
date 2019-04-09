@@ -114,9 +114,8 @@ void checkInternalNodeIndices(const Box *box_ptr)
         if (node_ptr->globalID == -2) 
         {
             PetscPrintf(PETSC_COMM_WORLD,"index is %d\n", i);
-        }
-        if (node_ptr->globalID == -2) 
             PetscPrintf(PETSC_COMM_WORLD,"node type is: %d\n", node_ptr->nodeType);
+        }
         assert(node_ptr->globalID != -2);
     }
 }
