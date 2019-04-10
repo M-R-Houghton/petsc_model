@@ -441,6 +441,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
 	/* total nodes is total splits -0 
 	 * ...where total splits includes split at end of line     */
 	PetscInt nodesOnCouple 	= splitCounter;
+    assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
 /* END: temporary read-in of variable node on couple numbers */
 
 /* START: temporary makeCouple w/ variable couple length */
