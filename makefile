@@ -1,4 +1,4 @@
-ALL:			 model
+ALL:			 model check
 CFLAGS	         = -I $(INC_DIR) -I $(TEST_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
@@ -33,6 +33,9 @@ include ${PETSC_DIR}/lib/petsc/conf/rules
 
 parfiles: $(PAR)
 	@echo "Generating par files $(PAR)"
+
+check:
+	./auto_file_check.sh lmb
 
 model: $(OBJ) $(TEST_OBJ) chkopts
 	${CLINKER} -o model $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB} 
