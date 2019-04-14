@@ -410,6 +410,32 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 }
 
 
+/* Tokenises a line by splitting at whitespace */
+PetscInt tokeniseLine(char *line_ptr, char *infoArray)
+{
+    PetscInt splitCount = 0;
+
+    /* check allocated info array is large enough to store line_ptr */
+    assert(strlen(line_ptr) == sizeof(infoArray)/sizeof(infoArray[0]));
+
+	/* preprocess line by removing rhs trailing whitespace */
+    char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
+
+    /* split string once and store token */
+    char *tkn_ptr = strtok(trimmedLine_ptr, " ");
+
+    /* loop until no more tokens can be taken */
+    while(tkn_ptr != NULL)
+    {
+        infoArray[splitCount] = tkn_ptr;
+        tkn_ptr = strtok(NULL, " ");
+        splitCount += 1;
+    }
+
+    return splitCount;
+}
+
+
 /* Reads node couple information from a given line pointer */
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)
 {
