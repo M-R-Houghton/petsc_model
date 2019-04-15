@@ -146,6 +146,7 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
     {
         /* standard numbering */
         totalInternalIndices = setStandardInternalNodeIndices(box_ptr, 0);
+        /* TODO: Bring this out of else and adjust newIndex to be totalInternalIndices */
     }
     checkInternalNodeIndices(box_ptr);
 
@@ -178,6 +179,7 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
 }
 
 
+/* TODO: Amend name to be Node not Nodes */
 PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount)
 {
     PetscInt    i,j,newIndex=0;
