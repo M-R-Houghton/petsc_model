@@ -413,6 +413,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 /* Tokenises a line by splitting at whitespace */
 PetscInt tokeniseLine(char *line_ptr, char *infoArray)
 {
+    /* WARNING: THIS FUNCTION IS NOT THREAD SAFE */
     PetscInt splitCount = 0;
 
     /* check allocated info array is large enough to store line_ptr */
