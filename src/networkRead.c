@@ -452,7 +452,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     couple_ptr->nodesInCouple = nodesOnCouple;
 	PetscInt nID;
 
-	for (nID = 0; nID < splitCounter; nID++)
+	for (nID = 0; nID < nodesOnCouple; nID++)
 	{
         assert(nID < MAX_NODES_ON_COUPLE);
         couple_ptr->nodeID[nID] = atoi(cplInfoArray[nID]);
