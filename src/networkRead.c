@@ -119,6 +119,7 @@ void checkInternalNodeIndices(const Box *box_ptr)
 PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
 {
     PetscInt totalInternalIndices = 0;
+    PetscInt newIndex = 0;
     PetscErrorCode ierr;
 
     if (coupledSystem)
@@ -126,24 +127,22 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
         PetscInt totalInternalCouples;
 
         /* coupled numbering */
-        totalInternalCouples = setCoupledInternalNodeIndices(box_ptr, coupleCount);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"count after couple stuff %d\n",totalInternalCouples);CHKERRQ(ierr);
-        totalInternalIndices = setStandardInternalNodeIndices(box_ptr, totalInternalCouples);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"count after additional stuff %d\n",totalInternalIndices);CHKERRQ(ierr);
-
-        /* if no stray internal nodes are found, count should match last given index */
-        if (totalInternalCouples == totalInternalIndices)
-        {
-            assert(coupleCount == totalInternalIndices);
-        }
+        newIndex = setCoupledInternalNodeIndices(box_ptr, coupleCount);
     }
     else 
     {
         /* standard numbering */
-        totalInternalIndices = setStandardInternalNodeIndices(box_ptr, 0);
+        assert(newIndex == 0);
         /* TODO: Bring this out of else and adjust newIndex to be totalInternalIndices */
     }
+    totalInternalIndices = setStandardInternalNodeIndices(box_ptr, newIndex);
     checkInternalNodeIndices(box_ptr);
+
+    /* if no stray internal nodes are found, count should match last given index */
+    if (totalInternalIndices == newIndex)
+    {
+        assert(totalInternalIndices == coupleCount);
+    }
 
     return totalInternalIndices;
 }
