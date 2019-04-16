@@ -449,22 +449,11 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
 	}
 /* END: temporary makeCouple w/ variable couple length */
 
-  	//PetscInt 		nID1, nID2;
-
-	/* read in a node couple line */
-	//sscanf(line_ptr, "%d %d", &nID1, &nID2);
-
-	/* assign scanned values to a node */
-	//ierr = makeCouple(box_ptr, coupleID, nID1, nID2);CHKERRQ(ierr);
+    /* debug printing */
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",coupleID,couple_ptr->nodeID[0],couple_ptr->nodeID[1]);CHKERRQ(ierr);
 
     /* need to implement updated couple builder */
 	//ierr = makeCouple(box_ptr, coupleID, nodesInCouple, cplInfoArray);CHKERRQ(ierr);
-
-    /*
-    PetscInt i=0;
-    Couple *cpl = &(box_ptr->masterCoupleList[i]);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
-    */
 
 	return ierr;
 }
