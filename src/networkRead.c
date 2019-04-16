@@ -6,11 +6,6 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	PetscErrorCode 	ierr = 0;
     PetscBool       coupledSystem = PETSC_FALSE;
 
-	/* declare array for storing line, pointer, and counter for current line */
-	char line[MAX_LENGTH], *line_ptr;
-	PetscInt line_number = 0;
-	FILE *fp;
-
 	/* setup global index */
 	PetscInt gIndex = 0;
 	PetscInt *gIndex_ptr = &gIndex;
