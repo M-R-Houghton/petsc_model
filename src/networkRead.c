@@ -116,7 +116,7 @@ void checkInternalNodeIndices(const Box *box_ptr)
 }
 
 
-PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
+PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, const PetscInt coupleCount)
 {
     PetscErrorCode  ierr;
     PetscInt        nextIndex = 0;

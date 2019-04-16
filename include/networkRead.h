@@ -50,7 +50,7 @@ PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount);
  * \param coupledSystem Petsc boolean indicating whether the network has coupled nodes.
  * \return Index to represent Petsc error code.
  */
-PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount);
+PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, const PetscInt coupleCount);
 
 /**
  * \brief Sets the global indices of all the standard internal nodes of a network
