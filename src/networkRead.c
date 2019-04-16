@@ -348,34 +348,16 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
     /* check allocated info array is large enough to store line_ptr */
     assert(strlen(line_ptr) < sizeof(fibreInfoArray)/sizeof(fibreInfoArray[0]));
 
+    /* tokenise the line and retrieve total count of tokens */
     PetscInt tknCount = tokeniseLine(line_ptr, fibreInfoArray);
+
+	/* total nodes is token count -1 for ID and -1 for radius
+	 * ...where token count includes a token split at end of line */
     PetscInt nodesOnFibre = tknCount - 2;
-    
-	/* preprocess line by removing rhs trailing whitespace */
-	//char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
-	//
-	///* declare array to store tokens of fibre information */
-	//char *fibreInfoArray[strlen(trimmedLine_ptr)+1];
-
-	///* split string once and store token */
-	//char *tkn_ptr = strtok(trimmedLine_ptr, " ");
-
-	//PetscInt splitCounter = 0;
-	//while(tkn_ptr != NULL)	/* while token exists */
-	//{
-	//	/* add token to array and split string again */
-	//	fibreInfoArray[splitCounter] = tkn_ptr;
-	//	tkn_ptr = strtok(NULL, " ");
-	//	splitCounter += 1;
-	//}
 
 	/* determine the first few fibre attributes */
 	PetscInt fibreID 		= (int)fibreInfoArray[0];
 	PetscScalar radius 		= fibreInfoArray[1];
-
-	/* total nodes is total splits -1 for ID and -1 for radius
-	 * ...where total splits includes split at end of line     */
-	//PetscInt nodesOnFibre 	= splitCounter - 2;
 
 	/* allocate storage for list of nodes on fibre */
 	Node **nodeList_ptr_ptr = (Node**)calloc(nodesOnFibre, sizeof(Node*));
@@ -419,7 +401,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
 }
 
 
-/* Tokenises a line by splitting at whitespace */
+/* Tokenises a line into floats by splitting at whitespace */
 PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray)
 {
     /* WARNING: THIS FUNCTION IS NOT THREAD SAFE */
@@ -447,41 +429,19 @@ PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray)
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)
 {
 	PetscErrorCode 	ierr = 0;
-	PetscScalar cplInfoArray[strlen(line_ptr)+1];
+    PetscInt        lineLength = strlen(line_ptr)+1;
+	PetscScalar     cplInfoArray[lineLength];
 
     /* check allocated info array is large enough to store line_ptr */
-    assert(strlen(line_ptr) < sizeof(cplInfoArray)/sizeof(cplInfoArray[0]));
+    assert(lineLength <= sizeof(cplInfoArray)/sizeof(cplInfoArray[0]));
 
+    /* tokenise the line and retrieve total count of tokens 
+     * ...which in this case is the number of nodes on the couple */
     PetscInt nodesOnCouple = tokeniseLine(line_ptr, cplInfoArray);
+    assert(nodesOnCouple < lineLength);
+
+    /* until node ID list is dynamically allocated, the limit should be enforced */
     assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
-
-/* START: temporary read-in of variable node on couple numbers */
-	/* preprocess line by removing rhs trailing whitespace */
-	//char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
-
-    //int arraySize  = strlen(trimmedLine_ptr) + 1;
-	//
-	///* declare array to store tokens of fibre information */
-	//char *cplInfoArray[strlen(trimmedLine_ptr)+1];
-
-	///* split string once and store token */
-	//char *tkn_ptr = strtok(trimmedLine_ptr, " ");
-
-	//PetscInt splitCounter = 0;
-	//while(tkn_ptr != NULL)	/* while token exists */
-	//{
-	//	/* add token to array and split string again */
-	//	cplInfoArray[splitCounter] = tkn_ptr;
-	//	tkn_ptr = strtok(NULL, " ");
-	//	splitCounter += 1;
-	//}
-
-    //assert(arraySize > splitCounter);
-
-	/* total nodes is total splits -0 
-	 * ...where total splits includes split at end of line     */
-	//PetscInt nodesOnCouple 	= splitCounter;
-/* END: temporary read-in of variable node on couple numbers */
 
 /* START: temporary makeCouple w/ variable couple length */
     Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);

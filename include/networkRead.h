@@ -112,9 +112,10 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma);
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID);
 
 /* 
- * \brief Tokenises a line by splitting at whitespace 
+ * \brief Tokenises a line into floats by splitting at whitespace
+ * This function should not be passed any lines still containing non-numeric information
  * \param line_ptr Pointer to the line.
- * \param infoArray Array for storing info from the split string
+ * \param infoArray Array for storing info as floats from the split string
  * \return Integer representing number of elements in the array.
  */
 PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray);
