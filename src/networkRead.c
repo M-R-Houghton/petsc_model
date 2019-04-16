@@ -118,41 +118,29 @@ void checkInternalNodeIndices(const Box *box_ptr)
 
 PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, PetscInt coupleCount)
 {
-    PetscInt totalInternalIndices = 0;
-    PetscInt newIndex = 0;
-    PetscErrorCode ierr;
+    PetscErrorCode  ierr;
+    PetscInt        nextIndex = 0;
 
     if (coupledSystem)
     {
-        PetscInt totalInternalCouples;
-
         /* coupled numbering */
-        newIndex = setCoupledInternalNodeIndices(box_ptr, coupleCount);
+        ierr = setCoupledInternalNodeIndices(box_ptr, coupleCount, &nextIndex);
+        assert(coupleCount == nextIndex);
     }
-    else 
-    {
-        /* standard numbering */
-        assert(newIndex == 0);
-        /* TODO: Bring this out of else and adjust newIndex to be totalInternalIndices */
-    }
-    totalInternalIndices = setStandardInternalNodeIndices(box_ptr, newIndex);
+    /* standard numbering */
+    ierr = setStandardInternalNodeIndices(box_ptr, &nextIndex);
+    assert(coupleCount <= nextIndex);
     checkInternalNodeIndices(box_ptr);
 
-    /* if no stray internal nodes are found, count should match last given index */
-    if (totalInternalIndices == newIndex)
-    {
-        assert(totalInternalIndices == coupleCount);
-    }
-
-    return totalInternalIndices;
+    return nextIndex;
 }
 
 
-PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
+PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex)
 {
     PetscInt i;
     PetscErrorCode ierr;
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"\nstarting val= %d\n", newIndex);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"\nstarting val= %d\n", *nextIndex);CHKERRQ(ierr);
     /* loop over every node of the network */
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
@@ -162,21 +150,20 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
             ierr = PetscPrintf(PETSC_COMM_WORLD,"Found an additional internal node.\n");CHKERRQ(ierr);
 
             assert(node_ptr->nodeType == NODE_INTERNAL);
-            node_ptr->globalID = newIndex;
-            newIndex += 1;
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"incremented val = %d\n", newIndex);CHKERRQ(ierr);
+            node_ptr->globalID = *nextIndex;
+            *nextIndex += 1;
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"incremented val = %d\n", *nextIndex);CHKERRQ(ierr);
         }
     }        
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"ending val = %d\n", newIndex);CHKERRQ(ierr);
-    return newIndex;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"ending val = %d\n", *nextIndex);CHKERRQ(ierr);
+    return ierr;
 }
 
 
-/* TODO: Amend name to be Node not Nodes */
-PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount, PetscInt *nextIndex)
 {
-    PetscInt    i,j,newIndex=0;
+    PetscInt    i,j;
 
     int internalCountInCouples = 0;
     for (i = 0; i < coupleCount; i++)
@@ -205,7 +192,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
                 assert(node_ptr->globalID == -2);
 
                 /* reassign internal node ID once happy it is the right node */
-                node_ptr->globalID = newIndex;
+                node_ptr->globalID = *nextIndex;
 
                 internalCountInCouples++;
             }
@@ -232,7 +219,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
         else
         {
             /* only increment index when couple is composed of internal nodes */
-            newIndex += 1;
+            *nextIndex += 1;
         }
 
         /* WARNING: Uncaught possibility when all nodes in couple are boundary! */
@@ -240,7 +227,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
 
     PetscInt ierr;
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\nTotal internal couple nodes = %d\n", internalCountInCouples);CHKERRQ(ierr);
-    return newIndex;
+    return ierr;
 }
 
 

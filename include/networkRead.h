@@ -58,18 +58,19 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
  * internal nodes not associated with couples AFTER couple internal nodes have been 
  * given a shared index.
  * \param box_ptr Pointer to box containing the internal nodes.
- * \param newIndex The starting index to be assigned to all found internal nodes
+ * \param nextIndex Pointer of the index to be assigned to all found internal nodes
  * \return Index to represent Petsc error code.
  */
-PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex);
+PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a coupled network
  * \param box_ptr Pointer to box containing the internal nodes.
  * \param coupleCount An integer counter for the number of couples in the network.
+ * \param nextIndex Pointer to the next index to be assigned.
  * \return Index to represent Petsc error code.
  */
-PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount);
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount, PetscInt *nextIndex);
 
 /**
  * \brief Checks global indices of all internal nodes have been set 
