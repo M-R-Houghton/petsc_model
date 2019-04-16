@@ -131,7 +131,7 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, Pet
         PetscInt totalInternalCouples;
 
         /* coupled numbering */
-        totalInternalCouples = setCoupledInternalNodesIndices(box_ptr, coupleCount);
+        totalInternalCouples = setCoupledInternalNodeIndices(box_ptr, coupleCount);
         ierr = PetscPrintf(PETSC_COMM_WORLD,"count after couple stuff %d\n",totalInternalCouples);CHKERRQ(ierr);
         totalInternalIndices = setStandardInternalNodeIndices(box_ptr, totalInternalCouples);
         ierr = PetscPrintf(PETSC_COMM_WORLD,"count after additional stuff %d\n",totalInternalIndices);CHKERRQ(ierr);
@@ -180,7 +180,7 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex)
 
 
 /* TODO: Amend name to be Node not Nodes */
-PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount)
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
 {
     PetscInt    i,j,newIndex=0;
 

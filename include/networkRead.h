@@ -69,7 +69,7 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt newIndex);
  * \param coupleCount An integer counter for the number of couples in the network.
  * \return Index to represent Petsc error code.
  */
-PetscInt setCoupledInternalNodesIndices(Box *box_ptr, const PetscInt coupleCount);
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount);
 
 /**
  * \brief Checks global indices of all internal nodes have been set 
