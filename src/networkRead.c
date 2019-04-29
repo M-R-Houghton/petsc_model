@@ -7,26 +7,19 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     PetscBool       coupledSystem = PETSC_FALSE;
 
 	/* setup global index */
-	PetscInt gIndex = 0;
-	PetscInt *gIndex_ptr = &gIndex;
+	PetscInt        gIndex = 0;
 
     readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
 
-    /* read data line counts the number of couples in gIndex_ptr */ 
+    /* read data line counts the number of couples in gIndex */ 
     if (gIndex > 0) coupledSystem = PETSC_TRUE;
 
-    /* 
-     * WARNING: This is all still very messy and needs to be made much cleaner!!!
-     * WARNING: Don't forget to also add in the unit tests as you go!
-     * WARNING: Get rid of as much of the duplication as possible!
-     */
     if (coupledSystem)
     {
         ierr = PetscPrintf(PETSC_COMM_WORLD,"YES WE HAVE A COUPLED SYSTEM\n");CHKERRQ(ierr);
 
         /* sanity check: couples not counted if this fails */
         assert(gIndex != 0);
-        //assert(gIndex == *gIndex_ptr);
 
         /* use counted couples to allocate master couple array */
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
@@ -54,13 +47,11 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
             ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
         }
     }
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"g_ptr = %d\n", *gIndex_ptr);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
 
     /* produce numbering for internal nodes */
     PetscInt gIDTotal = setInternalNodeIndices(*box_ptr_ptr, coupledSystem, gIndex);CHKERRQ(ierr);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"g_ptr = %d\n", *gIndex_ptr);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"gIDTotal = %d\n", gIDTotal);CHKERRQ(ierr);
 
