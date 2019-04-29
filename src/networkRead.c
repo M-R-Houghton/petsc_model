@@ -10,10 +10,10 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 	PetscInt gIndex = 0;
 	PetscInt *gIndex_ptr = &gIndex;
 
-    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, gIndex_ptr, gamma);
+    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
 
     /* read data line counts the number of couples in gIndex_ptr */ 
-    if (*gIndex_ptr > 0) coupledSystem = PETSC_TRUE;
+    if (gIndex > 0) coupledSystem = PETSC_TRUE;
 
     /* 
      * WARNING: This is all still very messy and needs to be made much cleaner!!!
@@ -26,15 +26,15 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 
         /* sanity check: couples not counted if this fails */
         assert(gIndex != 0);
-        assert(gIndex == *gIndex_ptr);
+        //assert(gIndex == *gIndex_ptr);
 
         /* use counted couples to allocate master couple array */
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
 
         /* couple count now to be used as index */
-        *gIndex_ptr = 0;
+        gIndex = 0;
 
-        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, gIndex_ptr, gamma);
+        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
         
         // For debugging only 
         int c,counter=0;
