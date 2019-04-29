@@ -25,7 +25,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
 
         /* couple count now to be used as index */
-        gIndex = 0;
+        //gIndex = 0;
 
         readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
         
@@ -74,20 +74,20 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
     if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
 
     /* ignore all entries except for the couple lines */
-    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
-    {
-        if (!readCouplesOnly)   /* if first pass, read everything but don't build couples */
-        {
-		    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
-        }
-        else                    /* if second pass only read couples and build couple information */
-        {
-            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
-        }
-    }
+    //while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+    //{
+    //    if (!readCouplesOnly)   /* if first pass, read everything but don't build couples */
+    //    {
+	//	    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+    //    }
+    //    else                    /* if second pass only read couples and build couple information */
+    //    {
+    //        ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+    //    }
+    //}
 
     /* if second pass only read couples and build couple information */ 
-    /*
+    ///*
     if (*gIndex_ptr > 0) 
     {
         *gIndex_ptr = 0;
@@ -104,7 +104,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
 		    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
         }
     }
-    */
+    //*/
 
     /* collect file close return code */
     ierr = fclose(fp);
