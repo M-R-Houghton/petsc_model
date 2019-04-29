@@ -50,7 +50,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
 
     /* produce numbering for internal nodes */
-    PetscInt gIDTotal = setInternalNodeIndices(*box_ptr_ptr, coupledSystem, gIndex);CHKERRQ(ierr);
+    PetscInt gIDTotal = setInternalNodeIndices(*box_ptr_ptr, gIndex);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"gIDTotal = %d\n", gIDTotal);CHKERRQ(ierr);
@@ -108,7 +108,7 @@ void checkInternalNodeIndices(const Box *box_ptr)
 }
 
 
-PetscInt setInternalNodeIndices(Box *box_ptr, const PetscBool coupledSystem, const PetscInt coupleCount)
+PetscInt setInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
 {
     PetscErrorCode  ierr;
     PetscInt        nextIndex = 0;
