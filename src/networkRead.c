@@ -1,7 +1,7 @@
 #include "networkRead.h"
 
 /* Initiates network read in routine */
-PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma)
+PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)
 {
 	PetscErrorCode 	ierr = 0;
     PetscBool       coupledSystem = PETSC_FALSE;
@@ -63,7 +63,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 
 
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscBool readCouplesOnly, PetscInt *coupleCount, PetscScalar gamma)
+                                PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma)
 {
     PetscErrorCode ierr = 0;
     FILE *fp;
@@ -231,7 +231,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
 
 
 /* Reads network data from a given line pointer */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, PetscScalar gamma)
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, const PetscScalar gamma)
 {
 	PetscErrorCode  ierr = 0;
     PetscBool       coupledSystem = PETSC_FALSE;
@@ -361,7 +361,7 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
 
 
 /* Reads node information from a given line pointer */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma)
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamma)
 {
 	PetscErrorCode 	ierr;
   	PetscInt 		nID, nType;

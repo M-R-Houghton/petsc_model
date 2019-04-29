@@ -10,7 +10,7 @@
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma);
+PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma);
 
 /**
  * \brief Reads network input data from a given file name.
@@ -19,12 +19,12 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
  * \param fileToRead_ptr Pointer to the file to be read.
  * \param box_ptr Pointer to box for data to be written to.
  * \param readCouplesOnly Determines whether to read the couple data only or not.
- * \param cIndex_ptr Pointer to the current couple index.
+ * \param coupleCount Pointer to the current couple index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscBool readCouplesOnly, PetscInt *cIndex_ptr, PetscScalar gamma);
+                                PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma);
 /**
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.
@@ -33,7 +33,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, PetscScalar gamma);
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, const PetscScalar gamma);
 
 /**
  * \brief Reads couple data from a given network
@@ -101,7 +101,7 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr);
  * \param gamma Node's gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma);
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamma);
 
 /**
  * \brief Reads couple information from a given line pointer
