@@ -85,6 +85,27 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
             ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
         }
     }
+
+    /* if second pass only read couples and build couple information */ 
+    /*
+    if (*gIndex_ptr > 0) 
+    {
+        *gIndex_ptr = 0;
+
+        while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+        {
+            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+        }
+    }
+    else                    
+    {
+        while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+        {
+		    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+        }
+    }
+    */
+
     /* collect file close return code */
     ierr = fclose(fp);
     
