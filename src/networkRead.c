@@ -7,27 +7,27 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
     PetscBool       coupledSystem = PETSC_FALSE;
 
 	/* setup global index */
-	PetscInt        gIndex = 0;
+	PetscInt        coupleCount = 0;
 
-    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
+    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &coupleCount, gamma);
 
-    /* read data line counts the number of couples in gIndex */ 
-    if (gIndex > 0) coupledSystem = PETSC_TRUE;
+    /* read data line counts the number of couples in coupleCount */ 
+    if (coupleCount > 0) coupledSystem = PETSC_TRUE;
 
     if (coupledSystem)
     {
         ierr = PetscPrintf(PETSC_COMM_WORLD,"YES WE HAVE A COUPLED SYSTEM\n");CHKERRQ(ierr);
 
         /* sanity check: couples not counted if this fails */
-        assert(gIndex != 0);
+        assert(coupleCount != 0);
 
         /* use counted couples to allocate master couple array */
-        (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(gIndex, sizeof(Couple));
+        (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(coupleCount, sizeof(Couple));
 
         /* couple count now to be used as index */
-        //gIndex = 0;
+        //coupleCount = 0;
 
-        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &gIndex, gamma);
+        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &coupleCount, gamma);
         
         // For debugging only 
         int c,counter=0;
@@ -47,12 +47,12 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
             ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
         }
     }
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", coupleCount);CHKERRQ(ierr);
 
     /* produce numbering for internal nodes */
-    PetscInt gIDTotal = setInternalNodeIndices(*box_ptr_ptr, gIndex);CHKERRQ(ierr);
+    PetscInt gIDTotal = setInternalNodeIndices(*box_ptr_ptr, coupleCount);CHKERRQ(ierr);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", gIndex);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", coupleCount);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"gIDTotal = %d\n", gIDTotal);CHKERRQ(ierr);
 
 	/* use final global index to set total internal nodes */
@@ -63,7 +63,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscS
 
 
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscBool readCouplesOnly, PetscInt *gIndex_ptr, PetscScalar gamma)
+                                PetscBool readCouplesOnly, PetscInt *coupleCount, PetscScalar gamma)
 {
     PetscErrorCode ierr = 0;
     FILE *fp;
@@ -78,30 +78,30 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
     //{
     //    if (!readCouplesOnly)   /* if first pass, read everything but don't build couples */
     //    {
-	//	    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+	//	    ierr = readDataLine(line_ptr, box_ptr_ptr, coupleCount, gamma);CHKERRQ(ierr);
     //    }
     //    else                    /* if second pass only read couples and build couple information */
     //    {
-    //        ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+    //        ierr = readCoupleData(line_ptr, *box_ptr_ptr, coupleCount);CHKERRQ(ierr);
     //    }
     //}
 
     /* if second pass only read couples and build couple information */ 
     ///*
-    if (*gIndex_ptr > 0) 
+    if (*coupleCount > 0) 
     {
-        *gIndex_ptr = 0;
+        *coupleCount = 0;
 
         while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
         {
-            ierr = readCoupleData(line_ptr, *box_ptr_ptr, gIndex_ptr);CHKERRQ(ierr);
+            ierr = readCoupleData(line_ptr, *box_ptr_ptr, coupleCount);CHKERRQ(ierr);
         }
     }
     else                    
     {
         while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
         {
-		    ierr = readDataLine(line_ptr, box_ptr_ptr, gIndex_ptr, gamma);CHKERRQ(ierr);
+		    ierr = readDataLine(line_ptr, box_ptr_ptr, coupleCount, gamma);CHKERRQ(ierr);
         }
     }
     //*/
