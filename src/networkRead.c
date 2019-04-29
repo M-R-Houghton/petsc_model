@@ -25,7 +25,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(coupleCount, sizeof(Couple));
 
         /* couple count now to be used as index */
-        //coupleCount = 0;
+        coupleCount = 0;
 
         readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &coupleCount, gamma);
         
@@ -87,7 +87,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
     //}
 
     /* if second pass only read couples and build couple information */ 
-    ///*
+    /*
     if (*coupleCount > 0) 
     {
         *coupleCount = 0;
@@ -104,7 +104,15 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
 		    ierr = readDataLine(line_ptr, box_ptr_ptr, coupleCount, gamma);CHKERRQ(ierr);
         }
     }
-    //*/
+    */
+
+    /* this should always be zero before starting */
+    assert(*coupleCount == 0);
+
+    while ((line_ptr = fgets(line, sizeof(line), fp)) != NULL)
+    {
+        ierr = readDataLine(line_ptr, box_ptr_ptr, readCouplesOnly, coupleCount, gamma);CHKERRQ(ierr);
+    }
 
     /* collect file close return code */
     ierr = fclose(fp);
@@ -231,37 +239,56 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
 
 
 /* Reads network data from a given line pointer */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, const PetscScalar gamma)
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma)
 {
 	PetscErrorCode  ierr = 0;
-    PetscBool       coupledSystem = PETSC_FALSE;
-
+    
 	/* collect initial character and move pointer to where cropped line begins */
     char *tkn_ptr        = strtok(line_ptr, " ");
     char *lineCrop_ptr   = tkn_ptr + 2;
 	
-	/* switch over different line types */
-	switch (*tkn_ptr)
-	{
-		case 'b':
-			/* pass line pointer to box line reader */
-			ierr = readBoxLine(lineCrop_ptr, box_ptr_ptr);CHKERRQ(ierr);
-			break;
-		case 'f':
-			/* pass line pointer to fibre line reader */
-			ierr = readFibreLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
-			break;
-		case 'n':
-			/* pass line pointer to node line reader */
-			ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, gamma);CHKERRQ(ierr);
-			break;
-        case 'c':
-            coupledSystem = PETSC_TRUE;
-            *cIndex_ptr += 1;
-            break;
-		default:
-			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
-	}
+    if (!readCouplesOnly)
+    {
+	    /* switch over different line types */
+	    switch (*tkn_ptr)
+	    {
+	    	case 'b':
+	    		/* pass line pointer to box line reader */
+	    		ierr = readBoxLine(lineCrop_ptr, box_ptr_ptr);CHKERRQ(ierr);
+	    		break;
+	    	case 'f':
+	    		/* pass line pointer to fibre line reader */
+	    		ierr = readFibreLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
+	    		break;
+	    	case 'n':
+	    		/* pass line pointer to node line reader */
+	    		ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, gamma);CHKERRQ(ierr);
+	    		break;
+            case 'c':
+                *coupleCount += 1;
+                break;
+	    	default:
+	    		SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
+	    }
+    }
+    else
+    {
+	    /* switch over different line types */
+	    switch (*tkn_ptr)
+	    {
+	    	case 'b':
+	    	case 'f':
+	    	case 'n':
+	    		break;
+            case 'c':
+	            /* pass line pointer to cpl line reader */
+                ierr = readCoupleLine(lineCrop_ptr, *box_ptr_ptr, *coupleCount);CHKERRQ(ierr);
+                *coupleCount += 1;
+                break;
+	    	default:
+	    		SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
+	    }
+    }
 
 	return ierr;
 }

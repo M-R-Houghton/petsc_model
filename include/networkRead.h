@@ -29,11 +29,12 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param cIndex_ptr Pointer to the current couple index.
+ * \param readCouplesOnly Determines whether to read the couple data only or not.
+ * \param coupleCount Pointer to the current couple index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, const PetscScalar gamma);
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma);
 
 /**
  * \brief Reads couple data from a given network
