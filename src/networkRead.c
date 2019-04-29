@@ -164,69 +164,55 @@ PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex)
 
 PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount, PetscInt *nextIndex)
 {
-    PetscInt    i,j;
+    PetscErrorCode  ierr = 0;
+    PetscInt        i,j;
+    PetscInt        internalCountInCouples = 0;
 
-    int internalCountInCouples = 0;
     for (i = 0; i < coupleCount; i++)
     {
-        PetscBool allBoundary    = PETSC_TRUE;
-        Couple *couple_ptr = &(box_ptr->masterCoupleList[i]);
+        /* assume all nodes on cpl are boundary and find contradiction */
+        PetscBool   allBoundary = PETSC_TRUE;
+        Couple      *couple_ptr = &(box_ptr->masterCoupleList[i]);
         
         /* loop over couple in the unlikely case that there is a '3rd' coupled node */
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
-            PetscPrintf(PETSC_COMM_WORLD,"%d, ", couple_ptr->nodeID[j]);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"%d, ", couple_ptr->nodeID[j]);CHKERRQ(ierr);
 
             /* reference the node with the corresponding ID */
             Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->nodeID[j]]);
 
-            /* sanity check: should always match by definition */
+            /* node and cpl IDs should be consistent by definition */
             assert(node_ptr->nodeID == couple_ptr->nodeID[j]);
-
-            /* shouldn't encounter any dangling nodes in couples */
+            /* dangling nodes in couples should not be possible */
             assert(node_ptr->nodeType != 1);
 
             if (node_ptr->nodeType == 0)
             {
-                allBoundary = PETSC_FALSE;
                 /* shouldn't assign new ID to anything but new internal nodes */
                 assert(node_ptr->globalID == -2);
 
-                /* reassign internal node ID once happy it is the right node */
+                /* assign new ID and increment count of internal nodes */
                 node_ptr->globalID = *nextIndex;
-
                 internalCountInCouples++;
+
+                allBoundary = PETSC_FALSE;
             }
-            else if (node_ptr->nodeType == 2)
+            else 
             {
-                /* found boundary couple */
+                /* ID should not have already been reassigned */
                 assert(node_ptr->globalID == -1);
-                /* now obsolete */
-                /*
-                 * PetscPrintf(PETSC_COMM_WORLD,"\nSkipping boundary couple.\n");
-                 * PetscPrintf(PETSC_COMM_WORLD,"Couple is %d: %d-%d\n\n", i, couple_ptr->nodeID[0], couple_ptr->nodeID[j]);
-                 * node_ptr->globalID = -1;
-                 * //break;
-                 */
             }
-
         }
 
-        if (allBoundary)
+        /* only increment index when couple is contains some internal nodes */
+        /* increment out of loop to keep index same for nodes on same cpl */
+        if (!allBoundary)
         {
-            PetscErrorCode ierr;
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Found an all boundary fibre.\n");CHKERRQ(ierr);
-        }
-        else
-        {
-            /* only increment index when couple is composed of internal nodes */
             *nextIndex += 1;
         }
-
-        /* WARNING: Uncaught possibility when all nodes in couple are boundary! */
     }
 
-    PetscInt ierr;
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\nTotal internal couple nodes = %d\n", internalCountInCouples);CHKERRQ(ierr);
     return ierr;
 }
