@@ -37,15 +37,6 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma);
 
 /**
- * \brief Reads couple data from a given network
- * \param line_ptr Pointer to the file to be read.
- * \param box_ptr Pointer to box for data to be written to.
- * \param cCount Number of couples
- * \return Index to represent Petsc error code.
- */
-PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount);
-
-/**
  * \brief Sets the global indices of all the internal nodes of a network
  * \param box_ptr Pointer to box containing the internal nodes.
  * \param coupleCount Integer representing total number of unique couples.
