@@ -14,17 +14,16 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
 
 /**
  * \brief Reads network input data from a given file name.
- * Depending on readCouplesOnly, it retrieves either box, fibre and node data and counts the 
- * number of couples (if any) or it retrieves the couple data.
+ * Depending on whether it has recorded any couples, it either retrieves the box, fibre and 
+ * node data and counts the number of couples (if any) or it retrieves the couple data.
  * \param fileToRead_ptr Pointer to the file to be read.
  * \param box_ptr Pointer to box for data to be written to.
- * \param readCouplesOnly Determines whether to read the couple data only or not.
  * \param coupleCount Pointer to the current couple index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma);
+                                 PetscInt *coupleCount, const PetscScalar gamma);
 /**
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.

@@ -4,30 +4,21 @@
 PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)
 {
 	PetscErrorCode 	ierr = 0;
-    PetscBool       coupledSystem = PETSC_FALSE;
 
 	/* setup global index */
 	PetscInt        coupleCount = 0;
 
-    readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &coupleCount, gamma);
+    /* read data line increases the number of couples if there are any */ 
+    readInputFile(fileToRead_ptr, box_ptr_ptr, &coupleCount, gamma);
 
-    /* read data line counts the number of couples in coupleCount */ 
-    if (coupleCount > 0) coupledSystem = PETSC_TRUE;
-
-    if (coupledSystem)
+    /* run readInputFile again if system is coupled */
+    if (coupleCount > 0)
     {
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"YES WE HAVE A COUPLED SYSTEM\n");CHKERRQ(ierr);
-
-        /* sanity check: couples not counted if this fails */
-        assert(coupleCount != 0);
-
         /* use counted couples to allocate master couple array */
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(coupleCount, sizeof(Couple));
 
-        /* couple count now to be used as index */
-        coupleCount = 0;
-
-        readInputFile(fileToRead_ptr, box_ptr_ptr, coupledSystem, &coupleCount, gamma);
+        /* this time readInputFile just reads couple lines */
+        readInputFile(fileToRead_ptr, box_ptr_ptr, &coupleCount, gamma);
         
         // For debugging only 
         int c,counter=0;
@@ -39,13 +30,6 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
             }
         }
         ierr = PetscPrintf(PETSC_COMM_WORLD,"tot couple node things = %d\n", counter);CHKERRQ(ierr);
-
-        PetscInt i=0;
-        for (i = 0; i < 10; i++)
-        {
-            Couple *cpl = &((*box_ptr_ptr)->masterCoupleList[i]);
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
-        }
     }
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", coupleCount);CHKERRQ(ierr);
 
@@ -63,11 +47,14 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
 
 
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma)
+                                PetscInt *coupleCount, const PetscScalar gamma)
 {
     PetscErrorCode ierr = 0;
     FILE *fp;
 	char line[MAX_LENGTH], *line_ptr;
+
+    PetscBool readCouplesOnly = (*coupleCount > 0) ? PETSC_TRUE : PETSC_FALSE;
+    *coupleCount = 0;
 
     /* open file */
     fp = fopen(fileToRead_ptr, "r");
