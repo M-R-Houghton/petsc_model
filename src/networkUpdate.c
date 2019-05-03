@@ -58,8 +58,13 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 
 void checkForValidDisplacement(PetscScalar displacement)
 {
-	assert(!isinf(displacement));
-	assert(!isnan(displacement));
+    /* exit program early if no sensible solution was found */
+    if (isinf(displacement) || isnan(displacement))
+    {
+        PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failed to find meaningful solution.\n");
+        PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Terminating program early.\n");
+        exit(3);    /* this can be changed to generic value of 1 if preferred */
+    }
 }
 
 
