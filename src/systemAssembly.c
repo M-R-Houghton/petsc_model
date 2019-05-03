@@ -44,9 +44,9 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 	//ierr = VecZeroEntries(b);CHKERRQ(ierr);
 	//ierr = MatZeroEntries(H);CHKERRQ(ierr);
 
-	//ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	//ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+	ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	return ierr;
 }
 
@@ -66,6 +66,7 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 	PetscErrorCode 	ierr;
 	PetscInt        i,j;
 	PetscInt        N = box_ptr->nodeInternalCount;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"internal count = %d\n", N);CHKERRQ(ierr);
 
 	for (i = 0; i < box_ptr->nodeCount; i++)
 	{
@@ -74,6 +75,8 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
 		{
 			for (j = 0; j < DIMENSION; j++)
 			{
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"at location = %d\n", node->globalID + j*N);CHKERRQ(ierr);
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"set to = %g\n", lambda * node->xyzAffDisplacement[j]);CHKERRQ(ierr);
 				ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
 				CHKERRQ(ierr);
 			}
@@ -93,6 +96,9 @@ PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda
 
 	ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
+	ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+
+	ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	return ierr;
 }
 
