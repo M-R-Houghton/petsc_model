@@ -69,7 +69,7 @@ struct box
 struct couple
 {
     PetscInt coupleID;
-    PetscInt nodesInCouple;
+    PetscInt nodesInCouple;                 /* TODO: change this to On for consistency */
     PetscInt nodeID[MAX_NODES_ON_COUPLE];
     //PetscInt *nodeIDList;
 };

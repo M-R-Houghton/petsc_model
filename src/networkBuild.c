@@ -220,11 +220,33 @@ void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1,
 }
 
 
+///*
+PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)
+{
+    PetscErrorCode ierr = 0;
+
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
+
+    couple_ptr->coupleID = coupleID;
+    couple_ptr->nodesInCouple = nodesOnCouple;
+
+    PetscInt i;
+    for (i = 0; i < nodesOnCouple; i++)
+    {
+        couple_ptr->nodeID[i] = nodeIDList[i];
+    }
+
+    return ierr;
+}
+//*/
+
+
+/*
 PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
 {
     PetscErrorCode ierr = 0;
    
-    /* validate arguments */
+    *//* validate arguments *//*
     checkCoupleArguments(box_ptr, cID, nID1, nID2);
 
     Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
@@ -245,4 +267,5 @@ PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1,
 
     return ierr;
 }
+*/
 
