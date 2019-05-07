@@ -69,8 +69,11 @@ struct box
 struct couple
 {
     PetscInt coupleID;
-    PetscInt nodesInCouple;                 /* TODO: change this to On for consistency */
+    PetscInt nodesInCouple; 
     PetscInt nodeID[MAX_NODES_ON_COUPLE];
+
+    /* TODO: change to nodesOnCouple for consistency */
+    /* TODO: change to dynamically allocated nodeIDList */
     //PetscInt *nodeIDList;
 };
 
