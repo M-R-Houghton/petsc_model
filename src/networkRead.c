@@ -58,7 +58,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
 
     /* open file */
     fp = fopen(fileToRead_ptr, "r");
-    if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,65,"Error in opening file.");
+    if (fp == NULL) SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_FILE_OPEN,"Error in opening file.");
 
     /* this should always be zero before starting */
     assert(*coupleCount == 0);
@@ -222,7 +222,8 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool r
                 *coupleCount += 1;
                 break;
 	    	default:
-	    		SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
+	    		SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+                        "Error in identifying line type. Line size may be insufficient.");
 	    }
     }
     else
@@ -240,7 +241,8 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool r
                 *coupleCount += 1;
                 break;
 	    	default:
-	    		SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying line type. Line size may be insufficient.");
+	    		SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+                        "Error in identifying line type. Line size may be insufficient.");
 	    }
     }
 
