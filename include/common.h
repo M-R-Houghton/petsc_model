@@ -71,6 +71,7 @@ struct couple
     PetscInt coupleID;
     PetscInt nodesInCouple;
     PetscInt nodeID[MAX_NODES_ON_COUPLE];
+    //PetscInt *nodeIDList;
 };
 
 /* structure for nodes */

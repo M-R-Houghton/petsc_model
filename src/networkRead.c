@@ -371,18 +371,23 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     /* until node ID list is dynamically allocated, the limit should be enforced */
     assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
 
+    
+    //PetscInt *nodeIDList = (PetscInt*)calloc(nodesOnCouple, sizeof(PetscInt*));
+
 /* START: temporary makeCouple w/ variable couple length */
     Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
     couple_ptr->coupleID = coupleID;
     couple_ptr->nodesInCouple = nodesOnCouple;
-	PetscInt nID;
+	PetscInt nIndex;
 
-	for (nID = 0; nID < nodesOnCouple; nID++)
+	for (nIndex = 0; nIndex < nodesOnCouple; nIndex++)
 	{
-        assert(nID < MAX_NODES_ON_COUPLE);
-        //couple_ptr->nodeID[nID] = atoi(cplInfoArray[nID]);
-        couple_ptr->nodeID[nID] = (int)cplInfoArray[nID];
+        assert(nIndex < MAX_NODES_ON_COUPLE);
+        //couple_ptr->nodeID[nIndex] = atoi(cplInfoArray[nIndex]);
+        couple_ptr->nodeID[nIndex] = (int)cplInfoArray[nIndex];
         /* TODO: make sure this is safe for large values */
+
+        //nodeIDList[nIndex] = (int)cplInfoArray[nIndex];
 	}
 /* END: temporary makeCouple w/ variable couple length */
 
@@ -390,7 +395,7 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",coupleID,couple_ptr->nodeID[0],couple_ptr->nodeID[1]);CHKERRQ(ierr);
 
     /* need to implement updated couple builder */
-	//ierr = makeCouple(box_ptr, coupleID, nodesInCouple, cplInfoArray);CHKERRQ(ierr);
+	//ierr = makeCouple(box_ptr, coupleID, nodesOnCouple, nodeIDList);CHKERRQ(ierr);
 
 	return ierr;
 }
