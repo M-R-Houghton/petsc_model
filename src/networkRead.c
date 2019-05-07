@@ -148,7 +148,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
         PetscBool   allBoundary = PETSC_TRUE;
         Couple      *couple_ptr = &(box_ptr->masterCoupleList[i]);
         
-        /* loop over couple in the unlikely case that there is a '3rd' coupled node */
+        /* loop over nodes on couple and reassign IDs of any internal nodes */
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
             ierr = PetscPrintf(PETSC_COMM_WORLD,"%d, ", couple_ptr->nodeID[j]);CHKERRQ(ierr);
@@ -174,13 +174,13 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
             }
             else 
             {
-                /* ID should not have already been reassigned */
+                /* any boundary nodes should not have had ID reassigned yet */
                 assert(node_ptr->globalID == -1);
             }
         }
 
         /* only increment index when couple is contains some internal nodes */
-        /* increment out of loop to keep index same for nodes on same cpl */
+        /* increment out of node loop to keep index same for nodes on same cpl */
         if (!allBoundary)
         {
             *nextIndex += 1;
