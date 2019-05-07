@@ -10,56 +10,65 @@
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, PetscScalar gamma);
+PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma);
 
+/**
+ * \brief Reads network input data from a given file name.
+ * Depending on whether it has recorded any couples, it either retrieves the box, fibre and 
+ * node data and counts the number of couples (if any) or it retrieves the couple data.
+ * \param fileToRead_ptr Pointer to the file to be read.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \param coupleCount Pointer to the current couple index.
+ * \param gamma Global gamma value.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
+                                 PetscInt *coupleCount, const PetscScalar gamma);
 /**
  * \brief Reads network data from a given line pointer
  * \param line_ptr Pointer to the line.
  * \param box_ptr Pointer to box for data to be written to.
- * \param cIndex_ptr Pointer to the current couple index.
+ * \param readCouplesOnly Determines whether to read the couple data only or not.
+ * \param coupleCount Pointer to the current couple index.
  * \param gamma Global gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, PetscInt *cIndex_ptr, PetscScalar gamma);
-
-/**
- * \brief Reads couple data from a given network
- * \param line_ptr Pointer to the file to be read.
- * \param box_ptr Pointer to box for data to be written to.
- * \param cCount Number of couples
- * \return Index to represent Petsc error code.
- */
-PetscErrorCode readCoupleData(char *line_ptr, Box *box_ptr, PetscInt *cCount);
+PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a network
  * \param box_ptr Pointer to box containing the internal nodes.
- * \param coupledSystem Petsc boolean indicating whether the network has coupled nodes.
+ * \param coupleCount Integer representing total number of unique couples.
  * \return Index to represent Petsc error code.
  */
-PetscInt setInternalNodeIndices(Box *box_ptr, PetscBool const coupledSystem, PetscInt coupleCount);
+PetscInt setInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount);
 
 /**
- * \brief Sets the global indices of all the internal nodes of a standard network
+ * \brief Sets the global indices of all the standard internal nodes of a network
+ * This can be used for indexing an uncoupled newtork, or for indexing any remaining 
+ * internal nodes not associated with couples AFTER couple internal nodes have been 
+ * given a shared index.
  * \param box_ptr Pointer to box containing the internal nodes.
+ * \param nextIndex Pointer of the index to be assigned to all found internal nodes
  * \return Index to represent Petsc error code.
  */
-PetscInt setStandardInternalNodeIndices(Box *box_ptr);
+PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex);
 
 /**
  * \brief Sets the global indices of all the internal nodes of a coupled network
  * \param box_ptr Pointer to box containing the internal nodes.
  * \param coupleCount An integer counter for the number of couples in the network.
+ * \param nextIndex Pointer to the next index to be assigned.
  * \return Index to represent Petsc error code.
  */
-PetscInt setCoupledInternalNodesIndices(Box *box_ptr, PetscInt const coupleCount);
+PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount, PetscInt *nextIndex);
 
 /**
  * \brief Checks global indices of all internal nodes have been set 
  * \param box_ptr Pointer to box containing the internal nodes.
  * \return Index to represent Petsc error code.
  */
-void checkInternalNodeIndices(Box const *box_ptr);
+void checkInternalNodeIndices(const Box *box_ptr);
 
 /**
  * \brief Reads box information from a given line pointer
@@ -83,7 +92,7 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr);
  * \param gamma Node's gamma value.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma);
+PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamma);
 
 /**
  * \brief Reads couple information from a given line pointer
@@ -92,7 +101,16 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, PetscScalar gamma);
  * \param coupleID Integer representing the global couple ID.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, PetscInt const coupleID);
+PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID);
+
+/* 
+ * \brief Tokenises a line into floats by splitting at whitespace
+ * This function should not be passed any lines still containing non-numeric information
+ * \param line_ptr Pointer to the line.
+ * \param infoArray Array for storing info as floats from the split string
+ * \return Integer representing number of elements in the array.
+ */
+PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray);
 
 /**
  * \brief Removes trailing whitespace on the right-hand side of a string

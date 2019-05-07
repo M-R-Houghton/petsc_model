@@ -47,6 +47,7 @@ class NetworkAnalyser:
         self.num_crosslink_avg = 0
 
         self.boundary_fibres = []
+        self.dangling_fibres = []
 
         self.further_analysis = False
 
@@ -215,6 +216,11 @@ class NetworkAnalyser:
 
                 global_fib_avg += mag_s_alph_beta
 
+                #assert alph.type != 1 and beta.type != 1, '(ERROR) Dangling fibre, ID = %r.' % f_i 
+
+                if alph.type == 1 or beta.type == 1:
+                    self.dangling_fibres.append(f_i)
+
                 # store ID of boundary fibres
                 if alph.type == 2 and beta.type == 2:
                     self.boundary_fibres.append(f_i)
@@ -351,6 +357,7 @@ class NetworkAnalyser:
         print("Number of crosslinks per fibre avg = %f" % self.num_crosslink_avg)
 
         print("Total boundary crosslinks = %d" % len(self.boundary_fibres))
+        print("Total dangling fibres (len 2) = %d\n" % len(self.dangling_fibres))
 
         return
 
@@ -387,6 +394,7 @@ class NetworkAnalyser:
         file.write("Number of crosslinks per fibre avg = %f\n" % self.num_crosslink_avg)
 
         file.write("Total boundary crosslinks = %d\n" % len(self.boundary_fibres))
+        file.write("Total dangling fibres (len 2) = %d\n" % len(self.dangling_fibres))
 
         return
 

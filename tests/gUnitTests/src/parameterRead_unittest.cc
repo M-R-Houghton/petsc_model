@@ -15,11 +15,13 @@ struct testParameterRead : ::testing::Test
 {
     Parameters  *par_ptr;
     const char *fileToRead;
-    const PetscScalar myGamma = 0.05; 
-    const PetscScalar myYM = 1.0; 
+    PetscScalar myGamma; 
+    PetscScalar myYM; 
 
     void SetUp()
     {
+        myGamma = 0.05; 
+        myYM = 1.0; 
         // open file, read in line and close
         fileToRead = "../../data/par/tri/tri_3d_01.par";
     }

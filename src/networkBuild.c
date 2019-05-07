@@ -220,29 +220,24 @@ void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1,
 }
 
 
-PetscErrorCode makeCouple(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
+PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)
 {
     PetscErrorCode ierr = 0;
-   
-    /* validate arguments */
-    checkCoupleArguments(box_ptr, cID, nID1, nID2);
 
-    Couple *couple_ptr = &(box_ptr->masterCoupleList[cID]);
-    
-    couple_ptr->coupleID = cID;
-    couple_ptr->nodesInCouple = 2;
-    couple_ptr->nodeID[0] = nID1;
-    couple_ptr->nodeID[1] = nID2;
+    /* TODO: move this into checkCoupleArguments */
+    assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
 
-    PetscInt i=0;
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"cID = %d\n",cID);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"actual couple %d has node %d and %d\n",couple_ptr->coupleID,couple_ptr->nodeID[0],couple_ptr->nodeID[1]);CHKERRQ(ierr);
-    for (i = 0; i < 1; i++)
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
+    couple_ptr->coupleID = coupleID;
+    couple_ptr->nodesInCouple = nodesOnCouple;
+
+    PetscInt i;
+    for (i = 0; i < nodesOnCouple; i++)
     {
-        Couple *cpl = &(box_ptr->masterCoupleList[i]);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"couple %d has node %d and %d\n",i,cpl->nodeID[0],cpl->nodeID[1]);CHKERRQ(ierr);
+        couple_ptr->nodeID[i] = nodeIDList[i];
     }
 
     return ierr;
 }
+
 

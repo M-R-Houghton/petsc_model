@@ -9,6 +9,8 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	PetscInt 		its;
 	PetscReal 		norm; 		  /* norm of solution error */
 
+    ierr = MatGetDiagonal(globalMat_H,globalVec_U);CHKERRQ(ierr);
+	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 	/*
        Create linear solver context
     */

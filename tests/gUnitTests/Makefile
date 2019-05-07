@@ -14,7 +14,7 @@
 
 CFLAGS 			+= -I $(MODEL_INC_DIR)
 FFLAGS	         =
-CPPFLAGS         =
+CPPFLAGS         = 
 FPPFLAGS         =
 CLEANFILES       = 
 
