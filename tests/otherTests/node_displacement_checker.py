@@ -72,8 +72,11 @@ class DisplacementChecker:
         print("Out of "+str(inp_net.box.node_count)+" nodes.")
         print("With a tolerance of "+str(int(self.disp_tol*100))+"%.")
 
-        print("Worst node is:")
-        self.print_node(inp_net.node_dict[max_ind], out_net.node_dict[max_ind], max_diff)
+        if max_ind == -1:
+            print("All nodes are within the tolerance.")
+        else:
+            print("Worst node is:")
+            self.print_node(inp_net.node_dict[max_ind], out_net.node_dict[max_ind], max_diff)
 
         return
 
