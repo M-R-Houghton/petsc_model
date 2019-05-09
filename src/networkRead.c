@@ -3,10 +3,10 @@
 /* Initiates network read in routine */
 PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)
 {
-	PetscErrorCode 	ierr = 0;
+    PetscErrorCode 	ierr = 0;
 
-	/* setup global index */
-	PetscInt        coupleCount = 0;
+    /* setup global index */
+    PetscInt        coupleCount = 0;
 
     /* read data line increases the number of couples if there are any */ 
     readInputFile(fileToRead_ptr, box_ptr_ptr, &coupleCount, gamma);
@@ -19,7 +19,7 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
 
         /* this time readInputFile just reads couple lines */
         readInputFile(fileToRead_ptr, box_ptr_ptr, &coupleCount, gamma);
-        
+
         // For debugging only 
         int c,counter=0;
         for (c = 0; c < (*box_ptr_ptr)->nodeCount; c++)
@@ -39,19 +39,19 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"g = %d\n", coupleCount);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"gIDTotal = %d\n", gIDTotal);CHKERRQ(ierr);
 
-	/* use final global index to set total internal nodes */
-	(*box_ptr_ptr)->nodeInternalCount = gIDTotal;
+    /* use final global index to set total internal nodes */
+    (*box_ptr_ptr)->nodeInternalCount = gIDTotal;
 
-	return ierr;
+    return ierr;
 }
 
 
 PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, 
-                                PetscInt *coupleCount, const PetscScalar gamma)
+        PetscInt *coupleCount, const PetscScalar gamma)
 {
     PetscErrorCode ierr = 0;
     FILE *fp;
-	char line[MAX_LENGTH], *line_ptr;
+    char line[MAX_LENGTH], *line_ptr;
 
     PetscBool readCouplesOnly = (*coupleCount > 0) ? PETSC_TRUE : PETSC_FALSE;
     *coupleCount = 0;
@@ -70,7 +70,7 @@ PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr,
 
     /* collect file close return code */
     ierr = fclose(fp);
-    
+
     return ierr;
 }
 
@@ -147,7 +147,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
         /* assume all nodes on cpl are boundary and find contradiction */
         PetscBool   allBoundary = PETSC_TRUE;
         Couple      *couple_ptr = &(box_ptr->masterCoupleList[i]);
-        
+
         /* loop over nodes on couple and reassign IDs of any internal nodes */
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
@@ -195,85 +195,85 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
 /* Reads network data from a given line pointer */
 PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma)
 {
-	PetscErrorCode  ierr = 0;
-    
-	/* collect initial character and move pointer to where cropped line begins */
+    PetscErrorCode  ierr = 0;
+
+    /* collect initial character and move pointer to where cropped line begins */
     char *tkn_ptr        = strtok(line_ptr, " ");
     char *lineCrop_ptr   = tkn_ptr + 2;
-	
+
     if (!readCouplesOnly)
     {
-	    /* switch over different line types */
-	    switch (*tkn_ptr)
-	    {
-	    	case 'b':
-	    		/* pass line pointer to box line reader */
-	    		ierr = readBoxLine(lineCrop_ptr, box_ptr_ptr);CHKERRQ(ierr);
-	    		break;
-	    	case 'f':
-	    		/* pass line pointer to fibre line reader */
-	    		ierr = readFibreLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
-	    		break;
-	    	case 'n':
-	    		/* pass line pointer to node line reader */
-	    		ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, gamma);CHKERRQ(ierr);
-	    		break;
+        /* switch over different line types */
+        switch (*tkn_ptr)
+        {
+            case 'b':
+                /* pass line pointer to box line reader */
+                ierr = readBoxLine(lineCrop_ptr, box_ptr_ptr);CHKERRQ(ierr);
+                break;
+            case 'f':
+                /* pass line pointer to fibre line reader */
+                ierr = readFibreLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
+                break;
+            case 'n':
+                /* pass line pointer to node line reader */
+                ierr = readNodeLine(lineCrop_ptr, *box_ptr_ptr, gamma);CHKERRQ(ierr);
+                break;
             case 'c':
                 *coupleCount += 1;
                 break;
-	    	default:
-	    		SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+            default:
+                SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
                         "Error in identifying line type. Line size may be insufficient.");
-	    }
+        }
     }
     else
     {
-	    /* switch over different line types */
-	    switch (*tkn_ptr)
-	    {
-	    	case 'b':
-	    	case 'f':
-	    	case 'n':
-	    		break;
+        /* switch over different line types */
+        switch (*tkn_ptr)
+        {
+            case 'b':
+            case 'f':
+            case 'n':
+                break;
             case 'c':
-	            /* pass line pointer to cpl line reader */
+                /* pass line pointer to cpl line reader */
                 ierr = readCoupleLine(lineCrop_ptr, *box_ptr_ptr, *coupleCount);CHKERRQ(ierr);
                 *coupleCount += 1;
                 break;
-	    	default:
-	    		SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+            default:
+                SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
                         "Error in identifying line type. Line size may be insufficient.");
-	    }
+        }
     }
 
-	return ierr;
+    return ierr;
 }
 
 
 PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)
 {
-	PetscErrorCode 	ierr = 0;
-	PetscInt 		nodeCount, fibreCount;
-  	PetscScalar 	xDim, yDim, zDim; 
-  	PetscInt 		xPer, yPer, zPer;
+    PetscErrorCode 	ierr = 0;
+    PetscInt 		nodeCount, fibreCount;
+    PetscScalar 	xDim, yDim, zDim; 
+    PetscInt 		xPer, yPer, zPer;
 
-	/* read in a box line */
-	sscanf(line_ptr, "%d %d %lf %lf %lf %d %d %d",
-  			&nodeCount, &fibreCount, 
-  			&xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
+    /* read in a box line */
+    sscanf(line_ptr, "%d %d %lf %lf %lf %d %d %d",
+            &nodeCount, &fibreCount, 
+            &xDim, &yDim, &zDim, &xPer, &yPer, &zPer);
 
-	/* assign box values to scanned values */
-	*box_ptr = makeBox(nodeCount, fibreCount, xDim, yDim, zDim, xPer, yPer, zPer);
+    /* assign box values to scanned values */
+    *box_ptr = makeBox(nodeCount, fibreCount, xDim, yDim, zDim, xPer, yPer, zPer);
 
-	return ierr;
+    return ierr;
 }
 
 
 /* Reads fibre information from a given line pointer */
 PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
 {
-	PetscErrorCode ierr;
-	PetscScalar fibreInfoArray[strlen(line_ptr)+1];
+    PetscErrorCode ierr;
+    PetscScalar fibreInfoArray[strlen(line_ptr)+1];
 
     /* check allocated info array is large enough to store line_ptr */
     assert(strlen(line_ptr) < sizeof(fibreInfoArray)/sizeof(fibreInfoArray[0]));
@@ -281,53 +281,53 @@ PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)
     /* tokenise the line and retrieve total count of tokens */
     PetscInt tknCount = tokeniseLine(line_ptr, fibreInfoArray);
 
-	/* total nodes is token count -1 for ID and -1 for radius
-	 * ...where token count includes a token split at end of line */
+    /* total nodes is token count -1 for ID and -1 for radius
+     * ...where token count includes a token split at end of line */
     PetscInt nodesOnFibre = tknCount - 2;
 
-	/* determine the first few fibre attributes */
-	PetscInt fibreID 		= (int)fibreInfoArray[0];
-	PetscScalar radius 		= fibreInfoArray[1];
+    /* determine the first few fibre attributes */
+    PetscInt fibreID 		= (int)fibreInfoArray[0];
+    PetscScalar radius 		= fibreInfoArray[1];
 
-	/* allocate storage for list of nodes on fibre */
-	Node **nodeList_ptr_ptr = (Node**)calloc(nodesOnFibre, sizeof(Node*));
+    /* allocate storage for list of nodes on fibre */
+    Node **nodeList_ptr_ptr = (Node**)calloc(nodesOnFibre, sizeof(Node*));
 
-	PetscInt fibreInfoIndex = 2;		/* move past ID and radius */
-	PetscInt nodeListIndex  = 0;		/* set counter for node list index */
+    PetscInt fibreInfoIndex = 2;		/* move past ID and radius */
+    PetscInt nodeListIndex  = 0;		/* set counter for node list index */
 
-	/* loop through node IDs in the fibre information array */
-	for (fibreInfoIndex = 2; fibreInfoIndex < tknCount; fibreInfoIndex++)
-	{
-		/* typecast to find node ID */
-		PetscInt nodeID = (int)fibreInfoArray[fibreInfoIndex];
+    /* loop through node IDs in the fibre information array */
+    for (fibreInfoIndex = 2; fibreInfoIndex < tknCount; fibreInfoIndex++)
+    {
+        /* typecast to find node ID */
+        PetscInt nodeID = (int)fibreInfoArray[fibreInfoIndex];
 
-		/* store node pointer in node list */
-		nodeList_ptr_ptr[nodeListIndex] = &(box_ptr->masterNodeList[nodeID]);
+        /* store node pointer in node list */
+        nodeList_ptr_ptr[nodeListIndex] = &(box_ptr->masterNodeList[nodeID]);
 
-		nodeListIndex += 1;
-	}
+        nodeListIndex += 1;
+    }
 
-	/* create a fibre using read-in information */
-	ierr = makeFibre(box_ptr, fibreID, nodesOnFibre, radius, nodeList_ptr_ptr);CHKERRQ(ierr);
+    /* create a fibre using read-in information */
+    ierr = makeFibre(box_ptr, fibreID, nodesOnFibre, radius, nodeList_ptr_ptr);CHKERRQ(ierr);
 
-	return ierr;
+    return ierr;
 }
 
 
 /* Reads node information from a given line pointer */
 PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamma)
 {
-	PetscErrorCode 	ierr;
-  	PetscInt 		nID, nType;
-	PetscScalar 	x, y, z;
+    PetscErrorCode 	ierr;
+    PetscInt 		nID, nType;
+    PetscScalar 	x, y, z;
 
-	/* read in a box line */
-	sscanf(line_ptr, "%d %d %lf %lf %lf", &nID, &nType, &x, &y, &z);
+    /* read in a box line */
+    sscanf(line_ptr, "%d %d %lf %lf %lf", &nID, &nType, &x, &y, &z);
 
-	/* assign scanned values to a node */
-	ierr = makeNode(box_ptr, nID, nType, x, y, z, gamma);CHKERRQ(ierr);
+    /* assign scanned values to a node */
+    ierr = makeNode(box_ptr, nID, nType, x, y, z, gamma);CHKERRQ(ierr);
 
-	return ierr;
+    return ierr;
 }
 
 
@@ -337,7 +337,7 @@ PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray)
     /* WARNING: THIS FUNCTION IS NOT THREAD SAFE */
     PetscInt tknCount = 0;
 
-	/* preprocess line by removing rhs trailing whitespace */
+    /* preprocess line by removing rhs trailing whitespace */
     char *trimmedLine_ptr = trimRightWhitespace(line_ptr);
 
     /* split string once and store token */
@@ -358,9 +358,9 @@ PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray)
 /* Reads node couple information from a given line pointer */
 PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)
 {
-	PetscErrorCode 	ierr = 0;
+    PetscErrorCode 	ierr = 0;
     PetscInt        lineLength = strlen(line_ptr)+1;
-	PetscScalar     cplInfoArray[lineLength];
+    PetscScalar     cplInfoArray[lineLength];
 
     /* check allocated info array is large enough to store line_ptr */
     assert(lineLength <= sizeof(cplInfoArray)/sizeof(cplInfoArray[0]));
@@ -377,38 +377,38 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     PetscInt *nodeIDList = (PetscInt*)calloc(nodesOnCouple, sizeof(PetscInt*));
 
     /* loop over each node ID and store it in temporary node ID list */
-	PetscInt nIndex;
-	for (nIndex = 0; nIndex < nodesOnCouple; nIndex++)
-	{
+    PetscInt nIndex;
+    for (nIndex = 0; nIndex < nodesOnCouple; nIndex++)
+    {
         assert(nIndex < MAX_NODES_ON_COUPLE);
 
         /* TODO: make sure this cast is safe for large values */
         nodeIDList[nIndex] = (PetscInt)cplInfoArray[nIndex];
-	}
+    }
     /* NOTE: there is some redundancy here, but for clarity the couple line is...
      * ...first parsed and then sent to a couple builder function, just as the...
      * ...cases of nodes and fibres */
 
     /* pass the parsed info to the couple builder */
-	ierr = makeCouple(box_ptr, coupleID, nodesOnCouple, nodeIDList);CHKERRQ(ierr);
+    ierr = makeCouple(box_ptr, coupleID, nodesOnCouple, nodeIDList);CHKERRQ(ierr);
 
     /* node IDs now read into couple struct so clean up */
     free(nodeIDList);
 
-	return ierr;
+    return ierr;
 }
 
 
 /* Removes trailing whitespace on the right-hand side of a string */
 char *trimRightWhitespace(char *str_ptr)
 {
-	char *end = str_ptr + strlen(str_ptr);
+    char *end = str_ptr + strlen(str_ptr);
 
-  	while( (end!=str_ptr) && isspace(*(end-1)) )
-  	{
-  		end--;
-  	}
-  	*end = '\0';
+    while( (end!=str_ptr) && isspace(*(end-1)) )
+    {
+        end--;
+    }
+    *end = '\0';
 
-  	return str_ptr;
+    return str_ptr;
 }
