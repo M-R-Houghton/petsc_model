@@ -41,7 +41,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
  * \param localBendMat_A
  */
 PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 2D bend RHS vector of a given triplet
@@ -55,8 +55,8 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
  * \param localBendVec_b
  */
 PetscErrorCode make2DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
-                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
-                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
+        PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
+        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
 
 /**
  * \brief Assembles the local 3D bend matrix of a given triplet
@@ -67,7 +67,7 @@ PetscErrorCode make2DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScal
  * \param localBendMat_A
  */
 PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 3D bend RHS vector of a given triplet
@@ -81,10 +81,16 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
  * \param localBendVec_b
  */
 PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
-                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
-                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
+        PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
+        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] );
 
 
+/**
+ * \brief Shifts the diagonal of the 3D local bend matrix by a small value lambda
+ * \param localBendMat_A
+ * \param lambda
+ */
+PetscErrorCode applyMediumTo3DBendMat(PetscScalar localBendMat_A[9][9], const PetscScalar lambda);
 
 
 #endif
