@@ -98,7 +98,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 			ierr = make3DBendVec(u_alph, u_omeg, u_beta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);CHKERRQ(ierr);
             if (useLocalEM) 
             {
-                /*
+                //*
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"Apply local bend shift\n");CHKERRQ(ierr);
                 ierr = applyMediumTo3DBendMat(localBendMat_A, lambda);CHKERRQ(ierr);
                 ierr = applyMediumTo3DBendVec(localBendVec_b, lambda,
@@ -106,7 +106,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
                                                 omeg_ptr->xyzAffDisplacement,
                                                 beta_ptr->xyzAffDisplacement);
                 CHKERRQ(ierr);
-                */
+                //*/
             }
 		}
 
