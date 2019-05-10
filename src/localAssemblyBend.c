@@ -96,7 +96,18 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 			/* assemble the 3D local matrix and rhs vector */
 			ierr = make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
 			ierr = make3DBendVec(u_alph, u_omeg, u_beta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);CHKERRQ(ierr);
-            //if (useLocalEM) applyMediumTo3DBendMat(localBendMat_A, lambda);
+            if (useLocalEM) 
+            {
+                /*
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"Apply local bend shift\n");CHKERRQ(ierr);
+                ierr = applyMediumTo3DBendMat(localBendMat_A, lambda);CHKERRQ(ierr);
+                ierr = applyMediumTo3DBendVec(localBendVec_b, lambda,
+                                                alph_ptr->xyzAffDisplacement,
+                                                omeg_ptr->xyzAffDisplacement,
+                                                beta_ptr->xyzAffDisplacement);
+                CHKERRQ(ierr);
+                */
+            }
 		}
 
         //printf("bConst: %0.16g\n", bConst);
@@ -479,6 +490,23 @@ PetscErrorCode applyMediumTo3DBendMat(PetscScalar localBendMat_A[9][9], const Pe
     for (i = 0; i < 9; i++)
     {
         localBendMat_A[i][i] += lambda;
+    }
+    return ierr;
+}
+
+
+PetscErrorCode applyMediumTo3DBendVec(PetscScalar localBendVec_b[9], const PetscScalar lambda, 
+                                        const PetscScalar *u_aff_alph, const PetscScalar *u_aff_omeg, const PetscScalar *u_aff_beta)
+{
+    PetscErrorCode ierr = 0;
+    assert(DIMENSION == 3);
+
+    PetscInt i;
+    for (i = 0; i < DIMENSION; i++)
+    {
+        localBendVec_b[3*i  ] += lambda * u_aff_alph[i];
+        localBendVec_b[3*i+1] += lambda * u_aff_omeg[i];
+        localBendVec_b[3*i+2] += lambda * u_aff_beta[i];
     }
     return ierr;
 }

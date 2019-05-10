@@ -122,7 +122,17 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 			/* assemble the 3D local matrix and rhs vector */
 			ierr = make3DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
 			ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
-			//if(useLocalEM){ ierr = applyMediumTo3DStretchMat(localStretchMat_A, lambda);CHKERRQ(ierr); }
+			if(useLocalEM)
+            { 
+                /*
+                ierr = PetscPrintf(PETSC_COMM_WORLD,"Applying local stretch shift\n");CHKERRQ(ierr);
+                ierr = applyMediumTo3DStretchMat(localStretchMat_A, lambda);CHKERRQ(ierr); 
+                ierr = applyMediumTo3DStretchVec(localStretchVec_b, lambda, 
+                                                    alph_ptr->xyzAffDisplacement, 
+                                                    beta_ptr->xyzAffDisplacement);
+                CHKERRQ(ierr); 
+                */
+            }
 		}
 
 		/* determine contributions and add to the global system */
@@ -316,9 +326,26 @@ PetscErrorCode applyMediumTo3DStretchMat(PetscScalar localStretchMat_A[6][6], co
     assert(DIMENSION == 3);
 
     PetscInt i;
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < 2*DIMENSION; i++)
     {
         localStretchMat_A[i][i] += lambda;
     }
     return ierr;
 }
+
+
+PetscErrorCode applyMediumTo3DStretchVec(PetscScalar localStretchVec_b[6], const PetscScalar lambda, 
+                                            const PetscScalar *u_aff_alph, const PetscScalar *u_aff_beta)
+{
+    PetscErrorCode ierr = 0;
+    assert(DIMENSION == 3);
+
+    PetscInt i;
+    for (i = 0; i < DIMENSION; i++)
+    {
+        localStretchVec_b[2*i  ] += lambda * u_aff_alph[i];
+        localStretchVec_b[2*i+1] += lambda * u_aff_beta[i];
+    }
+    return ierr;
+}
+
