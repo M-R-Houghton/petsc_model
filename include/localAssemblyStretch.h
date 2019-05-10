@@ -33,7 +33,7 @@ PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, Petsc
  * \return Petsc error code
  */
 PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
-                                        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex );
+        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex );
 
 /**
  * \brief Adds local stretch information for a single fibre to global system
@@ -83,5 +83,21 @@ PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
  */
 PetscErrorCode make3DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, PetscScalar *tangVec, PetscScalar *localStretchVec_b);
 
+/**
+ * \brief Shifts the diagonal of the 3D local stretch matrix by a small value lambda
+ * \param localStretchMat_A
+ * \param lambda
+ */
+PetscErrorCode applyMediumTo3DStretchMat(PetscScalar localStretchMat_A[6][6], const PetscScalar lambda);
+
+/**
+ * \brief Shifts the 3D local stretch vector affinely
+ * \param localStretchVec_b
+ * \param lambda
+ * \param u_aff_alph 
+ * \param u_aff_beta 
+ */
+PetscErrorCode applyMediumTo3DStretchVec(PetscScalar localStretchVec_b[6], const PetscScalar lambda, 
+                                            const PetscScalar *u_aff_alph, const PetscScalar *u_aff_beta);
 
 #endif
