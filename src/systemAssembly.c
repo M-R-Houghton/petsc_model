@@ -89,9 +89,9 @@ PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda
 {
     PetscErrorCode 	ierr;
 
-    //ierr = applyElasticMediumToMatrix(H, lambda);
+    ierr = applyElasticMediumToMatrix(H, lambda);
 
-    //ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
+    ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
     ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 

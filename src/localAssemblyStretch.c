@@ -124,14 +124,14 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
             ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
             if(useLocalEM)
             { 
-                //*
+                /*
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"Applying local stretch shift\n");CHKERRQ(ierr);
                 ierr = applyMediumTo3DStretchMat(localStretchMat_A, lambda);CHKERRQ(ierr); 
                 ierr = applyMediumTo3DStretchVec(localStretchVec_b, lambda, 
                 alph_ptr->xyzAffDisplacement, 
                 beta_ptr->xyzAffDisplacement);
                 CHKERRQ(ierr); 
-                //*/
+                */
             }
         }
 
