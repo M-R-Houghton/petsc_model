@@ -67,19 +67,45 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
     PetscInt        i,j;
     PetscInt        N = box_ptr->nodeInternalCount;
 
-    for (i = 0; i < box_ptr->nodeCount; i++)
+    if (box_ptr->coupleCount == -1)
     {
-        Node *node = &(box_ptr->masterNodeList[i]);
-        if (node->globalID != -1)
+        /* old approach (needs updating for internalCount != coupleCount case) */
+        for (i = 0; i < box_ptr->nodeCount; i++)
         {
-            for (j = 0; j < DIMENSION; j++)
+            Node *node = &(box_ptr->masterNodeList[i]);
+            if (node->globalID != -1)
             {
-                ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
-                CHKERRQ(ierr);
+                for (j = 0; j < DIMENSION; j++)
+                {
+                    ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+                    CHKERRQ(ierr);
+                }
             }
         }
     }
-
+    else if (box_ptr->nodeInternalCount != box_ptr->coupleCount)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Not able to handle this type of network.\n");CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Please run w/o EM or use another network.\n");CHKERRQ(ierr);
+        exit(1);
+    }
+    else
+    {
+        for (i = 0; i < box_ptr->nodeCount; i++)
+        {
+            Node *node = &(box_ptr->masterNodeList[i]);
+            if (node->globalID != -1)
+            {
+                Couple *couple = &(box_ptr->masterCoupleList[node->globalID]);
+                for (j = 0; j < DIMENSION; j++)
+                {
+                    ierr = VecSetValue(B, node->globalID + j*N, (lambda/couple->nodesInCouple) * node->xyzAffDisplacement[j], ADD_VALUES);
+                    //ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+                    CHKERRQ(ierr);
+                }
+            }
+        }
+    }
     return ierr;
 }
 

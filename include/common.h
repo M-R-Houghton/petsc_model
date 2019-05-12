@@ -60,6 +60,7 @@ struct box
 	PetscInt nodeCount;
 	PetscInt nodeInternalCount;
 	PetscInt fibreCount;
+    PetscInt coupleCount;           /* in many cases this may be equal to internal */
 	PetscScalar xyzDimension[3];
 	PetscInt xyzPeriodic[3];
 	Node *masterNodeList;			/* declare lists for storing nodes and fibres */

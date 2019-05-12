@@ -103,6 +103,8 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
 	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
+    /* couple count should only be changed from initial val if system is coupled */
+    box_ptr->coupleCount = -1;
     /* couple list memory should be allocated after no. of couples is known */
     box_ptr->masterCoupleList = NULL;
 

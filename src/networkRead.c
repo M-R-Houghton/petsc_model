@@ -14,7 +14,8 @@ PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const 
     /* run readInputFile again if system is coupled */
     if (coupleCount > 0)
     {
-        /* use counted couples to allocate master couple array */
+        /* use counted couples to assign count and allocate master couple array */
+        (*box_ptr_ptr)->coupleCount = coupleCount;
         (*box_ptr_ptr)->masterCoupleList = (Couple*)calloc(coupleCount, sizeof(Couple));
 
         /* this time readInputFile just reads couple lines */
@@ -171,6 +172,9 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
                 internalCountInCouples++;
 
                 allBoundary = PETSC_FALSE;
+
+                /* this assertion means we can do this function in a nicer way */
+                assert(node_ptr->globalID == couple_ptr->coupleID);
             }
             else 
             {
