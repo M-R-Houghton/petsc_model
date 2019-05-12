@@ -41,10 +41,11 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 # created to the list.
 TESTS_EXE = localAssembly localAssemblyStretch localAssemblyBend \
 			globalAssemblyStretch globalAssemblyBend networkBuild \
-			networkDestroy networkRead networkWrite \
+			networkDestroy networkWrite \
 			vectorOperations systemAssembly systemSolve \
 			networkUpdate networkValidation parameterRead \
-			resultsValidation
+			resultsValidation 
+# took out networkRead temporarily
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.

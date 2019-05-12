@@ -234,6 +234,10 @@ TEST(testMakeCouple, testValueAssignment)
 	/* set up test */
 	Box *box_ptr = makeBox(3,2,3,4,5,1,1,1);
 
+    PetscInt id_list[2];
+    id_list[0] = 1;
+    id_list[1] = 0;
+
 	/* make some nodes */
 	makeNode(box_ptr,1,2,3,4,5,0.5);
 	makeNode(box_ptr,0,0,2,3,4,0.25);
@@ -243,8 +247,11 @@ TEST(testMakeCouple, testValueAssignment)
     box_ptr->masterCoupleList = (Couple*)calloc(2, sizeof(Couple));
 
     /* make some couples */
-    makeCouple(box_ptr,0,1,0);
-    makeCouple(box_ptr,1,0,2);
+    makeCouple(box_ptr,0,2,id_list);
+
+    id_list[0] = 0;
+    id_list[1] = 2;
+    makeCouple(box_ptr,1,2,id_list);
 
 	/* test node values */
 	EXPECT_EQ(box_ptr->masterCoupleList[0].coupleID, 0);
