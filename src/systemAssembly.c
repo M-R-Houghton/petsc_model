@@ -109,23 +109,6 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
                 ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
             }
         }
-        /* Previous approach */
-        /*
-        for (i = 0; i < box_ptr->nodeCount; i++)
-        {
-            Node *node = &(box_ptr->masterNodeList[i]);
-            if (node->globalID != -1)
-            {
-                Couple *couple = &(box_ptr->masterCoupleList[node->globalID]);
-                for (j = 0; j < DIMENSION; j++)
-                {
-                    ierr = VecSetValue(B, node->globalID + j*N, (lambda/couple->nodesInCouple) * node->xyzAffDisplacement[j], ADD_VALUES);
-                    //ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
-                    CHKERRQ(ierr);
-                }
-            }
-        }
-        */
     }
     return ierr;
 }
