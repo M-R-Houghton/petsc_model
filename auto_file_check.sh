@@ -49,8 +49,10 @@ while read file; do
     printf "Testing against %s\n" "$file_par"
 
     # Run application, redirect in file to app, and output to out file
+    # NOTE: Here we can pass $file_par as arg for rank 0, but...
+    # ...for all other ranks we need to redirect from /dev/null
     echo "mpiexec -n 1 ./$bin < "$file_par" > $file_res"
-    mpiexec -n 1 ./$bin < "$file_par" > $file_res
+    mpiexec -n 1 ./$bin $file_par </dev/null > "$file_res"
 
     if [ ! -f "$file_out_tst" ]; then
         printf "Output data file %s is missing\n" "$file_out_tst"
