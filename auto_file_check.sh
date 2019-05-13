@@ -51,7 +51,7 @@ while read file; do
     # Run application, redirect in file to app, and output to out file
     # NOTE: Here we can pass $file_par as arg for rank 0, but...
     # ...for all other ranks we need to redirect from /dev/null
-    echo "mpiexec -n 1 ./$bin < "$file_par" > $file_res"
+    #echo "mpiexec -n 1 ./$bin < "$file_par" > $file_res"
     mpiexec -n 1 ./$bin $file_par </dev/null > "$file_res"
 
     if [ ! -f "$file_out_tst" ]; then
