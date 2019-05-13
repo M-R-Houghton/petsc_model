@@ -7,4 +7,5 @@
 # Send email at start and end
 #$ -m be
 
-./generateLogsForRandom.sh
+#./generateLogsForRandom.sh
+python node_displacement_checker.py ../../data/dat/cpl3D/cpl_3d_mn1e-6_mx1e-2_lc2e-3_s33_f2400 
