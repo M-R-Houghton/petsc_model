@@ -16,7 +16,7 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda);
+PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda);
 
 /**
  * \brief Applies a uniform force to the global RHS vector
@@ -25,7 +25,7 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda);
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda);
+PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda);
 
 /**
  * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
@@ -35,7 +35,7 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
+PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscScalar lambda);
 
 /**
  * \brief Assembles a global vector from the affine displacements of every internal node 
