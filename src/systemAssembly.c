@@ -67,9 +67,17 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
     PetscInt        i,j;
     PetscInt        N = box_ptr->nodeInternalCount;
 
+    /* Networks with internals not associated with couples need handling separately */
+    if (box_ptr->coupleCount != 0 && box_ptr->nodeInternalCount != box_ptr->coupleCount)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Not able to handle this type of network yet.\n");CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Please run w/o EM or use another network.\n");CHKERRQ(ierr);
+        exit(1);
+    }
+
+    /* uncoupled networks are handled by looping over all internal nodes */
     if (box_ptr->coupleCount == 0)
     {
-        /* old approach (needs updating for internalCount != coupleCount case) */
         for (i = 0; i < box_ptr->nodeCount; i++)
         {
             Node *node = &(box_ptr->masterNodeList[i]);
@@ -83,14 +91,26 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
             }
         }
     }
-    else if (box_ptr->nodeInternalCount != box_ptr->coupleCount)
-    {
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Not able to handle this type of network.\n");CHKERRQ(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Please run w/o EM or use another network.\n");CHKERRQ(ierr);
-        exit(1);
-    }
     else
     {
+        for (i = 0; i < box_ptr->coupleCount; i++)
+        {
+            Couple *couple = &(box_ptr->masterCoupleList[i]);
+            assert(couple->coupleID == i);
+            assert(couple->nodesInCouple > 0);
+
+            /* take the first node of the couple */
+            Node *node = &(box_ptr->masterNodeList[couple->nodeID[0]]);
+            assert(node->globalID == couple->coupleID);
+
+            /* for x,y,z components shift node a factor of the affine displacement vector */
+            for (j = 0; j < DIMENSION; j++)
+            {
+                ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+            }
+        }
+        /* Previous approach */
+        /*
         for (i = 0; i < box_ptr->nodeCount; i++)
         {
             Node *node = &(box_ptr->masterNodeList[i]);
@@ -105,6 +125,7 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
                 }
             }
         }
+        */
     }
     return ierr;
 }
