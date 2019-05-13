@@ -67,7 +67,7 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
     PetscInt        i,j;
     PetscInt        N = box_ptr->nodeInternalCount;
 
-    if (box_ptr->coupleCount == -1)
+    if (box_ptr->coupleCount == 0)
     {
         /* old approach (needs updating for internalCount != coupleCount case) */
         for (i = 0; i < box_ptr->nodeCount; i++)
