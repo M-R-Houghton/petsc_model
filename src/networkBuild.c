@@ -118,11 +118,12 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 				PetscScalar radius, Node **nList_ptr_ptr)
 {
-	assert(box_ptr != NULL);
-	assert(fID >= 0);
-	assert(nOnFibre >= 0);
-	assert(radius >= 0);
+	assert(box_ptr       != NULL);
 	assert(nList_ptr_ptr != NULL);
+
+	assert(fID      >= 0);
+	assert(nOnFibre >= 0);
+	assert(radius   >= 0);
 }
 
 
