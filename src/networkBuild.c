@@ -174,14 +174,15 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	Node *node_ptr = &(box_ptr->masterNodeList[nID]);
 
 	/* assign attributes */
-	node_ptr->nodeID = nID;
-	node_ptr->nodeType = nType;
+	node_ptr->nodeID      = nID;
+	node_ptr->nodeType    = nType;
 	node_ptr->xyzCoord[0] = x;
 	node_ptr->xyzCoord[1] = y;
 	node_ptr->xyzCoord[2] = z;
-
 	/* default before switch case */
-	node_ptr->globalID = -1;
+	node_ptr->globalID    = -1;
+
+    /* non-boundary displacements are zero until after matrix solve */
 	node_ptr->xyzDisplacement[0] = 0;
 	node_ptr->xyzDisplacement[1] = 0;
 	node_ptr->xyzDisplacement[2] = 0;
@@ -197,14 +198,13 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	switch (nType)
 	{
 		case NODE_INTERNAL:
-			/* add global ID */
+			/* modify global ID of internals */
             node_ptr->globalID = -2;
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */
 			node_ptr->xyzDisplacement[0] = gamma * y;
-/*		 	node_ptr->xyzDisplacement[1] = 0; *****	*
- * 		 	node_ptr->xyzDisplacement[2] = 0; *****	*/
+            /* NOTE: we leave y and z displacement = 0 */
 			break;
 		case NODE_DANGLING:
 			/* do nothing at the moment */
@@ -218,11 +218,19 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 
 
 /* Checks couple arguments are all legal */
-void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)
+void checkCoupleArguments(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)
 {
-    assert(box_ptr != NULL);
-    assert(cID >= 0);
-    assert(nID1 >= 0 && nID2 >= 0);
+    assert(box_ptr  != NULL);
+    assert(coupleID >= 0   );
+
+    /* while node IDs are not dynamically allocated we need to check for overflow */
+    assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
+
+    PetscInt i;
+    for (i = 0; i < nodesOnCouple; i++)
+    {
+        assert(nodeIDList[i] >= 0);
+    }
 }
 
 
@@ -230,8 +238,8 @@ PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt 
 {
     PetscErrorCode ierr = 0;
 
-    /* TODO: move this into checkCoupleArguments */
-    assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
+    /* validate arguments */
+    checkCoupleArguments(box_ptr, coupleID, nodesOnCouple, nodeIDList);
 
     Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
     couple_ptr->coupleID = coupleID;
