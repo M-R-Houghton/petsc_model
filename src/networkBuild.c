@@ -210,7 +210,8 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 			/* do nothing at the moment */
 			break;
 		default:
-			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying node type");
+            SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+                    "Error in identifying node type.");
 	}
 
 	return ierr;
