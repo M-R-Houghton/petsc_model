@@ -155,7 +155,8 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	assert(box_ptr != NULL);
-	assert(nID >= 0);
+	assert(nID     >= 0   );
+    /* check for legal node type */
 	assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
 }
 
