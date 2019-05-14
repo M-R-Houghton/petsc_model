@@ -362,6 +362,7 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 void checkVolume(Box *box_ptr, PetscScalar volume)
 {
 	assert(volume >= 0);
+    // TODO: Modify this to allow for y,z 2d planes
 	if (DIMENSION==2) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]);
     if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
 }
@@ -449,6 +450,10 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
 
 PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 {
+    /* Calculate shear modulus based on the following formulaes...
+     * G i   = 2 * E     / V * gamma^2
+     * G_aff = 2 * E_aff / V * gamma^2
+     * */
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	V, shearEqn;
 
