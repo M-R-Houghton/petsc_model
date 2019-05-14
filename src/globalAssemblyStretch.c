@@ -14,6 +14,7 @@ void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd
 PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
 											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
 {
+    // TODO: Understand why this function doesn't work as expected
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		row;
 	PetscInt 		col[DIMENSION];
