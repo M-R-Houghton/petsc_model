@@ -4,9 +4,9 @@
 /* Checks stretch matrix contribution indexes are all legal */
 void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
 {
-	assert(gInd_A != -1 && gInd_B != -1);
-	assert(lInd_A ==  0 || lInd_A ==  1);		/* protect from indexing out of range */
-	assert(lInd_B ==  0 || lInd_B ==  1);
+	assert(gInd_A >= 0 && gInd_B >= 0);     /* protect from unassigned negative global indexing */
+	assert(lInd_A == 0 || lInd_A == 1);		/* protect from indexing out of range */
+	assert(lInd_B == 0 || lInd_B == 1);
 }
 
 
