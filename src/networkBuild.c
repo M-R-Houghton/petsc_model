@@ -73,9 +73,9 @@ void checkBoxArguments(PetscInt nCount, PetscInt fCount,
 	assert(yPer >= 0);
 	assert(zPer >= 0);
 
-	assert(xPer < 2);
-	assert(yPer < 2);
-	assert(zPer < 2);
+	assert(xPer <= 1);
+	assert(yPer <= 1);
+	assert(zPer <= 1);
 }
 
 
