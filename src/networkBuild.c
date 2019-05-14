@@ -3,6 +3,7 @@
 /* Initiates network build routine */
 PetscErrorCode networkBuild()
 {
+    /* TODO: This function is obsolete and will be removed */
 	PetscErrorCode 	ierr;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building network objects...\n");CHKERRQ(ierr);
 
@@ -11,7 +12,7 @@ PetscErrorCode networkBuild()
 
 
 /* Creates a parameters structure */
-Parameters *makeParameters(const char *input, const char *output, PetscScalar gamma, PetscScalar yMod)
+Parameters *makeParameters(const char *input, const char *output, const PetscScalar gamma, const PetscScalar yMod)
 {
 	/* allocate memory */
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
@@ -21,6 +22,7 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	strcpy(par_ptr->outputNetwork, output);
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
+    // TODO: Check input and output do not exceed 100 chars
 
 	/* should not be assigned by user */
 	par_ptr->energyStre = 0;
