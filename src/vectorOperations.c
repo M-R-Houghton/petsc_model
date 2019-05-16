@@ -189,7 +189,7 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 
 
 /* Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, PetscInt N)
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const Box *box_ptr, const PetscInt N)
 {
 	PetscErrorCode ierr = 0;
 
@@ -211,18 +211,16 @@ PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, Pe
 
 
 /* Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, Box *box_ptr)
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const Box *box_ptr)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode  ierr = 0;
+    PetscInt        i;
 
-	/* check if x-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 0);CHKERRQ(ierr);
-
-	/* check if y-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 1);CHKERRQ(ierr);
-
-	/* check if z-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 2);CHKERRQ(ierr);
+    // TODO: Check whether it is sufficient to loop over DIMENSION instead of up to i
+    for (i = 0; i < 3; i++)
+    {
+        ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, i);CHKERRQ(ierr);
+    }
 
 	return ierr;
 }

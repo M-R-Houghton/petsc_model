@@ -118,14 +118,14 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
  * \param box_ptr
  * \param N The relevant boundary to check for intersection with
  */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, PetscInt N);
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const Box *box_ptr, PetscInt N);
 
 /**
  * \brief Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain
  * \param distVec_ptr
  * \param box_ptr
  */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, Box *box_ptr);
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const Box *box_ptr);
 
 
 #endif
