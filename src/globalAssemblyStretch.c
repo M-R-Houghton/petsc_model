@@ -68,8 +68,8 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar local
 /* Checks stretch vector contribution indexes are all legal */
 void checkVecStretchContIndexes( const PetscInt gInd_A, const PetscInt lInd_A )
 {
-	assert(gInd_A != -1);
-	assert(lInd_A ==  0 || lInd_A == 1);		/* protect from indexing out of range */
+	assert(gInd_A >= 0);
+	assert(lInd_A == 0 || lInd_A == 1);		/* protect from indexing out of range */
 }
 
 
