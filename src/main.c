@@ -106,6 +106,7 @@ int main(int argc, char **args)
     N 	 = box_ptr->nodeInternalCount;
     n 	 = N * DIMENSION;
     /* WARNING: here we are overwriting the number of procs n... why? */
+    // TODO: change this so that we have separate variables.
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
