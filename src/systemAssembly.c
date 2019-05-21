@@ -87,7 +87,8 @@ PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const P
 }
 
 
-PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt coupleCount)
+PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, 
+                                        const PetscInt coupleCount, const Couple *coupleList)
 {
     PetscErrorCode  ierr = 0;
     PetscInt        cID,i; 
@@ -98,10 +99,11 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const Pet
     /* update diagonals by looping over each couple */
     for (cID = 0; cID < coupleCount; cID++)
     {
+        PetscInt numNodes = coupleList[cID].nodesInCouple;
         /* update diagonal value at each coordinate */
 	    for (i = 0; i < DIMENSION; i++)
 	    {
-	        ierr = MatSetValue(H, cID + i*coupleCount, cID + i*coupleCount, lambda, ADD_VALUES);CHKERRQ(ierr);
+	        ierr = MatSetValue(H, cID + i*coupleCount, cID + i*coupleCount, numNodes*lambda, ADD_VALUES);CHKERRQ(ierr);
 	    }
     }
 
@@ -109,8 +111,8 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const Pet
 }
 
 
-PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, 
-                                            const PetscInt internalCount, const PetscInt coupleCount)
+PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const PetscInt internalCount, 
+                                            const PetscInt coupleCount, const Couple *coupleList)
 {
     PetscErrorCode ierr;
 
@@ -120,7 +122,7 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda,
     }
     else
     {
-        ierr = applyEMToCoupledMatrix(H, lambda, coupleCount);CHKERRQ(ierr);
+        ierr = applyEMToCoupledMatrix(H, lambda, coupleCount, coupleList);CHKERRQ(ierr);
     }
 
     return ierr;
@@ -209,7 +211,8 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscS
         exit(1);
     }
 
-    ierr = applyElasticMediumToMatrix(H, lambda, box_ptr->nodeInternalCount, box_ptr->coupleCount);
+    ierr = applyElasticMediumToMatrix( H, lambda, box_ptr->nodeInternalCount, 
+                                        box_ptr->coupleCount, box_ptr->masterCoupleList );
     ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
     return ierr;

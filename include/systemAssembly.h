@@ -25,9 +25,10 @@ PetscErrorCode applyEMToDecoupledMatrix(Mat H, PetscScalar lambda, PetscInt N);
  * \param H Global matrix to be shifted
  * \param lambda The force representing the stiffness of the elastic medium
  * \param coupleCount Number of couples to loop over.
+ * \param coupleList An array of pointers to all the couples.
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyEMToCoupledMatrix(Mat H, PetscScalar lambda, PetscInt coupleCount);
+PetscErrorCode applyEMToCoupledMatrix(Mat H, PetscScalar lambda, PetscInt coupleCount, const Couple *coupleList);
 
 /**
  * \brief Applies a force to the global matrix 
@@ -35,9 +36,10 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, PetscScalar lambda, PetscInt couple
  * \param lambda The force representing the stiffness of the elastic medium
  * \param internalCount Needed in the case of decoupled systems.
  * \param coupleCount Used as a flag to determine which medium to apply.
+ * \param coupleList An array of pointers to all the couples.
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda, PetscInt internalCount, PetscInt coupleCount);
+PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda, PetscInt internalCount, PetscInt coupleCount, const Couple *coupleList);
 
 /**
  * \brief Applies a weighted force to the global RHS vector for a decoupled system.
