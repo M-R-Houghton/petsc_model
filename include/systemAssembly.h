@@ -16,7 +16,25 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda);
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, PetscScalar lambda);
+
+/**
+ * \brief Applies a force to the global matrix with varied weight on the diagonal. 
+ * The weighting is determined based on the number of nodes in each couple.
+ * \param H Global matrix to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyEMToCoupledMatrix(Mat H, PetscScalar lambda);
+
+/**
+ * \brief Applies a force to the global matrix 
+ * \param H Global matrix to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \param coupleCount Used as a flag to determine which medium to apply.
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda, PetscInt coupleCount);
 
 /**
  * \brief Applies a uniform force to the global RHS vector
@@ -25,7 +43,7 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda);
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda);
+PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, PetscScalar lambda);
 
 /**
  * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
@@ -35,7 +53,7 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscScalar lambda);
+PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
 
 /**
  * \brief Assembles a global vector from the affine displacements of every internal node 

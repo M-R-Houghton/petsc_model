@@ -51,11 +51,40 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 }
 
 
-PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda)
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda)
 {
     PetscErrorCode ierr;
 
     ierr = MatShift(H, lambda);CHKERRQ(ierr);
+
+    return ierr;
+}
+
+
+PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda)
+{
+    PetscErrorCode ierr;
+
+    ierr = MatShift(H, lambda);CHKERRQ(ierr);
+
+    return ierr;
+}
+
+
+PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const PetscInt coupleCount)
+{
+    PetscErrorCode ierr;
+
+    ierr = MatShift(H, lambda);CHKERRQ(ierr);
+    
+    if (coupleCount == 0)
+    {
+        ierr = applyEMToDecoupledMatrix(H, lambda);CHKERRQ(ierr);
+    }
+    else
+    {
+        ierr = applyEMToCoupledMatrix(H, lambda);CHKERRQ(ierr);
+    }
 
     return ierr;
 }
@@ -119,7 +148,7 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscS
 {
     PetscErrorCode 	ierr;
 
-    ierr = applyElasticMediumToMatrix(H, lambda);
+    ierr = applyElasticMediumToMatrix(H, lambda, box_ptr->coupleCount);
 
     ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
