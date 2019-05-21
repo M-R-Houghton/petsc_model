@@ -55,6 +55,7 @@ PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda)
 {
     PetscErrorCode ierr;
 
+    /* for decoupled systems apply uniform force to all diagonals */
     ierr = MatShift(H, lambda);CHKERRQ(ierr);
 
     return ierr;
@@ -75,8 +76,6 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const
 {
     PetscErrorCode ierr;
 
-    ierr = MatShift(H, lambda);CHKERRQ(ierr);
-    
     if (coupleCount == 0)
     {
         ierr = applyEMToDecoupledMatrix(H, lambda);CHKERRQ(ierr);
