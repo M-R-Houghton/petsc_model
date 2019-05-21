@@ -58,29 +58,29 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
     //ierr = VecZeroEntries(b);CHKERRQ(ierr);
     //ierr = MatZeroEntries(H);CHKERRQ(ierr);
 
-    //ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-    //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     return ierr;
 }
 
 
-PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt internalCount)
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt N)
 {
     PetscErrorCode  ierr = 0;
-    PetscInt        nID,i; 
+    PetscInt        nID,i;
 
     // TODO: Will not work before assembly. For reference only - remove.
     //ierr = MatShift(H, lambda);CHKERRQ(ierr);
 
     /* update diagonals by looping over each internal ID */
-    for (nID = 0; nID < internalCount; nID++)
+    for (nID = 0; nID < N; nID++)
     {
         /* update diagonal value at each coordinate */
 	    for (i = 0; i < DIMENSION; i++)
 	    {
             /* for decoupled systems apply uniform force to all diagonals */
-	        ierr = MatSetValue(H, i*nID, i*nID, lambda, ADD_VALUES);CHKERRQ(ierr);
+	        ierr = MatSetValue(H, nID + i*N, nID + i*N, lambda, ADD_VALUES);CHKERRQ(ierr);
 	    }
     }
     return ierr;
@@ -98,7 +98,7 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const Pet
         /* update diagonal value at each coordinate */
 	    for (i = 0; i < DIMENSION; i++)
 	    {
-	        //ierr = MatSetValue(H, i*cID, i*cID, lambda, ADD_VALUES);CHKERRQ(ierr);
+	        ierr = MatSetValue(H, cID + i*coupleCount, cID + i*coupleCount, lambda, ADD_VALUES);CHKERRQ(ierr);
 	    }
     }
 

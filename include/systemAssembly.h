@@ -14,10 +14,10 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
  * \brief Applies a uniform force to the global matrix 
  * \param H Global matrix to be shifted
  * \param lambda The force representing the stiffness of the elastic medium
- * \param internalCount Number of internal nodes to loop over.
+ * \param N Number of internal nodes to loop over.
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyEMToDecoupledMatrix(Mat H, PetscScalar lambda, PetscInt internalCount);
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, PetscScalar lambda, PetscInt N);
 
 /**
  * \brief Applies a force to the global matrix with varied weight on the diagonal. 
