@@ -2,18 +2,20 @@
 
 
 /* Checks stretch matrix contribution indexes are all legal */
-void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+void checkMatStretchContIndexes( const PetscInt gInd_A, const PetscInt gInd_B, const PetscInt lInd_A, const PetscInt lInd_B )
 {
-	assert(gInd_A != -1 && gInd_B != -1);
-	assert(lInd_A ==  0 || lInd_A ==  1);		/* protect from indexing out of range */
-	assert(lInd_B ==  0 || lInd_B ==  1);
+	assert(gInd_A >= 0 && gInd_B >= 0);     /* protect from unassigned negative global indexing */
+	assert(lInd_A == 0 || lInd_A == 1);		/* protect from indexing out of range */
+	assert(lInd_B == 0 || lInd_B == 1);
 }
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix potentially more efficiently */
-PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
-											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+											const PetscInt gInd_A, const PetscInt gInd_B, 
+                                            const PetscInt lInd_A, const PetscInt lInd_B )
 {
+    // TODO: Understand why this function doesn't work as expected
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		row;
 	PetscInt 		col[DIMENSION];
@@ -38,8 +40,9 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+										const PetscInt gInd_A, const PetscInt gInd_B, 
+                                        const PetscInt lInd_A, const PetscInt lInd_B )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i,j;
@@ -63,16 +66,16 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 
 
 /* Checks stretch vector contribution indexes are all legal */
-void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A )
+void checkVecStretchContIndexes( const PetscInt gInd_A, const PetscInt lInd_A )
 {
-	assert(gInd_A != -1);
-	assert(lInd_A ==  0 || lInd_A == 1);		/* protect from indexing out of range */
+	assert(gInd_A >= 0);
+	assert(lInd_A == 0 || lInd_A == 1);		/* protect from indexing out of range */
 }
 
 
 /* Adds a single stretching contribution of 3 values to the global vector */
-PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A )
+PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar localVec[], const PetscInt N,
+										const PetscInt gInd_A, const PetscInt lInd_A )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i;
@@ -89,16 +92,16 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[],
 
 
 /* Adds local stretching contributions to the global matrix and RHS vector */
-PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									   	PetscScalar localMat[][6], PetscScalar localVec[] )
+PetscErrorCode addStretchContToGlobal( const Node *alph_ptr, const Node *beta_ptr,
+										Mat globalMat_H, Vec globalVec_B, const PetscInt N,
+									   	const PetscScalar localMat[][6], const PetscScalar localVec[] )
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt alph_gID = alph_ptr->globalID;		/* setup global IDs */
-	PetscInt beta_gID = beta_ptr->globalID;
+	const PetscInt alph_gID = alph_ptr->globalID;		/* setup global IDs */
+	const PetscInt beta_gID = beta_ptr->globalID;
 
-	PetscInt alph_lID = 0, beta_lID = 1;		/* setup local IDs */
+	const PetscInt alph_lID = 0, beta_lID = 1;		/* setup local IDs */
 
 	if (alph_ptr->nodeType != NODE_DANGLING && 
 		beta_ptr->nodeType != NODE_DANGLING)

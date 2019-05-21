@@ -114,25 +114,19 @@ PetscInt setInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)
 
 PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex)
 {
-    PetscInt i;
-    PetscErrorCode ierr;
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"\nstarting val= %d\n", *nextIndex);CHKERRQ(ierr);
-    /* loop over every node of the network */
+    PetscErrorCode  ierr = 0;
+    PetscInt        i;
+
     for (i = 0; i < box_ptr->nodeCount; i++)
     {
         Node *node_ptr = &(box_ptr->masterNodeList[i]);
         if (node_ptr->globalID == -2)
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"Found an additional internal node.\n");CHKERRQ(ierr);
-
             assert(node_ptr->nodeType == NODE_INTERNAL);
             node_ptr->globalID = *nextIndex;
             *nextIndex += 1;
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"incremented val = %d\n", *nextIndex);CHKERRQ(ierr);
         }
     }        
-
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"ending val = %d\n", *nextIndex);CHKERRQ(ierr);
     return ierr;
 }
 

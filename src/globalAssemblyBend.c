@@ -2,19 +2,23 @@
 
 
 /* Checks bend matrix contribution indexes are all legal */
-void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+void checkMatBendContIndexes( const PetscInt gInd_A, const PetscInt gInd_B, 
+                                const PetscInt lInd_A, const PetscInt lInd_B )
 {
+    /* protect from unassigned negative global indexing */
+	assert(gInd_A >= 0 && gInd_B >= 0); 
 	/* protect from indexing out of range */
-	assert(gInd_A != -1 && gInd_B != -1);
-	assert(lInd_A ==  0 || lInd_A ==  1 || lInd_A == 2);
-	assert(lInd_B ==  0 || lInd_B ==  1 || lInd_B == 2);
+	assert(lInd_A == 0 || lInd_A == 1 || lInd_A == 2);
+	assert(lInd_B == 0 || lInd_B == 1 || lInd_B == 2);
 }
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
-											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
+										 const PetscInt gInd_A, const PetscInt gInd_B, 
+                                         const PetscInt lInd_A, const PetscInt lInd_B )
 {
+    // TODO: Understand why this function doesn't work as expected
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		row;
 	PetscInt 		col[DIMENSION];
@@ -39,8 +43,9 @@ PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[]
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
+									 const PetscInt gInd_A, const PetscInt gInd_B, 
+                                     const PetscInt lInd_A, const PetscInt lInd_B )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i,j;
@@ -64,17 +69,16 @@ PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9],
 
 
 /* Checks bend vector contribution indexes are all legal */
-void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A )
+void checkVecBendContIndexes( const PetscInt gInd_A, const PetscInt lInd_A )
 {
-	/* protect from indexing out of range */
-	assert(gInd_A != -1);
-	assert(lInd_A ==  0 || lInd_A == 1 || lInd_A == 2);
+	assert(gInd_A >= 0);
+	assert(lInd_A == 0 || lInd_A == 1 || lInd_A == 2);
 }
 
 
 /* Adds a single bending contribution of 3 values to the global vector */
-PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A )
+PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], 
+                                     const PetscInt N, const PetscInt gInd_A, const PetscInt lInd_A )
 {
 	PetscErrorCode ierr = 0;
 	PetscInt 		i;
@@ -91,19 +95,19 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], Pe
 
 
 /* Adds local bending contributions to the global matrix and RHS vector */
-PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									PetscScalar localMat[][9], PetscScalar localVec[],
-									Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr )
+PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,
+									const PetscScalar localMat[][9], const PetscScalar localVec[],
+									const Node *alph_ptr, const Node *omeg_ptr, const Node *beta_ptr )
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt alph_gID = alph_ptr->globalID;		/* setup global IDs */
-	PetscInt omeg_gID = omeg_ptr->globalID;
-	PetscInt beta_gID = beta_ptr->globalID;
+	const PetscInt alph_gID = alph_ptr->globalID;		/* setup global IDs */
+	const PetscInt omeg_gID = omeg_ptr->globalID;
+	const PetscInt beta_gID = beta_ptr->globalID;
 
-	PetscInt alph_lID = 0;						/* setup local IDs */
-	PetscInt omeg_lID = 1; 
-	PetscInt beta_lID = 2;
+	const PetscInt alph_lID = 0;						/* setup local IDs */
+	const PetscInt omeg_lID = 1; 
+	const PetscInt beta_lID = 2;
 
 	if (omeg_ptr->nodeType == NODE_INTERNAL &&
 		alph_ptr->nodeType != NODE_DANGLING &&
