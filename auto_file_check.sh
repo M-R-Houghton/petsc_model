@@ -19,6 +19,8 @@ test_file="${dat_path}${group}TestNetworks.txt"
 
 tmp_res_tst="temp_res.txt"
 
+fail_count=0
+
 # Check test file exists
 if [ ! -f "$test_file" ]; then
     printf "Test file %s is missing\n" "$test_file"
@@ -83,6 +85,7 @@ while read file; do
     e_code=$?
     if [ $e_code != 0 ]; then
             printf "\e[31m[FAILED]\e[0m Output data regression test : %d\n" "$e_code"
+            ((fail_count++))
     else
             printf "\e[32m[PASSED]\e[0m Output data regression test.\n"
     fi
@@ -94,11 +97,14 @@ while read file; do
     e_code=$?
     if [ $e_code != 0 ]; then
             printf "\e[31m[FAILED]\e[0m Energy regression test : %d\n" "$e_code"
+            ((fail_count++))
     else
             printf "\e[32m[PASSED]\e[0m Energy regression test.\n"
     fi
 
 done < $test_file
+
+printf "Tests failed: %d\n" "$fail_count"
 
 rm $tmp_res_tst
 
