@@ -138,7 +138,7 @@ int main(int argc, char **args)
     ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
     if (useEM)
     {
-        ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
+        //ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
     }
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     

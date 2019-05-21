@@ -3,7 +3,13 @@
 /* Initiates system assembly routine */
 PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 {
-    PetscErrorCode ierr;
+    PetscErrorCode  ierr = 0;
+    PetscBool       useEM = PETSC_FALSE;
+    PetscScalar     lambda = 1e-5;       
+
+    /* set up options for elastic medium */
+    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
     /*
      * Calculate sparsity of global matrix
@@ -37,6 +43,14 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
     ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); // where &i is an array of i
     */
 
+    if (useEM)
+    {
+        ierr = applyElasticMedium(box_ptr, H, b, lambda);CHKERRQ(ierr);
+    }
+
+    /* Assemble after all VecSets and MatSets */
+    ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
+    ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
     ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
@@ -51,40 +65,109 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
 }
 
 
-PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda)
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt internalCount)
 {
-    PetscErrorCode ierr;
+    PetscErrorCode  ierr = 0;
+    PetscInt        nID,i; 
 
-    /* for decoupled systems apply uniform force to all diagonals */
-    ierr = MatShift(H, lambda);CHKERRQ(ierr);
+    // TODO: Will not work before assembly. For reference only - remove.
+    //ierr = MatShift(H, lambda);CHKERRQ(ierr);
+
+    /* update diagonals by looping over each internal ID */
+    for (nID = 0; nID < internalCount; nID++)
+    {
+        /* update diagonal value at each coordinate */
+	    for (i = 0; i < DIMENSION; i++)
+	    {
+            /* for decoupled systems apply uniform force to all diagonals */
+	        ierr = MatSetValue(H, i*nID, i*nID, lambda, ADD_VALUES);CHKERRQ(ierr);
+	    }
+    }
+    return ierr;
+}
+
+
+PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt coupleCount)
+{
+    PetscErrorCode  ierr = 0;
+    PetscInt        cID,i; 
+
+    /* update diagonals by looping over each couple */
+    for (cID = 0; cID < coupleCount; cID++)
+    {
+        /* update diagonal value at each coordinate */
+	    for (i = 0; i < DIMENSION; i++)
+	    {
+	        //ierr = MatSetValue(H, i*cID, i*cID, lambda, ADD_VALUES);CHKERRQ(ierr);
+	    }
+    }
 
     return ierr;
 }
 
 
-PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda)
-{
-    PetscErrorCode ierr;
-
-    ierr = MatShift(H, lambda);CHKERRQ(ierr);
-
-    return ierr;
-}
-
-
-PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const PetscInt coupleCount)
+PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, 
+                                            const PetscInt internalCount, const PetscInt coupleCount)
 {
     PetscErrorCode ierr;
 
     if (coupleCount == 0)
     {
-        ierr = applyEMToDecoupledMatrix(H, lambda);CHKERRQ(ierr);
+        ierr = applyEMToDecoupledMatrix(H, lambda, internalCount);CHKERRQ(ierr);
     }
     else
     {
-        ierr = applyEMToCoupledMatrix(H, lambda);CHKERRQ(ierr);
+        ierr = applyEMToCoupledMatrix(H, lambda, coupleCount);CHKERRQ(ierr);
     }
 
+    return ierr;
+}
+
+
+PetscErrorCode applyEMToDecoupledRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)
+{
+    PetscErrorCode  ierr = 0;
+    PetscInt        N = box_ptr->nodeInternalCount;
+    PetscInt        i,j;
+
+    for (i = 0; i < box_ptr->nodeCount; i++)
+    {
+        Node *node = &(box_ptr->masterNodeList[i]);
+        if (node->globalID != -1)
+        {
+            for (j = 0; j < DIMENSION; j++)
+            {
+                ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+                CHKERRQ(ierr);
+            }
+        }
+    }
+    return ierr;
+}
+
+
+PetscErrorCode applyEMToCoupledRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)
+{
+    PetscErrorCode  ierr = 0;
+    PetscInt        N = box_ptr->nodeInternalCount;
+    PetscInt        i,j;
+
+    for (i = 0; i < box_ptr->coupleCount; i++)
+    {
+        Couple *couple = &(box_ptr->masterCoupleList[i]);
+        assert(couple->coupleID == i);
+        assert(couple->nodesInCouple > 0);
+
+        /* take the first node of the couple */
+        Node *node = &(box_ptr->masterNodeList[couple->nodeID[0]]);
+        assert(node->globalID == couple->coupleID);
+
+        /* for x,y,z components shift node a factor of the affine displacement vector */
+        for (j = 0; j < DIMENSION; j++)
+        {
+            ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+        }
+    }
     return ierr;
 }
 
@@ -92,51 +175,15 @@ PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const
 PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)
 {
     PetscErrorCode 	ierr;
-    PetscInt        i,j;
-    PetscInt        N = box_ptr->nodeInternalCount;
 
-    /* Networks with internals not associated with couples need handling separately */
-    if (box_ptr->coupleCount != 0 && box_ptr->nodeInternalCount != box_ptr->coupleCount)
-    {
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Not able to handle this type of network yet.\n");CHKERRQ(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Please run w/o EM or use another network.\n");CHKERRQ(ierr);
-        exit(1);
-    }
-
-    /* uncoupled networks are handled by looping over all internal nodes */
     if (box_ptr->coupleCount == 0)
     {
-        for (i = 0; i < box_ptr->nodeCount; i++)
-        {
-            Node *node = &(box_ptr->masterNodeList[i]);
-            if (node->globalID != -1)
-            {
-                for (j = 0; j < DIMENSION; j++)
-                {
-                    ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
-                    CHKERRQ(ierr);
-                }
-            }
-        }
+        /* decoupled networks are handled by looping over all internal nodes */
+        ierr = applyEMToDecoupledRHSVector(box_ptr, B, lambda);CHKERRQ(ierr);
     }
     else
     {
-        for (i = 0; i < box_ptr->coupleCount; i++)
-        {
-            Couple *couple = &(box_ptr->masterCoupleList[i]);
-            assert(couple->coupleID == i);
-            assert(couple->nodesInCouple > 0);
-
-            /* take the first node of the couple */
-            Node *node = &(box_ptr->masterNodeList[couple->nodeID[0]]);
-            assert(node->globalID == couple->coupleID);
-
-            /* for x,y,z components shift node a factor of the affine displacement vector */
-            for (j = 0; j < DIMENSION; j++)
-            {
-                ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
-            }
-        }
+        ierr = applyEMToCoupledRHSVector(box_ptr, B, lambda);CHKERRQ(ierr);
     }
     return ierr;
 }
@@ -147,13 +194,17 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscS
 {
     PetscErrorCode 	ierr;
 
-    ierr = applyElasticMediumToMatrix(H, lambda, box_ptr->coupleCount);
+    /* Networks with internals not associated with couples need handling separately */
+    if (box_ptr->coupleCount != 0 && box_ptr->nodeInternalCount != box_ptr->coupleCount)
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Not able to handle this type of network yet.\n");CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[ERROR] Please run w/o EM or use another network.\n");CHKERRQ(ierr);
+        exit(1);
+    }
 
+    ierr = applyElasticMediumToMatrix(H, lambda, box_ptr->nodeInternalCount, box_ptr->coupleCount);
     ierr = applyElasticMediumToRHSVector(box_ptr, B, lambda);
 
-    ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-
-    ierr = VecView(B,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     return ierr;
 }
 
