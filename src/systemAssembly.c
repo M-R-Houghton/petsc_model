@@ -92,6 +92,9 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, const Pet
     PetscErrorCode  ierr = 0;
     PetscInt        cID,i; 
 
+    // TODO: Here we either need to loop over all nodes in a couple, adding for each one.
+    // ...or we need to add lambda as a factor of the number of nodes in the couple.
+
     /* update diagonals by looping over each couple */
     for (cID = 0; cID < coupleCount; cID++)
     {
@@ -150,22 +153,26 @@ PetscErrorCode applyEMToCoupledRHSVector(const Box *box_ptr, Vec B, const PetscS
 {
     PetscErrorCode  ierr = 0;
     PetscInt        N = box_ptr->nodeInternalCount;
-    PetscInt        i,j;
+    PetscInt        i,j,k;
 
+    /* Need to loop over coupleCount so we can access each nodes contribution from a couple */
     for (i = 0; i < box_ptr->coupleCount; i++)
     {
         Couple *couple = &(box_ptr->masterCoupleList[i]);
         assert(couple->coupleID == i);
         assert(couple->nodesInCouple > 0);
 
-        /* take the first node of the couple */
-        Node *node = &(box_ptr->masterNodeList[couple->nodeID[0]]);
-        assert(node->globalID == couple->coupleID);
-
-        /* for x,y,z components shift node a factor of the affine displacement vector */
-        for (j = 0; j < DIMENSION; j++)
+        for (j = 0; j < couple->nodesInCouple; j++)
         {
-            ierr = VecSetValue(B, node->globalID + j*N, lambda * node->xyzAffDisplacement[j], ADD_VALUES);
+            /* take each node of the couple */
+            Node *node_j = &(box_ptr->masterNodeList[couple->nodeID[j]]);
+            assert(node_j->globalID == couple->coupleID);
+
+            /* for x,y,z components shift node a factor of the affine displacement vector */
+            for (k = 0; k < DIMENSION; k++)
+            {
+                ierr = VecSetValue(B, node_j->globalID + k*N, lambda * node_j->xyzAffDisplacement[k], ADD_VALUES);
+            }
         }
     }
     return ierr;
