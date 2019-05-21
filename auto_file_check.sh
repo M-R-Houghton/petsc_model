@@ -71,7 +71,7 @@ while read file; do
         continue;
     fi
     if [ ! -f "$file_res_tst" ]; then
-        printf "Output data file %s is missing\n" "$file_res_tst"
+        printf "Results data file %s is missing\n" "$file_res_tst"
         continue;
     fi
 
