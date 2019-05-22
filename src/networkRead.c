@@ -152,7 +152,7 @@ PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount,
         /* loop over nodes on couple and reassign IDs of any internal nodes */
         for (j = 0; j < couple_ptr->nodesInCouple; j++)
         {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"%d, ", couple_ptr->nodeID[j]);CHKERRQ(ierr);
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"%d, ", couple_ptr->nodeID[j]);CHKERRQ(ierr);
 
             /* reference the node with the corresponding ID */
             Node *node_ptr = &(box_ptr->masterNodeList[couple_ptr->nodeID[j]]);
