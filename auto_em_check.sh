@@ -15,7 +15,7 @@ par_path="${head}par/${group}/"
 dat_path="${head}dat/${group}/"
 res_path="${head}res/${group}/"
 
-test_file="${dat_path}${group}TestNetworks.txt"
+test_file="${dat_path}${group}EMNetworks.txt"
 
 tmp_res_tst="temp_res.txt"
 
@@ -31,7 +31,6 @@ fi
 while read file; do
     # Padd file_base with suffixes
     file_par="${par_path}${file}.par"               # The parameter file
-    file_res_val="${res_path}${file}.val"           # The results file
     file_res_tst="${res_path}${file}.res"           # The results file
     file_in="${dat_path}${file}_in.dat"             # The in data file
     file_out_val="${dat_path}${file}_out.val"       # The out data to check against
@@ -50,10 +49,17 @@ while read file; do
         printf "Output validation file %s is missing\n" "$file_out_val"
         continue;
     fi
-    if [ ! -f "$file_res_val" ]; then
-        printf "Results validation file %s is missing\n" "$file_res_val"
-        continue;
-    fi
+
+    for i in -5 -7
+    do
+        echo "${file}_1e${i}"
+        file_res_val="${res_path}${file}_1e${i}.val"           # The results file
+        if [ ! -f "$file_res_val" ]; then
+            printf "Results validation file %s is missing\n" "$file_res_val"
+            continue;
+        fi
+
+    done
 
     printf "Auto testing model with %s...\n" "$file_par"
 
@@ -61,7 +67,7 @@ while read file; do
     # NOTE: Here we can pass $file_par as arg for rank 0, but...
     # ...for all other ranks we need to redirect from /dev/null
     # ...All stdout from all ranks is collected into $tmp_res. 
-    mpiexec -n 1 ./$bin $file_par </dev/null > "$tmp_res_tst"
+    mpiexec -n 1 ./$bin $file_par "-use_em true"</dev/null > "$tmp_res_tst"
 
     # Pipe temporary output through grep to collect energy values
     cat $tmp_res_tst | grep -E "Gamma|Mod|Radius|Energy" > $file_res_tst
