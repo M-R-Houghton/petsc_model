@@ -146,7 +146,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 
 		/* determine contributions and add to the global system */
         ierr = addBendContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
-        							localBendMat_A, localBendVec_b, alph_ptr, omeg_ptr, beta_ptr );
+                                    alph_ptr->globalID, omeg_ptr->globalID, beta_ptr->globalID,
+                                    alph_ptr->nodeType, omeg_ptr->nodeType, beta_ptr->nodeType,
+        							localBendMat_A, localBendVec_b );
         CHKERRQ(ierr);
 	}
 

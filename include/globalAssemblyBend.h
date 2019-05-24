@@ -56,16 +56,18 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
  * \param N Total number of internal nodes.
+ * \param alph_gID Global index/ID of node alpha
+ * \param beta_gID Global index/ID of node beta
+ * \param alph_nType Node type of node alpha
+ * \param beta_nType Node type of node beta
  * \param localMat The local matrix.
  * \param localVec The local rhs vector.
- * \param alph_ptr A pointer to the node alpha.
- * \param omeg_ptr A pointer to the node omega.
- * \param beta_ptr A pointer to the node beta.
  * \return Petsc error code.
  */
 PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									const PetscScalar localMat[][9], const PetscScalar localVec[],
-									const Node *alph_ptr, const Node *omeg_ptr, const Node *beta_ptr );
+                                    PetscInt alph_gID, PetscInt omeg_gID, PetscInt beta_gID,
+                                    PetscInt alph_nType, PetscInt omeg_nType, PetscInt beta_nType,
+									const PetscScalar localMat[][9], const PetscScalar localVec[] );
 
 
 #endif
