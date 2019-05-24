@@ -5,12 +5,12 @@
 
 /**
  * \brief Checks bend matrix contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  */
-void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+void checkMatBendContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Adds a single bending contribution of 9 values to the global matrix
@@ -18,25 +18,25 @@ void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A,
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 
 PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Checks bend vector contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  */
-void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A );
+void checkVecBendContIndexes( PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds a single bending contribution of 3 values to the global vector
@@ -44,12 +44,12 @@ void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A );
  * \param globalVec_H The global vector H.
  * \param localVec The local vector to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  * \return Petsc error code.
  */
 PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A );
+										PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds local bending contributions to the global matrix and RHS vector

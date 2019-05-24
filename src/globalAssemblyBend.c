@@ -2,21 +2,21 @@
 
 
 /* Checks bend matrix contribution indexes are all legal */
-void checkMatBendContIndexes( const PetscInt gInd_A, const PetscInt gInd_B, 
-                                const PetscInt lInd_A, const PetscInt lInd_B )
+void checkMatBendContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, 
+                                const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
     /* protect from unassigned negative global indexing */
-	assert(gInd_A >= 0 && gInd_B >= 0); 
+	assert(gIdx_A >= 0 && gIdx_B >= 0); 
 	/* protect from indexing out of range */
-	assert(lInd_A == 0 || lInd_A == 1 || lInd_A == 2);
-	assert(lInd_B == 0 || lInd_B == 1 || lInd_B == 2);
+	assert(lIdx_A == 0 || lIdx_A == 1 || lIdx_A == 2);
+	assert(lIdx_B == 0 || lIdx_B == 1 || lIdx_B == 2);
 }
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
 PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
-										 const PetscInt gInd_A, const PetscInt gInd_B, 
-                                         const PetscInt lInd_A, const PetscInt lInd_B )
+										 const PetscInt gIdx_A, const PetscInt gIdx_B, 
+                                         const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
     // TODO: Understand why this function doesn't work as expected
 	PetscErrorCode 	ierr = 0;
@@ -25,15 +25,15 @@ PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar loca
 	PetscScalar 	val[DIMENSION];
 	PetscInt 		i,j;
 
-	checkMatBendContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
+	checkMatBendContIndexes(gIdx_A, gIdx_B, lIdx_A, lIdx_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			row    = gInd_A + i*N;
-			col[j] = gInd_B + j*N;
-			val[j] = localMat[lInd_A + 3*i][lInd_B + 3*j];
+			row    = gIdx_A + i*N;
+			col[j] = gIdx_B + j*N;
+			val[j] = localMat[lIdx_A + 3*i][lIdx_B + 3*j];
 		}
 		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, ADD_VALUES);CHKERRQ(ierr);
 	}
@@ -44,21 +44,21 @@ PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar loca
 
 /* Adds a single bending contribution of 9 values to the global matrix */
 PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
-									 const PetscInt gInd_A, const PetscInt gInd_B, 
-                                     const PetscInt lInd_A, const PetscInt lInd_B )
+									 const PetscInt gIdx_A, const PetscInt gIdx_B, 
+                                     const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i,j;
 
-	checkMatBendContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
+	checkMatBendContIndexes(gIdx_A, gIdx_B, lIdx_A, lIdx_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 3*i][lInd_B + 3*j], ADD_VALUES);CHKERRQ(ierr);
+			ierr = MatSetValue(globalMat_H, gIdx_A + i*N, gIdx_B + j*N, localMat[lIdx_A + 3*i][lIdx_B + 3*j], ADD_VALUES);CHKERRQ(ierr);
 			/* WARNING: For debugging ONLY */
-			//ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lInd_A + 3*i][lInd_B + 3*j]);CHKERRQ(ierr);
+			//ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lIdx_A + 3*i][lIdx_B + 3*j]);CHKERRQ(ierr);
 		}
 		//ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 	}
@@ -69,25 +69,25 @@ PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat
 
 
 /* Checks bend vector contribution indexes are all legal */
-void checkVecBendContIndexes( const PetscInt gInd_A, const PetscInt lInd_A )
+void checkVecBendContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )
 {
-	assert(gInd_A >= 0);
-	assert(lInd_A == 0 || lInd_A == 1 || lInd_A == 2);
+	assert(gIdx_A >= 0);
+	assert(lIdx_A == 0 || lIdx_A == 1 || lIdx_A == 2);
 }
 
 
 /* Adds a single bending contribution of 3 values to the global vector */
 PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], 
-                                     const PetscInt N, const PetscInt gInd_A, const PetscInt lInd_A )
+                                     const PetscInt N, const PetscInt gIdx_A, const PetscInt lIdx_A )
 {
 	PetscErrorCode ierr = 0;
 	PetscInt 		i;
 
-	checkVecBendContIndexes(gInd_A, lInd_A);
+	checkVecBendContIndexes(gIdx_A, lIdx_A);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
-		ierr = VecSetValue(globalVec_B, gInd_A + i*N, localVec[lInd_A + 3*i], ADD_VALUES);CHKERRQ(ierr);
+		ierr = VecSetValue(globalVec_B, gIdx_A + i*N, localVec[lIdx_A + 3*i], ADD_VALUES);CHKERRQ(ierr);
 	}
 
 	return ierr;
