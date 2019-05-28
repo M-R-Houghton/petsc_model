@@ -104,7 +104,7 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, Pe
 	}
 
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(addVec_ptr, box_ptr);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(addVec_ptr, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }
@@ -122,7 +122,7 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_pt
 	}
 
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(distVec_ptr, box_ptr);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(distVec_ptr, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }
@@ -189,14 +189,12 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 
 
 /* Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const Box *box_ptr, const PetscInt N)
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const PetscInt N, const PetscInt perN, const PetscScalar dimN)
 {
 	PetscErrorCode ierr = 0;
 
-	if (box_ptr->xyzPeriodic[N] == 1)
+	if (perN == 1)
 	{
-		PetscScalar dimN = box_ptr->xyzDimension[N]; 	/* i.e. width/height/depth */
-
 		while (distVec_ptr[N] >  0.5 * dimN) 
 		{
 			distVec_ptr[N] -= dimN;
@@ -211,7 +209,7 @@ PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const Box *box_p
 
 
 /* Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const Box *box_ptr)
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim)
 {
 	PetscErrorCode  ierr = 0;
     PetscInt        i;
@@ -219,7 +217,7 @@ PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const Box *box_ptr)
     // TODO: Check whether it is sufficient to loop over DIMENSION instead of up to i
     for (i = 0; i < 3; i++)
     {
-        ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, i);CHKERRQ(ierr);
+        ierr = nearestSegmentCopyDirN(distVec_ptr, i, xyzPer[i], xyzDim[i]);CHKERRQ(ierr);
     }
 
 	return ierr;

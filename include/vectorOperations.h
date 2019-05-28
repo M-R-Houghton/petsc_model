@@ -115,17 +115,19 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
 /**
  * \brief Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain
  * \param distVec_ptr
- * \param box_ptr
- * \param N The relevant boundary to check for intersection with
+ * \param N The relevant boundary to check for intersection with.
+ * \param perN The periodicity of the N axis.
+ * \param dimN The dimension in the N direction.
  */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const Box *box_ptr, PetscInt N);
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, PetscInt N, PetscInt perN, PetscScalar dimN);
 
 /**
  * \brief Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain
  * \param distVec_ptr
- * \param box_ptr
+ * \param xyzPer Array of x,y,z periodicity
+ * \param xyzDim Array of x,y,z dimensions
  */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const Box *box_ptr);
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim);
 
 
 #endif
