@@ -457,7 +457,7 @@ PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	V, shearEqn;
 
-	calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
+	ierr = calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
 
 	V = calculateVolume(box_ptr);
 
