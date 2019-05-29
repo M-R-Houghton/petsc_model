@@ -93,8 +93,10 @@ PetscScalar vecMagnitude(PetscScalar *vec_ptr)
 
 
 /* Calculates the addition of two position vectors */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                            const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
 {
+    //TODO: Add safety check for accidental periodicity/dimension mix up
 	PetscErrorCode ierr = 0;
 
 	int i;
@@ -104,7 +106,7 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, Pe
 	}
 
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(addVec_ptr, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(addVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }

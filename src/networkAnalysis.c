@@ -246,7 +246,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     }
 
     /* add the two crosses together and calculate the magnitude to get phi magnitude */
-    vecAddition(phi, s_cross_u, u_cross_s, box_ptr);
+    vecAddition(phi, s_cross_u, u_cross_s, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
     phiMagnitude = vecMagnitude(phi);
 
     segBendEnergy = bConst * pow(phiMagnitude, 2);

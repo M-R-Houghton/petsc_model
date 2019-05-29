@@ -71,16 +71,19 @@ PetscScalar vecMagnitude(PetscScalar *vec_ptr);
  * \param addVec_ptr
  * \param posVec1_ptr
  * \param posVec2_ptr
- * \param box_ptr
+ * \param xyzPeriodic Array of x,y,z periodicity
+ * \param xyzDimension Array of x,y,z dimensions
  */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
+PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                            const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
 /**
  * \brief Creates the distance vector between two position vectors
  * \param distVec_ptr
  * \param posVec1_ptr
  * \param posVec2_ptr
- * \param box_ptr
+ * \param xyzPeriodic Array of x,y,z periodicity
+ * \param xyzDimension Array of x,y,z dimensions
  */
 PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
 
