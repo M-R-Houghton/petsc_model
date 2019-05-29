@@ -110,12 +110,11 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 /**
  * \brief Checks couple arguments are all legal
  * \param box_ptr Box containing the relevant data to represent the given network.
- * \param cID
- * \param nInCouple
- * \param nID1
- * \param nID2
+ * \param coupleID Unique ID representing the couple to be built.
+ * \param nodesOnCouple Number of node IDs on the given couple.
+ * \param nodeIDList List of node IDs on the given couple.
  */
-void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2);
+void checkCoupleArguments(Box *box_ptr, PetscInt coupleID, PetscInt nodesOnCouple, const PetscInt *nodeIDList);
 
 /**
  * \brief Creates a couple within its allocated location in a box
@@ -124,7 +123,7 @@ void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1,
  * \param nodesOnCouple Number of node IDs on the given couple.
  * \param nodeIDList List of node IDs on the given couple.
  */
-PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList);
+PetscErrorCode makeCouple(Box *box_ptr, PetscInt coupleID, PetscInt nodesOnCouple, const PetscInt *nodeIDList);
 
 
 #endif
