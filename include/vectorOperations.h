@@ -41,7 +41,7 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b);
  * \param vec2_ptr
  * \return
  */
-PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscScalar vecDotProduct(const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the cross product of two given 2D vectors
@@ -49,7 +49,7 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
  * \param vec2_ptr
  * \return
  */
-PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the cross product of two given 3D vectors
@@ -57,14 +57,14 @@ PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
  * \param vec1_ptr
  * \param vec2_ptr
  */
-PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the magnitude of a given vector
  * \param vec_ptr
  * \return
  */
-PetscScalar vecMagnitude(PetscScalar *vec_ptr);
+PetscScalar vecMagnitude(const PetscScalar *vec_ptr);
 
 /**
  * \brief Calculates the addition of two position vectors
@@ -93,28 +93,28 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posV
  * \param tangVec_ptr
  * \param vec_ptr
  */
-PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr);
+PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr);
 
 /**
  * \brief Creates the position vector of a given node
  * \param posVec_ptr
  * \param node_ptr
  */
-PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
+PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Creates the displacement vector of a given node
  * \param dispVec_ptr
  * \param node_ptr
  */
-PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr);
+PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Updates a position vector with the displacement of the corresponding node
  * \param posVec_ptr
  * \param node_ptr
  */
-PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain

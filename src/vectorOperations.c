@@ -45,7 +45,7 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b)
 
 
 /* Calculates the dot product of two given vectors */
-PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscScalar vecDotProduct(const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	PetscScalar total = 0;
 	int i;
@@ -58,7 +58,7 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 
 
 /* Calculates the cross product of two given 2D vectors */
-PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	assert(DIMENSION == 2);		/* should not be calling this function in 3d case */
 
@@ -72,7 +72,7 @@ PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
 
 
 /* Calculates the cross product of two given 3D vectors */
-PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	assert(DIMENSION == 3);		/* should not be calling this function in 2d case */
 
@@ -86,7 +86,7 @@ PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
 
 
 /* Calculates the magnitude of a given vector */
-PetscScalar vecMagnitude(PetscScalar *vec_ptr)
+PetscScalar vecMagnitude(const PetscScalar *vec_ptr)
 {
 	return sqrt(vecDotProduct(vec_ptr, vec_ptr));
 }
@@ -131,7 +131,7 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posV
 
 
 /* Creates the unit tangent vector of a given vector */
-PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
+PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -146,7 +146,7 @@ PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
 
 
 /* Creates the position vector of a given node */
-PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
+PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -161,7 +161,8 @@ PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 
 
 /* Creates the displacement vector of a given node */
-PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
+// TODO: Confirm that this function is no longer needed
+PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -176,7 +177,7 @@ PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
 
 
 /* Updates a position vector with the displacement of the corresponding node */
-PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
