@@ -427,12 +427,12 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
         Node *nk_ptr = fibre_ptr->nodesOnFibreList[fibre_ptr->nodesOnFibre-1];
 
         /* use first node to update min and max coordinate */
-        minCoord = minScalar(minCoord, n0_ptr->xyzCoord[dim]);
-        maxCoord = maxScalar(maxCoord, n0_ptr->xyzCoord[dim]);
+        minCoord = PetscMin(minCoord, n0_ptr->xyzCoord[dim]);
+        maxCoord = PetscMax(maxCoord, n0_ptr->xyzCoord[dim]);
 
         /* use last node to update min and max coordinate */
-        minCoord = minScalar(minCoord, nk_ptr->xyzCoord[dim]);
-        maxCoord = maxScalar(maxCoord, nk_ptr->xyzCoord[dim]);
+        minCoord = PetscMin(minCoord, nk_ptr->xyzCoord[dim]);
+        maxCoord = PetscMax(maxCoord, nk_ptr->xyzCoord[dim]);
     }
     /* difference max and min to get aperiodic range */
     coordRange = maxCoord - minCoord;
