@@ -96,7 +96,6 @@ PetscScalar vecMagnitude(PetscScalar *vec_ptr)
 PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
                             const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
 {
-    //TODO: Add safety check for accidental periodicity/dimension mix up
 	PetscErrorCode ierr = 0;
 
 	int i;
@@ -113,7 +112,8 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_p
 
 
 /* Creates the distance vector between two position vectors */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
 {
 	PetscErrorCode ierr = 0;
 
@@ -124,7 +124,7 @@ PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_pt
 	}
 
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(distVec_ptr, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(distVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }
@@ -219,6 +219,7 @@ PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzP
     // TODO: Check whether it is sufficient to loop over DIMENSION instead of up to i
     for (i = 0; i < 3; i++)
     {
+        assert(xyzPer[i] == 0 || xyzPer[i] == 1);   /* check for accidental mix up of per with dim */
         ierr = nearestSegmentCopyDirN(distVec_ptr, i, xyzPer[i], xyzDim[i]);CHKERRQ(ierr);
     }
 

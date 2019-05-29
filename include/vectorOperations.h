@@ -85,7 +85,8 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_p
  * \param xyzPeriodic Array of x,y,z periodicity
  * \param xyzDimension Array of x,y,z dimensions
  */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
+PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr,
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
 /**
  * \brief Creates the unit tangent vector of a given vector

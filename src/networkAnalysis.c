@@ -65,17 +65,17 @@ PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
     PetscScalar s_12[DIMENSION], u_12[DIMENSION];
     PetscScalar s_23[DIMENSION], u_23[DIMENSION];
 
-    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* analysis assumes these segments have not been modified prior to shearing */
     assert(sqrt(2.0) == vecMagnitude(s_12));
     assert(sqrt(2.0) == vecMagnitude(s_23));
 
-    ierr = makeDistanceVec(u_02, n0->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_02, n0->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,w)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_02, u_02);CHKERRQ(ierr);
@@ -117,21 +117,21 @@ PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
     PetscScalar s_23[DIMENSION], u_23[DIMENSION];
     PetscScalar s_45[DIMENSION], u_45[DIMENSION];
 
-    ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_45, n4->xyzCoord, n5->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_45, n4->xyzCoord, n5->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* analysis assumes these segments have not been modified prior to shearing */
     assert(sqrt(2.0) == vecMagnitude(s_12));
     assert(sqrt(2.0) == vecMagnitude(s_23));
 
-    ierr = makeDistanceVec(u_04, n0->xyzDisplacement, n4->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_42, n4->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_45, n4->xyzDisplacement, n5->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_04, n0->xyzDisplacement, n4->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_42, n4->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_45, n4->xyzDisplacement, n5->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,p)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_04, u_04);CHKERRQ(ierr);
@@ -167,13 +167,13 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
     PetscScalar 	u_alphBeta[DIMENSION];
 
     /* make distance vector between alpha and beta */
-    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
     /* make distance vector between alpha and beta displacements */
-    ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* find length of segment */
     l_alphBeta = vecMagnitude(s_alphBeta);
@@ -213,8 +213,8 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     PetscScalar phi[DIMENSION];
 
     /* make distance vectors */
-    ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* calculate segment lengths */
 	l_alphOmeg = vecMagnitude(s_alphOmeg);
@@ -230,8 +230,8 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	bConst 	  = bConstNum / bConstDen;
 
     /* make distance vectors */
-    ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
     if (DIMENSION == 3)
