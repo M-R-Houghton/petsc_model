@@ -446,7 +446,7 @@ PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScal
                     			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
                     			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
-    //TODO: Change these to be consistent between s and u, so that u is bounds checked
+    //TODO: Change these to be consistent between s and u, but so that u is not bounds checked
 	PetscErrorCode ierr = 0;
 
 	PetscInt x = 0;    /* set these values purely for readability */
