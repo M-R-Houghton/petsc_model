@@ -1,23 +1,10 @@
 #include "localAssemblyBend.h"
 
-/* Checks for legal kappa calculation arguments */
-void checkKappaArguments(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
-{
-	assert(fIndex >= 0);
-}
-
-
 /* Calculates the bending term kappa */
-PetscScalar calculateKappa(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
+PetscScalar calculateKappa(const PetscScalar radius, const PetscScalar youngsModulus)
 {
-	/* validate arguments */
-	checkKappaArguments(box_ptr, par_ptr, fIndex);
-
-	PetscScalar radius 	= box_ptr->masterFibreList[fIndex].radius;
-    PetscScalar yMod 	= par_ptr->youngsModulus;
-    PetscScalar area 	= M_PI * pow(radius, 2);
-
-    return (area * pow(radius, 2) * yMod) / 4.0;
+    PetscScalar area = M_PI * pow(radius, 2);
+    return (area * pow(radius, 2) * youngsModulus) / 4.0;
 }
 
 
@@ -29,7 +16,8 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
 	PetscScalar		bConstNum, bConstDen, bConst;
 
-	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
+    assert(fIndex >= 0);
+	const Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
 	PetscScalar localBendMat_A[9][9];
@@ -44,9 +32,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscInt i;
 	for (i = 0; i < fibre_ptr->nodesOnFibre - 2; i++)
 	{
-		Node *n_alph = fibre_ptr->nodesOnFibreList[i];
-		Node *n_omeg = fibre_ptr->nodesOnFibreList[i+1];
-		Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
+		const Node *n_alph = fibre_ptr->nodesOnFibreList[i];
+		const Node *n_omeg = fibre_ptr->nodesOnFibreList[i+1];
+		const Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
 
 		/* make difference vectors from position vectors with boundary checking */
 		ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
@@ -64,7 +52,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 		l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alphBeta) */
 
 		/* calculate bending modulus kappa */
-        kappa = calculateKappa(box_ptr, par_ptr, fIndex);
+        kappa = calculateKappa(fibre_ptr->radius, par_ptr->youngsModulus);
 
 		/* calculate bending constant */
 		bConstNum = 2 * kappa;

@@ -222,7 +222,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alpBeta) */
     
     /* calculate bending modulus kappa */
-    kappa = calculateKappa(box_ptr, par_ptr, fIndex);
+    kappa = calculateKappa(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus);
 
 	/* calculate bending constant */
 	bConstNum = kappa;     /* NOTE: this was x2 but this is only correct for derivative calcs */
