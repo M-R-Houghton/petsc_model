@@ -104,7 +104,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 		{
 			/* assemble the 3D local matrix and rhs vector */
 			ierr = make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
-			ierr = make3DBendVec(u_alph, u_omeg, u_beta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);CHKERRQ(ierr);
+			ierr = make3DBendVec(u_alphOmeg, u_omegBeta, u_alphBeta, s_alphOmeg, 
+                                    s_omegBeta, s_alphBeta, bConst, localBendVec_b);
+            CHKERRQ(ierr);
             if (useLocalEM) 
             {
                 /*
@@ -451,9 +453,9 @@ PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
 
 /* Assembles the local 3D bend RHS vector of a given triplet */
-PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
-                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
-                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] )
+PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,
+                    			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
     //TODO: Change these to be consistent between s and u, but so that u is not bounds checked
 	PetscErrorCode ierr = 0;
@@ -462,20 +464,35 @@ PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScal
     PetscInt y = 1;    /* set *(1) also for readability */
     PetscInt z = 2;
 
-    PetscScalar phi_xy = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
-                    	- s_alphOmeg[y] * (u_beta[x] - u_omeg[x])
-                    	- s_omegBeta[x] * (u_omeg[y] - u_alph[y])
-                    	+ s_omegBeta[y] * (u_omeg[x] - u_alph[x]);
+    PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y]
+                    	- s_alphOmeg[y] * u_omegBeta[x]
+                    	- s_omegBeta[x] * u_alphOmeg[y]
+                    	+ s_omegBeta[y] * u_alphOmeg[x];
 
-    PetscScalar phi_zx = s_alphOmeg[z] * (u_beta[x] - u_omeg[x])
-                    	- s_alphOmeg[x] * (u_beta[z] - u_omeg[z])
-                    	- s_omegBeta[z] * (u_omeg[x] - u_alph[x])
-                    	+ s_omegBeta[x] * (u_omeg[z] - u_alph[z]);
+    PetscScalar phi_zx = s_alphOmeg[z] * u_omegBeta[x]
+                    	- s_alphOmeg[x] * u_omegBeta[z]
+                    	- s_omegBeta[z] * u_alphOmeg[x]
+                    	+ s_omegBeta[x] * u_alphOmeg[z];
 
-    PetscScalar phi_yz = s_alphOmeg[y] * (u_beta[z] - u_omeg[z])
-                    	- s_alphOmeg[z] * (u_beta[y] - u_omeg[y])
-                    	- s_omegBeta[y] * (u_omeg[z] - u_alph[z])
-                    	+ s_omegBeta[z] * (u_omeg[y] - u_alph[y]);
+    PetscScalar phi_yz = s_alphOmeg[y] * u_omegBeta[z]
+                    	- s_alphOmeg[z] * u_omegBeta[y]
+                    	- s_omegBeta[y] * u_alphOmeg[z]
+                    	+ s_omegBeta[z] * u_alphOmeg[y];
+
+    //PetscScalar phi_xy = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
+    //                	- s_alphOmeg[y] * (u_beta[x] - u_omeg[x])
+    //                	- s_omegBeta[x] * (u_omeg[y] - u_alph[y])
+    //                	+ s_omegBeta[y] * (u_omeg[x] - u_alph[x]);
+
+    //PetscScalar phi_zx = s_alphOmeg[z] * (u_beta[x] - u_omeg[x])
+    //                	- s_alphOmeg[x] * (u_beta[z] - u_omeg[z])
+    //                	- s_omegBeta[z] * (u_omeg[x] - u_alph[x])
+    //                	+ s_omegBeta[x] * (u_omeg[z] - u_alph[z]);
+
+    //PetscScalar phi_yz = s_alphOmeg[y] * (u_beta[z] - u_omeg[z])
+    //                	- s_alphOmeg[z] * (u_beta[y] - u_omeg[y])
+    //                	- s_omegBeta[y] * (u_omeg[z] - u_alph[z])
+    //                	+ s_omegBeta[z] * (u_omeg[y] - u_alph[y]);
 
     /* we want the negation of the 1st partial derivatives */
     phi_xy *= -1;
