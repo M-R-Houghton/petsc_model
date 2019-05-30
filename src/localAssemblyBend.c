@@ -280,19 +280,17 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
 
 /* Assembles the local 2D bend RHS vector of a given triplet */
-PetscErrorCode make2DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,
-                    			PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
-                    			PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendVec_b[9] )
+PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,
+                    			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
 	PetscErrorCode ierr = 0;
 
     PetscInt x = 0;     /* set these values purely for readability */
     PetscInt y = 1;     /* set *(1) also for readability */
 
-    PetscScalar phi_xy = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
-                        - s_alphOmeg[y] * (u_beta[x] - u_omeg[x])
-                        - s_omegBeta[x] * (u_omeg[y] - u_alph[y])
-                        + s_omegBeta[y] * (u_omeg[x] - u_alph[x]);
+    PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
+                        - s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
 /*  PetscScalar phi_zx = 0;
  *  PetscScalar phi_yz = 0; */
 
@@ -457,42 +455,20 @@ PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u
                     			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
-    //TODO: Change these to be consistent between s and u, but so that u is not bounds checked
 	PetscErrorCode ierr = 0;
 
 	PetscInt x = 0;    /* set these values purely for readability */
     PetscInt y = 1;    /* set *(1) also for readability */
     PetscInt z = 2;
 
-    PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y]
-                    	- s_alphOmeg[y] * u_omegBeta[x]
-                    	- s_omegBeta[x] * u_alphOmeg[y]
-                    	+ s_omegBeta[y] * u_alphOmeg[x];
+    PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
+                    	- s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
 
-    PetscScalar phi_zx = s_alphOmeg[z] * u_omegBeta[x]
-                    	- s_alphOmeg[x] * u_omegBeta[z]
-                    	- s_omegBeta[z] * u_alphOmeg[x]
-                    	+ s_omegBeta[x] * u_alphOmeg[z];
+    PetscScalar phi_zx = s_alphOmeg[z] * u_omegBeta[x] - s_alphOmeg[x] * u_omegBeta[z]
+                    	- s_omegBeta[z] * u_alphOmeg[x] + s_omegBeta[x] * u_alphOmeg[z];
 
-    PetscScalar phi_yz = s_alphOmeg[y] * u_omegBeta[z]
-                    	- s_alphOmeg[z] * u_omegBeta[y]
-                    	- s_omegBeta[y] * u_alphOmeg[z]
-                    	+ s_omegBeta[z] * u_alphOmeg[y];
-
-    //PetscScalar phi_xy = s_alphOmeg[x] * (u_beta[y] - u_omeg[y])
-    //                	- s_alphOmeg[y] * (u_beta[x] - u_omeg[x])
-    //                	- s_omegBeta[x] * (u_omeg[y] - u_alph[y])
-    //                	+ s_omegBeta[y] * (u_omeg[x] - u_alph[x]);
-
-    //PetscScalar phi_zx = s_alphOmeg[z] * (u_beta[x] - u_omeg[x])
-    //                	- s_alphOmeg[x] * (u_beta[z] - u_omeg[z])
-    //                	- s_omegBeta[z] * (u_omeg[x] - u_alph[x])
-    //                	+ s_omegBeta[x] * (u_omeg[z] - u_alph[z]);
-
-    //PetscScalar phi_yz = s_alphOmeg[y] * (u_beta[z] - u_omeg[z])
-    //                	- s_alphOmeg[z] * (u_beta[y] - u_omeg[y])
-    //                	- s_omegBeta[y] * (u_omeg[z] - u_alph[z])
-    //                	+ s_omegBeta[z] * (u_omeg[y] - u_alph[y]);
+    PetscScalar phi_yz = s_alphOmeg[y] * u_omegBeta[z] - s_alphOmeg[z] * u_omegBeta[y]
+                    	- s_omegBeta[y] * u_alphOmeg[z] + s_omegBeta[z] * u_alphOmeg[y];
 
     /* we want the negation of the 1st partial derivatives */
     phi_xy *= -1;
