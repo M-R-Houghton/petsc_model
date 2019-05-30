@@ -47,14 +47,13 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
  * \brief Assembles the local 2D bend RHS vector of a given triplet
  * \param u_alphOmeg
  * \param u_omegBeta
- * \param u_alphBeta
  * \param s_alphOmeg
  * \param s_omegBeta
  * \param s_alphBeta
  * \param bConst
  * \param localBendVec_b
  */
-PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,
+PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta,
                                 const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] );
 

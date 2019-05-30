@@ -98,7 +98,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 		{
 			/* assemble the 2D local matrix and rhs vector */
 			ierr = make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
-			ierr = make2DBendVec(u_alph, u_omeg, u_beta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);CHKERRQ(ierr);
+			ierr = make2DBendVec(u_alphOmeg, u_omegBeta, s_alphOmeg, 
+                                    s_omegBeta, s_alphBeta, bConst, localBendVec_b);
+            CHKERRQ(ierr);
 		}
 		else if (DIMENSION == 3)
 		{
@@ -280,7 +282,7 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
 
 
 /* Assembles the local 2D bend RHS vector of a given triplet */
-PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,
+PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta,
                     			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
