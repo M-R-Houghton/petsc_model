@@ -40,11 +40,6 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscScalar localBendMat_A[9][9];
 	PetscScalar localBendVec_b[9];         /* actual size will be 3*DIMENSION */
 
-	/* setup position vectors */
-	PetscScalar s_alph[DIMENSION];
-	PetscScalar s_omeg[DIMENSION];
-	PetscScalar s_beta[DIMENSION];
-
 	/* setup difference vectors */
 	PetscScalar s_alphOmeg[DIMENSION];
 	PetscScalar s_omegBeta[DIMENSION];
@@ -58,28 +53,19 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscInt i;
 	for (i = 0; i < fibre_ptr->nodesOnFibre - 2; i++)
 	{
-		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
-		Node *omeg_ptr = fibre_ptr->nodesOnFibreList[i+1];
-		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+2];
-
-        PetscScalar *u_alph = alph_ptr->xyzDisplacement;
-        PetscScalar *u_omeg = omeg_ptr->xyzDisplacement;
-        PetscScalar *u_beta = beta_ptr->xyzDisplacement;
-
-        /* make position vectors for alpha, omega and beta */
-		ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-		ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
-		ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
+		Node *n_alph = fibre_ptr->nodesOnFibreList[i];
+		Node *n_omeg = fibre_ptr->nodesOnFibreList[i+1];
+		Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
 
 		/* make difference vectors from position vectors with boundary checking */
-		ierr = posVecDifference(s_alphOmeg, s_alph, s_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = posVecDifference(s_omegBeta, s_omeg, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_omegBeta, n_omeg->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
 		/* make difference vectors from displacement vectors */
-		ierr = stdVecDifference(u_alphOmeg, u_alph, u_omeg);CHKERRQ(ierr);
-		ierr = stdVecDifference(u_omegBeta, u_omeg, u_beta);CHKERRQ(ierr);
-		ierr = stdVecDifference(u_alphBeta, u_alph, u_beta);CHKERRQ(ierr);
+		ierr = stdVecDifference(u_alphOmeg, n_alph->xyzDisplacement, n_omeg->xyzDisplacement);CHKERRQ(ierr);
+		ierr = stdVecDifference(u_omegBeta, n_omeg->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
+		ierr = stdVecDifference(u_alphBeta, n_alph->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
 
 		/* calculate segment lengths */
 		l_alphOmeg = vecMagnitude(s_alphOmeg);
@@ -115,9 +101,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
                 ierr = PetscPrintf(PETSC_COMM_WORLD,"Apply local bend shift\n");CHKERRQ(ierr);
                 ierr = applyMediumTo3DBendMat(localBendMat_A, lambda);CHKERRQ(ierr);
                 ierr = applyMediumTo3DBendVec(localBendVec_b, lambda,
-                                                alph_ptr->xyzAffDisplacement,
-                                                omeg_ptr->xyzAffDisplacement,
-                                                beta_ptr->xyzAffDisplacement);
+                                                n_alph->xyzAffDisplacement,
+                                                n_omeg->xyzAffDisplacement,
+                                                n_beta->xyzAffDisplacement);
                 CHKERRQ(ierr);
                 */
             }
@@ -159,8 +145,8 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 
 		/* determine contributions and add to the global system */
         ierr = addBendContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
-                                    alph_ptr->globalID, omeg_ptr->globalID, beta_ptr->globalID,
-                                    alph_ptr->nodeType, omeg_ptr->nodeType, beta_ptr->nodeType,
+                                    n_alph->globalID, n_omeg->globalID, n_beta->globalID,
+                                    n_alph->nodeType, n_omeg->nodeType, n_beta->nodeType,
         							localBendMat_A, localBendVec_b );
         CHKERRQ(ierr);
 	}
