@@ -92,17 +92,27 @@ PetscScalar vecMagnitude(const PetscScalar *vec_ptr)
 }
 
 
-/* Calculates the addition of two position vectors */
-PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
-                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+/* Calculates the addition of two vectors without periodicity checking */
+PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr) 
 {
 	PetscErrorCode ierr = 0;
 
 	int i;
 	for (i = 0; i < DIMENSION; i++)
 	{
-		addVec_ptr[i] = posVec1_ptr[i] + posVec2_ptr[i];
+		addVec_ptr[i] = vec1_ptr[i] + vec2_ptr[i];
 	}
+
+	return ierr;
+}
+
+
+/* Calculates the addition of two position vectors */
+PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+{
+	PetscErrorCode ierr = 0;
+    ierr = stdVecAddition(addVec_ptr, posVec1_ptr, posVec2_ptr);CHKERRQ(ierr);
 
 	/* update if crossing boundary */
 	ierr = nearestSegmentCopy(addVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);

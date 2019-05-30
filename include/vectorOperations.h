@@ -66,6 +66,13 @@ PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *v
  */
 PetscScalar vecMagnitude(const PetscScalar *vec_ptr);
 
+/* \brief Calculates the addition of two vectors without periodicity checking 
+ * \param addVec_ptr
+ * \param vec1_ptr
+ * \param vec2_ptr
+ */
+PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
+
 /**
  * \brief Calculates the addition of two position vectors
  * \param addVec_ptr
