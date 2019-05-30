@@ -65,17 +65,17 @@ PetscErrorCode stretchCompressionBaseLmb(Box *box_ptr, Parameters *par_ptr)
     PetscScalar s_12[DIMENSION], u_12[DIMENSION];
     PetscScalar s_23[DIMENSION], u_23[DIMENSION];
 
-    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_02, n0->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* analysis assumes these segments have not been modified prior to shearing */
     assert(sqrt(2.0) == vecMagnitude(s_12));
     assert(sqrt(2.0) == vecMagnitude(s_23));
 
-    ierr = makeDistanceVec(u_02, n0->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_02, n0->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,w)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_02, u_02);CHKERRQ(ierr);
@@ -117,21 +117,21 @@ PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
     PetscScalar s_23[DIMENSION], u_23[DIMENSION];
     PetscScalar s_45[DIMENSION], u_45[DIMENSION];
 
-    ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_45, n4->xyzCoord, n5->xyzCoord, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_04, n0->xyzCoord, n4->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_42, n4->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_12, n1->xyzCoord, n2->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_23, n2->xyzCoord, n3->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_45, n4->xyzCoord, n5->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* analysis assumes these segments have not been modified prior to shearing */
     assert(sqrt(2.0) == vecMagnitude(s_12));
     assert(sqrt(2.0) == vecMagnitude(s_23));
 
-    ierr = makeDistanceVec(u_04, n0->xyzDisplacement, n4->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_42, n4->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_45, n4->xyzDisplacement, n5->xyzDisplacement, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_04, n0->xyzDisplacement, n4->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_42, n4->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_12, n1->xyzDisplacement, n2->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_23, n2->xyzDisplacement, n3->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_45, n4->xyzDisplacement, n5->xyzDisplacement, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"Checking seg (e,p)...\n");CHKERRQ(ierr);
     ierr = printStretchOrCompression(s_04, u_04);CHKERRQ(ierr);
@@ -167,13 +167,13 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
     PetscScalar 	u_alphBeta[DIMENSION];
 
     /* make distance vector between alpha and beta */
-    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
     /* make distance vector between alpha and beta displacements */
-    ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_alphBeta, u_alph, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* find length of segment */
     l_alphBeta = vecMagnitude(s_alphBeta);
@@ -213,8 +213,8 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     PetscScalar phi[DIMENSION];
 
     /* make distance vectors */
-    ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* calculate segment lengths */
 	l_alphOmeg = vecMagnitude(s_alphOmeg);
@@ -230,8 +230,8 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	bConst 	  = bConstNum / bConstDen;
 
     /* make distance vectors */
-    ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr);CHKERRQ(ierr);
-    ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_alphOmeg, u_alph, u_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = makeDistanceVec(u_omegBeta, u_omeg, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
     if (DIMENSION == 3)
@@ -246,7 +246,7 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     }
 
     /* add the two crosses together and calculate the magnitude to get phi magnitude */
-    vecAddition(phi, s_cross_u, u_cross_s, box_ptr);
+    vecAddition(phi, s_cross_u, u_cross_s, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
     phiMagnitude = vecMagnitude(phi);
 
     segBendEnergy = bConst * pow(phiMagnitude, 2);
@@ -362,6 +362,7 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 void checkVolume(Box *box_ptr, PetscScalar volume)
 {
 	assert(volume >= 0);
+    // TODO: Modify this to allow for y,z 2d planes
 	if (DIMENSION==2) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]);
     if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
 }
@@ -426,12 +427,12 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
         Node *nk_ptr = fibre_ptr->nodesOnFibreList[fibre_ptr->nodesOnFibre-1];
 
         /* use first node to update min and max coordinate */
-        minCoord = minScalar(minCoord, n0_ptr->xyzCoord[dim]);
-        maxCoord = maxScalar(maxCoord, n0_ptr->xyzCoord[dim]);
+        minCoord = PetscMin(minCoord, n0_ptr->xyzCoord[dim]);
+        maxCoord = PetscMax(maxCoord, n0_ptr->xyzCoord[dim]);
 
         /* use last node to update min and max coordinate */
-        minCoord = minScalar(minCoord, nk_ptr->xyzCoord[dim]);
-        maxCoord = maxScalar(maxCoord, nk_ptr->xyzCoord[dim]);
+        minCoord = PetscMin(minCoord, nk_ptr->xyzCoord[dim]);
+        maxCoord = PetscMax(maxCoord, nk_ptr->xyzCoord[dim]);
     }
     /* difference max and min to get aperiodic range */
     coordRange = maxCoord - minCoord;
@@ -449,10 +450,14 @@ PetscScalar calculateAperiodicRange(Box *box_ptr, PetscInt dim)
 
 PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)
 {
+    /* Calculate shear modulus based on the following formulaes...
+     * G i   = 2 * E     / V * gamma^2
+     * G_aff = 2 * E_aff / V * gamma^2
+     * */
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	V, shearEqn;
 
-	calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
+	ierr = calculateEnergy(box_ptr, par_ptr);CHKERRQ(ierr);
 
 	V = calculateVolume(box_ptr);
 
