@@ -93,8 +93,8 @@ PetscScalar vecMagnitude(const PetscScalar *vec_ptr)
 
 
 /* Calculates the addition of two position vectors */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
-                            const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
 {
 	PetscErrorCode ierr = 0;
 
@@ -111,20 +111,30 @@ PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_p
 }
 
 
-/* Creates the distance vector between two position vectors */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
-                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+/* Creates the distance vector between two vectors without periodicity checking */
+PetscErrorCode stdVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	PetscErrorCode ierr = 0;
 
 	int i;
 	for (i = 0; i < DIMENSION; i++)
 	{
-		distVec_ptr[i] = posVec2_ptr[i] - posVec1_ptr[i];
+		diffVec_ptr[i] = vec2_ptr[i] - vec1_ptr[i];
 	}
 
+	return ierr;
+}
+
+
+/* Creates the distance vector between two position vectors */
+PetscErrorCode posVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+{
+	PetscErrorCode ierr = 0;
+    ierr = stdVecDifference(diffVec_ptr, posVec1_ptr, posVec2_ptr);CHKERRQ(ierr);
+
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(distVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(diffVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }

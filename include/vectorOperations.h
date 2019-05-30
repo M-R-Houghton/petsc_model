@@ -74,18 +74,25 @@ PetscScalar vecMagnitude(const PetscScalar *vec_ptr);
  * \param xyzPeriodic Array of x,y,z periodicity
  * \param xyzDimension Array of x,y,z dimensions
  */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
                             const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
+/* \brief Creates the difference vector between two vectors without periodicity checking 
+ * \param distVec_ptr
+ * \param posVec1_ptr
+ * \param posVec2_ptr
+ */
+PetscErrorCode stdVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
+
 /**
- * \brief Creates the distance vector between two position vectors
+ * \brief Creates the difference vector between two position vectors
  * \param distVec_ptr
  * \param posVec1_ptr
  * \param posVec2_ptr
  * \param xyzPeriodic Array of x,y,z periodicity
  * \param xyzDimension Array of x,y,z dimensions
  */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr,
+PetscErrorCode posVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr,
                                 const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
 /**

@@ -45,10 +45,14 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscScalar s_omeg[DIMENSION];
 	PetscScalar s_beta[DIMENSION];
 
-	/* setup distance vectors */
+	/* setup difference vectors */
 	PetscScalar s_alphOmeg[DIMENSION];
 	PetscScalar s_omegBeta[DIMENSION];
 	PetscScalar s_alphBeta[DIMENSION];
+
+	PetscScalar u_alphOmeg[DIMENSION];
+	PetscScalar u_omegBeta[DIMENSION];
+	PetscScalar u_alphBeta[DIMENSION];
 
 	/* loop over every pair of nodes on the fibre */
 	PetscInt i;
@@ -67,10 +71,15 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 		ierr = makePositionVec(s_omeg, omeg_ptr);CHKERRQ(ierr);
 		ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
-		/* make distance vector between position vectors */
-		ierr = makeDistanceVec(s_alphOmeg, s_alph, s_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = makeDistanceVec(s_omegBeta, s_omeg, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		/* make difference vectors from position vectors with boundary checking */
+		ierr = posVecDifference(s_alphOmeg, s_alph, s_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_omegBeta, s_omeg, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+
+		/* make difference vectors from displacement vectors */
+		ierr = stdVecDifference(u_alphOmeg, u_alph, u_omeg);CHKERRQ(ierr);
+		ierr = stdVecDifference(u_omegBeta, u_omeg, u_beta);CHKERRQ(ierr);
+		ierr = stdVecDifference(u_alphBeta, u_alph, u_beta);CHKERRQ(ierr);
 
 		/* calculate segment lengths */
 		l_alphOmeg = vecMagnitude(s_alphOmeg);

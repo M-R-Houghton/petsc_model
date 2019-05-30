@@ -34,7 +34,7 @@ PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscSca
     PetscScalar     s_alphBeta[DIMENSION];
 
     /* make distance vector between position vectors */
-    ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
@@ -86,7 +86,7 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
         ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
 
         /* make distance vector between position vectors */
-        ierr = makeDistanceVec(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+        ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
         //PetscScalar test[DIMENSION];
         //makeTangentVec(test, s_alphBeta);
