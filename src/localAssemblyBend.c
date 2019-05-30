@@ -29,11 +29,6 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
 	PetscScalar		bConstNum, bConstDen, bConst;
 
-    PetscBool       useLocalEM = PETSC_FALSE;
-    PetscScalar     lambda = 1e-5;
-    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useLocalEM,NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
-
 	Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
@@ -41,13 +36,9 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 	PetscScalar localBendVec_b[9];         /* actual size will be 3*DIMENSION */
 
 	/* setup difference vectors */
-	PetscScalar s_alphOmeg[DIMENSION];
-	PetscScalar s_omegBeta[DIMENSION];
-	PetscScalar s_alphBeta[DIMENSION];
-
-	PetscScalar u_alphOmeg[DIMENSION];
-	PetscScalar u_omegBeta[DIMENSION];
-	PetscScalar u_alphBeta[DIMENSION];
+	PetscScalar s_alphOmeg[DIMENSION], u_alphOmeg[DIMENSION];
+	PetscScalar s_omegBeta[DIMENSION], u_omegBeta[DIMENSION];
+	PetscScalar s_alphBeta[DIMENSION], u_alphBeta[DIMENSION];
 
 	/* loop over every pair of nodes on the fibre */
 	PetscInt i;
@@ -69,8 +60,8 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 
 		/* calculate segment lengths */
 		l_alphOmeg = vecMagnitude(s_alphOmeg);
-		l_omegBeta = vecMagnitude(s_omegBeta);	/* WARNING: do NOT assume that 			*/
-		l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alpBeta) */
+		l_omegBeta = vecMagnitude(s_omegBeta);	/* WARNING: do NOT assume that 			 */
+		l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alphBeta) */
 
 		/* calculate bending modulus kappa */
         kappa = calculateKappa(box_ptr, par_ptr, fIndex);
@@ -84,8 +75,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 		{
 			/* assemble the 2D local matrix and rhs vector */
 			ierr = make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
-			ierr = make2DBendVec(u_alphOmeg, u_omegBeta, s_alphOmeg, 
-                                    s_omegBeta, s_alphBeta, bConst, localBendVec_b);
+			ierr = make2DBendVec(u_alphOmeg, u_omegBeta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);
             CHKERRQ(ierr);
 		}
 		else if (DIMENSION == 3)
@@ -95,53 +85,7 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 			ierr = make3DBendVec(u_alphOmeg, u_omegBeta, u_alphBeta, s_alphOmeg, 
                                     s_omegBeta, s_alphBeta, bConst, localBendVec_b);
             CHKERRQ(ierr);
-            if (useLocalEM) 
-            {
-                /*
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"Apply local bend shift\n");CHKERRQ(ierr);
-                ierr = applyMediumTo3DBendMat(localBendMat_A, lambda);CHKERRQ(ierr);
-                ierr = applyMediumTo3DBendVec(localBendVec_b, lambda,
-                                                n_alph->xyzAffDisplacement,
-                                                n_omeg->xyzAffDisplacement,
-                                                n_beta->xyzAffDisplacement);
-                CHKERRQ(ierr);
-                */
-            }
 		}
-
-        //printf("bConst: %0.16g\n", bConst);
-        //printf("l_alphOmeg: %0.16g\n", l_alphOmeg);
-        //printf("l_omegBeta: %0.16g\n", l_omegBeta);
-        //printf("l_alphBeta: %0.16g\n", l_alphBeta);
-
-        /*
-        int i;
-        for (i = 0; i < DIMENSION; i++)
-        {
-            printf("s_alphOmeg: %0.16g\n", s_alphOmeg[i]);
-        }
-        for (i = 0; i < DIMENSION; i++)
-        {
-            printf("s_omegBeta: %0.16g\n", s_omegBeta[i]);
-        }
-        for (i = 0; i < DIMENSION; i++)
-        {
-            printf("s_alphBeta: %0.16g\n", s_alphBeta[i]);
-        }
-        */
-
-        /* for debugging purposes */
-        /*
-        for (i = 0; i < 9; i++)
-        {
-            int j;
-            for (j = 0; j < 9; j++)
-            {
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"%0.8g\t", localBendMat_A[i][j]);CHKERRQ(ierr);
-            }
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRQ(ierr);
-        }
-        */
 
 		/* determine contributions and add to the global system */
         ierr = addBendContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
