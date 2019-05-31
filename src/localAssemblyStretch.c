@@ -19,25 +19,26 @@ PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus
 }
 
 
-PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
-        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex )
+PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, const Fibre *fibre_ptr, 
+                                        const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
     PetscErrorCode  ierr = 0;
     PetscScalar     l_alphBeta;
     PetscScalar     s_alphBeta[DIMENSION];
 
     /* make distance vector between position vectors */
-    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, xyzPer, xyzDim);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
     /* calculate segment length */
     l_alphBeta = vecMagnitude(s_alphBeta);
-    checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
+    checkSegLength(l_alphBeta, xyzPer, xyzDim);
 
     /* calculate stretching modulus */
-    *k = calculateK(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus, l_alphBeta);
+    *k = calculateK(fibre_ptr->radius, youngsModulus, l_alphBeta);
 
     return ierr;
 }
@@ -67,7 +68,10 @@ PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, const Pets
         const Node *n_beta = fibre_ptr->nodesOnFibreList[i+1];
 
         // TODO: Decide whether this function is worth using
-        //ierr = calculateSegPairInfo(box_ptr, par_ptr, n_alph->xyzCoord, n_beta->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
+        //ierr = calculateSegPairInfo( &k, t_alphBeta, fibre_ptr, 
+        //                              n_alph->xyzCoord, n_beta->xyzCoord, 
+        //                              xyzPer, xyzDim, youngsModulus );
+        //CHKERRQ(ierr);
 
         /* make distance vector between position vectors */
         ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
