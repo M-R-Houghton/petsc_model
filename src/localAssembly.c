@@ -9,14 +9,20 @@ PetscErrorCode addLocalContributions(Box *box_ptr, Parameters *par_ptr, Mat glob
     /* assemble local information by looping over all fibres */
     for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
     {
+        const Fibre *fibre_ptr = &box_ptr->masterFibreList[fIndex];
+
         /* assemble stretching contributions of every fibre */
-        ierr = addFibreLocalStretch(box_ptr, par_ptr, globalMat_H, globalVec_B, fIndex);CHKERRQ(ierr);
+        ierr = addFibreLocalStretch(globalMat_H, globalVec_B, box_ptr->nodeInternalCount, fibre_ptr,
+                                    box_ptr->xyzPeriodic, box_ptr->xyzDimension, par_ptr->youngsModulus);
+        CHKERRQ(ierr);
 
         /* only assemble local bending information if macro permits it */
         if (SPAN == 2)
         {
             /* assemble bending contributions of every fibre */
-            ierr = addFibreLocalBend(box_ptr, par_ptr, globalMat_H, globalVec_B, fIndex);CHKERRQ(ierr);
+            ierr = addFibreLocalBend(globalMat_H, globalVec_B, box_ptr->nodeInternalCount, fibre_ptr,
+                                        box_ptr->xyzPeriodic, box_ptr->xyzDimension, par_ptr->youngsModulus);
+            CHKERRQ(ierr);
         }
     }
 
