@@ -282,7 +282,7 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
         {
             /* add segment energy to total for fibre */
             segStreEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
-                                                        &alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                        alph_ptr->xyzCoord, beta_ptr->xyzCoord,
                                                         alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement,
                                                         box_ptr->xyzPeriodic, box_ptr->xyzDimension );
             fibre_ptr->fibreStreEnergy += segStreEnergy;
