@@ -22,17 +22,19 @@ PetscScalar calculateK(PetscScalar radius, PetscScalar youngsModulus, PetscScala
 
 /**
  * \brief Calculates information about the current fibre segment pair 
- * \param box_ptr
- * \param par_ptr
- * \param s_alph
- * \param s_beta
  * \param k
  * \param t_alphBeta
- * \param fIndex
+ * \param fibre_ptr
+ * \param s_alph
+ * \param s_beta
+ * \param xyzPer
+ * \param xyzDim
+ * \param youngsModulus
  * \return Petsc error code
  */
-PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
-        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex );
+PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, const Fibre *fibre_ptr, 
+                                        const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscInt *xyzPer, const PetscScalar *xyzDim, PetscScalar youngsModulus);
 
 /**
  * \brief Adds local stretch information for a single fibre to global system
