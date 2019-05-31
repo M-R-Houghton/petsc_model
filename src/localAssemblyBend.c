@@ -161,8 +161,8 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
 {
 	PetscErrorCode ierr = 0;
 
-    PetscInt x = 0;     /* set these values purely for readability */
-    PetscInt y = 1;     /* set *(1) also for readability */
+    const PetscInt x = 0;     /* set these values purely for readability */
+    const PetscInt y = 1;     /* set *(1) also for readability */
 
     PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
                         - s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
@@ -332,9 +332,9 @@ PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt x = 0;    /* set these values purely for readability */
-    PetscInt y = 1;    /* set *(1) also for readability */
-    PetscInt z = 2;
+	const PetscInt x = 0;    /* set these values purely for readability */
+    const PetscInt y = 1;    /* set *(1) also for readability */
+    const PetscInt z = 2;
 
     PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
                     	- s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
