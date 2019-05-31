@@ -88,13 +88,13 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
 
 
 /* Assembles the local 2D bend matrix of a given triplet */
-PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] )
+PetscErrorCode make2DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                const PetscScalar bConst, PetscScalar localBendMat_A[9][9] )
 {
     PetscErrorCode ierr = 0;
 
-    PetscInt x = 0;    /* set these values purely for readability */
-    PetscInt y = 1;    /* set *(1) also for readability */
+    const PetscInt x = 0;    /* set these values purely for readability */
+    const PetscInt y = 1;    /* set *(1) also for readability */
 
     /* Row (alpha) X */
     localBendMat_A[0][0] = ( 1) * bConst * (pow(s_omegBeta[y], 2));
@@ -103,9 +103,6 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[0][3] = (-1) * bConst * (s_omegBeta[y]*s_omegBeta[x]);
     localBendMat_A[0][4] = ( 1) * bConst * (s_omegBeta[y]*s_alphBeta[x]);
     localBendMat_A[0][5] = (-1) * bConst * (s_omegBeta[y]*s_alphOmeg[x]);
-/*  localBendMat_A[0][6] = 0; 
- *  localBendMat_A[0][7] = 0;
- *  localBendMat_A[0][8] = 0; */
 
     /* Row (omega) X */
     localBendMat_A[1][0] = localBendMat_A[0][1];
@@ -114,9 +111,6 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[1][3] = ( 1) * bConst * (s_alphBeta[y]*s_omegBeta[x]);
     localBendMat_A[1][4] = (-1) * bConst * (s_alphBeta[y]*s_alphBeta[x]);
     localBendMat_A[1][5] = ( 1) * bConst * (s_alphBeta[y]*s_alphOmeg[x]);
-/*  localBendMat_A[1][6] = 0; 
- *  localBendMat_A[1][7] = 0;
- *  localBendMat_A[1][8] = 0; */
 
     /* Row (beta) X */
     localBendMat_A[2][0] = localBendMat_A[0][2];
@@ -125,9 +119,6 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[2][3] = (-1) * bConst * (s_alphOmeg[y]*s_omegBeta[x]);
     localBendMat_A[2][4] = ( 1) * bConst * (s_alphOmeg[y]*s_alphBeta[x]);
     localBendMat_A[2][5] = (-1) * bConst * (s_alphOmeg[y]*s_alphOmeg[x]);
-/*  localBendMat_A[2][6] = 0; 
- *  localBendMat_A[2][7] = 0;
- *  localBendMat_A[2][8] = 0; */
 
     /* Row (alpha) Y */
     localBendMat_A[3][0] = localBendMat_A[0][3];
@@ -136,9 +127,6 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[3][3] = ( 1) * bConst * (pow(s_omegBeta[x], 2));
     localBendMat_A[3][4] = (-1) * bConst * (s_omegBeta[x]*s_alphBeta[x]);
     localBendMat_A[3][5] = ( 1) * bConst * (s_omegBeta[x]*s_alphOmeg[x]);
-/*  localBendMat_A[3][6] = 0; 
- *  localBendMat_A[3][7] = 0;
- *  localBendMat_A[3][8] = 0; */
 
     /* Row (omega) Y */
     localBendMat_A[4][0] = localBendMat_A[0][4];
@@ -147,9 +135,6 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[4][3] = localBendMat_A[3][4];
     localBendMat_A[4][4] = ( 1) * bConst * (pow(s_alphBeta[x], 2));
     localBendMat_A[4][5] = (-1) * bConst * (s_alphBeta[x]*s_alphOmeg[x]);
-/*  localBendMat_A[4][6] = 0; 
- *  localBendMat_A[4][7] = 0;
- *  localBendMat_A[4][8] = 0; */
 
     /* Row (beta) Y */
     localBendMat_A[5][0] = localBendMat_A[0][5];
@@ -158,42 +143,12 @@ PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta,
     localBendMat_A[5][3] = localBendMat_A[3][5];
     localBendMat_A[5][4] = localBendMat_A[4][5];
     localBendMat_A[5][5] = ( 1) * bConst * (pow(s_alphOmeg[x], 2));
-/*  localBendMat_A[5][6] = 0; 
- *  localBendMat_A[5][7] = 0;
- *  localBendMat_A[5][8] = 0; */
 
-    /* Row (alpha) Z */
-/*  localBendMat_A[6][0] = 0;
- *  localBendMat_A[6][1] = 0;
- *  localBendMat_A[6][2] = 0;
- *  localBendMat_A[6][3] = 0;
- *  localBendMat_A[6][4] = 0;
- *  localBendMat_A[6][5] = 0;
- *  localBendMat_A[6][6] = 0;
- *  localBendMat_A[6][7] = 0;
- *  localBendMat_A[6][8] = 0; */
-
-    /* Row (omega) Z */
-/*  localBendMat_A[7][0] = 0;
- *  localBendMat_A[7][1] = 0;
- *  localBendMat_A[7][2] = 0;
- *  localBendMat_A[7][3] = 0;
- *  localBendMat_A[7][4] = 0;
- *  localBendMat_A[7][5] = 0;
- *  localBendMat_A[7][6] = 0;
- *  localBendMat_A[7][7] = 0;
- *  localBendMat_A[7][8] = 0; */
-
-    /* Row (beta) Z */
-/*  localBendMat_A[8][0] = 0;
- *  localBendMat_A[8][1] = 0;
- *  localBendMat_A[8][2] = 0;
- *  localBendMat_A[8][3] = 0;
- *  localBendMat_A[8][4] = 0;
- *  localBendMat_A[8][5] = 0;
- *  localBendMat_A[8][6] = 0;
- *  localBendMat_A[8][7] = 0;
- *  localBendMat_A[8][8] = 0; */
+    /* 
+     * NOTE: The remaining values are not set and should be ignored
+     *  localBendMat_A[0:5][6:8] = N/A
+     *  localBendMat_A[6:8][0:8] = N/A
+     */
 
 	return ierr;
 }
@@ -211,8 +166,6 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
 
     PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
                         - s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
-/*  PetscScalar phi_zx = 0;
- *  PetscScalar phi_yz = 0; */
 
     /* we want the negation of the 1st partial derivatives */
     phi_xy *= -1;       /* This should be done in a cleaner way!!! */
@@ -223,23 +176,25 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
     localBendVec_b[3] = bConst * (( 1) * phi_xy * s_omegBeta[x]);
     localBendVec_b[4] = bConst * ((-1) * phi_xy * s_alphBeta[x]);
     localBendVec_b[5] = bConst * (( 1) * phi_xy * s_alphOmeg[x]);
-/*  localBendVec_b[6] = 0;
- *  localBendVec_b[7] = 0;
- *  localBendVec_b[8] = 0; */
+
+    /* 
+     * NOTE: The remaining values are not set and should be ignored
+     *  localBendVec_b[6:8] = N/A
+     */
 
 	return ierr;
 }
 
 
 /* Assembles the local 3D bend matrix of a given triplet */
-PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-								PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] )
+PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                const PetscScalar bConst, PetscScalar localBendMat_A[9][9] )
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt x = 0;    /* set these values purely for readability */
-    PetscInt y = 1;    /* set *(1) also for readability */
-    PetscInt z = 2;
+	const PetscInt x = 0;    /* set these values purely for readability */
+    const PetscInt y = 1;    /* set *(1) also for readability */
+    const PetscInt z = 2;
 
     /* Row (alpha) X */
     localBendMat_A[0][0] = ( 1) * bConst * (pow(s_omegBeta[y], 2) + pow(s_omegBeta[z],2));

@@ -31,8 +31,8 @@ PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMa
  * \param bConst
  * \param localBendMat_A
  */
-PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+PetscErrorCode make2DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 2D bend RHS vector of a given triplet
@@ -56,8 +56,8 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
  * \param bConst
  * \param localBendMat_A
  */
-PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, 
-        PetscScalar *s_alphBeta, PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
+PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                PetscScalar bConst, PetscScalar localBendMat_A[9][9] );
 
 /**
  * \brief Assembles the local 3D bend RHS vector of a given triplet
