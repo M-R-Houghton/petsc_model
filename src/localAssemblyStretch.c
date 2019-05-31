@@ -44,7 +44,7 @@ PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscSca
 
 
 /* Adds local stretch information for a single fibre to global system */
-PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
+PetscErrorCode addFibreLocalStretch(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, const PetscInt fIndex)
 {
     PetscErrorCode 	ierr = 0;
     PetscScalar		l_alphBeta, k;

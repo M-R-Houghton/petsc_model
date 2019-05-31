@@ -44,7 +44,7 @@ PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscSca
  * \param fIndex
  * \return
  */
-PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
+PetscErrorCode addFibreLocalStretch(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
 
 /**
  * \brief Assembles the 2D local stretch matrix of a given pair

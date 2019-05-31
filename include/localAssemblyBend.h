@@ -21,7 +21,7 @@ PetscScalar calculateKappa(PetscScalar radius, PetscScalar youngsModulus);
  * \param fIndex
  * \return
  */
-PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
+PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
 
 /**
  * \brief Assembles the local 2D bend matrix of a given triplet

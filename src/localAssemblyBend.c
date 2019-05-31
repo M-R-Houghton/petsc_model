@@ -9,7 +9,7 @@ PetscScalar calculateKappa(const PetscScalar radius, const PetscScalar youngsMod
 
 
 /* Adds local bend information for a single fibre to global system */
-PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)
+PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, const PetscInt fIndex)
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		kappa;
