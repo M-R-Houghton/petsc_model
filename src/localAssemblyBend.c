@@ -364,33 +364,3 @@ PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u
 }
 
 
-PetscErrorCode applyMediumTo3DBendMat(PetscScalar localBendMat_A[9][9], const PetscScalar lambda)
-{
-    PetscErrorCode ierr = 0;
-    assert(DIMENSION == 3);
-
-    PetscInt i;
-    for (i = 0; i < 9; i++)
-    {
-        localBendMat_A[i][i] += lambda;
-    }
-    return ierr;
-}
-
-
-PetscErrorCode applyMediumTo3DBendVec(PetscScalar localBendVec_b[9], const PetscScalar lambda, 
-                                        const PetscScalar *u_aff_alph, const PetscScalar *u_aff_omeg, const PetscScalar *u_aff_beta)
-{
-    PetscErrorCode ierr = 0;
-    assert(DIMENSION == 3);
-
-    PetscInt i;
-    for (i = 0; i < DIMENSION; i++)
-    {
-        localBendVec_b[3*i  ] += lambda * u_aff_alph[i];
-        localBendVec_b[3*i+1] += lambda * u_aff_omeg[i];
-        localBendVec_b[3*i+2] += lambda * u_aff_beta[i];
-    }
-    return ierr;
-}
-

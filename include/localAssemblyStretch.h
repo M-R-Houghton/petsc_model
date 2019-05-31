@@ -82,21 +82,5 @@ PetscErrorCode make3DStretchMat(PetscScalar k, const PetscScalar *tangVec, Petsc
 PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, PetscScalar k, 
                                     const PetscScalar *tangVec, PetscScalar *localStretchVec_b );
 
-/**
- * \brief Shifts the diagonal of the 3D local stretch matrix by a small value lambda
- * \param localStretchMat_A
- * \param lambda
- */
-PetscErrorCode applyMediumTo3DStretchMat(PetscScalar localStretchMat_A[6][6], const PetscScalar lambda);
-
-/**
- * \brief Shifts the 3D local stretch vector affinely
- * \param localStretchVec_b
- * \param lambda
- * \param u_aff_alph 
- * \param u_aff_beta 
- */
-PetscErrorCode applyMediumTo3DStretchVec(PetscScalar localStretchVec_b[6], const PetscScalar lambda, 
-                                            const PetscScalar *u_aff_alph, const PetscScalar *u_aff_beta);
 
 #endif

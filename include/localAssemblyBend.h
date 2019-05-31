@@ -75,22 +75,4 @@ PetscErrorCode make3DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] );
 
 
-/**
- * \brief Shifts the diagonal of the 3D local bend matrix by a small value lambda
- * \param localBendMat_A
- * \param lambda
- */
-PetscErrorCode applyMediumTo3DBendMat(PetscScalar localBendMat_A[9][9], const PetscScalar lambda);
-
-/**
- * \brief Shifts the 3D local stretch vector affinely
- * \param localBendVec_b
- * \param lambda
- * \param u_aff_alph 
- * \param u_aff_omeg 
- * \param u_aff_beta 
- */
-PetscErrorCode applyMediumTo3DBendVec(PetscScalar localBendVec_b[9], const PetscScalar lambda, 
-                                        const PetscScalar *u_aff_alph, const PetscScalar *u_aff_omeg, const PetscScalar *u_aff_beta);
-
 #endif

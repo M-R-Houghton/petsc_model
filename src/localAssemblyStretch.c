@@ -268,32 +268,3 @@ PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, const PetscScala
 }
 
 
-PetscErrorCode applyMediumTo3DStretchMat(PetscScalar localStretchMat_A[6][6], const PetscScalar lambda)
-{
-    PetscErrorCode ierr = 0;
-    assert(DIMENSION == 3);
-
-    PetscInt i;
-    for (i = 0; i < 2*DIMENSION; i++)
-    {
-        localStretchMat_A[i][i] += lambda;
-    }
-    return ierr;
-}
-
-
-PetscErrorCode applyMediumTo3DStretchVec(PetscScalar localStretchVec_b[6], const PetscScalar lambda, 
-        const PetscScalar *u_aff_alph, const PetscScalar *u_aff_beta)
-{
-    PetscErrorCode ierr = 0;
-    assert(DIMENSION == 3);
-
-    PetscInt i;
-    for (i = 0; i < DIMENSION; i++)
-    {
-        localStretchVec_b[2*i  ] += lambda * u_aff_alph[i];
-        localStretchVec_b[2*i+1] += lambda * u_aff_beta[i];
-    }
-    return ierr;
-}
-
