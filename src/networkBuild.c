@@ -3,6 +3,7 @@
 /* Initiates network build routine */
 PetscErrorCode networkBuild()
 {
+    /* TODO: This function is obsolete and will be removed */
 	PetscErrorCode 	ierr;
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building network objects...\n");CHKERRQ(ierr);
 
@@ -11,7 +12,7 @@ PetscErrorCode networkBuild()
 
 
 /* Creates a parameters structure */
-Parameters *makeParameters(const char *input, const char *output, PetscScalar gamma, PetscScalar yMod)
+Parameters *makeParameters(const char *input, const char *output, const PetscScalar gamma, const PetscScalar yMod)
 {
 	/* allocate memory */
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
@@ -21,6 +22,7 @@ Parameters *makeParameters(const char *input, const char *output, PetscScalar ga
 	strcpy(par_ptr->outputNetwork, output);
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
+    // TODO: Check input and output do not exceed 100 chars
 
 	/* should not be assigned by user */
 	par_ptr->energyStre = 0;
@@ -71,9 +73,9 @@ void checkBoxArguments(PetscInt nCount, PetscInt fCount,
 	assert(yPer >= 0);
 	assert(zPer >= 0);
 
-	assert(xPer < 2);
-	assert(yPer < 2);
-	assert(zPer < 2);
+	assert(xPer <= 1);
+	assert(yPer <= 1);
+	assert(zPer <= 1);
 }
 
 
@@ -103,6 +105,11 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
 	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
+    /* couple count should only be changed from initial val if system is coupled */
+    box_ptr->coupleCount = 0;
+    /* couple list memory should be allocated after no. of couples is known */
+    box_ptr->masterCoupleList = NULL;
+
 	return box_ptr;
 }
 
@@ -111,11 +118,12 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
 void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
 				PetscScalar radius, Node **nList_ptr_ptr)
 {
-	assert(box_ptr != NULL);
-	assert(fID >= 0);
-	assert(nOnFibre >= 0);
-	assert(radius >= 0);
+	assert(box_ptr       != NULL);
 	assert(nList_ptr_ptr != NULL);
+
+	assert(fID      >= 0);
+	assert(nOnFibre >= 0);
+	assert(radius   >= 0);
 }
 
 
@@ -133,7 +141,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 	box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
-    /* addidtional attributes not to be assigned by user */
+    /* additional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
@@ -147,14 +155,15 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
 				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	assert(box_ptr != NULL);
-	assert(nID >= 0);
+	assert(nID     >= 0   );
+    /* check for legal node type */
 	assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
 }
 
 
 /* Creates a node within its allocated location in a box */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscInt *gIndex_ptr, PetscScalar gamma)
+				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
 	PetscErrorCode ierr = 0;
 
@@ -165,14 +174,15 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	Node *node_ptr = &(box_ptr->masterNodeList[nID]);
 
 	/* assign attributes */
-	node_ptr->nodeID = nID;
-	node_ptr->nodeType = nType;
+	node_ptr->nodeID      = nID;
+	node_ptr->nodeType    = nType;
 	node_ptr->xyzCoord[0] = x;
 	node_ptr->xyzCoord[1] = y;
 	node_ptr->xyzCoord[2] = z;
-
 	/* default before switch case */
-	node_ptr->globalID = -1;
+	node_ptr->globalID    = -1;
+
+    /* non-boundary displacements are zero until after matrix solve */
 	node_ptr->xyzDisplacement[0] = 0;
 	node_ptr->xyzDisplacement[1] = 0;
 	node_ptr->xyzDisplacement[2] = 0;
@@ -188,23 +198,61 @@ PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
 	switch (nType)
 	{
 		case NODE_INTERNAL:
-			/* add global ID */
+			/* modify global ID of internals */
             node_ptr->globalID = -2;
-			//node_ptr->globalID = *gIndex_ptr;
-			//*gIndex_ptr += 1;
 			break;
 		case NODE_BOUNDARY:
 			/* apply boundary conditions */
 			node_ptr->xyzDisplacement[0] = gamma * y;
-/*		 	node_ptr->xyzDisplacement[1] = 0; *****	*
- * 		 	node_ptr->xyzDisplacement[2] = 0; *****	*/
+            /* NOTE: we leave y and z displacement = 0 */
 			break;
 		case NODE_DANGLING:
 			/* do nothing at the moment */
 			break;
 		default:
-			SETERRQ(PETSC_COMM_WORLD,63,"Error in identifying node type");
+            SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
+                    "Error in identifying node type.");
 	}
 
 	return ierr;
 }
+
+
+/* Checks couple arguments are all legal */
+void checkCoupleArguments(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)
+{
+    assert(box_ptr  != NULL);
+    assert(coupleID >= 0   );
+
+    /* while node IDs are not dynamically allocated we need to check for overflow */
+    assert(nodesOnCouple < MAX_NODES_ON_COUPLE);
+
+    PetscInt i;
+    for (i = 0; i < nodesOnCouple; i++)
+    {
+        assert(nodeIDList[i] >= 0);
+    }
+}
+
+
+PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)
+{
+    PetscErrorCode ierr = 0;
+
+    /* validate arguments */
+    checkCoupleArguments(box_ptr, coupleID, nodesOnCouple, nodeIDList);
+
+    Couple *couple_ptr = &(box_ptr->masterCoupleList[coupleID]);
+    couple_ptr->coupleID = coupleID;
+    couple_ptr->nodesInCouple = nodesOnCouple;
+
+    PetscInt i;
+    for (i = 0; i < nodesOnCouple; i++)
+    {
+        couple_ptr->nodeID[i] = nodeIDList[i];
+    }
+
+    return ierr;
+}
+
+

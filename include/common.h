@@ -13,6 +13,7 @@
 #define DIMENSION 3
 #define MAX_LENGTH 10000
 #define MAX_NAME 100
+#define MAX_NODES_ON_COUPLE 200
 #define PARAMETERS 8
 #define NODE_INTERNAL 0
 #define NODE_DANGLING 1
@@ -26,13 +27,16 @@
 #define SPAN 2
 
 /* may remove and add back into .par files */
-#define GAMMA 0.05
+/* WARNING: These are now overwritten in main.c */
+#define GAMMA 0.02
 #define YOUNGS_MOD 1.0
+/* CHECK FOR DEPENDENCIES AND REMOVE */
 
 typedef struct parameters Parameters;
 typedef struct box Box;
 typedef struct node Node;
 typedef struct fibre Fibre;
+typedef struct couple Couple;
 typedef struct sparseMat Sparse;
 
 /* structure for storing variables */
@@ -56,10 +60,24 @@ struct box
 	PetscInt nodeCount;
 	PetscInt nodeInternalCount;
 	PetscInt fibreCount;
+    PetscInt coupleCount;           /* in many cases this may be equal to internal */
 	PetscScalar xyzDimension[3];
 	PetscInt xyzPeriodic[3];
 	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
 	Fibre *masterFibreList;
+    Couple *masterCoupleList;
+};
+
+/* structure for coupled nodes */
+struct couple
+{
+    PetscInt coupleID;
+    PetscInt nodesInCouple; 
+    PetscInt nodeID[MAX_NODES_ON_COUPLE];
+
+    /* TODO: change to nodesOnCouple for consistency */
+    /* TODO: change to dynamically allocated nodeIDList */
+    //PetscInt *nodeIDList;
 };
 
 /* structure for nodes */

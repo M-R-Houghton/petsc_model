@@ -39,6 +39,7 @@ class NetworkReader:
 
         # Initialise the dictionaries:
         self.fibre_dict = {}
+        self.link_dict = {}
         self.node_dict = {}
 
     def create_box(self, data):
@@ -73,6 +74,20 @@ class NetworkReader:
 
         # Add an instance of the fibre class to fibre_dict:
         self.fibre_dict[f_id] = Fibre(f_id, radius, *nodes)
+
+        return
+
+    def add_link(self, data, l_id):
+        """A function for adding an instance of the link class to the link dictionary."""
+
+        # Any argument after the 1st is regarded as a node:
+        nodes = []
+        for i in range(1, len(data)):
+            n_id = int(data[i])
+            nodes.append(n_id)
+
+        # Add an instance of the link class to link_dict:
+        self.link_dict[l_id] = Link(*nodes)
 
         return
 
@@ -113,6 +128,9 @@ class NetworkReader:
         # Print progress message:
         #print('Sorting data into dictionaries...')
 
+        # index for links
+        l_count = 0
+
         # Loop through the data:
         for data in data_list:
             data = data.split()
@@ -131,6 +149,11 @@ class NetworkReader:
             elif data[0] == 'n':
 
                 self.add_node(data)
+
+            elif data[0] == 'c':
+
+                self.add_link(data, l_count)
+                l_count += 1
 
         return
 

@@ -58,8 +58,13 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 
 void checkForValidDisplacement(PetscScalar displacement)
 {
-	assert(!isinf(displacement));
-	assert(!isnan(displacement));
+    /* exit program early if no sensible solution was found */
+    if (isinf(displacement) || isnan(displacement))
+    {
+        PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Failed to find meaningful solution.\n");
+        PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Terminating program early.\n");
+        exit(3);    /* this can be changed to generic value of 1 if preferred */
+    }
 }
 
 
@@ -140,11 +145,11 @@ PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_p
     ierr = updatePositionVec(s_nbet, beta_ptr);CHKERRQ(ierr);
 
     /* use distance vector to find previous segment length */
-    ierr = makeDistanceVec(s_betaDelt, s_beta, s_delt, box_ptr);CHKERRQ(ierr);
+    ierr = posVecDifference(s_betaDelt, s_beta, s_delt, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
     l_betaDelt = vecMagnitude(s_betaDelt);
 
     /* use new distance vector to find new orientation of dangling segment */
-    ierr = makeDistanceVec(s_nalpBeta, s_nalp, s_nbet, box_ptr);CHKERRQ(ierr);
+    ierr = posVecDifference(s_nalpBeta, s_nalp, s_nbet, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
     ierr = makeTangentVec(t_nalpBeta, s_nalpBeta);CHKERRQ(ierr);
 
     /* combine new direction with previous magnitude to find new position */

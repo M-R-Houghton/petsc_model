@@ -2,33 +2,35 @@
 
 
 /* Checks stretch matrix contribution indexes are all legal */
-void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+void checkMatStretchContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
-	assert(gInd_A != -1 && gInd_B != -1);
-	assert(lInd_A ==  0 || lInd_A ==  1);		/* protect from indexing out of range */
-	assert(lInd_B ==  0 || lInd_B ==  1);
+	assert(gIdx_A >= 0 && gIdx_B >= 0);     /* protect from unassigned negative global indexing */
+	assert(lIdx_A == 0 || lIdx_A == 1);		/* protect from indexing out of range */
+	assert(lIdx_B == 0 || lIdx_B == 1);
 }
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix potentially more efficiently */
-PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
-											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+											const PetscInt gIdx_A, const PetscInt gIdx_B, 
+                                            const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
+    // TODO: Understand why this function doesn't work as expected
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		row;
 	PetscInt 		col[DIMENSION];
 	PetscScalar 	val[DIMENSION];
 	PetscInt 		i,j;
 
-	checkMatStretchContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
+	checkMatStretchContIndexes(gIdx_A, gIdx_B, lIdx_A, lIdx_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			row    = gInd_A + i*N;
-			col[j] = gInd_B + j*N;
-			val[j] = localMat[lInd_A + 2*i][lInd_B + 2*j];
+			row    = gIdx_A + i*N;
+			col[j] = gIdx_B + j*N;
+			val[j] = localMat[lIdx_A + 2*i][lIdx_B + 2*j];
 		}
 		ierr = MatSetValues(globalMat_H, 1, &row, 3, col, val, ADD_VALUES);CHKERRQ(ierr);
 	}
@@ -38,21 +40,22 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMa
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )
+PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+										const PetscInt gIdx_A, const PetscInt gIdx_B, 
+                                        const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i,j;
 
-	checkMatStretchContIndexes(gInd_A, gInd_B, lInd_A, lInd_B);
+	checkMatStretchContIndexes(gIdx_A, gIdx_B, lIdx_A, lIdx_B);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
 		for (j = 0; j < DIMENSION; j++)
 		{
-			ierr = MatSetValue(globalMat_H, gInd_A + i*N, gInd_B + j*N, localMat[lInd_A + 2*i][lInd_B + 2*j], ADD_VALUES);CHKERRQ(ierr);
+			ierr = MatSetValue(globalMat_H, gIdx_A + i*N, gIdx_B + j*N, localMat[lIdx_A + 2*i][lIdx_B + 2*j], ADD_VALUES);CHKERRQ(ierr);
 			/* WARNING: For debugging ONLY */
-			//ierr = PetscPrintf(PETSC_COMM_WORLD,"[CONT] %0.16g\t", localMat[lInd_A + 2*i][lInd_B + 2*j]);CHKERRQ(ierr);
+			//ierr = PetscPrintf(PETSC_COMM_WORLD,"[CONT] %0.16g\t", localMat[lIdx_A + 2*i][lIdx_B + 2*j]);CHKERRQ(ierr);
 		}
 		//ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 	}
@@ -63,25 +66,25 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][
 
 
 /* Checks stretch vector contribution indexes are all legal */
-void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A )
+void checkVecStretchContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )
 {
-	assert(gInd_A != -1);
-	assert(lInd_A ==  0 || lInd_A == 1);		/* protect from indexing out of range */
+	assert(gIdx_A >= 0);
+	assert(lIdx_A == 0 || lIdx_A == 1);		/* protect from indexing out of range */
 }
 
 
 /* Adds a single stretching contribution of 3 values to the global vector */
-PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A )
+PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar localVec[], const PetscInt N,
+										const PetscInt gIdx_A, const PetscInt lIdx_A )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscInt 		i;
 
-	checkVecStretchContIndexes(gInd_A, lInd_A);
+	checkVecStretchContIndexes(gIdx_A, lIdx_A);
 
 	for (i = 0; i < DIMENSION; i++)
 	{
-		ierr = VecSetValue(globalVec_B, gInd_A + i*N, localVec[lInd_A + 2*i], ADD_VALUES);CHKERRQ(ierr);
+		ierr = VecSetValue(globalVec_B, gIdx_A + i*N, localVec[lIdx_A + 2*i], ADD_VALUES);CHKERRQ(ierr);
 	}
 
 	return ierr;
@@ -89,37 +92,35 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[],
 
 
 /* Adds local stretching contributions to the global matrix and RHS vector */
-PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									   	PetscScalar localMat[][6], PetscScalar localVec[] )
+PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,
+                                        const PetscInt alph_gID, const PetscInt beta_gID,
+                                        const PetscInt alph_nType, const PetscInt beta_nType,
+									   	const PetscScalar localMat[][6], const PetscScalar localVec[] )
 {
 	PetscErrorCode ierr = 0;
 
-	PetscInt alph_gID = alph_ptr->globalID;		/* setup global IDs */
-	PetscInt beta_gID = beta_ptr->globalID;
+	const PetscInt alph_lID = 0, beta_lID = 1;		/* setup local IDs */
 
-	PetscInt alph_lID = 0, beta_lID = 1;		/* setup local IDs */
-
-	if (alph_ptr->nodeType != NODE_DANGLING && 
-		beta_ptr->nodeType != NODE_DANGLING)
+	if (alph_nType != NODE_DANGLING && 
+		beta_nType != NODE_DANGLING)
 	{
 		/*
 		 * add matrix contributions
 		 */
-		if (alph_ptr->nodeType == NODE_INTERNAL)
+		if (alph_nType == NODE_INTERNAL)
 		{
 			/* add (alpha,alpha) matrix contributions */
 			addMatSingleStretchCont(globalMat_H, localMat, N, alph_gID, alph_gID, alph_lID, alph_lID);
 		}
 
-		if (beta_ptr->nodeType == NODE_INTERNAL)
+		if (beta_nType == NODE_INTERNAL)
 		{
 			/* add (beta,beta) matrix contributions */
 			addMatSingleStretchCont(globalMat_H, localMat, N, beta_gID, beta_gID, beta_lID, beta_lID);
 		}
 
-		if (alph_ptr->nodeType == NODE_INTERNAL && 
-			beta_ptr->nodeType == NODE_INTERNAL)
+        if (alph_nType == NODE_INTERNAL && 
+			beta_nType == NODE_INTERNAL)
 		{
 			/* add (alpha,beta) and (beta,alpha) mixed matrix contributions */
 			addMatSingleStretchCont(globalMat_H, localMat, N, alph_gID, beta_gID, alph_lID, beta_lID);
@@ -129,15 +130,15 @@ PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,
 		/*
 		 * add vector contributions
 		 */
-		if (alph_ptr->nodeType == NODE_BOUNDARY && 
-			beta_ptr->nodeType == NODE_INTERNAL)
+		if (alph_nType == NODE_BOUNDARY && 
+			beta_nType == NODE_INTERNAL)
 		{
 			/* add (beta) vector contributions */
 			addVecSingleStretchCont(globalVec_B, localVec, N, beta_gID, beta_lID);
 		}
 
-		if (alph_ptr->nodeType == NODE_INTERNAL && 
-			beta_ptr->nodeType == NODE_BOUNDARY)
+		if (alph_nType == NODE_INTERNAL && 
+			beta_nType == NODE_BOUNDARY)
 		{
 			/* add (alpha) vector contributions */
 			addVecSingleStretchCont(globalVec_B, localVec, N, alph_gID, alph_lID);

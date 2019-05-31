@@ -14,18 +14,59 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
  * \brief Applies a uniform force to the global matrix 
  * \param H Global matrix to be shifted
  * \param lambda The force representing the stiffness of the elastic medium
+ * \param N Number of internal nodes to loop over.
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda);
+PetscErrorCode applyEMToDecoupledMatrix(Mat H, PetscScalar lambda, PetscInt N);
 
 /**
- * \brief Applies a uniform force to the global RHS vector
+ * \brief Applies a force to the global matrix with varied weight on the diagonal. 
+ * The weighting is determined based on the number of nodes in each couple.
+ * \param H Global matrix to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \param coupleCount Number of couples to loop over.
+ * \param coupleList An array of pointers to all the couples.
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyEMToCoupledMatrix(Mat H, PetscScalar lambda, PetscInt coupleCount, const Couple *coupleList);
+
+/**
+ * \brief Applies a force to the global matrix 
+ * \param H Global matrix to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \param internalCount Needed in the case of decoupled systems.
+ * \param coupleCount Used as a flag to determine which medium to apply.
+ * \param coupleList An array of pointers to all the couples.
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda, PetscInt internalCount, PetscInt coupleCount, const Couple *coupleList);
+
+/**
+ * \brief Applies a weighted force to the global RHS vector for a decoupled system.
  * \param box The box pointer used to loop over the internal nodes
  * \param B Global vector to be shifted
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda);
+PetscErrorCode applyEMToDecoupledRHSVector(const Box *box_ptr, Vec B, PetscScalar lambda);
+
+/**
+ * \brief Applies a weighted force to the global RHS vector for a coupled system.
+ * \param box The box pointer used to loop over the internal nodes
+ * \param B Global vector to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyEMToCoupledRHSVector(const Box *box_ptr, Vec B, PetscScalar lambda);
+
+/**
+ * \brief Applies a weighted force to the global RHS vector
+ * \param box The box pointer used to loop over the internal nodes
+ * \param B Global vector to be shifted
+ * \param lambda The force representing the stiffness of the elastic medium
+ * \return Index to represent Petsc error code
+ */
+PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, PetscScalar lambda);
 
 /**
  * \brief Applies a uniform force such that the network behaves suspended in an elastic medium 
@@ -35,7 +76,7 @@ PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar la
  * \param lambda The force representing the stiffness of the elastic medium
  * \return Index to represent Petsc error code
  */
-PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
+PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, PetscScalar lambda);
 
 /**
  * \brief Assembles a global vector from the affine displacements of every internal node 

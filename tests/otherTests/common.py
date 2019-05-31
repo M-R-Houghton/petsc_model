@@ -95,6 +95,31 @@ class Fibre:
 
 
 #
+# Link class:
+#
+
+class Link:
+    """A new class for linked nodes
+
+    Attributes:
+        *nargs: an ordered list of node IDs associated with the link
+    """
+
+    def __init__(self, *nargs):
+        self.nodes = []
+
+        for node in nargs:
+            self.nodes.append(node)
+
+    def __str__(self):
+        statement = 'Link: ' + '\n' \
+                    + '\t node IDs: \t' \
+                    + str(self.nodes) + '\n'
+
+        return statement
+
+
+#
 # Node class:
 #
 

@@ -211,4 +211,29 @@ TEST_F(testSystemTimeStepSolve, testTripodSolve)
 }
 
 
+struct testPrintLargeVecValues : ::testing::Test
+{
+    Vec globalVec;
+    PetscInt n;
+
+    void SetUp()
+    {
+        n = 1;
+        VecCreate(PETSC_COMM_WORLD,&globalVec);
+	    VecSetSizes(globalVec,PETSC_DECIDE,n);
+        VecSetFromOptions(globalVec);
+        VecSet(globalVec, 1.0);
+    }
+    void TearDown()
+    {
+        VecDestroy(&globalVec);
+    }
+};
+
+
+TEST_F(testPrintLargeVecValues, testOutput)
+{
+    EXPECT_EQ(printLargeVecValues(globalVec), 0);
+}
+
 } /* namespace */

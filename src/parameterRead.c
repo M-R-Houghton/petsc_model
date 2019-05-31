@@ -9,17 +9,18 @@ void checkFileNameLengths(const char *inputFileName, const char *outputFileName)
 
 
 /* Initiates parameter file read in routine */
-PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr)
+PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr,
+                                const PetscScalar gamma, const PetscScalar youngsModulus)
 {
 	PetscErrorCode 	ierr = 0;
-	PetscScalar 	gamma, youngsModulus;
+	//PetscScalar 	gamma, youngsModulus;
 	FILE 			*file_ptr;
 	char 			inputNetwork[MAX_NAME];
 	char 			outputNetwork[MAX_NAME];
 
 	/* these may be added in the parameter files later */
-	gamma 			= GAMMA;
-	youngsModulus 	= YOUNGS_MOD;
+	//gamma 			= GAMMA;
+	//youngsModulus 	= YOUNGS_MOD;
 
 	/* open file and check whether successful */
 	file_ptr = fopen(fileToRead_ptr, "r");

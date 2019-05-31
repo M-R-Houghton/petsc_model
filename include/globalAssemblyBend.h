@@ -5,12 +5,12 @@
 
 /**
  * \brief Checks bend matrix contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  */
-void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+void checkMatBendContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Adds a single bending contribution of 9 values to the global matrix
@@ -18,25 +18,25 @@ void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A,
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
-PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
+										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 
-PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
+										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Checks bend vector contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  */
-void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A );
+void checkVecBendContIndexes( PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds a single bending contribution of 3 values to the global vector
@@ -44,28 +44,30 @@ void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A );
  * \param globalVec_H The global vector H.
  * \param localVec The local vector to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  * \return Petsc error code.
  */
-PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A );
+PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], PetscInt N,
+										PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds local bending contributions to the global matrix and RHS vector
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
  * \param N Total number of internal nodes.
+ * \param alph_gID Global index/ID of node alpha
+ * \param beta_gID Global index/ID of node beta
+ * \param alph_nType Node type of node alpha
+ * \param beta_nType Node type of node beta
  * \param localMat The local matrix.
  * \param localVec The local rhs vector.
- * \param alph_ptr A pointer to the node alpha.
- * \param omeg_ptr A pointer to the node omega.
- * \param beta_ptr A pointer to the node beta.
  * \return Petsc error code.
  */
 PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
-									PetscScalar localMat[][9], PetscScalar localVec[],
-									Node *alph_ptr, Node *omeg_ptr, Node *beta_ptr );
+                                    PetscInt alph_gID, PetscInt omeg_gID, PetscInt beta_gID,
+                                    PetscInt alph_nType, PetscInt omeg_nType, PetscInt beta_nType,
+									const PetscScalar localMat[][9], const PetscScalar localVec[] );
 
 
 #endif
