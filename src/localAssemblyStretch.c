@@ -49,42 +49,30 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
     PetscErrorCode 	ierr = 0;
     PetscScalar		l_alphBeta, k;
 
-    PetscBool       useLocalEM = PETSC_FALSE;
-    PetscScalar     lambda = 1e-5;
-    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useLocalEM,NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
-
-    Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
+    assert(fIndex >= 0);
+    const Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
     /* setup local matrix and rhs vector */
     PetscScalar localStretchMat_A[6][6];
     PetscScalar localStretchVec_b[6];        /* actual size will be 2*DIMENSION */
 
     /* setup static vectors */
-    PetscScalar s_alph[DIMENSION];
-    PetscScalar s_beta[DIMENSION];
     PetscScalar s_alphBeta[DIMENSION];
     PetscScalar t_alphBeta[DIMENSION];
+    PetscScalar u_alphBeta[DIMENSION];
 
     /* loop over every pair of nodes on the fibre */
     PetscInt i;
     for (i = 0; i < fibre_ptr->nodesOnFibre - 1; i++)
     {
-        Node *n_alph = fibre_ptr->nodesOnFibreList[i];
-        Node *n_beta = fibre_ptr->nodesOnFibreList[i+1];
+        const Node *n_alph = fibre_ptr->nodesOnFibreList[i];
+        const Node *n_beta = fibre_ptr->nodesOnFibreList[i+1];
 
+        // TODO: Decide whether this function is worth using
         //ierr = calculateSegPairInfo(box_ptr, par_ptr, n_alph->xyzCoord, n_beta->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
 
-        /* make position vectors for alpha and beta */
-        ierr = makePositionVec(s_alph, n_alph);CHKERRQ(ierr);
-        ierr = makePositionVec(s_beta, n_beta);CHKERRQ(ierr);
-
         /* make distance vector between position vectors */
-        ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-
-        //PetscScalar test[DIMENSION];
-        //makeTangentVec(test, s_alphBeta);
-        //assert(t_alphBeta[0] == test[0]);
+        ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
 
         /* make tangent vector of segment */
         ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
@@ -96,25 +84,19 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
         /* calculate stretching modulus */
         k = calculateK(fibre_ptr->radius, par_ptr->youngsModulus, l_alphBeta);
 
-        //printf("k = %0.16g\n", k);
-        //printf("t[0] = %0.16g\n", t_alphBeta[0]);
-        //printf("t[1] = %0.16g\n", t_alphBeta[1]);
-        //printf("t[2] = %0.16g\n", t_alphBeta[2]);
-
-        PetscScalar *u_alph = n_alph->xyzDisplacement;    /* need to decide if it's safer to use makeDisplacementVec() here */
-        PetscScalar *u_beta = n_beta->xyzDisplacement;
+        ierr = stdVecDifference(u_alphBeta, n_alph->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
 
         if (DIMENSION == 2)
         {
             /* assemble the 2D local matrix and rhs vector */
             ierr = make2DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
-            ierr = make2DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
+            ierr = make2DStretchVec(u_alphBeta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
         }
         else if (DIMENSION == 3)
         {
             /* assemble the 3D local matrix and rhs vector */
             ierr = make3DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
-            ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
+            ierr = make3DStretchVec(u_alphBeta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
         }
 
         /* determine contributions and add to the global system */
@@ -130,12 +112,12 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 
 
 /* Assembles the 2D local stretch matrix of a given pair */
-PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
+PetscErrorCode make2DStretchMat(const PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
 {
     PetscErrorCode ierr = 0;
 
-    PetscInt x=0;    /* set these values purely for readability */
-    PetscInt y=1;    /* set *(1) also for readability */
+    const PetscInt x=0;    /* set these values purely for readability */
+    const PetscInt y=1;    /* set *(1) also for readability */
 
     /* Row X (alpha) */
     localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
@@ -190,16 +172,15 @@ PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
 
 
 /* Assembles the local 2D stretch RHS vector of a given pair */
-PetscErrorCode make2DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, 
-        PetscScalar *tangVec, PetscScalar *localStretchVec_b )
+PetscErrorCode make2DStretchVec( const PetscScalar *u_alphBeta, const PetscScalar k, 
+                                    const PetscScalar *tangVec, PetscScalar *localStretchVec_b )
 {
     PetscErrorCode ierr = 0;
 
-    int x=0;    /* set these values purely for readability */
-    int y=1;    /* set *(1) also for readability */
+    const PetscInt x=0;    /* set these values purely for readability */
+    const PetscInt y=1;    /* set *(1) also for readability */
 
-    PetscScalar extensionEqn = ((u_beta[x] - u_alph[x]) * tangVec[x]
-            + (u_beta[y] - u_alph[y]) * tangVec[y]);
+    PetscScalar extensionEqn = (u_alphBeta[x] * tangVec[x] + u_alphBeta[y] * tangVec[y]);
 
     /* we want the negation of the 1st partial derivatives */
     extensionEqn *= -1;
@@ -216,13 +197,13 @@ PetscErrorCode make2DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, Petsc
 
 
 /* Assembles the 3D local stretch matrix of a given pair */
-PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
+PetscErrorCode make3DStretchMat(const PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])
 {
     PetscErrorCode ierr = 0;
 
-    PetscInt x=0;    /* set these values purely for readability */
-    PetscInt y=1;    /* set *(1) also for readability */
-    PetscInt z=2;
+    const PetscInt x=0;    /* set these values purely for readability */
+    const PetscInt y=1;    /* set *(1) also for readability */
+    const PetscInt z=2;
 
     /* Row X (alpha) */
     localStretchMat_A[0][0] = ( 1) * k * pow( tangVec[x], 2 );
@@ -277,18 +258,16 @@ PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar
 
 
 /* Assembles the local 3D stretch RHS vector of a given pair */
-PetscErrorCode make3DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, 
-        PetscScalar *tangVec, PetscScalar *localStretchVec_b )
+PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, const PetscScalar k, 
+                                    const PetscScalar *tangVec, PetscScalar *localStretchVec_b )
 {
     PetscErrorCode ierr = 0;
 
-    int x=0;    /* set these values purely for readability */
-    int y=1;    /* set *(1) also for readability */
-    int z=2;
+    const PetscInt x=0;    /* set these values purely for readability */
+    const PetscInt y=1;    /* set *(1) also for readability */
+    const PetscInt z=2;
 
-    PetscScalar extensionEqn = ((u_beta[x] - u_alph[x]) * tangVec[x]
-            + (u_beta[y] - u_alph[y]) * tangVec[y]
-            + (u_beta[z] - u_alph[z]) * tangVec[z]);
+    PetscScalar extensionEqn = u_alphBeta[x]*tangVec[x] + u_alphBeta[y]*tangVec[y] + u_alphBeta[z]*tangVec[z];
 
     /* we want the negation of the 1st partial derivatives */
     extensionEqn *= -1;

@@ -52,17 +52,17 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
  * \param tangVec_ptr
  * \param localStretchMat_A
  */
-PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
+PetscErrorCode make2DStretchMat(PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
 
 /**
  * \brief Assembles the 2D local stretch RHS vector of a given pair
- * \param u_alph
- * \param u_beta
+ * \param u_alphBeta
  * \param k
- * \param tangVec_ptr
+ * \param tangVec
  * \param localStretchVec_b
  */
-PetscErrorCode make2DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, PetscScalar *tangVec, PetscScalar *localStretchVec_b);
+PetscErrorCode make2DStretchVec(const PetscScalar *u_alphBeta, PetscScalar k, 
+                                const PetscScalar *tangVec, PetscScalar *localStretchVec_b);
 
 /**
  * \brief Assembles the 3D local stretch matrix of a given pair
@@ -70,17 +70,17 @@ PetscErrorCode make2DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscS
  * \param tangVec
  * \param localStretchMat_A
  */
-PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
+PetscErrorCode make3DStretchMat(PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
 
 /**
  * \brief Assembles the 3D local stretch RHS vector of a given pair
- * \param u_alph
- * \param u_beta
+ * \param u_alphBeta
  * \param k
  * \param tangVec
  * \param localStretchVec_b
  */
-PetscErrorCode make3DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, PetscScalar *tangVec, PetscScalar *localStretchVec_b);
+PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, PetscScalar k, 
+                                    const PetscScalar *tangVec, PetscScalar *localStretchVec_b );
 
 /**
  * \brief Shifts the diagonal of the 3D local stretch matrix by a small value lambda
