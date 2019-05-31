@@ -70,14 +70,14 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
     PetscInt i;
     for (i = 0; i < fibre_ptr->nodesOnFibre - 1; i++)
     {
-        Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
-        Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
+        Node *n_alph = fibre_ptr->nodesOnFibreList[i];
+        Node *n_beta = fibre_ptr->nodesOnFibreList[i+1];
 
-        //ierr = calculateSegPairInfo(box_ptr, par_ptr, alph_ptr->xyzCoord, beta_ptr->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
+        //ierr = calculateSegPairInfo(box_ptr, par_ptr, n_alph->xyzCoord, n_beta->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
 
         /* make position vectors for alpha and beta */
-        ierr = makePositionVec(s_alph, alph_ptr);CHKERRQ(ierr);
-        ierr = makePositionVec(s_beta, beta_ptr);CHKERRQ(ierr);
+        ierr = makePositionVec(s_alph, n_alph);CHKERRQ(ierr);
+        ierr = makePositionVec(s_beta, n_beta);CHKERRQ(ierr);
 
         /* make distance vector between position vectors */
         ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
@@ -101,8 +101,8 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
         //printf("t[1] = %0.16g\n", t_alphBeta[1]);
         //printf("t[2] = %0.16g\n", t_alphBeta[2]);
 
-        PetscScalar *u_alph = alph_ptr->xyzDisplacement;    /* need to decide if it's safer to use makeDisplacementVec() here */
-        PetscScalar *u_beta = beta_ptr->xyzDisplacement;
+        PetscScalar *u_alph = n_alph->xyzDisplacement;    /* need to decide if it's safer to use makeDisplacementVec() here */
+        PetscScalar *u_beta = n_beta->xyzDisplacement;
 
         if (DIMENSION == 2)
         {
@@ -115,23 +115,12 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
             /* assemble the 3D local matrix and rhs vector */
             ierr = make3DStretchMat(k, t_alphBeta, localStretchMat_A);CHKERRQ(ierr);
             ierr = make3DStretchVec(u_alph, u_beta, k, t_alphBeta, localStretchVec_b);CHKERRQ(ierr);
-            if(useLocalEM)
-            { 
-                /*
-                ierr = PetscPrintf(PETSC_COMM_WORLD,"Applying local stretch shift\n");CHKERRQ(ierr);
-                ierr = applyMediumTo3DStretchMat(localStretchMat_A, lambda);CHKERRQ(ierr); 
-                ierr = applyMediumTo3DStretchVec(localStretchVec_b, lambda, 
-                alph_ptr->xyzAffDisplacement, 
-                beta_ptr->xyzAffDisplacement);
-                CHKERRQ(ierr); 
-                */
-            }
         }
 
         /* determine contributions and add to the global system */
         ierr = addStretchContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
-                                        alph_ptr->globalID, beta_ptr->globalID, 
-                                        alph_ptr->nodeType, beta_ptr->nodeType, 
+                                        n_alph->globalID, n_beta->globalID, 
+                                        n_alph->nodeType, n_beta->nodeType, 
                                         localStretchMat_A, localStretchVec_b );
         CHKERRQ(ierr);
     }
