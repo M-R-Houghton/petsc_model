@@ -1,27 +1,20 @@
 #include "localAssemblyStretch.h"
 
 /* Checks for legal fibre index and segment length */
-void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength)
+void checkSegLength(const PetscScalar segLength, const PetscInt *xyzPer, const PetscScalar *xyzDim)
 {
-    assert(fIndex >= 0);
     assert(segLength >= 0);
-    assert(segLength < box_ptr->xyzDimension[0]*0.5 || box_ptr->xyzPeriodic[0] == 0);
-    assert(segLength < box_ptr->xyzDimension[1]*0.5 || box_ptr->xyzPeriodic[1] == 0);
-    assert(segLength < box_ptr->xyzDimension[2]*0.5 || box_ptr->xyzPeriodic[2] == 0);
+    assert(segLength < xyzDim[0]*0.5 || xyzPer[0] == 0);
+    assert(segLength < xyzDim[1]*0.5 || xyzPer[1] == 0);
+    assert(segLength < xyzDim[2]*0.5 || xyzPer[2] == 0);
 }
 
 
 /* Calculates the stretching constant k */
-PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, PetscScalar segLength)
+PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus, const PetscScalar segLength)
 {
-    /* validate arguments */
-    checkKArguments(box_ptr, fIndex, segLength);
-
-    PetscScalar radius 	= box_ptr->masterFibreList[fIndex].radius;
-    PetscScalar yMod 	= par_ptr->youngsModulus;
     PetscScalar area 	= M_PI * pow(radius, 2);
-    PetscScalar mu 		= area * yMod;
-
+    PetscScalar mu 		= area * youngsModulus;
     return mu / segLength;
 }
 
@@ -41,9 +34,10 @@ PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscSca
 
     /* calculate segment length */
     l_alphBeta = vecMagnitude(s_alphBeta);
+    checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
 
     /* calculate stretching modulus */
-    *k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+    *k = calculateK(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus, l_alphBeta);
 
     return ierr;
 }
@@ -97,11 +91,10 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
 
         /* calculate segment length */
         l_alphBeta = vecMagnitude(s_alphBeta);
-
-        //assert(k == calculateK(box_ptr, par_ptr, fIndex, l_alphBeta));
+        checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
 
         /* calculate stretching modulus */
-        k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+        k = calculateK(fibre_ptr->radius, par_ptr->youngsModulus, l_alphBeta);
 
         //printf("k = %0.16g\n", k);
         //printf("t[0] = %0.16g\n", t_alphBeta[0]);

@@ -177,9 +177,10 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
 
     /* find length of segment */
     l_alphBeta = vecMagnitude(s_alphBeta);
+    checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
 
     /* calculate stretching term k */
-    k = calculateK(box_ptr, par_ptr, fIndex, l_alphBeta);
+    k = calculateK(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus, l_alphBeta);
 
     u_dot_t = vecDotProduct(u_alphBeta, t_alphBeta);
 

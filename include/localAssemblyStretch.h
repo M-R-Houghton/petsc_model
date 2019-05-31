@@ -4,22 +4,21 @@
 #include "globalAssemblyBend.h"
 
 /**
- * \brief Checks for legal fibre index and segment length
- * \param box_ptr
- * \param fIndex
+ * \brief Validates that a given segment length is permitted
  * \param segLength
+ * \param xyzPer
+ * \param xyzDim
  */
-void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength);
+void checkSegLength(PetscScalar segLength, const PetscInt *xyzPer, const PetscScalar *xyzDim);
 
 /**
  * \brief Calculates the stretching constant k
- * \param box_ptr
- * \param par_ptr
- * \param fIndex
+ * \param radius
+ * \param youngsModulus
  * \param segLength
  * \return
  */
-PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, PetscScalar segLength);
+PetscScalar calculateK(PetscScalar radius, PetscScalar youngsModulus, PetscScalar segLength);
 
 /**
  * \brief Calculates information about the current fibre segment pair 
