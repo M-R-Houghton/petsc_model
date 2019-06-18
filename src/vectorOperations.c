@@ -45,7 +45,7 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b)
 
 
 /* Calculates the dot product of two given vectors */
-PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscScalar vecDotProduct(const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	PetscScalar total = 0;
 	int i;
@@ -58,7 +58,7 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
 
 
 /* Calculates the cross product of two given 2D vectors */
-PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	assert(DIMENSION == 2);		/* should not be calling this function in 3d case */
 
@@ -72,7 +72,7 @@ PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
 
 
 /* Calculates the cross product of two given 3D vectors */
-PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)
+PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
 {
 	assert(DIMENSION == 3);		/* should not be calling this function in 2d case */
 
@@ -86,50 +86,72 @@ PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
 
 
 /* Calculates the magnitude of a given vector */
-PetscScalar vecMagnitude(PetscScalar *vec_ptr)
+PetscScalar vecMagnitude(const PetscScalar *vec_ptr)
 {
 	return sqrt(vecDotProduct(vec_ptr, vec_ptr));
 }
 
 
-/* Calculates the addition of two position vectors */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+/* Calculates the addition of two vectors without periodicity checking */
+PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr) 
 {
 	PetscErrorCode ierr = 0;
 
 	int i;
 	for (i = 0; i < DIMENSION; i++)
 	{
-		addVec_ptr[i] = posVec1_ptr[i] + posVec2_ptr[i];
+		addVec_ptr[i] = vec1_ptr[i] + vec2_ptr[i];
 	}
 
+	return ierr;
+}
+
+
+/* Calculates the addition of two position vectors */
+PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
+{
+	PetscErrorCode ierr = 0;
+    ierr = stdVecAddition(addVec_ptr, posVec1_ptr, posVec2_ptr);CHKERRQ(ierr);
+
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(addVec_ptr, box_ptr);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(addVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+/* Creates the distance vector between two vectors without periodicity checking */
+PetscErrorCode stdVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)
+{
+	PetscErrorCode ierr = 0;
+
+	int i;
+	for (i = 0; i < DIMENSION; i++)
+	{
+		diffVec_ptr[i] = vec2_ptr[i] - vec1_ptr[i];
+	}
 
 	return ierr;
 }
 
 
 /* Creates the distance vector between two position vectors */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)
+PetscErrorCode posVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension)
 {
 	PetscErrorCode ierr = 0;
-
-	int i;
-	for (i = 0; i < DIMENSION; i++)
-	{
-		distVec_ptr[i] = posVec2_ptr[i] - posVec1_ptr[i];
-	}
+    ierr = stdVecDifference(diffVec_ptr, posVec1_ptr, posVec2_ptr);CHKERRQ(ierr);
 
 	/* update if crossing boundary */
-	ierr = nearestSegmentCopy(distVec_ptr, box_ptr);CHKERRQ(ierr);
+	ierr = nearestSegmentCopy(diffVec_ptr, xyzPeriodic, xyzDimension);CHKERRQ(ierr);
 
 	return ierr;
 }
 
 
 /* Creates the unit tangent vector of a given vector */
-PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
+PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -144,7 +166,7 @@ PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)
 
 
 /* Creates the position vector of a given node */
-PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
+PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -159,7 +181,8 @@ PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 
 
 /* Creates the displacement vector of a given node */
-PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
+// TODO: Confirm that this function is no longer needed
+PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -174,7 +197,7 @@ PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)
 
 
 /* Updates a position vector with the displacement of the corresponding node */
-PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)
 {
 	PetscErrorCode ierr = 0;
 
@@ -189,14 +212,12 @@ PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)
 
 
 /* Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, PetscInt N)
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const PetscInt N, const PetscInt perN, const PetscScalar dimN)
 {
 	PetscErrorCode ierr = 0;
 
-	if (box_ptr->xyzPeriodic[N] == 1)
+	if (perN == 1)
 	{
-		PetscScalar dimN = box_ptr->xyzDimension[N]; 	/* i.e. width/height/depth */
-
 		while (distVec_ptr[N] >  0.5 * dimN) 
 		{
 			distVec_ptr[N] -= dimN;
@@ -211,18 +232,17 @@ PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, Pe
 
 
 /* Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, Box *box_ptr)
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim)
 {
-	PetscErrorCode ierr = 0;
+	PetscErrorCode  ierr = 0;
+    PetscInt        i;
 
-	/* check if x-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 0);CHKERRQ(ierr);
-
-	/* check if y-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 1);CHKERRQ(ierr);
-
-	/* check if z-periodic */
-	ierr = nearestSegmentCopyDirN(distVec_ptr, box_ptr, 2);CHKERRQ(ierr);
+    // TODO: Check whether it is sufficient to loop over DIMENSION instead of up to i
+    for (i = 0; i < 3; i++)
+    {
+        assert(xyzPer[i] == 0 || xyzPer[i] == 1);   /* check for accidental mix up of per with dim */
+        ierr = nearestSegmentCopyDirN(distVec_ptr, i, xyzPer[i], xyzDim[i]);CHKERRQ(ierr);
+    }
 
 	return ierr;
 }

@@ -4,48 +4,52 @@
 #include "globalAssemblyBend.h"
 
 /**
- * \brief Checks for legal fibre index and segment length
- * \param box_ptr
- * \param fIndex
+ * \brief Validates that a given segment length is permitted
  * \param segLength
+ * \param xyzPer
+ * \param xyzDim
  */
-void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength);
+void checkSegLength(PetscScalar segLength, const PetscInt *xyzPer, const PetscScalar *xyzDim);
 
 /**
  * \brief Calculates the stretching constant k
- * \param box_ptr
- * \param par_ptr
- * \param fIndex
+ * \param radius
+ * \param youngsModulus
  * \param segLength
  * \return
  */
-PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, PetscScalar segLength);
+PetscScalar calculateK(PetscScalar radius, PetscScalar youngsModulus, PetscScalar segLength);
 
 /**
  * \brief Calculates information about the current fibre segment pair 
- * \param box_ptr
- * \param par_ptr
- * \param s_alph
- * \param s_beta
  * \param k
  * \param t_alphBeta
- * \param fIndex
+ * \param fibre_ptr
+ * \param s_alph
+ * \param s_beta
+ * \param xyzPer
+ * \param xyzDim
+ * \param youngsModulus
  * \return Petsc error code
  */
-PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
-        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex );
+PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, const Fibre *fibre_ptr, 
+                                        const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscInt *xyzPer, const PetscScalar *xyzDim, PetscScalar youngsModulus);
 
 /**
  * \brief Adds local stretch information for a single fibre to global system
  * Loops through a fibre in pairs
- * \param box_ptr
- * \param par_ptr
- * \param globalMat_H
- * \param globalVec_B
- * \param fIndex
+ * \param globalMat_H The global matrix to add contributions into
+ * \param globalVec_B The global RHS vector to add contributions into
+ * \param N Internal node count
+ * \param fibre_ptr The fibre to loop over
+ * \param xyzPer
+ * \param xyzDim
+ * \param youngsModulus
  * \return
  */
-PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex);
+PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, PetscInt N, const Fibre *fibre_ptr, 
+                                    const PetscInt *xyzPer, const PetscScalar *xyzDim, PetscScalar youngsModulus);
 
 /**
  * \brief Assembles the 2D local stretch matrix of a given pair
@@ -53,17 +57,17 @@ PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globa
  * \param tangVec_ptr
  * \param localStretchMat_A
  */
-PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
+PetscErrorCode make2DStretchMat(PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
 
 /**
  * \brief Assembles the 2D local stretch RHS vector of a given pair
- * \param u_alph
- * \param u_beta
+ * \param u_alphBeta
  * \param k
- * \param tangVec_ptr
+ * \param tangVec
  * \param localStretchVec_b
  */
-PetscErrorCode make2DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, PetscScalar *tangVec, PetscScalar *localStretchVec_b);
+PetscErrorCode make2DStretchVec(const PetscScalar *u_alphBeta, PetscScalar k, 
+                                const PetscScalar *tangVec, PetscScalar *localStretchVec_b);
 
 /**
  * \brief Assembles the 3D local stretch matrix of a given pair
@@ -71,33 +75,17 @@ PetscErrorCode make2DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscS
  * \param tangVec
  * \param localStretchMat_A
  */
-PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
+PetscErrorCode make3DStretchMat(PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6]);
 
 /**
  * \brief Assembles the 3D local stretch RHS vector of a given pair
- * \param u_alph
- * \param u_beta
+ * \param u_alphBeta
  * \param k
  * \param tangVec
  * \param localStretchVec_b
  */
-PetscErrorCode make3DStretchVec(PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, PetscScalar *tangVec, PetscScalar *localStretchVec_b);
+PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, PetscScalar k, 
+                                    const PetscScalar *tangVec, PetscScalar *localStretchVec_b );
 
-/**
- * \brief Shifts the diagonal of the 3D local stretch matrix by a small value lambda
- * \param localStretchMat_A
- * \param lambda
- */
-PetscErrorCode applyMediumTo3DStretchMat(PetscScalar localStretchMat_A[6][6], const PetscScalar lambda);
-
-/**
- * \brief Shifts the 3D local stretch vector affinely
- * \param localStretchVec_b
- * \param lambda
- * \param u_aff_alph 
- * \param u_aff_beta 
- */
-PetscErrorCode applyMediumTo3DStretchVec(PetscScalar localStretchVec_b[6], const PetscScalar lambda, 
-                                            const PetscScalar *u_aff_alph, const PetscScalar *u_aff_beta);
 
 #endif

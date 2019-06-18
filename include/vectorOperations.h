@@ -41,7 +41,7 @@ PetscScalar maxScalar(PetscScalar a, PetscScalar b);
  * \param vec2_ptr
  * \return
  */
-PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscScalar vecDotProduct(const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the cross product of two given 2D vectors
@@ -49,7 +49,7 @@ PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
  * \param vec2_ptr
  * \return
  */
-PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the cross product of two given 3D vectors
@@ -57,75 +57,95 @@ PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_pt
  * \param vec1_ptr
  * \param vec2_ptr
  */
-PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr);
+PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the magnitude of a given vector
  * \param vec_ptr
  * \return
  */
-PetscScalar vecMagnitude(PetscScalar *vec_ptr);
+PetscScalar vecMagnitude(const PetscScalar *vec_ptr);
+
+/* \brief Calculates the addition of two vectors without periodicity checking 
+ * \param addVec_ptr
+ * \param vec1_ptr
+ * \param vec2_ptr
+ */
+PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
 
 /**
  * \brief Calculates the addition of two position vectors
  * \param addVec_ptr
  * \param posVec1_ptr
  * \param posVec2_ptr
- * \param box_ptr
+ * \param xyzPeriodic Array of x,y,z periodicity
+ * \param xyzDimension Array of x,y,z dimensions
  */
-PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
+PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
+                            const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
-/**
- * \brief Creates the distance vector between two position vectors
+/* \brief Creates the difference vector between two vectors without periodicity checking 
  * \param distVec_ptr
  * \param posVec1_ptr
  * \param posVec2_ptr
- * \param box_ptr
  */
-PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr);
+PetscErrorCode stdVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr);
+
+/**
+ * \brief Creates the difference vector between two position vectors
+ * \param distVec_ptr
+ * \param posVec1_ptr
+ * \param posVec2_ptr
+ * \param xyzPeriodic Array of x,y,z periodicity
+ * \param xyzDimension Array of x,y,z dimensions
+ */
+PetscErrorCode posVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr,
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
 /**
  * \brief Creates the unit tangent vector of a given vector
  * \param tangVec_ptr
  * \param vec_ptr
  */
-PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr);
+PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr);
 
 /**
  * \brief Creates the position vector of a given node
  * \param posVec_ptr
  * \param node_ptr
  */
-PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
+PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Creates the displacement vector of a given node
  * \param dispVec_ptr
  * \param node_ptr
  */
-PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr);
+PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Updates a position vector with the displacement of the corresponding node
  * \param posVec_ptr
  * \param node_ptr
  */
-PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr);
+PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr);
 
 /**
  * \brief Checks whether a segment crosses the N boundary and updates it to the nearest copy inside the domain
  * \param distVec_ptr
- * \param box_ptr
- * \param N The relevant boundary to check for intersection with
+ * \param N The relevant boundary to check for intersection with.
+ * \param perN The periodicity of the N axis.
+ * \param dimN The dimension in the N direction.
  */
-PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, PetscInt N);
+PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, PetscInt N, PetscInt perN, PetscScalar dimN);
 
 /**
  * \brief Checks whether a segment crosses any boundary and updates it to the nearest copy inside the domain
  * \param distVec_ptr
- * \param box_ptr
+ * \param xyzPer Array of x,y,z periodicity
+ * \param xyzDim Array of x,y,z dimensions
  */
-PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, Box *box_ptr);
+PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim);
 
 
 #endif

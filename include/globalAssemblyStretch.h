@@ -5,12 +5,12 @@
 
 /**
  * \brief Checks stretch matrix contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  */
-void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+void checkMatStretchContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
@@ -19,14 +19,14 @@ void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], PetscInt N,
-											PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+											PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
@@ -34,21 +34,21 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar l
  * \param globalMat_H The global matrix H.
  * \param localMat The local matrix to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param gInd_B The global index for node_B.
- * \param lInd_A The local index for node_A.
- * \param lInd_B The local index for node_B.
+ * \param gIdx_A The global index for node_A.
+ * \param gIdx_B The global index for node_B.
+ * \param lIdx_A The local index for node_A.
+ * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], PetscInt N,
-										PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B );
+										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Checks stretch vector contribution indexes are all legal 
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  */
-void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A );
+void checkVecStretchContIndexes( PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds a single stretching contribution of 3 values to the global vector
@@ -56,26 +56,29 @@ void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A );
  * \param globalVec_H The global vector H.
  * \param localVec The local vector to extract values from.
  * \param N Total number of internal nodes.
- * \param gInd_A The global index for node_A.
- * \param lInd_A The local index for node_A.
+ * \param gIdx_A The global index for node_A.
+ * \param lIdx_A The local index for node_A.
  * \return Petsc error code.
  */
 PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar localVec[], PetscInt N,
-										PetscInt gInd_A, PetscInt lInd_A );
+										PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds local stretching contributions to the global matrix and RHS vector
- * \param alph_ptr A pointer to x the node alpha.
- * \param beta_ptr A pointer to x the node beta.
  * \param globalMat_H The global matrix H.
  * \param globalVec_B The global rhs vector B.
  * \param N Total number of internal nodes.
+ * \param alph_gID Global index/ID of node alpha
+ * \param beta_gID Global index/ID of node beta
+ * \param alph_nType Node type of node alpha
+ * \param beta_nType Node type of node beta
  * \param localMat The local matrix.
  * \param localVec The local rhs vector.
  * \return Petsc error code.
  */
-PetscErrorCode addStretchContToGlobal( const Node *alph_ptr, const Node *beta_ptr,
-										Mat globalMat_H, Vec globalVec_B, PetscInt N,
+PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
+                                        PetscInt alph_gID, PetscInt beta_gID,
+                                        PetscInt alph_nType, PetscInt beta_nType,
 									   	const PetscScalar localMat[][6], const PetscScalar localVec[] );
 
 #endif

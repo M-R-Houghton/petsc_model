@@ -145,11 +145,11 @@ PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_p
     ierr = updatePositionVec(s_nbet, beta_ptr);CHKERRQ(ierr);
 
     /* use distance vector to find previous segment length */
-    ierr = makeDistanceVec(s_betaDelt, s_beta, s_delt, box_ptr);CHKERRQ(ierr);
+    ierr = posVecDifference(s_betaDelt, s_beta, s_delt, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
     l_betaDelt = vecMagnitude(s_betaDelt);
 
     /* use new distance vector to find new orientation of dangling segment */
-    ierr = makeDistanceVec(s_nalpBeta, s_nalp, s_nbet, box_ptr);CHKERRQ(ierr);
+    ierr = posVecDifference(s_nalpBeta, s_nalp, s_nbet, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
     ierr = makeTangentVec(t_nalpBeta, s_nalpBeta);CHKERRQ(ierr);
 
     /* combine new direction with previous magnitude to find new position */
