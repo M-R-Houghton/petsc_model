@@ -37,6 +37,7 @@ parfiles: $(PAR)
 check:
 	./auto_file_check.sh "lmb"
 	./auto_file_check.sh "rnd2D"
+	./auto_file_check.sh "lat3D"
 
 model: $(OBJ) $(TEST_OBJ) chkopts
 	${CLINKER} -o model $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB} 
