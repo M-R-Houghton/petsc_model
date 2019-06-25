@@ -28,12 +28,20 @@ void checkForValidDisplacement(PetscScalar displacement);
 PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_U);
 
 /**
- * \brief Catches dangling fibres that should be avoided during network generation 
+ * \brief Checks for dangling fibres that should be avoided during network generation 
  * \param fibre_ptr Pointer to the fibre to be checked.
  * \param nOnFibre Number of nodes on each fibre
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre);
+PetscBool isDanglingFibre(const Fibre *fibre_ptr, PetscInt nOnFibre);
+
+/* 
+ * \brief Updates the displacements of dangling nodes of dangling fibres 
+ * \param bgn The first node in the triple node dangling fibre
+ * \param mid The middle (non-dangling) node in the triple node dangling fibre
+ * \param end The last node in the triple node dangling fibre
+ */
+PetscErrorCode updateDanglingFibreNodeDisp(Node *bgn, const Node *mid, Node *end);
 
 /**
  * \brief Updates a single dangling node using its 2 closest neighbouring nodes

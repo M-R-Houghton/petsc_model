@@ -30,13 +30,21 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 		const Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
 		const PetscInt nOnFibre = fibre_ptr->nodesOnFibre;
 
-		ierr = checkForDanglingFibre(fibre_ptr, nOnFibre);CHKERRQ(ierr);
+		if (isDanglingFibre(fibre_ptr, nOnFibre))
+        {
+            ierr = updateDanglingFibreNodeDisp( fibre_ptr->nodesOnFibreList[0],
+                                                fibre_ptr->nodesOnFibreList[1],
+                                                fibre_ptr->nodesOnFibreList[2] );
+            CHKERRQ(ierr);
+            continue;
+        }
 		
 		if (nOnFibre > 2)
 		{
 			/* consider each end of the fibres node list */
 			if (fibre_ptr->nodesOnFibreList[0]->nodeType == NODE_DANGLING)
 			{
+
 				ierr = updateDanglingNodeDisp(box_ptr, fibre_ptr->nodesOnFibreList[2], 
 												fibre_ptr->nodesOnFibreList[1], 
 												fibre_ptr->nodesOnFibreList[0]);
@@ -95,10 +103,11 @@ PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_
 }
 
 
-/* Catches dangling fibres that should be avoided during network generation */
-PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre)
+/* Checks for dangling fibres that should be avoided during network generation */
+PetscBool isDanglingFibre(const Fibre *fibre_ptr, const PetscInt nOnFibre)
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
+	PetscBool isDangling = PETSC_FALSE;
 
 	if (nOnFibre == 3)
 	{
@@ -106,10 +115,25 @@ PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre)
 			fibre_ptr->nodesOnFibreList[nOnFibre-1]->nodeType == NODE_DANGLING)
 		{
 			ierr = PetscPrintf(PETSC_COMM_WORLD,"[WARNING] Found dangling fibre!\n");CHKERRQ(ierr);
+            isDangling = PETSC_TRUE;
 		}
 	}
 
-	return ierr;
+	return isDangling;
+}
+
+
+/* Updates the displacements of dangling nodes of dangling fibres */
+PetscErrorCode updateDanglingFibreNodeDisp(Node *bgn, const Node *mid, Node *end)
+{
+    PetscErrorCode  ierr = 0;
+    PetscInt        i;
+    for (i = 0; i < DIMENSION; i++)
+    {
+        bgn->xyzDisplacement[i] = mid->xyzDisplacement[i];
+        end->xyzDisplacement[i] = mid->xyzDisplacement[i];
+    }
+    return ierr;
 }
 
 
@@ -124,6 +148,7 @@ PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, const Node *alph_ptr, const 
 
     /* should only be updating nodes displacement if dangling */
     assert(delt_ptr->nodeType == NODE_DANGLING);
+    assert(alph_ptr->nodeType != NODE_DANGLING);
 
 	/* initialise initial position vectors */
     PetscScalar s_alph[DIMENSION];
