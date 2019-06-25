@@ -1,7 +1,7 @@
 #include "systemAssembly.h"
 
 /* Initiates system assembly routine */
-PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
+PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b)
 {
     PetscErrorCode  ierr   = 0;
     PetscBool       useEM  = PETSC_FALSE;    /* set default values */
@@ -204,7 +204,7 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscS
 
 
 /* Assembles a global vector from the affine displacements of every internal node */
-PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)
+PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff)
 {
     PetscErrorCode  ierr;
     PetscErrorCode  i,j;
@@ -226,10 +226,10 @@ PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)
     return ierr;
 }
 
-
+// TODO: Tidy up or remove completely
 /* Solves a matrix from pre-assembled arrays */
-PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
-        char const *rhsFile, char const *solFile, PetscInt n)
+PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, 
+        const char *rhsFile, const char *solFile, PetscInt n)
 {
     PetscErrorCode 	ierr;
     Mat            	H;
@@ -360,7 +360,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 
 
 /* Reads in a file of integers to an array */
-PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)
+PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n)
 {
     PetscErrorCode 	ierr;
     PetscInt 		i,inp;
@@ -380,7 +380,7 @@ PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)
 
 
 /* Reads in a file of doubles to an array */
-PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)
+PetscErrorCode readDbl(const char *fileName, PetscScalar *array, PetscInt n)
 {
     PetscErrorCode 	ierr;
     PetscInt 		i;
@@ -401,7 +401,7 @@ PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)
 
 
 /* Writes out an array of doubles to file */
-PetscErrorCode writeDbl(char const *fileName, PetscScalar *array, PetscInt n) 
+PetscErrorCode writeDbl(const char *fileName, PetscScalar *array, PetscInt n) 
 {
     PetscErrorCode ierr;
     PetscInt i;

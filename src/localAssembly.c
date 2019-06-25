@@ -1,7 +1,7 @@
 #include "localAssembly.h"
 
 /* Adds local contributions for every fibre to global system */
-PetscErrorCode addLocalContributions(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B)
+PetscErrorCode addLocalContributions(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B)
 {
     PetscErrorCode 	ierr;
     PetscInt 		fIndex;
