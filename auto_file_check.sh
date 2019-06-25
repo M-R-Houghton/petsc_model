@@ -20,6 +20,7 @@ test_file="${dat_path}${group}TestNetworks.txt"
 tmp_res_tst="temp_res.txt"
 
 fail_count=0
+skip_count=0
 
 # Check test file exists
 if [ ! -f "$test_file" ]; then
@@ -40,18 +41,22 @@ while read file; do
     # Validate input, parameter and out validate file exists
     if [ ! -f "$file_par" ]; then
         printf "Parameter file %s is missing\n" "$file_par"
+        ((skip_count++))
         continue;
     fi
     if [ ! -f "$file_in" ]; then
         printf "Input data file %s is missing\n" "$file_in"
+        ((skip_count++))
         continue;
     fi
     if [ ! -f "$file_out_val" ]; then
         printf "Output validation file %s is missing\n" "$file_out_val"
+        ((skip_count++))
         continue;
     fi
     if [ ! -f "$file_res_val" ]; then
         printf "Results validation file %s is missing\n" "$file_res_val"
+        ((skip_count++))
         continue;
     fi
 
@@ -68,10 +73,12 @@ while read file; do
 
     if [ ! -f "$file_out_tst" ]; then
         printf "Output data file %s is missing\n" "$file_out_tst"
+        ((skip_count++))
         continue;
     fi
     if [ ! -f "$file_res_tst" ]; then
         printf "Results data file %s is missing\n" "$file_res_tst"
+        ((skip_count++))
         continue;
     fi
 
@@ -104,7 +111,8 @@ while read file; do
 
 done < $test_file
 
-printf "Tests failed: %d\n" "$fail_count"
+printf "Tests failed:\t%d\n" "$fail_count"
+printf "Tests skipped:\t%d\n" "$skip_count"
 
 rm $tmp_res_tst
 
