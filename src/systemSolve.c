@@ -9,10 +9,6 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	PetscInt 		its;
 	PetscReal 		norm; 		  /* norm of solution error */
 
-    // TODO: Check this is not affecting the sol vec after the solve and remove
-    ierr = MatGetDiagonal(globalMat_H,globalVec_U);CHKERRQ(ierr);
-	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-
 	/* Create linear solver context */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
