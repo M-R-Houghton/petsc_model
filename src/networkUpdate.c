@@ -27,8 +27,8 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 	PetscInt j;
 	for (j = 0; j < box_ptr->fibreCount; j++)
 	{
-		Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
-		PetscInt nOnFibre = fibre_ptr->nodesOnFibre;
+		const Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
+		const PetscInt nOnFibre = fibre_ptr->nodesOnFibre;
 
 		ierr = checkForDanglingFibre(fibre_ptr, nOnFibre);CHKERRQ(ierr);
 		
@@ -114,13 +114,16 @@ PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre)
 
 
 /* Updates a single dangling node using its 2 closest neighbouring nodes */
-PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_ptr, Node *delt_ptr)
+PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, const Node *alph_ptr, const Node *beta_ptr, Node *delt_ptr)
 {
 	/* Vector operation summary:						*
 	 * 		s_ndel = s_nbet + l_betaDelt * t_nalpBeta 	*
  	 *		u_delt = s_ndel - s_delt 					*/
 	PetscErrorCode 	ierr = 0;
 	PetscScalar 	l_betaDelt;
+
+    /* should only be updating nodes displacement if dangling */
+    assert(delt_ptr->nodeType == NODE_DANGLING);
 
 	/* initialise initial position vectors */
     PetscScalar s_alph[DIMENSION];
