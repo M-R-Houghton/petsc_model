@@ -5,23 +5,19 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 {
 	PetscErrorCode ierr = 0;
 
-	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-
-	/* update network by looping node by node */
+	/* update all internal nodes before updating dangling nodes */
 	PetscInt i;
 	for (i = 0; i < box_ptr->nodeCount; i++)
 	{
 		Node *node_ptr = &(box_ptr->masterNodeList[i]);
-
-		/* update all internal nodes before updating dangling nodes */
 		if (node_ptr->nodeType == NODE_INTERNAL)
 		{
 			ierr = updateInternalNodeDisp(node_ptr, box_ptr->nodeInternalCount, globalVec_U);CHKERRQ(ierr);
 		}
-
-		/* NOTE: don't need to update boundary nodes since they are updated
-		 * before solving the system */
 	}
+
+	/* NOTE: don't need to update boundary nodes since they are updated
+	 * before solving the system */
 
 	/* now update dangling nodes using updated internal nodes */
 	PetscInt j;
@@ -30,21 +26,18 @@ PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)
 		const Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
 		const PetscInt nOnFibre = fibre_ptr->nodesOnFibre;
 
-		if (isDanglingFibre(fibre_ptr, nOnFibre))
+		if (isDanglingFibre(fibre_ptr, nOnFibre))   /* first deal with unlikely case */
         {
             ierr = updateDanglingFibreNodeDisp( fibre_ptr->nodesOnFibreList[0],
                                                 fibre_ptr->nodesOnFibreList[1],
                                                 fibre_ptr->nodesOnFibreList[2] );
             CHKERRQ(ierr);
-            continue;
         }
-		
-		if (nOnFibre > 2)
+        else if (nOnFibre > 2)                      /* now handle the general case */
 		{
 			/* consider each end of the fibres node list */
 			if (fibre_ptr->nodesOnFibreList[0]->nodeType == NODE_DANGLING)
 			{
-
 				ierr = updateDanglingNodeDisp(box_ptr, fibre_ptr->nodesOnFibreList[2], 
 												fibre_ptr->nodesOnFibreList[1], 
 												fibre_ptr->nodesOnFibreList[0]);
