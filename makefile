@@ -1,4 +1,4 @@
-ALL:			 model check
+ALL:             model tags check
 CFLAGS	         = -I $(INC_DIR) -I $(TEST_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
@@ -25,6 +25,10 @@ TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 
 include ${PETSC_DIR}/lib/petsc/conf/variables
 include ${PETSC_DIR}/lib/petsc/conf/rules
+
+tags: $(SRC) 
+	@echo "Rebuilding tags file"
+	ctags -R .
 
 %.par: %_in.dat 
 	@echo "[WARNING] Needs python3 alias!" 
