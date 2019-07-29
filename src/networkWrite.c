@@ -24,7 +24,7 @@ PetscErrorCode networkWrite(const char *fileName, Box *box_ptr)
 		ierr = writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]));CHKERRQ(ierr);
 	}
 
-	fclose(file_ptr);
+	ierr = fclose(file_ptr);
 
 	return ierr;
 }
@@ -102,6 +102,31 @@ PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr)
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tG_Aff-G \t= %g\n", par_ptr->shearModAffn-par_ptr->shearModulus);CHKERRQ(ierr);
 
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\t(E-E_Aff)/E_Aff \t= %g\n", (par_ptr->energyTotl-par_ptr->energyAffn)/par_ptr->energyAffn);CHKERRQ(ierr);
+
+	return ierr;
+}
+
+
+/* Initiates network write out routine */
+PetscErrorCode writeAnalysis(const char *fileName, const Box *box_ptr, const Parameters *par_ptr)
+{
+	PetscErrorCode 	ierr;
+	PetscInt fIndex, nIndex;
+	FILE *file_ptr;
+
+	file_ptr = fopen(fileName, "w+");
+
+	fprintf(file_ptr, "Gamma \t\t= %g\n", par_ptr->gamma);
+    fprintf(file_ptr, "YoungsModulus \t= %g\n", par_ptr->youngsModulus);
+    fprintf(file_ptr, "Radius \t\t= %g\n", box_ptr->masterFibreList[0].radius);
+    fprintf(file_ptr, "EnergyStre \t= %g\n", par_ptr->energyStre);
+    fprintf(file_ptr, "EnergyBend \t= %g\n", par_ptr->energyBend);
+    fprintf(file_ptr, "EnergyTotl \t= %g\n", par_ptr->energyTotl);
+    fprintf(file_ptr, "EnergyAffn \t= %g\n", par_ptr->energyAffn);
+    fprintf(file_ptr, "ShearModulus \t= %g\n", par_ptr->shearModulus);
+    fprintf(file_ptr, "ShearModAffn \t= %g\n\n", par_ptr->shearModAffn);
+
+	ierr = fclose(file_ptr);
 
 	return ierr;
 }
