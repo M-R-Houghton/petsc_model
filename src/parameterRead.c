@@ -29,6 +29,7 @@ PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr,
 	/* scan both lines at once */
 	fscanf(file_ptr, " %s\n %s\n", inputNetwork, outputNetwork);
 
+    // TODO: add results file to args for following two functions
 	checkFileNameLengths(inputNetwork, outputNetwork);
 
    	/* use obtained information to set up parameters */
