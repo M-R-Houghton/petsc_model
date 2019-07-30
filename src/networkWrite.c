@@ -108,13 +108,12 @@ PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr)
 
 
 /* Initiates network write out routine */
-PetscErrorCode writeAnalysis(const char *fileName, const Box *box_ptr, const Parameters *par_ptr)
+PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 {
 	PetscErrorCode 	ierr;
-	PetscInt fIndex, nIndex;
 	FILE *file_ptr;
 
-	file_ptr = fopen(fileName, "w+");
+	file_ptr = fopen(par_ptr->postSolveResults, "w+");
 
 	fprintf(file_ptr, "Gamma \t\t= %g\n", par_ptr->gamma);
     fprintf(file_ptr, "YoungsModulus \t= %g\n", par_ptr->youngsModulus);
@@ -124,7 +123,7 @@ PetscErrorCode writeAnalysis(const char *fileName, const Box *box_ptr, const Par
     fprintf(file_ptr, "EnergyTotl \t= %g\n", par_ptr->energyTotl);
     fprintf(file_ptr, "EnergyAffn \t= %g\n", par_ptr->energyAffn);
     fprintf(file_ptr, "ShearModulus \t= %g\n", par_ptr->shearModulus);
-    fprintf(file_ptr, "ShearModAffn \t= %g\n\n", par_ptr->shearModAffn);
+    fprintf(file_ptr, "ShearModAffn \t= %g\n", par_ptr->shearModAffn);
 
 	ierr = fclose(file_ptr);
 

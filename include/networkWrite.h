@@ -34,7 +34,7 @@ PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
  * \param par_ptr stores energy and analysis info to write.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeAnalysis(const char *fileName, const Box *box_ptr, const Parameters *par_ptr);
+PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr);
 
 /**
  * \brief Writes box information to file.
