@@ -20,6 +20,7 @@ Parameters *makeParameters(const char *input, const char *output, const PetscSca
 	/* assign attributes */
 	strcpy(par_ptr->inputNetwork, input);
 	strcpy(par_ptr->outputNetwork, output);
+    //strcpy(par_ptr->postSolveResults, results);
     // TODO: add results file here
 	par_ptr->gamma = gamma;
 	par_ptr->youngsModulus = yMod;
