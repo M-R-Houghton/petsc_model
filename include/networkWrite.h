@@ -29,6 +29,14 @@ PetscErrorCode printNodeInfo(Node *node_ptr);
 PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
 
 /**
+ * \brief Writes out post solve analysis 
+ * \param box_ptr stores general network info to write.
+ * \param par_ptr stores energy and analysis info to write.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode writeAnalysis(const char *fileName, const Box *box_ptr, const Parameters *par_ptr);
+
+/**
  * \brief Writes box information to file.
  * \param file_ptr Pointer to the file.
  * \param box_ptr Box containing network data to write out.
