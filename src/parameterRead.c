@@ -36,7 +36,7 @@ PetscErrorCode parameterRead(const char *fileToRead_ptr, Parameters **par_ptr,
 	checkFileNameLengths(inputNetwork, outputNetwork, postSolveResults);
 
    	/* use obtained information to set up parameters */
-   	*par_ptr = makeParameters(inputNetwork, outputNetwork, gamma, youngsModulus);
+   	*par_ptr = makeParameters(inputNetwork, outputNetwork, postSolveResults, gamma, youngsModulus);
 
 	/* close file */
 	fclose(file_ptr);
