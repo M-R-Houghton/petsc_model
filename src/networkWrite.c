@@ -24,8 +24,6 @@ PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)
         ierr = writeNodeLine(file_ptr, &(box_ptr->masterNodeList[nIndex]));CHKERRQ(ierr);
     }
 
-    if (box_ptr->coupleCount > 0) PetscPrintf(PETSC_COMM_WORLD,"[WARNING] Couple writing is still to be tested.\n");
-
     /* followed by couple lines if the system is coupled */
     for (cIndex = 0; cIndex < box_ptr->coupleCount; cIndex++)
     {
@@ -199,14 +197,14 @@ PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)
 {
     PetscErrorCode ierr = 0;
 
-    //fprintf(file_ptr, "c ");
-    //
-    //int nOnCouple;
-    //for (nOnCouple = 0; nOnCouple < cpl_ptr->nodesInCouple; nOnCouple++)
-    //{
-    //    fprintf(file_ptr, "%d ", cpl_ptr->nodeID[nOnCouple]);
-    //}
-    //fprintf(file_ptr, "\n");
+    fprintf(file_ptr, "c ");
+    
+    int nOnCouple;
+    for (nOnCouple = 0; nOnCouple < cpl_ptr->nodesInCouple; nOnCouple++)
+    {
+        fprintf(file_ptr, "%d ", cpl_ptr->nodeID[nOnCouple]);
+    }
+    fprintf(file_ptr, "\n");
 
     return ierr;
 }
