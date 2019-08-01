@@ -115,6 +115,15 @@ PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 
 	file_ptr = fopen(par_ptr->postSolveResults, "w+");
 
+	fprintf(file_ptr, "Dim(%f,%f,%f)\n", box_ptr->xyzDimension[0],
+                box_ptr->xyzDimension[1], box_ptr->xyzDimension[2]);
+	fprintf(file_ptr, "Per(%d,%d,%d)\n", box_ptr->xyzPeriodic[0],
+                box_ptr->xyzPeriodic[1], box_ptr->xyzPeriodic[2]);
+
+	fprintf(file_ptr, "TotalNodes \t= %d\n", box_ptr->nodeCount);
+	fprintf(file_ptr, "InternalNodes \t= %d\n", box_ptr->nodeInternalCount);
+	fprintf(file_ptr, "TotalFibres \t= %d\n", box_ptr->fibreCount);
+	fprintf(file_ptr, "TotalCouples \t= %d\n", box_ptr->coupleCount);
 	fprintf(file_ptr, "Gamma \t\t= %g\n", par_ptr->gamma);
     fprintf(file_ptr, "YoungsModulus \t= %g\n", par_ptr->youngsModulus);
     fprintf(file_ptr, "Radius \t\t= %g\n", box_ptr->masterFibreList[0].radius);
