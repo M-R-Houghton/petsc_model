@@ -170,9 +170,19 @@ PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr)
 }
 
 
+/* Writes couple information to file */
 PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)
 {
     PetscErrorCode ierr = 0;
+
+    //fprintf(file_ptr, "c ");
+    //
+    //int nOnCouple;
+    //for (nOnCouple = 0; nOnCouple < cpl_ptr->nodesInCouple; nOnCouple++)
+    //{
+    //    fprintf(file_ptr, "%d ", cpl_ptr->nodeID[nOnCouple]);
+    //}
+    //fprintf(file_ptr, "\n");
 
     return ierr;
 }

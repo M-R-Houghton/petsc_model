@@ -12,15 +12,15 @@
 PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr);
 
 /**
- * \brief Prints out fibre information
- * \param fibre_ptr Fibre to be printed
+ * \brief Prints out fibre information.
+ * \param fibre_ptr Fibre to be printed.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode printFibreInfo(const Fibre *fibre_ptr);
 
 /**
- * \brief Prints out node information
- * \param node_ptr Node to be printed
+ * \brief Prints out node information.
+ * \param node_ptr Node to be printed.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode printNodeInfo(const Node *node_ptr);
@@ -55,7 +55,7 @@ PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr);
 /**
  * \brief Writes couple information to file.
  * \param file_ptr Pointer to the file.
- * \param node_ptr Couple containing network data to write out.
+ * \param cpl_ptr Couple containing network data to write out.
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr);
