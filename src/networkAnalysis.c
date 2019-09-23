@@ -275,6 +275,8 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
 	{
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
+        
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] Segment (%d,%d):\n", alph_ptr->nodeID, beta_ptr->nodeID );CHKERRQ(ierr);
 
         /* only calculate energy if neither node is dangling */
         if (alph_ptr->nodeType != NODE_DANGLING && 
@@ -286,6 +288,8 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
                                                         alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement,
                                                         box_ptr->xyzPeriodic, box_ptr->xyzDimension );
             fibre_ptr->fibreStreEnergy += segStreEnergy;
+
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_s = %g\n", segStreEnergy );CHKERRQ(ierr);
         }
 
         /*
@@ -297,6 +301,9 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
                                                     alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement,
                                                     box_ptr->xyzPeriodic, box_ptr->xyzDimension );
         fibre_ptr->fibreAffnEnergy += segAffnEnergy;
+
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_s_aff = %g\n", segAffnEnergy );CHKERRQ(ierr);
+
     }
 	return ierr;
 }
@@ -319,6 +326,8 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
 		const Node *omeg_ptr = fibre_ptr->nodesOnFibreList[i+1];
 		const Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+2];
 
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] Segment (%d,%d,%d):\n", alph_ptr->nodeID, omeg_ptr->nodeID, beta_ptr->nodeID );CHKERRQ(ierr);
+
         /* check none of the nodes are dangling */
         if (alph_ptr->nodeType != NODE_DANGLING && 
             omeg_ptr->nodeType != NODE_DANGLING &&
@@ -329,6 +338,8 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
             segBendEnergy = calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, omeg_ptr->xyzCoord, beta_ptr->xyzCoord,
                                                     alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
+            
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_b = %g\n", segBendEnergy );CHKERRQ(ierr);
         }
         /* NOTE: affine energy is not calculated for bending */
     }
