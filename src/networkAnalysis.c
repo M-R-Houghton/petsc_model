@@ -290,19 +290,20 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
             fibre_ptr->fibreStreEnergy += segStreEnergy;
 
             ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_s = %g\n", segStreEnergy );CHKERRQ(ierr);
+        //}
+
+            /*
+             * affine energy is calculated regardless of node types 
+             * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
+             */
+            segAffnEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
+                                                        alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                        alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement,
+                                                        box_ptr->xyzPeriodic, box_ptr->xyzDimension );
+            fibre_ptr->fibreAffnEnergy += segAffnEnergy;
+
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_s_aff = %g\n", segAffnEnergy );CHKERRQ(ierr);
         }
-
-        /*
-         * affine energy is calculated regardless of node types 
-         * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
-         */
-        segAffnEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
-                                                    alph_ptr->xyzCoord, beta_ptr->xyzCoord,
-                                                    alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement,
-                                                    box_ptr->xyzPeriodic, box_ptr->xyzDimension );
-        fibre_ptr->fibreAffnEnergy += segAffnEnergy;
-
-        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_s_aff = %g\n", segAffnEnergy );CHKERRQ(ierr);
 
     }
 	return ierr;
