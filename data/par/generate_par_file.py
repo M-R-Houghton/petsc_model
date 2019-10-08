@@ -28,7 +28,7 @@ class ParGenerator:
 
     def get_res_name(self):
         res_name = re.sub('dat/', 'res/', self.filename_in_dat)
-        res_name = re.sub('_in\.dat$', '.res', res_name)
+        res_name = re.sub('_in\.dat$', '.csv', res_name)
         return res_name
 
     def write_par_file(self):
