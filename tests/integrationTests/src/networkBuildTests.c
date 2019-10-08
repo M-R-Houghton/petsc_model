@@ -24,10 +24,11 @@ PetscErrorCode test_makeParameters()
 	PetscScalar    gamma = 0.5, yMod = 1.0;
 	const char input[]  = "data/dat/tri/tri_3d_01_in.dat";
     const char output[] = "data/dat/tri/tri_3d_01_out.dat";
+    const char results[] = "data/res/tri/tri_3d_01.res";
 
 	ierr = PetscPrintf(PETSC_COMM_WORLD,"[TESTING] makeParameters...\n");CHKERRQ(ierr);
 
-	Parameters *par_ptr = makeParameters(input, output, gamma, yMod);
+	Parameters *par_ptr = makeParameters(input, output, results, gamma, yMod);
 	assert(par_ptr->gamma         == 0.5);
 	assert(par_ptr->youngsModulus == 1.0);
 

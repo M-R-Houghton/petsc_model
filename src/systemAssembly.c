@@ -1,48 +1,26 @@
 #include "systemAssembly.h"
 
 /* Initiates system assembly routine */
-PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
+PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b)
 {
-    PetscErrorCode  ierr = 0;
-    PetscBool       useEM = PETSC_FALSE;
+    PetscErrorCode  ierr   = 0;
+    PetscBool       useEM  = PETSC_FALSE;    /* set default values */
     PetscScalar     lambda = 1e-5;       
 
     /* set up options for elastic medium */
     ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
-    /*
-     * Calculate sparsity of global matrix
-     */
+    /* Calculate sparsity of global matrix */
+    // TODO: implement this
 
-    /*
-     * Pre-allocate memory for global matrix
-     */
+    /* Pre-allocate memory for global matrix */
+    // TODO: implement this
 
-    /*
-     * Assemble local contributions and add to global matrix
-     */
+    /* Assemble local contributions and add to global matrix */
     ierr = addLocalContributions(box_ptr, par_ptr, H, b);CHKERRQ(ierr);
 
-    /*
-     * Assemble matrix (REFERENCE)
-     */
-    /*
-    PetscInt       i,n = 10,col[3];
-    PetscScalar    value[3];
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Assembling system...\n");CHKERRQ(ierr);
-    value[0] = -1.0; value[1] = 2.0; value[2] = -1.0;
-    for(i=1; i<n-1; i++) 
-    {
-    col[0] = i-1; col[1] = i; col[2] = i+1;
-    ierr   = MatSetValues(H,1,&i,3,col,value,INSERT_VALUES);CHKERRQ(ierr);
-    }
-    i    = n - 1; col[0] = n - 2; col[1] = n - 1;
-    ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr);
-    i    = 0; col[0] = 0; col[1] = 1; value[0] = 2.0; value[1] = -1.0;
-    ierr = MatSetValues(H,1,&i,2,col,value,INSERT_VALUES);CHKERRQ(ierr); // where &i is an array of i
-    */
-
+    /* Embed network in elastic medium if specified by user */
     if (useEM)
     {
         ierr = applyElasticMedium(box_ptr, H, b, lambda);CHKERRQ(ierr);
@@ -54,13 +32,19 @@ PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)
     ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
-    /* zero entries for elastic medium validation only */
+    /* Zero entries for elastic medium validation only */
     //ierr = VecZeroEntries(b);CHKERRQ(ierr);
     //ierr = MatZeroEntries(H);CHKERRQ(ierr);
 
-    //ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    /* View global matrix and rhs vector if problem is small enough */
+    PetscInt solSize;
+    ierr = VecGetSize(b, &solSize);CHKERRQ(ierr);
+    if (solSize < 50)
+    {
+        ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+        ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    }
 
-    //ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     return ierr;
 }
 
@@ -220,7 +204,7 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscS
 
 
 /* Assembles a global vector from the affine displacements of every internal node */
-PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)
+PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff)
 {
     PetscErrorCode  ierr;
     PetscErrorCode  i,j;
@@ -242,10 +226,10 @@ PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)
     return ierr;
 }
 
-
+// TODO: Tidy up or remove completely
 /* Solves a matrix from pre-assembled arrays */
-PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
-        char const *rhsFile, char const *solFile, PetscInt n)
+PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, 
+        const char *rhsFile, const char *solFile, PetscInt n)
 {
     PetscErrorCode 	ierr;
     Mat            	H;
@@ -376,7 +360,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
 
 
 /* Reads in a file of integers to an array */
-PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)
+PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n)
 {
     PetscErrorCode 	ierr;
     PetscInt 		i,inp;
@@ -396,7 +380,7 @@ PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)
 
 
 /* Reads in a file of doubles to an array */
-PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)
+PetscErrorCode readDbl(const char *fileName, PetscScalar *array, PetscInt n)
 {
     PetscErrorCode 	ierr;
     PetscInt 		i;
@@ -417,7 +401,7 @@ PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)
 
 
 /* Writes out an array of doubles to file */
-PetscErrorCode writeDbl(char const *fileName, PetscScalar *array, PetscInt n) 
+PetscErrorCode writeDbl(const char *fileName, PetscScalar *array, PetscInt n) 
 {
     PetscErrorCode ierr;
     PetscInt i;

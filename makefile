@@ -1,4 +1,4 @@
-ALL:			 model check
+ALL:             model tags check
 CFLAGS	         = -I $(INC_DIR) -I $(TEST_INC_DIR)
 FFLAGS	         =
 CPPFLAGS         =
@@ -26,6 +26,10 @@ TEST_OBJ 		 = $(patsubst %.c,%.o,$(TEST_SRC))
 include ${PETSC_DIR}/lib/petsc/conf/variables
 include ${PETSC_DIR}/lib/petsc/conf/rules
 
+tags: $(SRC) 
+	@echo "Rebuilding tags file"
+	ctags -R .
+
 %.par: %_in.dat 
 	@echo "[WARNING] Needs python3 alias!" 
 	@echo "Generating $@ from $<" 
@@ -37,6 +41,7 @@ parfiles: $(PAR)
 check:
 	./auto_file_check.sh "lmb"
 	./auto_file_check.sh "rnd2D"
+	./auto_file_check.sh "lat3D"
 
 model: $(OBJ) $(TEST_OBJ) chkopts
 	${CLINKER} -o model $(OBJ) $(TEST_OBJ) ${PETSC_KSP_LIB} 

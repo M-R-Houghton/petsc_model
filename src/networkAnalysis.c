@@ -153,9 +153,10 @@ PetscErrorCode stretchCompressionOfpVarLmb(Box *box_ptr, Parameters *par_ptr)
 }
 
 
-PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-										PetscScalar *s_alph, PetscScalar *s_beta,
-                                        PetscScalar *u_alph, PetscScalar *u_beta )
+PetscScalar calculateSegStretchEnergy( const Fibre *fibre_ptr, const PetscScalar youngsModulus,
+										const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscScalar *u_alph, const PetscScalar *u_beta,
+                                        const PetscInt *xyzPer, const PetscScalar *xyzDim )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		l_alphBeta, k;
@@ -167,20 +168,20 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
     PetscScalar 	u_alphBeta[DIMENSION];
 
     /* make distance vector between alpha and beta */
-    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, xyzPer, xyzDim);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
     /* make distance vector between alpha and beta displacements */
-    ierr = posVecDifference(u_alphBeta, u_alph, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = stdVecDifference(u_alphBeta, u_alph, u_beta);CHKERRQ(ierr);
 
     /* find length of segment */
     l_alphBeta = vecMagnitude(s_alphBeta);
-    checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
+    checkSegLength(l_alphBeta, xyzPer, xyzDim);
 
     /* calculate stretching term k */
-    k = calculateK(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus, l_alphBeta);
+    k = calculateK(fibre_ptr->radius, youngsModulus, l_alphBeta);
 
     u_dot_t = vecDotProduct(u_alphBeta, t_alphBeta);
 
@@ -191,8 +192,8 @@ PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscI
 
 
 PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-									 PetscScalar *s_alph, PetscScalar *s_omeg, PetscScalar *s_beta,
-                                     PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta )
+									 const PetscScalar *s_alph, const PetscScalar *s_omeg, const PetscScalar *s_beta,
+                                     const PetscScalar *u_alph, const PetscScalar *u_omeg, const PetscScalar *u_beta )
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		kappa;
@@ -231,8 +232,10 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
 	bConst 	  = bConstNum / bConstDen;
 
     /* make distance vectors */
-    ierr = posVecDifference(u_alphOmeg, u_alph, u_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-    ierr = posVecDifference(u_omegBeta, u_omeg, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    //ierr = posVecDifference(u_alphOmeg, u_alph, u_omeg, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    //ierr = posVecDifference(u_omegBeta, u_omeg, u_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = stdVecDifference(u_alphOmeg, u_alph, u_omeg);CHKERRQ(ierr);
+    ierr = stdVecDifference(u_omegBeta, u_omeg, u_beta);CHKERRQ(ierr);
 
     /* cross s_alphaOmega with u_omegaBeta, and u_alphaOmega with s_omegaBeta */
     if (DIMENSION == 3)
@@ -278,8 +281,10 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
         	beta_ptr->nodeType != NODE_DANGLING)
         {
             /* add segment energy to total for fibre */
-            segStreEnergy = calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, beta_ptr->xyzCoord, 
-                                                        alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
+            segStreEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
+                                                        alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                        alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement,
+                                                        box_ptr->xyzPeriodic, box_ptr->xyzDimension );
             fibre_ptr->fibreStreEnergy += segStreEnergy;
         }
 
@@ -287,11 +292,12 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
          * affine energy is calculated regardless of node types 
          * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
          */
-        segAffnEnergy = calculateSegStretchEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, beta_ptr->xyzCoord,
-                                                   alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement );
+        segAffnEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
+                                                    alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                    alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement,
+                                                    box_ptr->xyzPeriodic, box_ptr->xyzDimension );
         fibre_ptr->fibreAffnEnergy += segAffnEnergy;
     }
-
 	return ierr;
 }
 
@@ -309,9 +315,9 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
 	PetscInt i;
 	for (i = 0; i < fibre_ptr->nodesOnFibre - 2; i++)
 	{
-		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
-		Node *omeg_ptr = fibre_ptr->nodesOnFibreList[i+1];
-		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+2];
+		const Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
+		const Node *omeg_ptr = fibre_ptr->nodesOnFibreList[i+1];
+		const Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+2];
 
         /* check none of the nodes are dangling */
         if (alph_ptr->nodeType != NODE_DANGLING && 

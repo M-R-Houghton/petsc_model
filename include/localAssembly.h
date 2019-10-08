@@ -12,7 +12,7 @@
  * \param globalVec_B
  * \return
  */
-PetscErrorCode addLocalContributions(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B);
+PetscErrorCode addLocalContributions(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B);
 
 
 #endif

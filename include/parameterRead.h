@@ -6,9 +6,11 @@
 /**
  * \brief Checks for illegal filename lengths
  * \param inputFileName Pointer to the input file name to be checked.
- * \param inputFileName Pointer to the output file name to be checked.
+ * \param outputFileName Pointer to the output file name to be checked.
+ * \param resultsFileName Pointer to the results file name to be checked.
  */
-void checkFileNameLengths(const char *inputFileName, const char *outputFileName);
+void checkFileNameLengths(const char *inputFileName, const char *outputFileName, 
+                            const char *resultsFileName);
 
 /**
  * \brief Initiates parameter file read in routine

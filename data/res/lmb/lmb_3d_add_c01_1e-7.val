@@ -1,0 +1,81 @@
+[STATUS] Initialising...
+[STATUS] Reading parameter file...
+[STATUS] Reading from file 'data/dat/lmb/lmb_3d_add_c01_in.dat'...
+tot couple node things = 4
+g = 2
+2, 9, 8, 6, 
+Total internal couple nodes = 4
+
+starting val= 2
+ending val = 2
+g = 2
+gIDTotal = 2
+[STATUS] Problem size is (6 x 6)
+[STATUS] Setting up vectors...
+[STATUS] Setting up matrix...
+Mat Object: 1 MPI processes
+  type: seqaij
+row 0: (0, 0.000444416)  (1, -0.000222177)  (2, -0.000222116)  (3, 0.000222111)  (4, 0.)  (5, 0.) 
+row 1: (0, -0.000222177)  (1, 0.000666584)  (2, 0.000222111)  (3, -0.000222092)  (4, 0.)  (5, 0.) 
+row 2: (0, -0.000222116)  (1, 0.000222111)  (2, 0.000444416)  (3, -0.000222177)  (4, 0.)  (5, 0.) 
+row 3: (0, 0.000222111)  (1, -0.000222092)  (2, -0.000222177)  (3, 0.000666584)  (4, 0.)  (5, 0.) 
+row 4: (0, 0.)  (1, 0.)  (2, 0.)  (3, 0.)  (4, 1.55536e-07)  (5, -6.66432e-08) 
+row 5: (0, 0.)  (1, 0.)  (2, 0.)  (3, 0.)  (4, -6.66432e-08)  (5, 2.03667e-07) 
+Vec Object: 1 MPI processes
+  type: seq
+1.55571e-09
+1.77754e-05
+-4.44288e-10
+8.88577e-10
+0.
+0.
+[STATUS] Solving system...
+[STATUS] Creating solver context...
+KSP Object: 1 MPI processes
+  type: preonly
+  maximum iterations=10000, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-50, divergence=10000.
+  left preconditioning
+  using NONE norm type for convergence test
+PC Object: 1 MPI processes
+  type: lu
+    out-of-place factorization
+    tolerance for zero pivot 2.22045e-14
+    matrix ordering: nd
+    factor fill ratio given 5., needed 1.
+      Factored matrix follows:
+        Mat Object: 1 MPI processes
+          type: seqaij
+          rows=6, cols=6
+          package used to perform factorization: petsc
+          total: nonzeros=36, allocated nonzeros=36
+          total number of mallocs used during MatSetValues calls =0
+            using I-node routines: found 2 nodes, limit used is 5
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=6, cols=6
+    total: nonzeros=36, allocated nonzeros=120
+    total number of mallocs used during MatSetValues calls =6
+      using I-node routines: found 2 nodes, limit used is 5
+[STATUS] Iterations 1
+[STATUS] Residual norm = 0.
+[STATUS] Updating network...
+[STATUS] Analysing network...
+Incorrect data for stretch/compression analysis.
+
+[STATUS]	Gamma 		= 0.02
+[STATUS]	YoungsModulus 	= 1.
+[STATUS]	Radius 		= 0.01
+[STATUS]	EnergyStre 	= 4.44289e-08
+[STATUS]	EnergyBend 	= 1.47855e-11
+[STATUS]	EnergyTotl 	= 4.44436e-08
+[STATUS]	EnergyAffn 	= 1.11072e-07
+[STATUS]	ShearModulus 	= 0.000222218
+[STATUS]	ShearModAffn 	= 0.00055536
+
+[STATUS]	Lambda 	= 1e-07
+
+[STATUS] Writing to file...
+[STATUS] Cleaning up...
+[STATUS] Finalising...

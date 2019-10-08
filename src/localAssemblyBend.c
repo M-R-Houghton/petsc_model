@@ -9,15 +9,13 @@ PetscScalar calculateKappa(const PetscScalar radius, const PetscScalar youngsMod
 
 
 /* Adds local bend information for a single fibre to global system */
-PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, const PetscInt fIndex)
+PetscErrorCode addFibreLocalBend(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, 
+                                    const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
 	PetscErrorCode 	ierr = 0;
 	PetscScalar		kappa;
 	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
 	PetscScalar		bConstNum, bConstDen, bConst;
-
-    assert(fIndex >= 0);
-	const Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
 	/* setup local matrix and rhs vector */
 	PetscScalar localBendMat_A[9][9];
@@ -37,9 +35,9 @@ PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, 
 		const Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
 
 		/* make difference vectors from position vectors with boundary checking */
-		ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = posVecDifference(s_omegBeta, n_omeg->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
-		ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+		ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
+		ierr = posVecDifference(s_omegBeta, n_omeg->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
+		ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
 
 		/* make difference vectors from displacement vectors */
 		ierr = stdVecDifference(u_alphOmeg, n_alph->xyzDisplacement, n_omeg->xyzDisplacement);CHKERRQ(ierr);
@@ -52,7 +50,7 @@ PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, 
 		l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alphBeta) */
 
 		/* calculate bending modulus kappa */
-        kappa = calculateKappa(fibre_ptr->radius, par_ptr->youngsModulus);
+        kappa = calculateKappa(fibre_ptr->radius, youngsModulus);
 
 		/* calculate bending constant */
 		bConstNum = 2 * kappa;
@@ -76,7 +74,7 @@ PetscErrorCode addFibreLocalBend(const Box *box_ptr, const Parameters *par_ptr, 
 		}
 
 		/* determine contributions and add to the global system */
-        ierr = addBendContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
+        ierr = addBendContToGlobal( globalMat_H, globalVec_B, N,  
                                     n_alph->globalID, n_omeg->globalID, n_beta->globalID,
                                     n_alph->nodeType, n_omeg->nodeType, n_beta->nodeType,
         							localBendMat_A, localBendVec_b );

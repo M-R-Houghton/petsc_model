@@ -9,11 +9,7 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	PetscInt 		its;
 	PetscReal 		norm; 		  /* norm of solution error */
 
-    ierr = MatGetDiagonal(globalMat_H,globalVec_U);CHKERRQ(ierr);
-	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-	/*
-       Create linear solver context
-    */
+	/* Create linear solver context */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
 	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
 	
@@ -23,41 +19,24 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
     */
 	ierr = KSPSetOperators(ksp,globalMat_H,globalMat_H MATSTRUCT);CHKERRQ(ierr);
 
-
-	/*
-	  Set linear solver defaults for this problem (optional).
-	  - By extracting the KSP and PC contexts from the KSP context,
-	    we can then directly call any KSP and PC routines to set
-	    various options.
-	  - The following four statements are optional; all of these
-	    parameters could alternatively be specified at runtime via
-	    KSPSetFromOptions();
-	*/
+	/* Set linear solver defaults for this problem (optional) */
 	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
 	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
 	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
+    // TODO: Decide whether default tolerance is more appropriate
 
-
-	/*
-      Set runtime options, e.g.,
-          -ksp_type <type> -pc_type <type> -ksp_monitor -ksp_rtol <rtol>
-      These options will override those specified above as long as
-      KSPSetFromOptions() is called _after_ any other customization
-      routines.
-    */
+	/* Set runtime options after those specified above to override the defaults */
     ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
-    /*
-	  Solve linear system
-	*/
+    /* Solve linear system */
 	ierr = KSPSolve(ksp,globalVec_B,globalVec_U);CHKERRQ(ierr);
 
-	//ierr = VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    /* View solution vector if problem is small enough */
+    PetscInt solSize;
+    ierr = VecGetSize(globalVec_U, &solSize);CHKERRQ(ierr);
+    if (solSize < 50) VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);
 
-	/*
-	  View solver info; we could instead use the option -ksp_view to
-	  print this info to the screen at the conclusion of KSPSolve().
-	*/
+	/* View solver info */
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
 	/* Get iteration count */
@@ -80,6 +59,7 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 	KSPGetResidualNorm(ksp,&norm);
 	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %g\n", (double)norm);CHKERRQ(ierr);
 
+    /* Clean up */
 	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
 	return ierr;

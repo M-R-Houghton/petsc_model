@@ -9,24 +9,32 @@
  * \param box_ptr Box containing network data to write out.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkWrite(const char *fileName, Box *box_ptr);
+PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr);
 
 /**
- * \brief Prints out fibre information
- * \param fibre_ptr Fibre to be printed
+ * \brief Prints out fibre information.
+ * \param fibre_ptr Fibre to be printed.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode printFibreInfo(Fibre *fibre_ptr);
+PetscErrorCode printFibreInfo(const Fibre *fibre_ptr);
 
 /**
- * \brief Prints out node information
- * \param node_ptr Node to be printed
+ * \brief Prints out node information.
+ * \param node_ptr Node to be printed.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode printNodeInfo(Node *node_ptr);
+PetscErrorCode printNodeInfo(const Node *node_ptr);
 
 /* This function will be replaced with a parameter write out */
-PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
+PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr);
+
+/**
+ * \brief Writes out post solve analysis 
+ * \param box_ptr stores general network info to write.
+ * \param par_ptr stores energy and analysis info to write.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr);
 
 /**
  * \brief Writes box information to file.
@@ -34,7 +42,7 @@ PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr);
  * \param box_ptr Box containing network data to write out.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr);
+PetscErrorCode writeBoxLine(FILE *file_ptr, const Box *box_ptr);
 
 /**
  * \brief Writes fibre information to file.
@@ -42,7 +50,7 @@ PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr);
  * \param fibre_ptr Fibre containing network data to write out.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr);
+PetscErrorCode writeFibreLine(FILE *file_ptr, const Fibre *fibre_ptr);
 
 /**
  * \brief Writes node information to file.
@@ -50,6 +58,15 @@ PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr);
  * \param node_ptr Node containing network data to write out.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr);
+PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr);
+
+/**
+ * \brief Writes couple information to file.
+ * \param file_ptr Pointer to the file.
+ * \param cpl_ptr Couple containing network data to write out.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr);
+
 
 #endif

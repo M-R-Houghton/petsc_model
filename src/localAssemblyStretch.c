@@ -19,38 +19,37 @@ PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus
 }
 
 
-PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,
-        PetscScalar *k, PetscScalar *t_alphBeta, PetscInt fIndex )
+PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, const Fibre *fibre_ptr, 
+                                        const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
     PetscErrorCode  ierr = 0;
     PetscScalar     l_alphBeta;
     PetscScalar     s_alphBeta[DIMENSION];
 
     /* make distance vector between position vectors */
-    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+    ierr = posVecDifference(s_alphBeta, s_alph, s_beta, xyzPer, xyzDim);CHKERRQ(ierr);
 
     /* make tangent vector of segment */
     ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
     /* calculate segment length */
     l_alphBeta = vecMagnitude(s_alphBeta);
-    checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
+    checkSegLength(l_alphBeta, xyzPer, xyzDim);
 
     /* calculate stretching modulus */
-    *k = calculateK(box_ptr->masterFibreList[fIndex].radius, par_ptr->youngsModulus, l_alphBeta);
+    *k = calculateK(fibre_ptr->radius, youngsModulus, l_alphBeta);
 
     return ierr;
 }
 
 
 /* Adds local stretch information for a single fibre to global system */
-PetscErrorCode addFibreLocalStretch(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, const PetscInt fIndex)
+PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, 
+                                    const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
     PetscErrorCode 	ierr = 0;
     PetscScalar		l_alphBeta, k;
-
-    assert(fIndex >= 0);
-    const Fibre *fibre_ptr = &(box_ptr->masterFibreList[fIndex]);
 
     /* setup local matrix and rhs vector */
     PetscScalar localStretchMat_A[6][6];
@@ -69,20 +68,23 @@ PetscErrorCode addFibreLocalStretch(const Box *box_ptr, const Parameters *par_pt
         const Node *n_beta = fibre_ptr->nodesOnFibreList[i+1];
 
         // TODO: Decide whether this function is worth using
-        //ierr = calculateSegPairInfo(box_ptr, par_ptr, n_alph->xyzCoord, n_beta->xyzCoord, &k, t_alphBeta, fIndex);CHKERRQ(ierr);
+        //ierr = calculateSegPairInfo( &k, t_alphBeta, fibre_ptr, 
+        //                              n_alph->xyzCoord, n_beta->xyzCoord, 
+        //                              xyzPer, xyzDim, youngsModulus );
+        //CHKERRQ(ierr);
 
         /* make distance vector between position vectors */
-        ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, box_ptr->xyzPeriodic, box_ptr->xyzDimension);CHKERRQ(ierr);
+        ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
 
         /* make tangent vector of segment */
         ierr = makeTangentVec(t_alphBeta, s_alphBeta);CHKERRQ(ierr);
 
         /* calculate segment length */
         l_alphBeta = vecMagnitude(s_alphBeta);
-        checkSegLength(l_alphBeta, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
+        checkSegLength(l_alphBeta, xyzPer, xyzDim);
 
         /* calculate stretching modulus */
-        k = calculateK(fibre_ptr->radius, par_ptr->youngsModulus, l_alphBeta);
+        k = calculateK(fibre_ptr->radius, youngsModulus, l_alphBeta);
 
         ierr = stdVecDifference(u_alphBeta, n_alph->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
 
@@ -100,7 +102,7 @@ PetscErrorCode addFibreLocalStretch(const Box *box_ptr, const Parameters *par_pt
         }
 
         /* determine contributions and add to the global system */
-        ierr = addStretchContToGlobal( globalMat_H, globalVec_B, box_ptr->nodeInternalCount, 
+        ierr = addStretchContToGlobal( globalMat_H, globalVec_B, N, 
                                         n_alph->globalID, n_beta->globalID, 
                                         n_alph->nodeType, n_beta->nodeType, 
                                         localStretchMat_A, localStretchVec_b );

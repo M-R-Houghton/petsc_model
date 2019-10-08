@@ -8,7 +8,7 @@
  * \param H Global matrix to be assembled
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b);
+PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b);
 
 /**
  * \brief Applies a uniform force to the global matrix 
@@ -84,7 +84,7 @@ PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, PetscScalar 
  * \param U_aff The global displacement vector to be assembled
  * \return Index to represent Petsc error code
  */
-PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff);
+PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff);
 
 /**
  * \brief Solves a matrix from pre-assembled arrays.
@@ -96,8 +96,8 @@ PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff);
  * \param n Dimension of global matrix (nxn).
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, 
-									char const *rhsFile, char const *solFile, PetscInt n);
+PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, 
+									const char *rhsFile, const char *solFile, PetscInt n);
 
 /**
  * \brief Reads in a file of integers to an array
@@ -106,7 +106,7 @@ PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, ch
  * \param n Length of array to be read in.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n);
+PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n);
 
 /**
  * \brief Reads in a file of doubles to an array
@@ -115,7 +115,7 @@ PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n);
  * \param n Length of array to be read in.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n);
+PetscErrorCode readDbl(const char *fileName, PetscScalar *array, PetscInt n);
 
 /**
  * \brief Writes out an array of doubles to file
@@ -124,6 +124,6 @@ PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n);
  * \param n Length of array to be read in.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode writeDbl(char const *fileName, PetscScalar *array, PetscInt n) ;
+PetscErrorCode writeDbl(const char *fileName, PetscScalar *array, PetscInt n) ;
 
 #endif
