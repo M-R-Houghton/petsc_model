@@ -36,6 +36,8 @@ int main(int argc, char **args)
 	PetscLogStage stages[6];
 #endif
 
+    // testing the use of tag update
+
     if (argc < 2)
     {
     	printf("[ERROR] Incorrect number of arguments provided.\n");

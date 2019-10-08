@@ -275,7 +275,7 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
 	{
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
-
+        
         /*
          * affine energy is calculated regardless of node types 
          * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
@@ -332,6 +332,8 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
             segBendEnergy = calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, omeg_ptr->xyzCoord, beta_ptr->xyzCoord,
                                                     alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
+            
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_b = %g\n", segBendEnergy );CHKERRQ(ierr);
         }
         /* NOTE: affine energy is not calculated for bending */
     }
