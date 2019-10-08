@@ -5477,17 +5477,17 @@ ad_hoc_test_result	tests/googletest/src/gtest-internal-inl.h	/^  const TestResul
 ad_hoc_test_result	tests/googletest/src/gtest.cc	/^const TestResult& UnitTest::ad_hoc_test_result() const {$/;"	f	class:testing::UnitTest
 ad_hoc_test_result_	tests/googletest/include/gtest/gtest.h	/^  TestResult ad_hoc_test_result_;$/;"	m	class:testing::TestCase
 ad_hoc_test_result_	tests/googletest/src/gtest-internal-inl.h	/^  TestResult ad_hoc_test_result_;$/;"	m	class:testing::internal::UnitTestImpl
-addBendContToGlobal	src/globalAssemblyBend.c	/^PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,$/;"	f
-addFibreLocalBend	src/localAssemblyBend.c	/^PetscErrorCode addFibreLocalBend(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)$/;"	f
-addFibreLocalStretch	src/localAssemblyStretch.c	/^PetscErrorCode addFibreLocalStretch(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B, PetscInt fIndex)$/;"	f
-addLocalContributions	src/localAssembly.c	/^PetscErrorCode addLocalContributions(Box *box_ptr, Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B)$/;"	f
-addMatSingleBendCont	src/globalAssemblyBend.c	/^PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,$/;"	f
-addMatSingleBendContFAST	src/globalAssemblyBend.c	/^PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar localMat[][9], PetscInt N,$/;"	f
-addMatSingleStretchCont	src/globalAssemblyStretch.c	/^PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,$/;"	f
-addMatSingleStretchContFAST	src/globalAssemblyStretch.c	/^PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar localMat[][6], PetscInt N,$/;"	f
-addStretchContToGlobal	src/globalAssemblyStretch.c	/^PetscErrorCode addStretchContToGlobal( Node *alph_ptr, Node *beta_ptr,$/;"	f
-addVecSingleBendCont	src/globalAssemblyBend.c	/^PetscErrorCode addVecSingleBendCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,$/;"	f
-addVecSingleStretchCont	src/globalAssemblyStretch.c	/^PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, PetscScalar localVec[], PetscInt N,$/;"	f
+addBendContToGlobal	src/globalAssemblyBend.c	/^PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,$/;"	f
+addFibreLocalBend	src/localAssemblyBend.c	/^PetscErrorCode addFibreLocalBend(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, $/;"	f
+addFibreLocalStretch	src/localAssemblyStretch.c	/^PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, $/;"	f
+addLocalContributions	src/localAssembly.c	/^PetscErrorCode addLocalContributions(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B)$/;"	f
+addMatSingleBendCont	src/globalAssemblyBend.c	/^PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,$/;"	f
+addMatSingleBendContFAST	src/globalAssemblyBend.c	/^PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,$/;"	f
+addMatSingleStretchCont	src/globalAssemblyStretch.c	/^PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,$/;"	f
+addMatSingleStretchContFAST	src/globalAssemblyStretch.c	/^PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,$/;"	f
+addStretchContToGlobal	src/globalAssemblyStretch.c	/^PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,$/;"	f
+addVecSingleBendCont	src/globalAssemblyBend.c	/^PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], $/;"	f
+addVecSingleStretchCont	src/globalAssemblyStretch.c	/^PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar localVec[], const PetscInt N,$/;"	f
 add_fibre	tests/otherTests/network_reader.py	/^    def add_fibre(self, data):$/;"	m	class:NetworkReader
 add_link	tests/otherTests/network_reader.py	/^    def add_link(self, data, l_id):$/;"	m	class:NetworkReader
 add_node	tests/otherTests/network_reader.py	/^    def add_node(self, data):$/;"	m	class:NetworkReader
@@ -5520,17 +5520,22 @@ analyse_node	tests/otherTests/network_general_analysis.py	/^    def analyse_node
 analyse_nodes	tests/otherTests/network_general_analysis.py	/^    def analyse_nodes(self):$/;"	m	class:NetworkAnalyser
 analyse_number_of_crosslinks	tests/otherTests/network_general_analysis.py	/^    def analyse_number_of_crosslinks(self, fibre):$/;"	m	class:NetworkAnalyser
 analyse_segment_lengths	tests/otherTests/network_general_analysis.py	/^    def analyse_segment_lengths(self, fibre, seg_min, seg_max, seg_avg):$/;"	m	class:NetworkAnalyser
-applyElasticMedium	src/systemAssembly.c	/^PetscErrorCode applyElasticMedium(Box *box_ptr, Mat H, Vec B, PetscScalar lambda)$/;"	f
-applyElasticMediumToMatrix	src/systemAssembly.c	/^PetscErrorCode applyElasticMediumToMatrix(Mat H, PetscScalar lambda)$/;"	f
-applyElasticMediumToRHSVector	src/systemAssembly.c	/^PetscErrorCode applyElasticMediumToRHSVector(Box *box_ptr, Vec B, PetscScalar lambda)$/;"	f
+applyEMToCoupledMatrix	src/systemAssembly.c	/^PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda, $/;"	f
+applyEMToCoupledRHSVector	src/systemAssembly.c	/^PetscErrorCode applyEMToCoupledRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)$/;"	f
+applyEMToDecoupledMatrix	src/systemAssembly.c	/^PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const PetscInt N)$/;"	f
+applyEMToDecoupledRHSVector	src/systemAssembly.c	/^PetscErrorCode applyEMToDecoupledRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)$/;"	f
+applyElasticMedium	src/systemAssembly.c	/^PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscScalar lambda)$/;"	f
+applyElasticMediumToMatrix	src/systemAssembly.c	/^PetscErrorCode applyElasticMediumToMatrix(Mat H, const PetscScalar lambda, const PetscInt internalCount, $/;"	f
+applyElasticMediumToRHSVector	src/systemAssembly.c	/^PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)$/;"	f
 arg1	tests/otherTests/node_displacement_checker.py	/^    arg1 = sys.argv[1]$/;"	v	class:DisplacementChecker
+arg1	tests/otherTests/plane_converter.py	/^    arg1 = sys.argv[1]$/;"	v
 arg2	tests/otherTests/node_displacement_checker.py	/^    arg2 = 0.1$/;"	v	class:DisplacementChecker
 args_	tests/googletest/src/gtest-death-test.cc	/^  std::vector<char*> args_;$/;"	m	class:testing::internal::Arguments	file:
 argv	tests/googletest/src/gtest-death-test.cc	/^  char* const* argv;  \/\/ Command-line arguments for the child's call to exec$/;"	m	struct:testing::internal::ExecDeathTestArgs	file:
 array	tests/googletest/test/googletest-printers-test.cc	/^  char array[257];$/;"	m	struct:testing::gtest_printers_test::Big	file:
 array_	tests/googletest/include/gtest/gtest-test-part.h	/^  std::vector<TestPartResult> array_;$/;"	m	class:testing::TestPartResultArray
 array_	tests/googletest/include/gtest/internal/gtest-internal.h	/^  const Element* array_;$/;"	m	class:testing::internal::NativeArray
-assembleAffineDisplacementVector	src/systemAssembly.c	/^PetscErrorCode assembleAffineDisplacementVector(Box *box_ptr, Vec U_aff)$/;"	f
+assembleAffineDisplacementVector	src/systemAssembly.c	/^PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff)$/;"	f
 assume_role_calls_	tests/googletest/test/googletest-death-test-test.cc	/^  int assume_role_calls_;$/;"	m	class:MockDeathTestFactory	file:
 atexit	tests/googletest/test/gtest_test_utils.py	/^import atexit$/;"	i
 bConst	tests/gUnitTests/src/localAssemblyBend_unittest.cc	/^    PetscScalar bConst;$/;"	m	struct:__anon14::testMake2DBendMat	file:
@@ -5685,11 +5690,11 @@ calculateAperiodicRange	src/networkAnalysis.c	/^PetscScalar calculateAperiodicRa
 calculateEnergy	src/networkAnalysis.c	/^PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)$/;"	f
 calculateFibreBendEnergy	src/networkAnalysis.c	/^PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)$/;"	f
 calculateFibreStretchEnergy	src/networkAnalysis.c	/^PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)$/;"	f
-calculateK	src/localAssemblyStretch.c	/^PetscScalar calculateK(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex, PetscScalar segLength)$/;"	f
-calculateKappa	src/localAssemblyBend.c	/^PetscScalar calculateKappa(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)$/;"	f
+calculateK	src/localAssemblyStretch.c	/^PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus, const PetscScalar segLength)$/;"	f
+calculateKappa	src/localAssemblyBend.c	/^PetscScalar calculateKappa(const PetscScalar radius, const PetscScalar youngsModulus)$/;"	f
 calculateSegBendEnergy	src/networkAnalysis.c	/^PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,$/;"	f
-calculateSegPairInfo	src/localAssemblyStretch.c	/^PetscErrorCode calculateSegPairInfo( Box *box_ptr, Parameters *par_ptr, PetscScalar *s_alph, PetscScalar *s_beta,$/;"	f
-calculateSegStretchEnergy	src/networkAnalysis.c	/^PetscScalar calculateSegStretchEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,$/;"	f
+calculateSegPairInfo	src/localAssemblyStretch.c	/^PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, const Fibre *fibre_ptr, $/;"	f
+calculateSegStretchEnergy	src/networkAnalysis.c	/^PetscScalar calculateSegStretchEnergy( const Fibre *fibre_ptr, const PetscScalar youngsModulus,$/;"	f
 calculateShearModulus	src/networkAnalysis.c	/^PetscErrorCode calculateShearModulus(Box *box_ptr, Parameters *par_ptr)$/;"	f
 calculateVolume	src/networkAnalysis.c	/^PetscScalar calculateVolume(Box *box_ptr)$/;"	f
 caller_frame_	tests/googletest/src/gtest-internal-inl.h	/^  void* caller_frame_ = nullptr;$/;"	m	class:testing::internal::OsStackTraceGetter
@@ -5702,19 +5707,17 @@ catch_exceptions_	tests/googletest/src/gtest.cc	/^      catch_exceptions_(false)
 char_	tests/googletest/test/gtest_unittest.cc	/^  char char_;$/;"	m	class:__anon39::UnprintableChar	file:
 check	include/debugMacros.h	/^#define check(/;"	d
 checkBoxArguments	src/networkBuild.c	/^void checkBoxArguments(PetscInt nCount, PetscInt fCount,$/;"	f
-checkCoupleArguments	src/networkBuild.c	/^void checkCoupleArguments(Box *box_ptr, PetscInt const cID, PetscInt const nID1, PetscInt const nID2)$/;"	f
+checkCoupleArguments	src/networkBuild.c	/^void checkCoupleArguments(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)$/;"	f
 checkFibreArguments	src/networkBuild.c	/^void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,$/;"	f
-checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName)$/;"	f
-checkForDanglingFibre	src/networkUpdate.c	/^PetscErrorCode checkForDanglingFibre(Fibre *fibre_ptr, PetscInt nOnFibre)$/;"	f
+checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName, $/;"	f
 checkForValidDisplacement	src/networkUpdate.c	/^void checkForValidDisplacement(PetscScalar displacement)$/;"	f
 checkInternalNodeIndices	src/networkRead.c	/^void checkInternalNodeIndices(const Box *box_ptr)$/;"	f
-checkKArguments	src/localAssemblyStretch.c	/^void checkKArguments(Box *box_ptr, PetscInt fIndex, PetscScalar segLength)$/;"	f
-checkKappaArguments	src/localAssemblyBend.c	/^void checkKappaArguments(Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)$/;"	f
-checkMatBendContIndexes	src/globalAssemblyBend.c	/^void checkMatBendContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )$/;"	f
-checkMatStretchContIndexes	src/globalAssemblyStretch.c	/^void checkMatStretchContIndexes( PetscInt gInd_A, PetscInt gInd_B, PetscInt lInd_A, PetscInt lInd_B )$/;"	f
+checkMatBendContIndexes	src/globalAssemblyBend.c	/^void checkMatBendContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, $/;"	f
+checkMatStretchContIndexes	src/globalAssemblyStretch.c	/^void checkMatStretchContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, const PetscInt lIdx_A, const PetscInt lIdx_B )$/;"	f
 checkNodeArguments	src/networkBuild.c	/^void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,$/;"	f
-checkVecBendContIndexes	src/globalAssemblyBend.c	/^void checkVecBendContIndexes( PetscInt gInd_A, PetscInt lInd_A )$/;"	f
-checkVecStretchContIndexes	src/globalAssemblyStretch.c	/^void checkVecStretchContIndexes( PetscInt gInd_A, PetscInt lInd_A )$/;"	f
+checkSegLength	src/localAssemblyStretch.c	/^void checkSegLength(const PetscScalar segLength, const PetscInt *xyzPer, const PetscScalar *xyzDim)$/;"	f
+checkVecBendContIndexes	src/globalAssemblyBend.c	/^void checkVecBendContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )$/;"	f
+checkVecStretchContIndexes	src/globalAssemblyStretch.c	/^void checkVecStretchContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )$/;"	f
 checkVolume	src/networkAnalysis.c	/^void checkVolume(Box *box_ptr, PetscScalar volume)$/;"	f
 check_debug	include/debugMacros.h	/^#define check_debug(/;"	d
 check_displacements	tests/otherTests/node_displacement_checker.py	/^    def check_displacements(self):$/;"	m	class:DisplacementChecker
@@ -5771,6 +5774,7 @@ counter_	tests/googletest/samples/sample4.h	/^  int counter_;$/;"	m	class:Counte
 counter_	tests/googletest/test/gtest_unittest.cc	/^  static int counter_;$/;"	m	class:testing::SetUpTestCaseTest	file:
 counter_	tests/googletest/test/gtest_unittest.cc	/^int SetUpTestCaseTest::counter_ = 0;$/;"	m	class:testing::SetUpTestCaseTest	file:
 couple	include/common.h	/^struct couple$/;"	s
+coupleCount	include/common.h	/^    PetscInt coupleCount;           \/* in many cases this may be equal to internal *\/$/;"	m	struct:box
 coupleID	include/common.h	/^    PetscInt coupleID;$/;"	m	struct:couple
 coupledSystem	tests/gUnitTests/src/networkRead_unittest.cc	/^    PetscBool coupledSystem;$/;"	m	struct:__anon12::testSetInternalNodeIndices	file:
 create_	tests/googletest/test/googletest-death-test-test.cc	/^  bool create_;$/;"	m	class:MockDeathTestFactory	file:
@@ -5853,6 +5857,7 @@ data	tests/gUnitTests/unitTestFailureParser.py	/^    data = sys.argv[1]$/;"	v	cl
 data_	tests/googletest/include/gtest/gtest.h	/^  AssertHelperData* const data_;$/;"	m	class:testing::internal::AssertHelper
 data_file	tests/otherTests/network_conflict_checker.py	/^    data_file = sys.argv[1]$/;"	v
 data_file	tests/otherTests/network_general_analysis.py	/^    data_file = sys.argv[1]$/;"	v	class:NetworkAnalyser
+data_file	tests/otherTests/network_id_shifter.py	/^    data_file = sys.argv[1]$/;"	v
 data_file	tests/otherTests/network_reader.py	/^    data_file = sys.argv[1]$/;"	v	class:NetworkReader
 datetime	tests/googletest/test/googletest-json-output-unittest.py	/^import datetime$/;"	i
 datetime	tests/googletest/test/gtest_xml_output_unittest.py	/^import datetime$/;"	i
@@ -6041,6 +6046,7 @@ fibreCount	include/common.h	/^	PetscInt fibreCount;$/;"	m	struct:box
 fibreID	include/common.h	/^	PetscInt fibreID;$/;"	m	struct:fibre
 fibreStreEnergy	include/common.h	/^	PetscScalar fibreStreEnergy;$/;"	m	struct:fibre
 fibre_line_ptr	tests/gUnitTests/src/networkRead_unittest.cc	/^    char        *box_line_ptr, *fibre_line_ptr, *node_line_ptr;$/;"	m	struct:__anon12::testReadDataLine	file:
+fibre_shift	tests/otherTests/network_id_shifter.py	/^    fibre_shift = 200$/;"	v
 file	tests/googletest/include/gtest/gtest.h	/^    const char* const file;$/;"	m	struct:testing::internal::AssertHelper::AssertHelperData
 file	tests/googletest/include/gtest/gtest.h	/^  const char* file() const { return location_.file.c_str(); }$/;"	f	class:testing::TestInfo
 file	tests/googletest/include/gtest/internal/gtest-death-test-internal.h	/^  const std::string& file() const { return file_; }$/;"	f	class:testing::internal::InternalRunDeathTestFlag
@@ -6242,6 +6248,7 @@ get	tests/googletest/include/gtest/internal/gtest-port.h	/^  const T& get() cons
 get	tests/googletest/include/gtest/internal/gtest-port.h	/^  const T& get() const { return value_; }$/;"	f	class:testing::internal::ThreadLocal
 get_base_name	data/par/generate_par_file.py	/^    def get_base_name(self):$/;"	m	class:ParGenerator
 get_par_name	data/par/generate_par_file.py	/^    def get_par_name(self):$/;"	m	class:ParGenerator
+get_res_name	data/par/generate_par_file.py	/^    def get_res_name(self):$/;"	m	class:ParGenerator
 getpass	tests/googletest/scripts/upload.py	/^import getpass$/;"	i
 glbMat	tests/gUnitTests/src/globalAssemblyBend_unittest.cc	/^    Mat glbMat;$/;"	m	struct:__anon1::testAddBendContToGlobal	file:
 glbMat	tests/gUnitTests/src/globalAssemblyBend_unittest.cc	/^    Mat glbMat;$/;"	m	struct:__anon1::testAddMatSingleBendCont	file:
@@ -6387,6 +6394,7 @@ internal_run_death_test_	tests/googletest/src/gtest-internal-inl.h	/^  std::stri
 internal_run_death_test_flag	tests/googletest/src/gtest-internal-inl.h	/^  const InternalRunDeathTestFlag* internal_run_death_test_flag() const {$/;"	f	class:testing::internal::UnitTestImpl
 internal_run_death_test_flag_	tests/googletest/src/gtest-internal-inl.h	/^  internal::scoped_ptr<InternalRunDeathTestFlag> internal_run_death_test_flag_;$/;"	m	class:testing::internal::UnitTestImpl
 invoked_	tests/googletest/test/googletest-port-test.cc	/^  bool invoked_;$/;"	m	class:testing::internal::DestructorCall	file:
+isDanglingFibre	src/networkUpdate.c	/^PetscBool isDanglingFibre(const Fibre *fibre_ptr, const PetscInt nOnFibre)$/;"	f
 is_destroyed_	tests/googletest/test/gtest_unittest.cc	/^  bool* is_destroyed_;$/;"	m	class:TestListener	file:
 is_disabled_	tests/googletest/include/gtest/gtest.h	/^  bool is_disabled_;                \/\/ True iff this test is disabled$/;"	m	class:testing::TestInfo
 is_in_another_shard	tests/googletest/include/gtest/gtest.h	/^  bool is_in_another_shard() const { return is_in_another_shard_; }$/;"	f	class:testing::TestInfo
@@ -6645,24 +6653,23 @@ main	tests/mpiTests/helloWorld.c	/^int main( int argc, char **argv )$/;"	f
 main	tests/mpiTests/helloWorld2.c	/^int main( int argc, char **argv )$/;"	f
 main1	tests/mpiTests/helloWorld1.c	/^int main1( int argc, char **argv )$/;"	f
 major_version	tests/googletest/xcode/Scripts/versiongenerate.py	/^major_version = version_values.group(1)$/;"	v
-make2DBendMat	src/localAssemblyBend.c	/^PetscErrorCode make2DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, $/;"	f
-make2DBendVec	src/localAssemblyBend.c	/^PetscErrorCode make2DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,$/;"	f
-make2DStretchMat	src/localAssemblyStretch.c	/^PetscErrorCode make2DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])$/;"	f
-make2DStretchVec	src/localAssemblyStretch.c	/^PetscErrorCode make2DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, $/;"	f
-make3DBendMat	src/localAssemblyBend.c	/^PetscErrorCode make3DBendMat(PetscScalar *s_alphOmeg, PetscScalar *s_omegBeta, $/;"	f
-make3DBendVec	src/localAssemblyBend.c	/^PetscErrorCode make3DBendVec(PetscScalar *u_alph, PetscScalar *u_omeg, PetscScalar *u_beta,$/;"	f
-make3DStretchMat	src/localAssemblyStretch.c	/^PetscErrorCode make3DStretchMat(PetscScalar k, PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])$/;"	f
-make3DStretchVec	src/localAssemblyStretch.c	/^PetscErrorCode make3DStretchVec( PetscScalar *u_alph, PetscScalar *u_beta, PetscScalar k, $/;"	f
+make2DBendMat	src/localAssemblyBend.c	/^PetscErrorCode make2DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, $/;"	f
+make2DBendVec	src/localAssemblyBend.c	/^PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta,$/;"	f
+make2DStretchMat	src/localAssemblyStretch.c	/^PetscErrorCode make2DStretchMat(const PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])$/;"	f
+make2DStretchVec	src/localAssemblyStretch.c	/^PetscErrorCode make2DStretchVec( const PetscScalar *u_alphBeta, const PetscScalar k, $/;"	f
+make3DBendMat	src/localAssemblyBend.c	/^PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, $/;"	f
+make3DBendVec	src/localAssemblyBend.c	/^PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,$/;"	f
+make3DStretchMat	src/localAssemblyStretch.c	/^PetscErrorCode make3DStretchMat(const PetscScalar k, const PetscScalar *tangVec, PetscScalar localStretchMat_A[6][6])$/;"	f
+make3DStretchVec	src/localAssemblyStretch.c	/^PetscErrorCode make3DStretchVec( const PetscScalar *u_alphBeta, const PetscScalar k, $/;"	f
 makeBox	src/networkBuild.c	/^Box *makeBox(PetscInt nCount, PetscInt fCount,$/;"	f
 makeCouple	src/networkBuild.c	/^PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)$/;"	f
-makeDisplacementVec	src/vectorOperations.c	/^PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, Node *node_ptr)$/;"	f
-makeDistanceVec	src/vectorOperations.c	/^PetscErrorCode makeDistanceVec(PetscScalar *distVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)$/;"	f
+makeDisplacementVec	src/vectorOperations.c	/^PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr)$/;"	f
 makeFibre	src/networkBuild.c	/^PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)$/;"	f
 makeNode	src/networkBuild.c	/^PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,$/;"	f
-makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, PetscScalar gamma, PetscScalar yMod)$/;"	f
-makePositionVec	src/vectorOperations.c	/^PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)$/;"	f
+makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod)$/;"	f
+makePositionVec	src/vectorOperations.c	/^PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)$/;"	f
 makeSparse	src/networkBuild.c	/^Sparse *makeSparse(PetscInt n, PetscInt nz)$/;"	f
-makeTangentVec	src/vectorOperations.c	/^PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, PetscScalar *vec_ptr)$/;"	f
+makeTangentVec	src/vectorOperations.c	/^PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr)$/;"	f
 make_linked_ptr	tests/googletest/include/gtest/internal/gtest-linked_ptr.h	/^linked_ptr<T> make_linked_ptr(T* ptr) {$/;"	f	namespace:testing::internal
 make_tuple	tests/googletest/include/gtest/internal/gtest-tuple.h	/^inline GTEST_10_TUPLE_(T) make_tuple(const T0& f0, const T1& f1, const T2& f2,$/;"	f	namespace:std::tr1
 make_tuple	tests/googletest/include/gtest/internal/gtest-tuple.h	/^inline GTEST_1_TUPLE_(T) make_tuple(const T0& f0) {$/;"	f	namespace:std::tr1
@@ -6773,15 +6780,16 @@ namespace1	tests/googletest/test/gtest_unittest.cc	/^namespace namespace1 {$/;"	
 namespace2	tests/googletest/test/gtest_unittest.cc	/^namespace namespace2 {$/;"	n	file:
 nan1	tests/googletest/test/gtest_unittest.cc	/^    RawType nan1;$/;"	m	struct:__anon37::FloatingPointTest::TestValues	file:
 nan2	tests/googletest/test/gtest_unittest.cc	/^    RawType nan2;$/;"	m	struct:__anon37::FloatingPointTest::TestValues	file:
-nearestSegmentCopy	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, Box *box_ptr)$/;"	f
-nearestSegmentCopyDirN	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, Box *box_ptr, PetscInt N)$/;"	f
+nearestSegmentCopy	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim)$/;"	f
+nearestSegmentCopyDirN	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const PetscInt N, const PetscInt perN, const PetscScalar dimN)$/;"	f
 networkAnalysis	src/networkAnalysis.c	/^PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)$/;"	f
 networkBuild	src/networkBuild.c	/^PetscErrorCode networkBuild()$/;"	f
 networkDestroy	src/networkDestroy.c	/^PetscErrorCode networkDestroy()$/;"	f
 networkRead	src/networkRead.c	/^PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)$/;"	f
 networkUpdate	src/networkUpdate.c	/^PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)$/;"	f
-networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, Box *box_ptr)$/;"	f
+networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)$/;"	f
 network_analyser	tests/otherTests/network_general_analysis.py	/^    network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict, network_reader.link_dict)$/;"	v	class:NetworkAnalyser
+network_data	tests/otherTests/network_id_shifter.py	/^    network_data = []$/;"	v
 network_reader	tests/otherTests/network_general_analysis.py	/^    network_reader = NetworkReader(data_file)$/;"	v	class:NetworkAnalyser
 newFile	tests/gUnitTests/src/networkValidation_unittest.cc	/^    char const *newFile;$/;"	m	struct:__anon11::testFileEquality	file:
 newFile	tests/gUnitTests/src/resultsValidation_unittest.cc	/^    char const *newFile;$/;"	m	struct:__anon9::testTripodResults	file:
@@ -6800,6 +6808,7 @@ nodeID	include/common.h	/^    PetscInt nodeID[MAX_NODES_ON_COUPLE];$/;"	m	struct
 nodeInternalCount	include/common.h	/^	PetscInt nodeInternalCount;$/;"	m	struct:box
 nodeType	include/common.h	/^	PetscInt nodeType;					\/* might want to link back later *\/$/;"	m	struct:node
 node_line_ptr	tests/gUnitTests/src/networkRead_unittest.cc	/^    char        *box_line_ptr, *fibre_line_ptr, *node_line_ptr;$/;"	m	struct:__anon12::testReadDataLine	file:
+node_shift	tests/otherTests/network_id_shifter.py	/^    node_shift = 1686$/;"	v
 nodesInCouple	include/common.h	/^    PetscInt nodesInCouple; $/;"	m	struct:couple
 nodesOnFibre	include/common.h	/^	PetscInt nodesOnFibre;$/;"	m	struct:fibre
 nodesOnFibreList	include/common.h	/^	Node **nodesOnFibreList;$/;"	m	struct:fibre
@@ -7097,8 +7106,11 @@ pointer	tests/googletest/include/gtest/internal/gtest-port.h	/^  const T* pointe
 popen2	tests/googletest/test/gtest_test_utils.py	/^  import popen2$/;"	i
 port_	tests/googletest/src/gtest-death-test.cc	/^  zx_handle_t port_ = ZX_HANDLE_INVALID;$/;"	m	class:testing::internal::FuchsiaDeathTest	file:
 port_num_	tests/googletest/src/gtest-internal-inl.h	/^    const std::string port_num_;$/;"	m	class:testing::internal::StreamingListener::SocketWriter
+posVecAddition	src/vectorOperations.c	/^PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, $/;"	f
+posVecDifference	src/vectorOperations.c	/^PetscErrorCode posVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, $/;"	f
 posix	tests/googletest/include/gtest/internal/gtest-port.h	/^namespace posix {$/;"	n	namespace:testing::internal
 posix	tests/googletest/src/gtest-port.cc	/^namespace posix {$/;"	n	namespace:testing::internal	file:
+postSolveResults	include/common.h	/^	char postSolveResults[MAX_NAME];$/;"	m	struct:parameters
 post_flag_parse_init_performed_	tests/googletest/src/gtest-internal-inl.h	/^  bool post_flag_parse_init_performed_;$/;"	m	class:testing::internal::UnitTestImpl
 pr1	tests/googletest/test/gtest_unittest.cc	/^  TestPartResult * pr1, * pr2;$/;"	m	class:__anon37::TestResultTest	file:
 pr2	tests/googletest/test/gtest_unittest.cc	/^  TestPartResult * pr1, * pr2;$/;"	m	class:__anon37::TestResultTest	file:
@@ -7107,10 +7119,10 @@ premature_exit_file_path_	tests/googletest/test/gtest_premature_exit_test.cc	/^ 
 premature_exit_filepath_	tests/googletest/src/gtest.cc	/^  const std::string premature_exit_filepath_;$/;"	m	class:testing::internal::ScopedPrematureExitFile	file:
 print	tests/googletest/test/googletest-filter-unittest.py	/^      [sys.executable, '-c', 'import os; print \\'EMPTY_VAR\\' in os.environ'])$/;"	i
 print	tests/googletest/test/googletest-filter-unittest.py	/^      [sys.executable, '-c', 'import os; print \\'UNSET_VAR\\' not in os.environ'$/;"	i
-printAnalysis	src/networkWrite.c	/^PetscErrorCode printAnalysis(Box *box_ptr, Parameters *par_ptr)$/;"	f
-printFibreInfo	src/networkWrite.c	/^PetscErrorCode printFibreInfo(Fibre *fibre_ptr)$/;"	f
+printAnalysis	src/networkWrite.c	/^PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)$/;"	f
+printFibreInfo	src/networkWrite.c	/^PetscErrorCode printFibreInfo(const Fibre *fibre_ptr)$/;"	f
 printLargeVecValues	src/systemSolve.c	/^PetscErrorCode printLargeVecValues(Vec globalVec_F)$/;"	f
-printNodeInfo	src/networkWrite.c	/^PetscErrorCode printNodeInfo(Node *node_ptr)$/;"	f
+printNodeInfo	src/networkWrite.c	/^PetscErrorCode printNodeInfo(const Node *node_ptr)$/;"	f
 printStretchOrCompression	src/networkAnalysis.c	/^PetscErrorCode printStretchOrCompression(PetscScalar *s_ab, PetscScalar *u_ab)$/;"	f
 print_basic_stats	tests/otherTests/network_general_analysis.py	/^    def print_basic_stats(self):$/;"	m	class:NetworkAnalyser
 print_crosslink_stats	tests/otherTests/network_general_analysis.py	/^    def print_crosslink_stats(self):$/;"	m	class:NetworkAnalyser
@@ -7165,13 +7177,14 @@ re	tests/googletest/test/gtest_list_output_unittest.py	/^import re$/;"	i
 re	tests/googletest/test/gtest_xml_output_unittest.py	/^import re$/;"	i
 re	tests/googletest/test/gtest_xml_test_utils.py	/^import re$/;"	i
 re	tests/googletest/xcode/Scripts/versiongenerate.py	/^import re$/;"	i
+re	tests/otherTests/plane_converter.py	/^import re$/;"	i
 readBoxLine	src/networkRead.c	/^PetscErrorCode readBoxLine(char *line_ptr, Box **box_ptr)$/;"	f
 readCoupleLine	src/networkRead.c	/^PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupleID)$/;"	f
 readDataLine	src/networkRead.c	/^PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool readCouplesOnly, PetscInt *coupleCount, const PetscScalar gamma)$/;"	f
-readDbl	src/systemAssembly.c	/^PetscErrorCode readDbl(char const *fileName, PetscScalar *array, PetscInt n)$/;"	f
+readDbl	src/systemAssembly.c	/^PetscErrorCode readDbl(const char *fileName, PetscScalar *array, PetscInt n)$/;"	f
 readFibreLine	src/networkRead.c	/^PetscErrorCode readFibreLine(char *line_ptr, Box *box_ptr)$/;"	f
 readInputFile	src/networkRead.c	/^PetscErrorCode readInputFile(const char *fileToRead_ptr, Box **box_ptr_ptr, $/;"	f
-readInt	src/systemAssembly.c	/^PetscErrorCode readInt(char const *fileName, PetscInt *array, PetscInt n)$/;"	f
+readInt	src/systemAssembly.c	/^PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n)$/;"	f
 readNodeLine	src/networkRead.c	/^PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamma)$/;"	f
 read_data	tests/otherTests/network_conflict_checker.py	/^    read_data = NetworkReader(data_file)$/;"	v
 read_fd	tests/googletest/src/gtest-death-test.cc	/^  int read_fd() const { return read_fd_; }$/;"	f	class:testing::internal::DeathTestImpl
@@ -7315,13 +7328,14 @@ socket_writer_	tests/googletest/src/gtest-internal-inl.h	/^  const scoped_ptr<Ab
 sockfd_	tests/googletest/src/gtest-internal-inl.h	/^    int sockfd_;  \/\/ socket file descriptor$/;"	m	class:testing::internal::StreamingListener::SocketWriter
 solFile	tests/gUnitTests/src/systemAssembly_unittest.cc	/^    char const *solFile;$/;"	m	struct:__anon18::testLattice2Solve	file:
 solFile	tests/gUnitTests/src/systemAssembly_unittest.cc	/^    char const *solFile;$/;"	m	struct:__anon18::testSolveAssembledMatrix	file:
-solveAssembledMatrix	src/systemAssembly.c	/^PetscErrorCode solveAssembledMatrix(char const *rowFile, char const *colFile, char const *matFile, $/;"	f
+solveAssembledMatrix	src/systemAssembly.c	/^PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, $/;"	f
 sorter	tests/otherTests/network_reader.py	/^    def sorter(self):$/;"	m	class:NetworkReader
 sparseMat	include/common.h	/^struct sparseMat $/;"	s
 spawn_thread_ok_to_terminate	tests/googletest/test/googletest-output-test_.cc	/^  Notification spawn_thread_ok_to_terminate;$/;"	m	struct:SpawnThreadNotifications	file:
 spawn_thread_started	tests/googletest/test/googletest-output-test_.cc	/^  Notification spawn_thread_started;$/;"	m	struct:SpawnThreadNotifications	file:
 spawned	tests/googletest/src/gtest-death-test.cc	/^  bool spawned() const { return spawned_; }$/;"	f	class:testing::internal::DeathTestImpl
 spawned_	tests/googletest/src/gtest-death-test.cc	/^  bool spawned_;$/;"	m	class:testing::internal::DeathTestImpl	file:
+split_line	tests/otherTests/network_id_shifter.py	/^            split_line = line.split()$/;"	v
 ss_	tests/googletest/include/gtest/gtest-message.h	/^  const internal::scoped_ptr< ::std::stringstream> ss_;$/;"	m	class:testing::Message
 stack_trace_depth	tests/googletest/test/gtest_unittest.cc	/^  Int32 stack_trace_depth;$/;"	m	struct:testing::Flags	file:
 stack_trace_depth_	tests/googletest/src/gtest-internal-inl.h	/^  internal::Int32 stack_trace_depth_;$/;"	m	class:testing::internal::GTestFlagSaver
@@ -7338,6 +7352,8 @@ status_	tests/googletest/src/gtest-death-test.cc	/^  int status_;$/;"	m	class:te
 status_	tests/googletest/test/googletest-death-test-test.cc	/^  const int status_;$/;"	m	class:MockDeathTest	file:
 status_	tests/googletest/test/googletest-death-test-test.cc	/^  int status_;$/;"	m	class:MockDeathTestFactory	file:
 std	tests/googletest/include/gtest/internal/gtest-tuple.h	/^namespace std {$/;"	n
+stdVecAddition	src/vectorOperations.c	/^PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr) $/;"	f
+stdVecDifference	src/vectorOperations.c	/^PetscErrorCode stdVecDifference(PetscScalar *diffVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)$/;"	f
 step_	tests/googletest/include/gtest/internal/gtest-param-util.h	/^    const IncrementT step_;$/;"	m	class:testing::internal::RangeGenerator::Iterator
 step_	tests/googletest/include/gtest/internal/gtest-param-util.h	/^  const IncrementT step_;$/;"	m	class:testing::internal::RangeGenerator
 str	tests/googletest/test/googletest-param-test-test.cc	/^  const std::string& str() const { return str_; }$/;"	f	class:NonDefaultConstructAssignString
@@ -7383,9 +7399,11 @@ sys	tests/googletest/xcode/Scripts/versiongenerate.py	/^import sys$/;"	i
 sys	tests/otherTests/diff_output_parser.py	/^import sys$/;"	i
 sys	tests/otherTests/network_conflict_checker.py	/^import sys$/;"	i
 sys	tests/otherTests/network_general_analysis.py	/^import sys$/;"	i
+sys	tests/otherTests/network_id_shifter.py	/^import sys$/;"	i
 sys	tests/otherTests/network_reader.py	/^import sys$/;"	i
 sys	tests/otherTests/node_displacement_checker.py	/^import sys$/;"	i
-systemAssembly	src/systemAssembly.c	/^PetscErrorCode systemAssembly(Box *box_ptr, Parameters *par_ptr, Mat H, Vec b)$/;"	f
+sys	tests/otherTests/plane_converter.py	/^import sys$/;"	i
+systemAssembly	src/systemAssembly.c	/^PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b)$/;"	f
 systemSolve	src/systemSolve.c	/^PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)$/;"	f
 systemTimeStepSolve	src/systemSolve.c	/^PetscErrorCode systemTimeStepSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U, $/;"	f
 t_alphBeta	tests/gUnitTests/src/localAssemblyStretch_unittest.cc	/^    PetscScalar t_alphBeta[3];$/;"	m	struct:__anon6::testCalculateSegPairInfo	file:
@@ -7404,6 +7422,7 @@ tear_down_was_run	tests/googletest/test/gtest_environment_test.cc	/^  bool tear_
 tear_down_was_run_	tests/googletest/test/gtest_environment_test.cc	/^  bool tear_down_was_run_;$/;"	m	class:__anon24::MyEnvironment	file:
 teardown	tests/unitTests/src/unitTestFixtures.c	/^void teardown(void) {$/;"	f
 tempfile	tests/googletest/test/gtest_test_utils.py	/^import tempfile$/;"	i
+test2	tests/otherTests/plane_converter.py	/^                test2 = re.sub(r'(.*)\\n', r'\\1 0.5', line)$/;"	v
 testAddBendContToGlobal	tests/gUnitTests/src/globalAssemblyBend_unittest.cc	/^struct testAddBendContToGlobal : ::testing::Test$/;"	s	namespace:__anon1	file:
 testAddFibreLocalBend	tests/gUnitTests/src/localAssemblyBend_unittest.cc	/^struct testAddFibreLocalBend : ::testing::Test$/;"	s	namespace:__anon14	file:
 testAddFibreLocalStretch	tests/gUnitTests/src/localAssemblyStretch_unittest.cc	/^struct testAddFibreLocalStretch : ::testing::Test$/;"	s	namespace:__anon6	file:
@@ -7856,9 +7875,10 @@ unit_test_	tests/googletest/src/gtest-internal-inl.h	/^  UnitTestImpl* const uni
 unit_test_	tests/googletest/test/gtest_unittest.cc	/^  UnitTest unit_test_;$/;"	m	class:testing::internal::StreamingListenerTest	file:
 unit_test_	tests/googletest/test/gtest_unittest.cc	/^  UnitTest unit_test_;$/;"	m	class:testing::internal::UnitTestRecordPropertyTestHelper	file:
 unit_test_impl_	tests/googletest/test/googletest-death-test-test.cc	/^  UnitTestImpl* unit_test_impl_;$/;"	m	class:testing::internal::ReplaceDeathTestFactory	file:
-updateDanglingNodeDisp	src/networkUpdate.c	/^PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, Node *alph_ptr, Node *beta_ptr, Node *delt_ptr)$/;"	f
+updateDanglingFibreNodeDisp	src/networkUpdate.c	/^PetscErrorCode updateDanglingFibreNodeDisp(Node *bgn, const Node *mid, Node *end)$/;"	f
+updateDanglingNodeDisp	src/networkUpdate.c	/^PetscErrorCode updateDanglingNodeDisp(Box *box_ptr, const Node *alph_ptr, const Node *beta_ptr, Node *delt_ptr)$/;"	f
 updateInternalNodeDisp	src/networkUpdate.c	/^PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_U)$/;"	f
-updatePositionVec	src/vectorOperations.c	/^PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, Node *node_ptr)$/;"	f
+updatePositionVec	src/vectorOperations.c	/^PetscErrorCode updatePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)$/;"	f
 update_fib_count	tests/otherTests/network_general_analysis.py	/^    def update_fib_count(self, total_normal_fibres, total_crosslink_fibres):$/;"	m	class:NetworkAnalyser
 update_global_fib	tests/otherTests/network_general_analysis.py	/^    def update_global_fib(self, global_fib_min, global_fib_max, global_fib_avg):$/;"	m	class:NetworkAnalyser
 update_global_seg	tests/otherTests/network_general_analysis.py	/^    def update_global_seg(self, global_seg_min, global_seg_max, global_seg_avg):$/;"	m	class:NetworkAnalyser
@@ -9206,11 +9226,10 @@ value_type	tests/googletest/include/gtest/internal/gtest-port.h	/^  typedef type
 value_type	tests/googletest/test/googletest-printers-test.cc	/^    typedef PathLike value_type;$/;"	t	struct:foo::PathLike::iterator	file:
 values_	tests/googletest/test/gtest_unittest.cc	/^    FloatingPointTest<RawType>::values_;$/;"	m	class:__anon37::FloatingPointTest	file:
 values_	tests/googletest/test/gtest_unittest.cc	/^  static TestValues values_;$/;"	m	class:__anon37::FloatingPointTest	file:
-vec2DCrossProduct	src/vectorOperations.c	/^PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)$/;"	f
-vec3DCrossProduct	src/vectorOperations.c	/^PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)$/;"	f
-vecAddition	src/vectorOperations.c	/^PetscErrorCode vecAddition(PetscScalar *addVec_ptr, PetscScalar *posVec1_ptr, PetscScalar *posVec2_ptr, Box *box_ptr)$/;"	f
-vecDotProduct	src/vectorOperations.c	/^PetscScalar vecDotProduct(PetscScalar *vec1_ptr, PetscScalar *vec2_ptr)$/;"	f
-vecMagnitude	src/vectorOperations.c	/^PetscScalar vecMagnitude(PetscScalar *vec_ptr)$/;"	f
+vec2DCrossProduct	src/vectorOperations.c	/^PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)$/;"	f
+vec3DCrossProduct	src/vectorOperations.c	/^PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)$/;"	f
+vecDotProduct	src/vectorOperations.c	/^PetscScalar vecDotProduct(const PetscScalar *vec1_ptr, const PetscScalar *vec2_ptr)$/;"	f
+vecMagnitude	src/vectorOperations.c	/^PetscScalar vecMagnitude(const PetscScalar *vec_ptr)$/;"	f
 vector_	tests/googletest/test/gtest_unittest.cc	/^  TestingVector vector_;$/;"	m	class:__anon37::VectorShuffleTest	file:
 vector_	tests/googletest/test/gtest_unittest.cc	/^  std::vector<std::string>* vector_;$/;"	m	class:SequenceTestingListener	file:
 verbosity	tests/googletest/scripts/upload.py	/^verbosity = 1$/;"	v
@@ -9221,10 +9240,12 @@ vsnprintf	tests/googletest/src/gtest.cc	/^# define vsnprintf /;"	d	file:
 wait_calls_	tests/googletest/test/googletest-death-test-test.cc	/^  int wait_calls_;$/;"	m	class:MockDeathTestFactory	file:
 wait_event_	tests/googletest/test/googletest-port-test.cc	/^  AutoHandle wait_event_;$/;"	m	class:testing::internal::DestructorCall	file:
 what	tests/googletest/test/googletest-death-test_ex_test.cc	/^  virtual const char* what() const throw() { return "exceptional message"; }$/;"	f	class:TestException
-writeBoxLine	src/networkWrite.c	/^PetscErrorCode writeBoxLine(FILE *file_ptr, Box *box_ptr)$/;"	f
-writeDbl	src/systemAssembly.c	/^PetscErrorCode writeDbl(char const *fileName, PetscScalar *array, PetscInt n) $/;"	f
-writeFibreLine	src/networkWrite.c	/^PetscErrorCode writeFibreLine(FILE *file_ptr, Fibre *fibre_ptr)$/;"	f
-writeNodeLine	src/networkWrite.c	/^PetscErrorCode writeNodeLine(FILE *file_ptr, Node *node_ptr)$/;"	f
+writeAnalysis	src/networkWrite.c	/^PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)$/;"	f
+writeBoxLine	src/networkWrite.c	/^PetscErrorCode writeBoxLine(FILE *file_ptr, const Box *box_ptr)$/;"	f
+writeCoupleLine	src/networkWrite.c	/^PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)$/;"	f
+writeDbl	src/systemAssembly.c	/^PetscErrorCode writeDbl(const char *fileName, PetscScalar *array, PetscInt n) $/;"	f
+writeFibreLine	src/networkWrite.c	/^PetscErrorCode writeFibreLine(FILE *file_ptr, const Fibre *fibre_ptr)$/;"	f
+writeNodeLine	src/networkWrite.c	/^PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr)$/;"	f
 write_basic_stats	tests/otherTests/network_general_analysis.py	/^    def write_basic_stats(self, file):$/;"	m	class:NetworkAnalyser
 write_crosslink_stats	tests/otherTests/network_general_analysis.py	/^    def write_crosslink_stats(self, file):$/;"	m	class:NetworkAnalyser
 write_fd	tests/googletest/include/gtest/internal/gtest-death-test-internal.h	/^  int write_fd() const { return write_fd_; }$/;"	f	class:testing::internal::InternalRunDeathTestFlag
