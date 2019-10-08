@@ -50,6 +50,7 @@ struct parameters
 	PetscScalar energyStre;
 	PetscScalar energyBend;
 	PetscScalar energyTotl;
+	PetscScalar energyPsAf;
 	PetscScalar energyAffn;
 	PetscScalar shearModulus;
 	PetscScalar shearModAffn;
@@ -102,6 +103,7 @@ struct fibre
 
 	PetscScalar fibreStreEnergy;
 	PetscScalar fibreBendEnergy;
+	PetscScalar fibrePsAfEnergy;
 	PetscScalar fibreAffnEnergy;
 };
 

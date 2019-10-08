@@ -30,6 +30,7 @@ Parameters *makeParameters(const char *input, const char *output, const char *re
 	par_ptr->energyStre = 0;
 	par_ptr->energyBend = 0;
 	par_ptr->energyTotl = 0;
+	par_ptr->energyPsAf = 0;
 	par_ptr->energyAffn = 0;
 	par_ptr->shearModulus = 0;
 	par_ptr->shearModAffn = 0;
@@ -146,6 +147,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
     /* additional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
+    box_ptr->masterFibreList[fID].fibrePsAfEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
 
     return ierr;
