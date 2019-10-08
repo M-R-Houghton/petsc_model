@@ -128,27 +128,33 @@ PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     fprintf( file_ptr, "EnergyStre," );
     fprintf( file_ptr, "EnergyBend," );
     fprintf( file_ptr, "EnergyTotl," );
+    fprintf( file_ptr, "EnergyRatio," );
+    fprintf( file_ptr, "EnergyPsAf," );
     fprintf( file_ptr, "EnergyAffn," );
     fprintf( file_ptr, "ShearModulus," );
-    fprintf( file_ptr, "ShearModAffn\n" );
+    fprintf( file_ptr, "ShearModAffn," );
+    fprintf( file_ptr, "ShearModRatio\n" );
 
 	fprintf( file_ptr, "(%f;%f;%f),", box_ptr->xyzDimension[0], 
-                box_ptr->xyzDimension[1], box_ptr->xyzDimension[2]  );
+                box_ptr->xyzDimension[1], box_ptr->xyzDimension[2]          );
 	fprintf( file_ptr, "(%d;%d;%d),", box_ptr->xyzPeriodic[0], 
-                box_ptr->xyzPeriodic[1], box_ptr->xyzPeriodic[2]    );
-	fprintf( file_ptr, "%d,",   box_ptr->nodeCount                  );
-	fprintf( file_ptr, "%d,",   box_ptr->nodeInternalCount          );
-	fprintf( file_ptr, "%d,",   box_ptr->fibreCount                 );
-	fprintf( file_ptr, "%d,",   box_ptr->coupleCount                );
-	fprintf( file_ptr, "%g,",   par_ptr->gamma                      );
-    fprintf( file_ptr, "%g,",   par_ptr->youngsModulus              );
-    fprintf( file_ptr, "%g,",   box_ptr->masterFibreList[0].radius  );
-    fprintf( file_ptr, "%g,",   par_ptr->energyStre                 );
-    fprintf( file_ptr, "%g,",   par_ptr->energyBend                 );
-    fprintf( file_ptr, "%g,",   par_ptr->energyTotl                 );
-    fprintf( file_ptr, "%g,",   par_ptr->energyAffn                 );
-    fprintf( file_ptr, "%g,",   par_ptr->shearModulus               );
-    fprintf( file_ptr, "%g\n",  par_ptr->shearModAffn               );
+                box_ptr->xyzPeriodic[1], box_ptr->xyzPeriodic[2]            );
+	fprintf( file_ptr, "%d,",   box_ptr->nodeCount                          );
+	fprintf( file_ptr, "%d,",   box_ptr->nodeInternalCount                  );
+	fprintf( file_ptr, "%d,",   box_ptr->fibreCount                         );
+	fprintf( file_ptr, "%d,",   box_ptr->coupleCount                        );
+	fprintf( file_ptr, "%g,",   par_ptr->gamma                              );
+    fprintf( file_ptr, "%g,",   par_ptr->youngsModulus                      );
+    fprintf( file_ptr, "%g,",   box_ptr->masterFibreList[0].radius          );
+    fprintf( file_ptr, "%g,",   par_ptr->energyStre                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyBend                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyTotl                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyBend/par_ptr->energyTotl     );
+    fprintf( file_ptr, "%g,",   par_ptr->energyPsAf                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyAffn                         );
+    fprintf( file_ptr, "%g,",   par_ptr->shearModulus                       );
+    fprintf( file_ptr, "%g,",   par_ptr->shearModAffn                       );
+    fprintf( file_ptr, "%g\n",  par_ptr->shearModulus/par_ptr->shearModAffn );
 
 	ierr = fclose(file_ptr);
 
