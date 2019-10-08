@@ -21,10 +21,12 @@ def check_csv_headers(filename, row):
     assert row[9]  == "EnergyStre"
     assert row[10] == "EnergyBend"
     assert row[11] == "EnergyTotl"
-    assert row[12] == "EnergyPsAf"
-    assert row[13] == "EnergyAffn"
-    assert row[14] == "ShearModulus"
-    assert row[15] == "ShearModAffn"
+    assert row[12] == "EnergyRatio"
+    assert row[13] == "EnergyPsAf"
+    assert row[14] == "EnergyAffn"
+    assert row[15] == "ShearModulus"
+    assert row[16] == "ShearModAffn"
+    assert row[17] == "ShearModRatio"
     
     print("[STATUS]\t ...success.")
 
