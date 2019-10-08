@@ -66,7 +66,8 @@ while read file; do
     # NOTE: Here we can pass $file_par as arg for rank 0, but...
     # ...for all other ranks we need to redirect from /dev/null
     # ...All stdout from all ranks is collected into $tmp_res. 
-    mpiexec -n 1 ./$bin $file_par </dev/null > "$tmp_res_tst"
+    gamma="-gamma 0.02"
+    mpiexec -n 1 ./$bin $file_par $gamma</dev/null > "$tmp_res_tst"
 
     # Pipe temporary output through grep to collect energy values
     cat $tmp_res_tst | grep -E "Gamma|Mod|Radius|Energy" > $file_res_tst

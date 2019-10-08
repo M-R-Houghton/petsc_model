@@ -19,7 +19,7 @@ int main(int argc, char **args)
     PetscViewer     viewer;
     
     /* set up default values for general params */
-    PetscScalar     gamma = 0.02;
+    PetscScalar     gamma = 0.01;
     PetscScalar     yMod = 1.0;
     
     /* set EM and TS default values */
