@@ -44,6 +44,7 @@ struct parameters
 {
 	char inputNetwork[MAX_NAME];
 	char outputNetwork[MAX_NAME];
+	char outadvNetwork[MAX_NAME];
 	char postSolveResults[MAX_NAME];
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
