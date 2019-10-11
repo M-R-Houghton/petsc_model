@@ -12,7 +12,7 @@ PetscErrorCode networkBuild()
 
 
 /* Creates a parameters structure */
-Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod)
+Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod)
 {
 	/* allocate memory */
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
@@ -20,6 +20,7 @@ Parameters *makeParameters(const char *input, const char *output, const char *re
 	/* assign attributes */
 	strcpy(par_ptr->inputNetwork, input);
 	strcpy(par_ptr->outputNetwork, output);
+	strcpy(par_ptr->outadvNetwork, outadv);
     strcpy(par_ptr->postSolveResults, results);
     // TODO: add results file here
 	par_ptr->gamma = gamma;

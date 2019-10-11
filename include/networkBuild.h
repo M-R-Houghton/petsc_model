@@ -13,12 +13,13 @@ PetscErrorCode networkBuild();
  * \brief Creates a parameters structure
  * \param input Input network filename
  * \param output Output network filename
+ * \param outadv Advanced output network filename
  * \param results Post solve results filename
  * \param gamma Parameter representing shear strain
  * \param yMod Parameter representing the Youngs Modulus value
  * \return
  */
-Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod);
+Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod);
 
 /**
  * \brief Creates a sparse structure

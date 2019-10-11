@@ -265,7 +265,7 @@ int main(int argc, char **args)
      	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[5]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
-    ierr = networkWrite(par_ptr->outputNetwork, box_ptr);CHKERRQ(ierr);
+    ierr = networkWrite(par_ptr->outputNetwork, par_ptr->outadvNetwork, box_ptr);CHKERRQ(ierr);
     ierr = destroyBox(box_ptr);CHKERRQ(ierr);
     ierr = destroyParameters(par_ptr);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);

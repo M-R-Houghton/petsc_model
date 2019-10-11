@@ -6,10 +6,27 @@
 /**
  * \brief Initiates network write out routine.
  * \param fileName Name of file to write out to.
+ * \param fileNameAdv Name of supplementary energy file to write out to.
  * \param box_ptr Box containing network data to write out.
  * \return Index to represent Petsc error code.
  */
-PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr);
+PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr);
+
+/**
+ * \brief Writes out all the standard network info to an opened file.
+ * \param file_ptr File pointer to write to.
+ * \param box_ptr Box containing network data to write out.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr);
+
+/**
+ * \brief Writes out all the additional network energy info to an opened file.
+ * \param file_ptr File pointer to write to.
+ * \param box_ptr Box containing network data to write out.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr);
 
 /**
  * \brief Prints out fibre information.
@@ -68,5 +85,12 @@ PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr);
  */
 PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr);
 
+/**
+ * \brief Writes fibre energy information to file.
+ * \param file_ptr Pointer to the file.
+ * \param fibre_ptr Fibre containing energy data to write out.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode writeEnergyLine(FILE *file_ptr, const Fibre *fibre_ptr);
 
 #endif

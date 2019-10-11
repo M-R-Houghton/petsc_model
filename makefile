@@ -31,12 +31,12 @@ tags: $(SRC)
 	ctags -R .
 
 %.par: %_in.dat 
-	@echo "[WARNING] Needs python3 alias!" 
-	@echo "Generating $@ from $<" 
 	cd $(PAR_DIR); ./generate_par_file.py $<
+# @echo "Generated $@ from $<" 
 
 parfiles: $(PAR)
 	@echo "Generating par files $(PAR)"
+	@echo "[WARNING] Needs python3 alias!" 
 
 check:
 	./auto_file_check.sh "lmb"

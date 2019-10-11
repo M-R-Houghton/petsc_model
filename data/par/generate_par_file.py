@@ -14,6 +14,7 @@ class ParGenerator:
         self.filename_base = self.get_base_name()
         self.filename_par = self.get_par_name() 
         self.filename_out_dat = re.sub('_in','_out',self.filename_in_dat)
+        self.filename_adv_dat = re.sub('_in','_adv',self.filename_in_dat)
         self.filename_res = self.get_res_name()
 
     def get_base_name(self):
@@ -36,6 +37,7 @@ class ParGenerator:
         with open(self.filename_par, 'w') as f_object:
             f_object.write(self.filename_in_dat+'\n')
             f_object.write(self.filename_out_dat+'\n')
+            f_object.write(self.filename_adv_dat+'\n')
             f_object.write(self.filename_res+'\n')
 
         return

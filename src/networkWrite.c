@@ -1,13 +1,37 @@
 #include "networkWrite.h"
 
 /* Initiates network write out routine */
-PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)
+PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr)
 {
     PetscErrorCode 	ierr;
-    PetscInt        fIndex, nIndex, cIndex;
+    PetscBool       advWrite = PETSC_TRUE;
     FILE            *file_ptr;
 
+    ierr = PetscOptionsGetBool(NULL,NULL,"-write_energy",&advWrite,NULL);CHKERRQ(ierr);
+
     file_ptr = fopen(fileName, "w+");
+    ierr = networkStandardWrite(file_ptr, box_ptr);
+    ierr = fclose(file_ptr);
+
+    /* when energy write flag is given perform additional write */
+    if (advWrite)
+    {
+        /* write out standard info followed by fibre energy info */
+        file_ptr = fopen(fileNameAdv, "w+");
+        ierr = networkStandardWrite(file_ptr, box_ptr);
+        ierr = networkAdvancedWrite(file_ptr, box_ptr);
+        ierr = fclose(file_ptr);
+    }
+
+    return ierr;
+}
+
+
+/* \brief Writes out all the standard network info to an opened file */
+PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr)
+{
+    PetscErrorCode  ierr;
+    PetscInt        fIndex, nIndex, cIndex;
 
     /* first written line should be box line */
     ierr = writeBoxLine(file_ptr, box_ptr);CHKERRQ(ierr);
@@ -30,9 +54,23 @@ PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)
         /* write out couples */
         ierr = writeCoupleLine(file_ptr, &(box_ptr->masterCoupleList[cIndex]));CHKERRQ(ierr);
     }
+    
+    return ierr;
+}
 
-    ierr = fclose(file_ptr);
 
+/* \brief Writes out all the additional network energy info to an opened file */
+PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr)
+{
+    PetscErrorCode  ierr;
+    PetscInt        fIndex;
+
+    /* each fibre should have 4 additional energies written to file */
+    for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
+    {
+        ierr = writeEnergyLine(file_ptr, &(box_ptr->masterFibreList[fIndex]));CHKERRQ(ierr);
+    }
+    
     return ierr;
 }
 
@@ -243,5 +281,20 @@ PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)
     return ierr;
 }
 
+
+/* Writes fibre energy information to file */
+PetscErrorCode writeEnergyLine(FILE *file_ptr, const Fibre *fibre_ptr)
+{
+    PetscErrorCode ierr = 0;
+
+    fprintf(file_ptr, "e ");
+    fprintf(file_ptr, "%d ",    fibre_ptr->fibreID);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibreStreEnergy);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibreBendEnergy);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibrePsAfEnergy);
+    fprintf(file_ptr, "%g\n",  fibre_ptr->fibreAffnEnergy);
+
+    return ierr;
+}
 
 
