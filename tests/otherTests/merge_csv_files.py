@@ -2,6 +2,7 @@
 # merge_csv_files.py
 
 # Imports
+import os
 import sys
 import csv
 
@@ -41,6 +42,12 @@ if __name__ == '__main__':
 
     new_filename = sys.argv[1]
 
+    #if os.stat(new_filename).st_size != 0:
+    #    print("[WARNING] New file is not empty")
+    #    ans = input("[WARNING] Proceed? [Y/n] ")
+    #    if ans != "Y":
+    #        sys.exit()
+
     print("[STATUS] Collecting csv files to merge...")
     filename_list = []
     for i in range(2, len(sys.argv)):
@@ -53,7 +60,7 @@ if __name__ == '__main__':
 
     # open a new file to merge csv files to 
     print("[STATUS] Writing csv files to " + new_filename + "...")
-    with open(new_filename, mode='w') as new_file:
+    with open(new_filename, mode='a') as new_file:
         csv_writer = csv.writer(new_file, delimiter=',')
         # loop over all existing csv files listed as arguments
         for old_filename in filename_list:
