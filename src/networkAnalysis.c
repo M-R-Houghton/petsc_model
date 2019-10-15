@@ -333,7 +333,7 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
                                                     alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
             
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_b = %g\n", segBendEnergy );CHKERRQ(ierr);
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_b = %g\n", segBendEnergy );CHKERRQ(ierr);
         }
         /* NOTE: affine energy is not calculated for bending */
     }
