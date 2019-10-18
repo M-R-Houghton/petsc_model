@@ -37,6 +37,11 @@ for DIM in xy yz
 do
     for SEED in 1 3 4 5 7
     do
+        # clean up previous since appending
+        rm "sht3d_s0${SEED}_p${DIM}_f50_sh2.csv"
+        rm "sht3d_s0${SEED}_p${DIM}_f150_sh2.csv"
+        rm "sht3d_s0${SEED}_p${DIM}_f250_sh2.csv"
+
         declare -a arr=("data/res/sht/sht3d_s0${SEED}_p${DIM}_sz1_f50_mf13_sh2_sd52.csv"
                         "data/res/sht/sht3d_s0${SEED}_p${DIM}_sz1_f50_mf13_sh2_sd52_sc_cf13_cd62.csv"
                         "data/res/sht/sht3d_s0${SEED}_p${DIM}_sz1_f50_mf13_sh2_sd52_sc_cf13_cd62_rt.csv"
