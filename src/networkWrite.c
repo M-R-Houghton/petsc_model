@@ -131,13 +131,13 @@ PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\n[STATUS]\tGamma \t\t= %g\n",      par_ptr->gamma);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tYoungsModulus \t= %g\n",  par_ptr->youngsModulus);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tRadius \t\t= %g\n",       box_ptr->masterFibreList[0].radius);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyStre \t= %g\n",     par_ptr->energyStre);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyBend \t= %g\n",     par_ptr->energyBend);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyTotl \t= %g\n",     par_ptr->energyTotl);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyPsAf \t= %g\n",     par_ptr->energyPsAf);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyAffn \t= %g\n",     par_ptr->energyAffn);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModulus \t= %g\n",   par_ptr->shearModulus);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModAffn \t= %g\n\n", par_ptr->shearModAffn);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyStre \t= %.16g\n",     par_ptr->energyStre);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyBend \t= %.16g\n",     par_ptr->energyBend);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyTotl \t= %.16g\n",     par_ptr->energyTotl);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyPsAf \t= %.16g\n",     par_ptr->energyPsAf);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyAffn \t= %.16g\n",     par_ptr->energyAffn);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModulus \t= %.16g\n",   par_ptr->shearModulus);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModAffn \t= %.16g\n\n", par_ptr->shearModAffn);CHKERRQ(ierr);
     //
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tE_Aff-E \t= %g\n", par_ptr->energyAffn-par_ptr->energyTotl);CHKERRQ(ierr);
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tG_Aff-G \t= %g\n", par_ptr->shearModAffn-par_ptr->shearModulus);CHKERRQ(ierr);

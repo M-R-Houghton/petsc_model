@@ -33,7 +33,7 @@ PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat
     ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
     ierr = PetscPrintf(PETSC_COMM_WORLD, "Printing vec B sample here...\n");CHKERRQ(ierr);
-    //ierr = printVecValuesSample(b);CHKERRQ(ierr);
+    ierr = printVecValuesSample(b);CHKERRQ(ierr);
 
     /* Zero entries for elastic medium validation only */
     //ierr = VecZeroEntries(b);CHKERRQ(ierr);
