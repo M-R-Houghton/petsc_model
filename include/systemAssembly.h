@@ -11,6 +11,13 @@
 PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b);
 
 /**
+ * \brief Prints out a sample of vector values.
+ * \param vecToPrint Vector to be printed.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode printVecValuesSample(Vec vecToPrint);
+
+/**
  * \brief Applies a uniform force to the global matrix 
  * \param H Global matrix to be shifted
  * \param lambda The force representing the stiffness of the elastic medium

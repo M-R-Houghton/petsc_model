@@ -34,7 +34,10 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
     /* View solution vector if problem is small enough */
     PetscInt solSize;
     ierr = VecGetSize(globalVec_U, &solSize);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "Printing vec U sample here...\n");CHKERRQ(ierr);
+    //ierr = printVecValuesSample(globalVec_U);CHKERRQ(ierr);
     if (solSize < 50) VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);
+    //ierr = VecView(globalVec_U,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
 
 	/* View solver info */
 	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
