@@ -59,8 +59,6 @@ PetscErrorCode printVecValuesSample(Vec vecToPrint)
     PetscInt sample=10;
     PetscScalar const *array;
 
-    ierr = VecAbs(vecToPrint);CHKERRQ(ierr);
-
     ierr = VecGetLocalSize(vecToPrint,&nlocal);
     ierr = VecGetArrayRead(vecToPrint,&array);CHKERRQ(ierr);
     if (nlocal >= sample)
