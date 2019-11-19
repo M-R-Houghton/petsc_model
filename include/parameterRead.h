@@ -9,8 +9,8 @@
  * \param outputFileName Pointer to the output file name to be checked.
  * \param resultsFileName Pointer to the results file name to be checked.
  */
-void checkFileNameLengths(const char *inputFileName, const char *outputFileName, 
-                            const char *resultsFileName);
+void checkFileNameLengths(const char *inputFileName, const char *outputFileName,
+                            const char *outadvFileName, const char *resultsFileName);
 
 /**
  * \brief Initiates parameter file read in routine

@@ -63,9 +63,8 @@ PetscErrorCode vec2DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *v
 	assert(DIMENSION == 2);		/* should not be calling this function in 3d case */
 
 	PetscErrorCode ierr = 0;
-	crossVec_ptr[0] 	= 0;
+	crossVec_ptr[0] 	= vec1_ptr[0]*vec2_ptr[1] - vec1_ptr[1]*vec2_ptr[0];
 	crossVec_ptr[1] 	= 0;
-	crossVec_ptr[2] 	= vec1_ptr[0]*vec2_ptr[1] - vec1_ptr[1]*vec2_ptr[0];
 
 	return ierr;
 }
@@ -88,7 +87,7 @@ PetscErrorCode vec3DCrossProduct(PetscScalar *crossVec_ptr, const PetscScalar *v
 /* Calculates the magnitude of a given vector */
 PetscScalar vecMagnitude(const PetscScalar *vec_ptr)
 {
-	return sqrt(vecDotProduct(vec_ptr, vec_ptr));
+	return PetscSqrtReal(vecDotProduct(vec_ptr, vec_ptr));
 }
 
 

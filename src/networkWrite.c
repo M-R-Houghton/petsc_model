@@ -1,13 +1,37 @@
 #include "networkWrite.h"
 
 /* Initiates network write out routine */
-PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)
+PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr)
 {
     PetscErrorCode 	ierr;
-    PetscInt        fIndex, nIndex, cIndex;
+    PetscBool       advWrite = PETSC_TRUE;
     FILE            *file_ptr;
 
+    ierr = PetscOptionsGetBool(NULL,NULL,"-write_energy",&advWrite,NULL);CHKERRQ(ierr);
+
     file_ptr = fopen(fileName, "w+");
+    ierr = networkStandardWrite(file_ptr, box_ptr);
+    ierr = fclose(file_ptr);
+
+    /* when energy write flag is given perform additional write */
+    if (advWrite)
+    {
+        /* write out standard info followed by fibre energy info */
+        file_ptr = fopen(fileNameAdv, "w+");
+        ierr = networkStandardWrite(file_ptr, box_ptr);
+        ierr = networkAdvancedWrite(file_ptr, box_ptr);
+        ierr = fclose(file_ptr);
+    }
+
+    return ierr;
+}
+
+
+/* \brief Writes out all the standard network info to an opened file */
+PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr)
+{
+    PetscErrorCode  ierr;
+    PetscInt        fIndex, nIndex, cIndex;
 
     /* first written line should be box line */
     ierr = writeBoxLine(file_ptr, box_ptr);CHKERRQ(ierr);
@@ -30,9 +54,23 @@ PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)
         /* write out couples */
         ierr = writeCoupleLine(file_ptr, &(box_ptr->masterCoupleList[cIndex]));CHKERRQ(ierr);
     }
+    
+    return ierr;
+}
 
-    ierr = fclose(file_ptr);
 
+/* \brief Writes out all the additional network energy info to an opened file */
+PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr)
+{
+    PetscErrorCode  ierr;
+    PetscInt        fIndex;
+
+    /* each fibre should have 4 additional energies written to file */
+    for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)
+    {
+        ierr = writeEnergyLine(file_ptr, &(box_ptr->masterFibreList[fIndex]));CHKERRQ(ierr);
+    }
+    
     return ierr;
 }
 
@@ -88,7 +126,7 @@ PetscErrorCode printNodeInfo(const Node *node_ptr)
 /* This function will be replaced with a parameter write out */
 PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 {
-    PetscErrorCode ierr;
+	PetscErrorCode ierr;
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\n[STATUS]\tGamma \t\t= %g\n",      par_ptr->gamma);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tYoungsModulus \t= %g\n",  par_ptr->youngsModulus);CHKERRQ(ierr);
@@ -96,9 +134,13 @@ PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyStre \t= %g\n",     par_ptr->energyStre);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyBend \t= %g\n",     par_ptr->energyBend);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyTotl \t= %g\n",     par_ptr->energyTotl);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyPsAf \t= %g\n",     par_ptr->energyPsAf);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tEnergyAffn \t= %g\n",     par_ptr->energyAffn);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModulus \t= %g\n",   par_ptr->shearModulus);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModAffn \t= %g\n\n", par_ptr->shearModAffn);CHKERRQ(ierr);
+    //
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tE_Aff-E \t= %g\n", par_ptr->energyAffn-par_ptr->energyTotl);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tG_Aff-G \t= %g\n", par_ptr->shearModAffn-par_ptr->shearModulus);CHKERRQ(ierr);
 
     return ierr;
 }
@@ -112,15 +154,45 @@ PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 
 	file_ptr = fopen(par_ptr->postSolveResults, "w+");
 
-	fprintf(file_ptr, "Gamma \t\t= %g\n", par_ptr->gamma);
-    fprintf(file_ptr, "YoungsModulus \t= %g\n", par_ptr->youngsModulus);
-    fprintf(file_ptr, "Radius \t\t= %g\n", box_ptr->masterFibreList[0].radius);
-    fprintf(file_ptr, "EnergyStre \t= %g\n", par_ptr->energyStre);
-    fprintf(file_ptr, "EnergyBend \t= %g\n", par_ptr->energyBend);
-    fprintf(file_ptr, "EnergyTotl \t= %g\n", par_ptr->energyTotl);
-    fprintf(file_ptr, "EnergyAffn \t= %g\n", par_ptr->energyAffn);
-    fprintf(file_ptr, "ShearModulus \t= %g\n", par_ptr->shearModulus);
-    fprintf(file_ptr, "ShearModAffn \t= %g\n", par_ptr->shearModAffn);
+	fprintf( file_ptr, "Dimension,");
+	fprintf( file_ptr, "Periodicity,");
+	fprintf( file_ptr, "TotalNodes," );
+	fprintf( file_ptr, "InternalNodes," );
+	fprintf( file_ptr, "TotalFibres," );
+	fprintf( file_ptr, "TotalCouples," );
+	fprintf( file_ptr, "Gamma," );
+    fprintf( file_ptr, "YoungsModulus," );
+    fprintf( file_ptr, "Radius," );
+    fprintf( file_ptr, "EnergyStre," );
+    fprintf( file_ptr, "EnergyBend," );
+    fprintf( file_ptr, "EnergyTotl," );
+    fprintf( file_ptr, "EnergyRatio," );
+    fprintf( file_ptr, "EnergyPsAf," );
+    fprintf( file_ptr, "EnergyAffn," );
+    fprintf( file_ptr, "ShearModulus," );
+    fprintf( file_ptr, "ShearModAffn," );
+    fprintf( file_ptr, "ShearModRatio\n" );
+
+	fprintf( file_ptr, "(%f;%f;%f),", box_ptr->xyzDimension[0], 
+                box_ptr->xyzDimension[1], box_ptr->xyzDimension[2]          );
+	fprintf( file_ptr, "(%d;%d;%d),", box_ptr->xyzPeriodic[0], 
+                box_ptr->xyzPeriodic[1], box_ptr->xyzPeriodic[2]            );
+	fprintf( file_ptr, "%d,",   box_ptr->nodeCount                          );
+	fprintf( file_ptr, "%d,",   box_ptr->nodeInternalCount                  );
+	fprintf( file_ptr, "%d,",   box_ptr->fibreCount                         );
+	fprintf( file_ptr, "%d,",   box_ptr->coupleCount                        );
+	fprintf( file_ptr, "%g,",   par_ptr->gamma                              );
+    fprintf( file_ptr, "%g,",   par_ptr->youngsModulus                      );
+    fprintf( file_ptr, "%g,",   box_ptr->masterFibreList[0].radius          );
+    fprintf( file_ptr, "%g,",   par_ptr->energyStre                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyBend                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyTotl                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyBend/par_ptr->energyTotl     );
+    fprintf( file_ptr, "%g,",   par_ptr->energyPsAf                         );
+    fprintf( file_ptr, "%g,",   par_ptr->energyAffn                         );
+    fprintf( file_ptr, "%g,",   par_ptr->shearModulus                       );
+    fprintf( file_ptr, "%g,",   par_ptr->shearModAffn                       );
+    fprintf( file_ptr, "%g\n",  par_ptr->shearModulus/par_ptr->shearModAffn );
 
 	ierr = fclose(file_ptr);
 
@@ -209,5 +281,20 @@ PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)
     return ierr;
 }
 
+
+/* Writes fibre energy information to file */
+PetscErrorCode writeEnergyLine(FILE *file_ptr, const Fibre *fibre_ptr)
+{
+    PetscErrorCode ierr = 0;
+
+    fprintf(file_ptr, "e ");
+    fprintf(file_ptr, "%d ",    fibre_ptr->fibreID);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibreStreEnergy);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibreBendEnergy);
+    fprintf(file_ptr, "%g ",   fibre_ptr->fibrePsAfEnergy);
+    fprintf(file_ptr, "%g\n",  fibre_ptr->fibreAffnEnergy);
+
+    return ierr;
+}
 
 

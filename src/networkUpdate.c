@@ -81,12 +81,16 @@ PetscErrorCode updateInternalNodeDisp(Node *node_ptr, PetscInt N, Vec globalVec_
 
 	/* Check out array */
     ierr = VecGetArray(globalVec_U, &solArray);CHKERRQ(ierr);
+
+
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] nodeID = %d\n", node_ptr->nodeID );CHKERRQ(ierr);
     
     PetscInt i;
     for (i = 0; i < DIMENSION; i++)
     {
     	checkForValidDisplacement(solArray[node_ptr->globalID + i*N]);
     	node_ptr->xyzDisplacement[i] += solArray[node_ptr->globalID + i*N];
+        //if (i == 0) PetscPrintf(PETSC_COMM_WORLD,"[STATS] u[%d] = %g\n",i, node_ptr->xyzDisplacement[i] );
     }
     
     /* Check array back in */

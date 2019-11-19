@@ -57,6 +57,15 @@ class NetworkReader:
 
         self.box = Box(n_count, f_count, x_dim, y_dim, z_dim, x_per, y_per, z_per)
 
+        assert isinstance(self.box.node_count, int)
+        assert isinstance(self.box.fibre_count, int)
+        assert isinstance(self.box.x, float)
+        assert isinstance(self.box.y, float)
+        assert isinstance(self.box.z, float)
+        assert isinstance(self.box.x_periodic, int)
+        assert isinstance(self.box.y_periodic, int)
+        assert isinstance(self.box.z_periodic, int)
+
         return
 
     def add_fibre(self, data):
@@ -154,6 +163,8 @@ class NetworkReader:
 
                 self.add_link(data, l_count)
                 l_count += 1
+
+        assert len(data_list) == 1 + self.box.node_count + self.box.fibre_count + l_count, "Incorrect number of lines"
 
         return
 

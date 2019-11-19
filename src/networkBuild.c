@@ -12,7 +12,7 @@ PetscErrorCode networkBuild()
 
 
 /* Creates a parameters structure */
-Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod)
+Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod)
 {
 	/* allocate memory */
 	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
@@ -20,6 +20,7 @@ Parameters *makeParameters(const char *input, const char *output, const char *re
 	/* assign attributes */
 	strcpy(par_ptr->inputNetwork, input);
 	strcpy(par_ptr->outputNetwork, output);
+	strcpy(par_ptr->outadvNetwork, outadv);
     strcpy(par_ptr->postSolveResults, results);
     // TODO: add results file here
 	par_ptr->gamma = gamma;
@@ -30,6 +31,7 @@ Parameters *makeParameters(const char *input, const char *output, const char *re
 	par_ptr->energyStre = 0;
 	par_ptr->energyBend = 0;
 	par_ptr->energyTotl = 0;
+	par_ptr->energyPsAf = 0;
 	par_ptr->energyAffn = 0;
 	par_ptr->shearModulus = 0;
 	par_ptr->shearModAffn = 0;
@@ -146,6 +148,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
     /* additional attributes not to be assigned by user */
     box_ptr->masterFibreList[fID].fibreStreEnergy = 0;
     box_ptr->masterFibreList[fID].fibreBendEnergy = 0;
+    box_ptr->masterFibreList[fID].fibrePsAfEnergy = 0;
     box_ptr->masterFibreList[fID].fibreAffnEnergy = 0;
 
     return ierr;

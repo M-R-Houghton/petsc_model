@@ -5709,7 +5709,11 @@ check	include/debugMacros.h	/^#define check(/;"	d
 checkBoxArguments	src/networkBuild.c	/^void checkBoxArguments(PetscInt nCount, PetscInt fCount,$/;"	f
 checkCoupleArguments	src/networkBuild.c	/^void checkCoupleArguments(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)$/;"	f
 checkFibreArguments	src/networkBuild.c	/^void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,$/;"	f
+<<<<<<< HEAD
 checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName, $/;"	f
+=======
+checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName,$/;"	f
+>>>>>>> development
 checkForValidDisplacement	src/networkUpdate.c	/^void checkForValidDisplacement(PetscScalar displacement)$/;"	f
 checkInternalNodeIndices	src/networkRead.c	/^void checkInternalNodeIndices(const Box *box_ptr)$/;"	f
 checkMatBendContIndexes	src/globalAssemblyBend.c	/^void checkMatBendContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, $/;"	f
@@ -5719,6 +5723,7 @@ checkSegLength	src/localAssemblyStretch.c	/^void checkSegLength(const PetscScala
 checkVecBendContIndexes	src/globalAssemblyBend.c	/^void checkVecBendContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )$/;"	f
 checkVecStretchContIndexes	src/globalAssemblyStretch.c	/^void checkVecStretchContIndexes( const PetscInt gIdx_A, const PetscInt lIdx_A )$/;"	f
 checkVolume	src/networkAnalysis.c	/^void checkVolume(Box *box_ptr, PetscScalar volume)$/;"	f
+check_csv_headers	tests/otherTests/merge_csv_files.py	/^def check_csv_headers(filename, row):$/;"	f
 check_debug	include/debugMacros.h	/^#define check_debug(/;"	d
 check_displacements	tests/otherTests/node_displacement_checker.py	/^    def check_displacements(self):$/;"	m	class:DisplacementChecker
 check_for_boundary_fibres	tests/otherTests/network_conflict_checker.py	/^    def check_for_boundary_fibres(self):$/;"	m	class:ConflictChecker
@@ -5782,6 +5787,7 @@ create_box	tests/otherTests/network_reader.py	/^    def create_box(self, data):$
 create_network	tests/otherTests/node_displacement_checker.py	/^    def create_network(self, net_file):$/;"	m	class:DisplacementChecker
 critical_section_	tests/googletest/include/gtest/internal/gtest-port.h	/^  GTEST_CRITICAL_SECTION* critical_section_;$/;"	m	class:testing::internal::Mutex
 critical_section_init_phase_	tests/googletest/include/gtest/internal/gtest-port.h	/^  long critical_section_init_phase_;  \/\/ NOLINT$/;"	m	class:testing::internal::Mutex
+csv	tests/otherTests/merge_csv_files.py	/^import csv$/;"	i
 current10_	tests/googletest/include/gtest/internal/gtest-param-util-generated.h	/^    typename ParamGenerator<T10>::iterator current10_;$/;"	m	class:testing::internal::CartesianProductGenerator10::Iterator
 current1_	tests/googletest/include/gtest/internal/gtest-param-util-generated.h	/^    typename ParamGenerator<T1>::iterator current1_;$/;"	m	class:testing::internal::CartesianProductGenerator10::Iterator
 current1_	tests/googletest/include/gtest/internal/gtest-param-util-generated.h	/^    typename ParamGenerator<T1>::iterator current1_;$/;"	m	class:testing::internal::CartesianProductGenerator2::Iterator
@@ -5969,6 +5975,7 @@ end_	tests/googletest/include/gtest/internal/gtest-param-util.h	/^  const T end_
 end_index_	tests/googletest/include/gtest/internal/gtest-param-util.h	/^  const int end_index_;$/;"	m	class:testing::internal::RangeGenerator
 energyAffn	include/common.h	/^	PetscScalar energyAffn;$/;"	m	struct:parameters
 energyBend	include/common.h	/^	PetscScalar energyBend;$/;"	m	struct:parameters
+energyPsAf	include/common.h	/^	PetscScalar energyPsAf;$/;"	m	struct:parameters
 energyStre	include/common.h	/^	PetscScalar energyStre;$/;"	m	struct:parameters
 energyTotl	include/common.h	/^	PetscScalar energyTotl;$/;"	m	struct:parameters
 environ	tests/googletest/src/gtest-death-test.cc	/^extern "C" char** environ;$/;"	m	namespace:testing::internal	file:
@@ -6044,6 +6051,7 @@ fibreAffnEnergy	include/common.h	/^	PetscScalar fibreAffnEnergy;$/;"	m	struct:fi
 fibreBendEnergy	include/common.h	/^	PetscScalar fibreBendEnergy;$/;"	m	struct:fibre
 fibreCount	include/common.h	/^	PetscInt fibreCount;$/;"	m	struct:box
 fibreID	include/common.h	/^	PetscInt fibreID;$/;"	m	struct:fibre
+fibrePsAfEnergy	include/common.h	/^	PetscScalar fibrePsAfEnergy;$/;"	m	struct:fibre
 fibreStreEnergy	include/common.h	/^	PetscScalar fibreStreEnergy;$/;"	m	struct:fibre
 fibre_line_ptr	tests/gUnitTests/src/networkRead_unittest.cc	/^    char        *box_line_ptr, *fibre_line_ptr, *node_line_ptr;$/;"	m	struct:__anon12::testReadDataLine	file:
 fibre_shift	tests/otherTests/network_id_shifter.py	/^    fibre_shift = 200$/;"	v
@@ -6666,7 +6674,11 @@ makeCouple	src/networkBuild.c	/^PetscErrorCode makeCouple(Box *box_ptr, const Pe
 makeDisplacementVec	src/vectorOperations.c	/^PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr)$/;"	f
 makeFibre	src/networkBuild.c	/^PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)$/;"	f
 makeNode	src/networkBuild.c	/^PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,$/;"	f
+<<<<<<< HEAD
 makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod)$/;"	f
+=======
+makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod)$/;"	f
+>>>>>>> development
 makePositionVec	src/vectorOperations.c	/^PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)$/;"	f
 makeSparse	src/networkBuild.c	/^Sparse *makeSparse(PetscInt n, PetscInt nz)$/;"	f
 makeTangentVec	src/vectorOperations.c	/^PetscErrorCode makeTangentVec(PetscScalar *tangVec_ptr, const PetscScalar *vec_ptr)$/;"	f
@@ -6782,12 +6794,21 @@ nan1	tests/googletest/test/gtest_unittest.cc	/^    RawType nan1;$/;"	m	struct:__
 nan2	tests/googletest/test/gtest_unittest.cc	/^    RawType nan2;$/;"	m	struct:__anon37::FloatingPointTest::TestValues	file:
 nearestSegmentCopy	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim)$/;"	f
 nearestSegmentCopyDirN	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const PetscInt N, const PetscInt perN, const PetscScalar dimN)$/;"	f
+<<<<<<< HEAD
+=======
+networkAdvancedWrite	src/networkWrite.c	/^PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr)$/;"	f
+>>>>>>> development
 networkAnalysis	src/networkAnalysis.c	/^PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)$/;"	f
 networkBuild	src/networkBuild.c	/^PetscErrorCode networkBuild()$/;"	f
 networkDestroy	src/networkDestroy.c	/^PetscErrorCode networkDestroy()$/;"	f
 networkRead	src/networkRead.c	/^PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)$/;"	f
+networkStandardWrite	src/networkWrite.c	/^PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr)$/;"	f
 networkUpdate	src/networkUpdate.c	/^PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)$/;"	f
+<<<<<<< HEAD
 networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)$/;"	f
+=======
+networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr)$/;"	f
+>>>>>>> development
 network_analyser	tests/otherTests/network_general_analysis.py	/^    network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict, network_reader.link_dict)$/;"	v	class:NetworkAnalyser
 network_data	tests/otherTests/network_id_shifter.py	/^    network_data = []$/;"	v
 network_reader	tests/otherTests/network_general_analysis.py	/^    network_reader = NetworkReader(data_file)$/;"	v	class:NetworkAnalyser
@@ -7029,8 +7050,10 @@ os	tests/googletest/test/gtest_test_utils.py	/^import os$/;"	i
 os	tests/googletest/test/gtest_testbridge_test.py	/^import os$/;"	i
 os	tests/googletest/test/gtest_xml_outfiles_test.py	/^import os$/;"	i
 os	tests/googletest/test/gtest_xml_output_unittest.py	/^import os$/;"	i
+os	tests/otherTests/merge_csv_files.py	/^import os$/;"	i
 os_stack_trace_getter	tests/googletest/src/gtest.cc	/^OsStackTraceGetterInterface* UnitTestImpl::os_stack_trace_getter() {$/;"	f	class:testing::internal::UnitTestImpl
 os_stack_trace_getter_	tests/googletest/src/gtest-internal-inl.h	/^  OsStackTraceGetterInterface* os_stack_trace_getter_;$/;"	m	class:testing::internal::UnitTestImpl
+outadvNetwork	include/common.h	/^	char outadvNetwork[MAX_NAME];$/;"	m	struct:parameters
 outcome	tests/googletest/src/gtest-death-test.cc	/^  DeathTestOutcome outcome() const { return outcome_; }$/;"	f	class:testing::internal::DeathTestImpl
 outcome_	tests/googletest/src/gtest-death-test.cc	/^  DeathTestOutcome outcome_;$/;"	m	class:testing::internal::DeathTestImpl	file:
 output	tests/googletest/test/gtest_unittest.cc	/^  const char* output;$/;"	m	struct:testing::Flags	file:
@@ -7124,6 +7147,7 @@ printFibreInfo	src/networkWrite.c	/^PetscErrorCode printFibreInfo(const Fibre *f
 printLargeVecValues	src/systemSolve.c	/^PetscErrorCode printLargeVecValues(Vec globalVec_F)$/;"	f
 printNodeInfo	src/networkWrite.c	/^PetscErrorCode printNodeInfo(const Node *node_ptr)$/;"	f
 printStretchOrCompression	src/networkAnalysis.c	/^PetscErrorCode printStretchOrCompression(PetscScalar *s_ab, PetscScalar *u_ab)$/;"	f
+printVecValuesSample	src/systemAssembly.c	/^PetscErrorCode printVecValuesSample(Vec vecToPrint)$/;"	f
 print_basic_stats	tests/otherTests/network_general_analysis.py	/^    def print_basic_stats(self):$/;"	m	class:NetworkAnalyser
 print_crosslink_stats	tests/otherTests/network_general_analysis.py	/^    def print_crosslink_stats(self):$/;"	m	class:NetworkAnalyser
 print_node	tests/otherTests/node_displacement_checker.py	/^    def print_node(self, inp_node, out_node, disp):$/;"	m	class:DisplacementChecker
@@ -7397,6 +7421,7 @@ sys	tests/googletest/test/gtest_test_utils.py	/^import sys$/;"	i
 sys	tests/googletest/test/gtest_xml_output_unittest.py	/^import sys$/;"	i
 sys	tests/googletest/xcode/Scripts/versiongenerate.py	/^import sys$/;"	i
 sys	tests/otherTests/diff_output_parser.py	/^import sys$/;"	i
+sys	tests/otherTests/merge_csv_files.py	/^import sys$/;"	i
 sys	tests/otherTests/network_conflict_checker.py	/^import sys$/;"	i
 sys	tests/otherTests/network_general_analysis.py	/^import sys$/;"	i
 sys	tests/otherTests/network_id_shifter.py	/^import sys$/;"	i
@@ -9244,6 +9269,7 @@ writeAnalysis	src/networkWrite.c	/^PetscErrorCode writeAnalysis(const Box *box_p
 writeBoxLine	src/networkWrite.c	/^PetscErrorCode writeBoxLine(FILE *file_ptr, const Box *box_ptr)$/;"	f
 writeCoupleLine	src/networkWrite.c	/^PetscErrorCode writeCoupleLine(FILE *file_ptr, const Couple *cpl_ptr)$/;"	f
 writeDbl	src/systemAssembly.c	/^PetscErrorCode writeDbl(const char *fileName, PetscScalar *array, PetscInt n) $/;"	f
+writeEnergyLine	src/networkWrite.c	/^PetscErrorCode writeEnergyLine(FILE *file_ptr, const Fibre *fibre_ptr)$/;"	f
 writeFibreLine	src/networkWrite.c	/^PetscErrorCode writeFibreLine(FILE *file_ptr, const Fibre *fibre_ptr)$/;"	f
 writeNodeLine	src/networkWrite.c	/^PetscErrorCode writeNodeLine(FILE *file_ptr, const Node *node_ptr)$/;"	f
 write_basic_stats	tests/otherTests/network_general_analysis.py	/^    def write_basic_stats(self, file):$/;"	m	class:NetworkAnalyser

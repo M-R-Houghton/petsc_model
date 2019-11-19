@@ -250,6 +250,8 @@ PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt 
     }
 
     /* add the two crosses together and calculate the magnitude to get phi magnitude */
+    //TODO: Think I can just do standard difference here - discuss in meeting
+    //stdVecAddition(phi, s_cross_u, u_cross_s);
     posVecAddition(phi, s_cross_u, u_cross_s, box_ptr->xyzPeriodic, box_ptr->xyzDimension);
     phiMagnitude = vecMagnitude(phi);
 
@@ -275,19 +277,7 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
 	{
 		Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
 		Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
-
-        /* only calculate energy if neither node is dangling */
-        if (alph_ptr->nodeType != NODE_DANGLING && 
-        	beta_ptr->nodeType != NODE_DANGLING)
-        {
-            /* add segment energy to total for fibre */
-            segStreEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
-                                                        alph_ptr->xyzCoord, beta_ptr->xyzCoord,
-                                                        alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement,
-                                                        box_ptr->xyzPeriodic, box_ptr->xyzDimension );
-            fibre_ptr->fibreStreEnergy += segStreEnergy;
-        }
-
+        
         /*
          * affine energy is calculated regardless of node types 
          * NOTE: should be passing affine displacements to calculateSegStretchEnergy()
@@ -297,6 +287,21 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
                                                     alph_ptr->xyzAffDisplacement, beta_ptr->xyzAffDisplacement,
                                                     box_ptr->xyzPeriodic, box_ptr->xyzDimension );
         fibre_ptr->fibreAffnEnergy += segAffnEnergy;
+
+        /* only calculate actual energy if neither node is dangling */
+        if (alph_ptr->nodeType != NODE_DANGLING && 
+        	beta_ptr->nodeType != NODE_DANGLING)
+        {
+            /* add segment energy to total for fibre */
+            segStreEnergy = calculateSegStretchEnergy( fibre_ptr, par_ptr->youngsModulus, 
+                                                        alph_ptr->xyzCoord, beta_ptr->xyzCoord,
+                                                        alph_ptr->xyzDisplacement, beta_ptr->xyzDisplacement,
+                                                        box_ptr->xyzPeriodic, box_ptr->xyzDimension );
+            fibre_ptr->fibreStreEnergy += segStreEnergy;
+
+            /* only add pseudo affine if segment doesn't contain dangling nodes */
+            fibre_ptr->fibrePsAfEnergy += segAffnEnergy;
+        }
     }
 	return ierr;
 }
@@ -329,6 +334,8 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
             segBendEnergy = calculateSegBendEnergy( box_ptr, par_ptr, fIndex, alph_ptr->xyzCoord, omeg_ptr->xyzCoord, beta_ptr->xyzCoord,
                                                     alph_ptr->xyzDisplacement, omeg_ptr->xyzDisplacement, beta_ptr->xyzDisplacement );
             fibre_ptr->fibreBendEnergy += segBendEnergy;
+            
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATS] E_b = %g\n", segBendEnergy );CHKERRQ(ierr);
         }
         /* NOTE: affine energy is not calculated for bending */
     }
@@ -347,6 +354,7 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 		/* calculate stretching energy from contributions of every fibre */
 		ierr = calculateFibreStretchEnergy(box_ptr, par_ptr, fIndex);CHKERRQ(ierr);
         par_ptr->energyStre += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+        par_ptr->energyPsAf += box_ptr->masterFibreList[fIndex].fibrePsAfEnergy;
         par_ptr->energyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
 
 		/* calculate bending energy from contributions of every fibre */

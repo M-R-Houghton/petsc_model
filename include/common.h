@@ -44,12 +44,14 @@ struct parameters
 {
 	char inputNetwork[MAX_NAME];
 	char outputNetwork[MAX_NAME];
+	char outadvNetwork[MAX_NAME];
 	char postSolveResults[MAX_NAME];
 	PetscScalar gamma;
 	PetscScalar youngsModulus;
 	PetscScalar energyStre;
 	PetscScalar energyBend;
 	PetscScalar energyTotl;
+	PetscScalar energyPsAf;
 	PetscScalar energyAffn;
 	PetscScalar shearModulus;
 	PetscScalar shearModAffn;
@@ -102,6 +104,7 @@ struct fibre
 
 	PetscScalar fibreStreEnergy;
 	PetscScalar fibreBendEnergy;
+	PetscScalar fibrePsAfEnergy;
 	PetscScalar fibreAffnEnergy;
 };
 
