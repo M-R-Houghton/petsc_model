@@ -3,12 +3,16 @@
 /* Initiates system assembly routine */
 PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat H, Vec b)
 {
-    PetscErrorCode  ierr   = 0;
-    PetscBool       useEM  = PETSC_FALSE;    /* set default values */
-    PetscScalar     lambda = 1e-5;       
+    PetscErrorCode  ierr    = 0;
+    PetscBool       useEM   = PETSC_FALSE;    /* set default values */
+    PetscBool       drawVec = PETSC_FALSE; 
+    PetscBool       drawMat = PETSC_FALSE;
+    PetscScalar     lambda  = 1e-5;       
 
     /* set up options for elastic medium */
     ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(NULL,NULL,"-draw_rhs",&drawVec,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetBool(NULL,NULL,"-draw_hessian",&drawMat,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
 
     /* Calculate sparsity of global matrix */
@@ -44,8 +48,9 @@ PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat
     ierr = VecGetSize(b, &solSize);CHKERRQ(ierr);
     if (solSize < 50)
     {
-        ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
-        ierr = VecView(b,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
+        if (drawMat) ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);
+        if (drawVec) ierr = VecView(b,PETSC_VIEWER_DRAW_WORLD);
+        CHKERRQ(ierr);
     }
 
     return ierr;
