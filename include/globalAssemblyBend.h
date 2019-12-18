@@ -24,11 +24,12 @@ void checkMatBendContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A,
  * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
-PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar (* const localMat)[9], PetscInt N,
 										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 
-PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], PetscInt N,
+/* NOTE: that this is NOT equivalent to "const PetscScalar localMat[][9]" */
+PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar (* const localMat)[9], PetscInt N,
 										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
@@ -67,7 +68,7 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec
 PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
                                     PetscInt alph_gID, PetscInt omeg_gID, PetscInt beta_gID,
                                     PetscInt alph_nType, PetscInt omeg_nType, PetscInt beta_nType,
-									const PetscScalar localMat[][9], const PetscScalar localVec[] );
+									PetscScalar (* const localMat)[9], const PetscScalar localVec[] );
 
 
 #endif

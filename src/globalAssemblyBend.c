@@ -14,7 +14,7 @@ void checkMatBendContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B,
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
+PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar (* const localMat)[9], const PetscInt N,
 										 const PetscInt gIdx_A, const PetscInt gIdx_B, 
                                          const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
@@ -43,7 +43,7 @@ PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, const PetscScalar loca
 
 
 /* Adds a single bending contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleBendCont( Mat globalMat_H, const PetscScalar localMat[][9], const PetscInt N,
+PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar (* const localMat)[9], const PetscInt N,
 									 const PetscInt gIdx_A, const PetscInt gIdx_B, 
                                      const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
@@ -98,7 +98,7 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec
 PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,
                                     const PetscInt alph_gID, const PetscInt omeg_gID, const PetscInt beta_gID,
                                     const PetscInt alph_nType, const PetscInt omeg_nType, const PetscInt beta_nType,
-									const PetscScalar localMat[][9], const PetscScalar localVec[] )
+									PetscScalar (* const localMat)[9], const PetscScalar localVec[] )
 {
 	PetscErrorCode ierr = 0;
 
