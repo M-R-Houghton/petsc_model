@@ -11,7 +11,7 @@ void checkMatStretchContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, c
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix potentially more efficiently */
-PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar (* const localMat)[6], const PetscInt N,
 											const PetscInt gIdx_A, const PetscInt gIdx_B, 
                                             const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
@@ -40,7 +40,7 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar l
 
 
 /* Adds a single stretching contribution of 9 values to the global matrix */
-PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], const PetscInt N,
+PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar (* const localMat)[6], const PetscInt N,
 										const PetscInt gIdx_A, const PetscInt gIdx_B, 
                                         const PetscInt lIdx_A, const PetscInt lIdx_B )
 {
@@ -95,7 +95,7 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar local
 PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, const PetscInt N,
                                         const PetscInt alph_gID, const PetscInt beta_gID,
                                         const PetscInt alph_nType, const PetscInt beta_nType,
-									   	const PetscScalar localMat[][6], const PetscScalar localVec[] )
+									   	PetscScalar (* const localMat)[6], const PetscScalar localVec[] )
 {
 	PetscErrorCode ierr = 0;
 

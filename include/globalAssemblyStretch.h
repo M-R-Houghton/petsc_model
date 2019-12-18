@@ -25,7 +25,7 @@ void checkMatStretchContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx
  * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
-PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar localMat[][6], PetscInt N,
+PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar (* const localMat)[6], PetscInt N,
 											PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
@@ -40,7 +40,7 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, const PetscScalar l
  * \param lIdx_B The local index for node_B.
  * \return Petsc error code.
  */
-PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, const PetscScalar localMat[][6], PetscInt N,
+PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar (* const localMat)[6], PetscInt N,
 										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
@@ -79,6 +79,6 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar local
 PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
                                         PetscInt alph_gID, PetscInt beta_gID,
                                         PetscInt alph_nType, PetscInt beta_nType,
-									   	const PetscScalar localMat[][6], const PetscScalar localVec[] );
+									   	PetscScalar (* const localMat)[6], const PetscScalar localVec[] );
 
 #endif
