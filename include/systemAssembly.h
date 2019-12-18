@@ -104,7 +104,7 @@ PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff);
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, 
-									const char *rhsFile, const char *solFile, PetscInt n);
+                                    const char *rhsFile, const char *solFile, PetscInt n);
 
 /**
  * \brief Reads in a file of integers to an array

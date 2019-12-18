@@ -26,7 +26,7 @@ void checkMatStretchContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar (* const localMat)[6], PetscInt N,
-											PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
+                                            PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Adds a single stretching contribution of 9 values to the global matrix
@@ -41,7 +41,7 @@ PetscErrorCode addMatSingleStretchContFAST( Mat globalMat_H, PetscScalar (* cons
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar (* const localMat)[6], PetscInt N,
-										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
+                                        PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Checks stretch vector contribution indexes are all legal 
@@ -61,7 +61,7 @@ void checkVecStretchContIndexes( PetscInt gIdx_A, PetscInt lIdx_A );
  * \return Petsc error code.
  */
 PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar localVec[], PetscInt N,
-										PetscInt gIdx_A, PetscInt lIdx_A );
+                                        PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds local stretching contributions to the global matrix and RHS vector
@@ -79,6 +79,6 @@ PetscErrorCode addVecSingleStretchCont( Vec globalVec_B, const PetscScalar local
 PetscErrorCode addStretchContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
                                         PetscInt alph_gID, PetscInt beta_gID,
                                         PetscInt alph_nType, PetscInt beta_nType,
-									   	PetscScalar (* const localMat)[6], const PetscScalar localVec[] );
+                                        PetscScalar (* const localMat)[6], const PetscScalar localVec[] );
 
 #endif

@@ -25,12 +25,12 @@ void checkMatBendContIndexes( PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A,
  * \return Petsc error code.
  */
 PetscErrorCode addMatSingleBendContFAST( Mat globalMat_H, PetscScalar (* const localMat)[9], PetscInt N,
-										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
+                                            PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 
 /* NOTE: that this is NOT equivalent to "const PetscScalar localMat[][9]" */
 PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar (* const localMat)[9], PetscInt N,
-										PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
+                                        PetscInt gIdx_A, PetscInt gIdx_B, PetscInt lIdx_A, PetscInt lIdx_B );
 
 /**
  * \brief Checks bend vector contribution indexes are all legal 
@@ -50,7 +50,7 @@ void checkVecBendContIndexes( PetscInt gIdx_A, PetscInt lIdx_A );
  * \return Petsc error code.
  */
 PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec[], PetscInt N,
-										PetscInt gIdx_A, PetscInt lIdx_A );
+                                        PetscInt gIdx_A, PetscInt lIdx_A );
 
 /**
  * \brief Adds local bending contributions to the global matrix and RHS vector
@@ -68,7 +68,7 @@ PetscErrorCode addVecSingleBendCont( Vec globalVec_B, const PetscScalar localVec
 PetscErrorCode addBendContToGlobal( Mat globalMat_H, Vec globalVec_B, PetscInt N,
                                     PetscInt alph_gID, PetscInt omeg_gID, PetscInt beta_gID,
                                     PetscInt alph_nType, PetscInt omeg_nType, PetscInt beta_nType,
-									PetscScalar (* const localMat)[9], const PetscScalar localVec[] );
+                                    PetscScalar (* const localMat)[9], const PetscScalar localVec[] );
 
 
 #endif
