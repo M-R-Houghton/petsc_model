@@ -3,8 +3,8 @@
 /* Adds local contributions for every fibre to global system */
 PetscErrorCode addLocalContributions(const Box *box_ptr, const Parameters *par_ptr, Mat globalMat_H, Vec globalVec_B)
 {
-    PetscErrorCode 	ierr;
-    PetscInt 		fIndex;
+    PetscErrorCode  ierr;
+    PetscInt        fIndex;
 
     /* assemble local information by looping over all fibres */
     for (fIndex = 0; fIndex < box_ptr->fibreCount; fIndex++)

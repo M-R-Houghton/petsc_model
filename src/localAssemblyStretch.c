@@ -13,8 +13,8 @@ void checkSegLength(const PetscScalar segLength, const PetscInt *xyzPer, const P
 /* Calculates the stretching constant k */
 PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus, const PetscScalar segLength)
 {
-    PetscScalar area 	= M_PI * pow(radius, 2);
-    PetscScalar mu 		= area * youngsModulus;
+    PetscScalar area    = M_PI * pow(radius, 2);
+    PetscScalar mu      = area * youngsModulus;
     return mu / segLength;
 }
 
@@ -48,8 +48,8 @@ PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, co
 PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, 
                                     const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
-    PetscErrorCode 	ierr = 0;
-    PetscScalar		l_alphBeta, k;
+    PetscErrorCode  ierr = 0;
+    PetscScalar     l_alphBeta, k;
 
     /* setup local matrix and rhs vector */
     PetscScalar localStretchMat_A[6][6];

@@ -86,11 +86,11 @@ PetscErrorCode applyEMToDecoupledMatrix(Mat H, const PetscScalar lambda, const P
     for (nID = 0; nID < N; nID++)
     {
         /* update diagonal value at each coordinate */
-	    for (i = 0; i < DIMENSION; i++)
-	    {
+        for (i = 0; i < DIMENSION; i++)
+        {
             /* for decoupled systems apply uniform force to all diagonals */
-	        ierr = MatSetValue(H, nID + i*N, nID + i*N, lambda, ADD_VALUES);CHKERRQ(ierr);
-	    }
+            ierr = MatSetValue(H, nID + i*N, nID + i*N, lambda, ADD_VALUES);CHKERRQ(ierr);
+        }
     }
     return ierr;
 }
@@ -110,10 +110,10 @@ PetscErrorCode applyEMToCoupledMatrix(Mat H, const PetscScalar lambda,
     {
         PetscInt numNodes = coupleList[cID].nodesInCouple;
         /* update diagonal value at each coordinate */
-	    for (i = 0; i < DIMENSION; i++)
-	    {
-	        ierr = MatSetValue(H, cID + i*coupleCount, cID + i*coupleCount, numNodes*lambda, ADD_VALUES);CHKERRQ(ierr);
-	    }
+        for (i = 0; i < DIMENSION; i++)
+        {
+            ierr = MatSetValue(H, cID + i*coupleCount, cID + i*coupleCount, numNodes*lambda, ADD_VALUES);CHKERRQ(ierr);
+        }
     }
 
     return ierr;
@@ -192,7 +192,7 @@ PetscErrorCode applyEMToCoupledRHSVector(const Box *box_ptr, Vec B, const PetscS
 
 PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const PetscScalar lambda)
 {
-    PetscErrorCode 	ierr;
+    PetscErrorCode  ierr;
 
     if (box_ptr->coupleCount == 0)
     {
@@ -210,7 +210,7 @@ PetscErrorCode applyElasticMediumToRHSVector(const Box *box_ptr, Vec B, const Pe
 /* Applies a uniform force such that the network behaves suspended in an elastic medium */
 PetscErrorCode applyElasticMedium(const Box *box_ptr, Mat H, Vec B, const PetscScalar lambda)
 {
-    PetscErrorCode 	ierr;
+    PetscErrorCode  ierr;
 
     /* Networks with internals not associated with couples need handling separately */
     if (box_ptr->coupleCount != 0 && box_ptr->nodeInternalCount != box_ptr->coupleCount)
@@ -256,30 +256,30 @@ PetscErrorCode assembleAffineDisplacementVector(const Box *box_ptr, Vec U_aff)
 PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, const char *matFile, 
         const char *rhsFile, const char *solFile, PetscInt n)
 {
-    PetscErrorCode 	ierr;
-    Mat            	H;
-    Vec 			B,U;
-    KSP            	ksp;          /* linear solver context */
-    PC             	pc;           /* preconditioner context */
-    PetscInt 		i,its;
+    PetscErrorCode  ierr;
+    Mat             H;
+    Vec             B,U;
+    KSP             ksp;          /* linear solver context */
+    PC              pc;           /* preconditioner context */
+    PetscInt        i,its;
 
-    PetscInt 		rowArray[n+1];
-    PetscScalar		rhsArray[n];
-    PetscScalar		*solArray;
+    PetscInt        rowArray[n+1];
+    PetscScalar     rhsArray[n];
+    PetscScalar     *solArray;
 
     /* Read in row file to array */
     ierr = readInt(rowFile, rowArray, n+1);CHKERRQ(ierr);
 
     /* Determine the number of nonzeros */
-    PetscInt 		nz = rowArray[n];
+    PetscInt        nz = rowArray[n];
 
     /* Use final value of row ptr array to determine length of col and mat arrays */
-    //PetscInt 		colArray[nz];	/* static allocation */
-    //PetscScalar 	valArray[nz];	/* static allocation */
+    //PetscInt      colArray[nz];   /* static allocation */
+    //PetscScalar   valArray[nz];   /* static allocation */
 
     /* dynamic allocation for larger problems */
-    PetscInt 		*colArray;
-    PetscScalar		*valArray;
+    PetscInt        *colArray;
+    PetscScalar     *valArray;
     ierr = PetscMalloc(nz*sizeof(PetscInt), &colArray);CHKERRQ(ierr);
     ierr = PetscMalloc(nz*sizeof(PetscScalar),&valArray);CHKERRQ(ierr);
 
@@ -309,7 +309,7 @@ PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, co
     ierr = MatSetFromOptions(H);CHKERRQ(ierr);
     ierr = MatSetUp(H);CHKERRQ(ierr);
 
-    PetscInt 	tmpCol[n];
+    PetscInt    tmpCol[n];
     PetscScalar tmpMat[n];
 
     for (i = 0; i < n; i++)
@@ -322,9 +322,9 @@ PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, co
             tmpMat[count] = valArray[j];
             count += 1;
         }
-        ierr = MatSetValues(H,1,&i,rowArray[i+1]-rowArray[i],tmpCol,tmpMat,INSERT_VALUES);CHKERRQ(ierr);		// produces 1st row where 1st row should be
-        //ierr = MatSetValues(H,2,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 2nd row where 1st row should be
-        //ierr = MatSetValues(H,3,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);		// produces 3rd row where 1st row should be
+        ierr = MatSetValues(H,1,&i,rowArray[i+1]-rowArray[i],tmpCol,tmpMat,INSERT_VALUES);CHKERRQ(ierr);        // produces 1st row where 1st row should be
+        //ierr = MatSetValues(H,2,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);      // produces 2nd row where 1st row should be
+        //ierr = MatSetValues(H,3,&i,3,colArray,valArray,INSERT_VALUES);CHKERRQ(ierr);      // produces 3rd row where 1st row should be
     }
 
     ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -387,8 +387,8 @@ PetscErrorCode solveAssembledMatrix(const char *rowFile, const char *colFile, co
 /* Reads in a file of integers to an array */
 PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n)
 {
-    PetscErrorCode 	ierr;
-    PetscInt 		i,inp;
+    PetscErrorCode  ierr;
+    PetscInt        i,inp;
 
     FILE *fp = fopen( fileName, "r" );
     ierr = PetscPrintf(PETSC_COMM_WORLD, "%s opened successfully\n", fileName);CHKERRQ(ierr);
@@ -407,9 +407,9 @@ PetscErrorCode readInt(const char *fileName, PetscInt *array, PetscInt n)
 /* Reads in a file of doubles to an array */
 PetscErrorCode readDbl(const char *fileName, PetscScalar *array, PetscInt n)
 {
-    PetscErrorCode 	ierr;
-    PetscInt 		i;
-    PetscScalar 	inp;
+    PetscErrorCode  ierr;
+    PetscInt        i;
+    PetscScalar     inp;
 
     FILE *fp = fopen( fileName, "r" );
     ierr = PetscPrintf(PETSC_COMM_WORLD, "%s opened successfully\n", fileName);CHKERRQ(ierr);
