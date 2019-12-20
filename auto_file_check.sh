@@ -7,7 +7,7 @@ if [ $# -lt 1 ]; then
 fi
 
 bin="model"         # The application (from command arg)
-diff="diff -iad"    # Diff command, or what ever
+diff="diff -iadq"    # Diff command, or what ever
 group="$1"
 
 head="data/"
