@@ -277,6 +277,9 @@ PetscErrorCode calculateFibreStretchEnergy(Box *box_ptr, Parameters *par_ptr, Pe
     {
         Node *alph_ptr = fibre_ptr->nodesOnFibreList[i];
         Node *beta_ptr = fibre_ptr->nodesOnFibreList[i+1];
+
+        /* Added temporarily to remove incorrect energy contributions of boundary sheets */
+        if (alph_ptr->nodeType == NODE_BOUNDARY && beta_ptr->nodeType == NODE_BOUNDARY) continue;
         
         /*
          * affine energy is calculated regardless of node types 
@@ -378,8 +381,10 @@ void checkVolume(Box *box_ptr, PetscScalar volume)
 {
     assert(volume >= 0);
     // TODO: Modify this to allow for y,z 2d planes
+    PetscPrintf(PETSC_COMM_WORLD,"Volume is %.16f\n", volume);
+    PetscPrintf(PETSC_COMM_WORLD,"Volume is %.16f\n", box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
     if (DIMENSION==2) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]);
-    if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
+    //if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
 }
 
 PetscScalar calculateVolume(Box *box_ptr)
