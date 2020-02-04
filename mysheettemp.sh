@@ -43,15 +43,15 @@ do
                 python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
                 mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
 
-                echo "f${num}, s0${seed}, ${rad}, xy"
-                python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pxy_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
-                mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pxy_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
-                echo "f${num}, s0${seed}, ${rad}, yz"
-                python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pyz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
-                mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pyz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
-                echo "f${num}, s0${seed}, ${rad}, xz"
-                python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
-                mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
+                #echo "f${num}, s0${seed}, ${rad}, xy"
+                #python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pxy_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
+                #mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pxy_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
+                #echo "f${num}, s0${seed}, ${rad}, yz"
+                #python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pyz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
+                #mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pyz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
+                #echo "f${num}, s0${seed}, ${rad}, xz"
+                #python3 "data/dat/radius_rewriter.py" "data/dat/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb_in.dat" $rad $rad_alt $(($num * ${sht}))
+                #mpiexec -n 1 ./model data/par/sht/sht3d_s0${seed}_pxz_sz1_f${num}_mf63_sh5_sd21_sc_cf63_cd31_md_rt_cb.par -pc_type lu -pc_factor_mat_solver_type mumps | grep -E $p7
 
             done
         done
