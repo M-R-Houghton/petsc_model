@@ -52,6 +52,8 @@ PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat
         if (drawVec) ierr = VecView(b,PETSC_VIEWER_DRAW_WORLD);
         CHKERRQ(ierr);
     }
+    if (solSize < 50) MatView(H,PETSC_VIEWER_STDOUT_WORLD);
+    if (solSize < 50) VecView(b,PETSC_VIEWER_STDOUT_WORLD);
 
     return ierr;
 }
