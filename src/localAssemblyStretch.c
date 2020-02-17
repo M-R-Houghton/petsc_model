@@ -240,14 +240,15 @@ PetscErrorCode make3DStretchMat(const PetscScalar k, const PetscScalar *tangVec,
     localStretchMat_A[5][4] = localStretchMat_A[4][5];
     localStretchMat_A[5][5] = ( 1) * k * pow( tangVec[z], 2 );
 
-    int i,j;
-    for (i = 0; i < 6; i++) {
-        for (j = 0; j < 6; j++) {
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"[SMAT] %0.16g\t", localStretchMat_A[i][j]);CHKERRQ(ierr);
-        }
-        ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
-    }
-    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[SMAT] k = %0.16g\n", k);CHKERRQ(ierr);
+    //int i,j;
+    //for (i = 0; i < 6; i++) {
+    //    for (j = 0; j < 6; j++) {
+    //        ierr = PetscPrintf(PETSC_COMM_WORLD,"[SMAT] %0.16g\t", localStretchMat_A[i][j]);CHKERRQ(ierr);
+    //    }
+    //    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    //}
+    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
     return ierr;
 }
