@@ -55,11 +55,11 @@ PetscErrorCode addMatSingleStretchCont( Mat globalMat_H, PetscScalar (* const lo
         {
             ierr = MatSetValue(globalMat_H, gIdx_A + i*N, gIdx_B + j*N, localMat[lIdx_A + 2*i][lIdx_B + 2*j], ADD_VALUES);CHKERRQ(ierr);
             /* WARNING: For debugging ONLY */
-            //ierr = PetscPrintf(PETSC_COMM_WORLD,"[CONT] %0.16g\t", localMat[lIdx_A + 2*i][lIdx_B + 2*j]);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[CONT] %0.16g\t", localMat[lIdx_A + 2*i][lIdx_B + 2*j]);CHKERRQ(ierr);
         }
-        //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
     }
-    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
     return ierr;
 }

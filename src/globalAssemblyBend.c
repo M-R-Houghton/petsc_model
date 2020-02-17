@@ -58,11 +58,11 @@ PetscErrorCode addMatSingleBendCont( Mat globalMat_H, PetscScalar (* const local
         {
             ierr = MatSetValue(globalMat_H, gIdx_A + i*N, gIdx_B + j*N, localMat[lIdx_A + 3*i][lIdx_B + 3*j], ADD_VALUES);CHKERRQ(ierr);
             /* WARNING: For debugging ONLY */
-            //ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lIdx_A + 3*i][lIdx_B + 3*j]);CHKERRQ(ierr);
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"[BCONT] %0.16g\t", localMat[lIdx_A + 3*i][lIdx_B + 3*j]);CHKERRQ(ierr);
         }
-        //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
     }
-    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
     return ierr;
 }

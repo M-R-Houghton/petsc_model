@@ -24,7 +24,7 @@
  * stretch only     = 1
  * stretch and bend = 2
  */
-#define SPAN 2
+#define SPAN 1
 
 /* may remove and add back into .par files */
 /* WARNING: These are now overwritten in main.c */
