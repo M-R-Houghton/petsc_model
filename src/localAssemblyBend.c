@@ -51,6 +51,7 @@ PetscErrorCode addFibreLocalBend(Mat globalMat_H, Vec globalVec_B, const PetscIn
 
         /* calculate bending modulus kappa */
         kappa = calculateKappa(fibre_ptr->radius, youngsModulus);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] kappa = %0.6g\n", kappa);CHKERRQ(ierr);
 
         /* calculate bending constant */
         bConstNum = 2 * kappa;
@@ -317,7 +318,17 @@ PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s
 
     localBendMat_A[8][6] = localBendMat_A[6][8];
     localBendMat_A[8][7] = localBendMat_A[7][8];
-    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[y], 2));
+    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[x], 2));
+
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] bConst = %0.6g\n", bConst);CHKERRQ(ierr);
+    //int i,j;
+    //for (i = 0; i < 9; i++) {
+    //    for (j = 0; j < 9; j++) {
+    //        ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] %0.6g\t", localBendMat_A[i][j]);CHKERRQ(ierr);
+    //    }
+    //    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    //}
+    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
     return ierr;
 }
