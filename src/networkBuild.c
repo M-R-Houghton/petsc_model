@@ -260,4 +260,13 @@ PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt 
     return ierr;
 }
 
+/* Creates a node within its allocated location in a box */
+PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
+{
+    PetscErrorCode ierr = 0;
+
+    return ierr;
+}
+
+
 

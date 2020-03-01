@@ -129,6 +129,15 @@ void checkCoupleArguments(Box *box_ptr, PetscInt coupleID, PetscInt nodesOnCoupl
  */
 PetscErrorCode makeCouple(Box *box_ptr, PetscInt coupleID, PetscInt nodesOnCouple, const PetscInt *nodeIDList);
 
+/**
+ * \brief Creates sheet statistics within its allocated location in a box
+ * \param box_ptr Box containing the relevant data to represent the given network.
+ * \param noOfSheets The number of sheets contained in the network.
+ * \param fibPerSheet The number of fibres within each sheet.
+ * \param conFibPerSheetPair The number of cross-link fibres between pairs of sheets.
+ */
+PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair);
+
 
 #endif
 

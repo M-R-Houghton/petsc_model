@@ -219,6 +219,14 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool r
             case 'c':
                 *coupleCount += 1;
                 break;
+            case 's':
+                /* pass line pointer to sheet stats line reader */
+                ierr = readSheetStatsLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
+                break;
+            case 'g':
+                /* pass line pointer to general stats line reader */
+                ierr = readGeneralStatsLine(lineCrop_ptr, *box_ptr_ptr);CHKERRQ(ierr);
+                break;
             default:
                 SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
                         "Error in identifying line type. Line size may be insufficient.");
@@ -232,6 +240,8 @@ PetscErrorCode readDataLine(char *line_ptr, Box **box_ptr_ptr, const PetscBool r
             case 'b':
             case 'f':
             case 'n':
+            case 's':
+            case 'g':
                 break;
             case 'c':
                 /* pass line pointer to cpl line reader */
@@ -319,7 +329,7 @@ PetscErrorCode readNodeLine(char *line_ptr, Box *box_ptr, const PetscScalar gamm
     PetscInt        nID, nType;
     PetscScalar     x, y, z;
 
-    /* read in a box line */
+    /* read in a node line */
     sscanf(line_ptr, "%d %d %lf %lf %lf", &nID, &nType, &x, &y, &z);
 
     /* assign scanned values to a node */
@@ -393,6 +403,30 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
     /* node IDs now read into couple struct so clean up */
     free(nodeIDList);
 
+    return ierr;
+}
+
+
+/* Reads sheet information from a given line pointer */
+PetscErrorCode readSheetStatsLine(char *line_ptr, Box *box_ptr)
+{
+    PetscErrorCode  ierr;
+    PetscInt        noOfSheets, fibPerSheet, conFibPerSheetPair;
+
+    /* read in a sheet info line */
+    sscanf(line_ptr, "%d %d %d", &noOfSheets, &fibPerSheet, &conFibPerSheetPair);
+
+    /* assign scanned values to the box sheet stats */
+    ierr = makeSheetStats(box_ptr, noOfSheets, fibPerSheet, conFibPerSheetPair);CHKERRQ(ierr);
+
+    return ierr;
+}
+
+
+/* Reads general information from a given line pointer */
+PetscErrorCode readGeneralStatsLine(char *line_ptr, Box *box_ptr)
+{
+    PetscErrorCode  ierr=0;
     return ierr;
 }
 
