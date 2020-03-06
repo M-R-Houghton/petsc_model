@@ -114,6 +114,11 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
     /* couple list memory should be allocated after no. of couples is known */
     box_ptr->masterCoupleList = NULL;
 
+    /* sheet related quantities should only be changed if dat file has a sheet line */
+    box_ptr->sheetCount = 0;
+    box_ptr->fibreCountPerSheet = 0;
+    box_ptr->conFibCountPerSheetPair = 0;
+
     return box_ptr;
 }
 
@@ -279,7 +284,10 @@ PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const Pet
 
     checkSheetArguments(box_ptr, noOfSheets, fibPerSheet, conFibPerSheetPair);
 
-    // set up sheet info in box object
+    /* set up sheet info in box object */
+    box_ptr->sheetCount = noOfSheets;
+    box_ptr->fibreCountPerSheet = fibPerSheet;
+    box_ptr->conFibCountPerSheetPair = conFibPerSheetPair;
 
     return ierr;
 }

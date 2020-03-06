@@ -69,6 +69,11 @@ struct box
     Node *masterNodeList;           /* declare lists for storing nodes and fibres */
     Fibre *masterFibreList;
     Couple *masterCoupleList;
+
+    /* probably want to move this into its own struct eventually */
+    PetscInt sheetCount;
+    PetscInt fibreCountPerSheet;
+    PetscInt conFibCountPerSheetPair;
 };
 
 /* structure for coupled nodes */
