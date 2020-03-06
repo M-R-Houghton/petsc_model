@@ -260,10 +260,23 @@ PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt 
     return ierr;
 }
 
-/* Creates a node within its allocated location in a box */
+
+void checkSheetArguments(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
+{
+    assert(box_ptr != NULL);
+    assert(noOfSheets >= 0);
+    assert(fibPerSheet > 0);
+    assert(conFibPerSheetPair >= 0);
+}
+
+
 PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
 {
     PetscErrorCode ierr = 0;
+
+    checkSheetArguments(box_ptr, noOfSheets, fibPerSheet, conFibPerSheetPair);
+
+    // set up sheet info in box object
 
     return ierr;
 }
