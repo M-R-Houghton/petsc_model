@@ -264,9 +264,12 @@ PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt 
 void checkSheetArguments(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
 {
     assert(box_ptr != NULL);
-    assert(noOfSheets >= 0);
-    assert(fibPerSheet > 0);
-    assert(conFibPerSheetPair >= 0);
+    assert(noOfSheets  > 0);            /* if sheet line exists there should be at least 1 sheet */
+    assert(fibPerSheet > 0);            /* sheets cannot be empty */
+    assert(conFibPerSheetPair >= 0);    /* could have 0 if sheets are disconnected */
+
+    /* catch single sheet case */
+    if (noOfSheets == 1) assert(conFibPerSheetPair == 0);
 }
 
 
