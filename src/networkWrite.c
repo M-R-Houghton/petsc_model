@@ -141,6 +141,10 @@ PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
         ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tSheetCount \t= %d\n", box_ptr->sheetCount);CHKERRQ(ierr);
         ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tFibPerSheet \t= %d\n", box_ptr->fibreCountPerSheet);CHKERRQ(ierr);
         ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tConFibPerPair\t= %d\n", box_ptr->conFibCountPerSheetPair);CHKERRQ(ierr);
+        /*
+         * Print out Energy in plane (stretch, bend, total, affine)
+         * Print out Energy out of plane (total i.e. stretch and affine)
+         */ 
     }
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModulus \t= %.16e\n",   par_ptr->shearModulus);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tShearModAffn \t= %.16e\n\n", par_ptr->shearModAffn);CHKERRQ(ierr);
