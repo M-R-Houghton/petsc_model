@@ -360,6 +360,8 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
         par_ptr->energyPsAf += box_ptr->masterFibreList[fIndex].fibrePsAfEnergy;
         par_ptr->energyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
 
+        // TODO: split energies based on ID here
+
         /* calculate bending energy from contributions of every fibre */
         if (SPAN == 2)
         {

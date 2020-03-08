@@ -36,6 +36,8 @@ Parameters *makeParameters(const char *input, const char *output, const char *ou
     par_ptr->shearModulus = 0;
     par_ptr->shearModAffn = 0;
 
+    // add all new sheet based energies here and initialise to 0
+
     return par_ptr;
 }
 
