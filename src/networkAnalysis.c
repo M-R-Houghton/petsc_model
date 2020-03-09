@@ -366,6 +366,12 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
             ierr = calculateFibreBendEnergy(box_ptr, par_ptr, fIndex);CHKERRQ(ierr);
             par_ptr->energyBend += box_ptr->masterFibreList[fIndex].fibreBendEnergy;
         }
+
+        /* calculate index based sheet network energy if appropriate */
+        if (box_ptr->sheetCount > 0)
+        {
+            ierr = addFibreSheetEnergy(box_ptr, par_ptr, fIndex);
+        }
     }
 
     if (SPAN != 2) assert(par_ptr->energyBend == 0.0);
@@ -377,12 +383,45 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 }
 
 
+PetscErrorCode addFibreSheetEnergy(const Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
+{
+    PetscErrorCode ierr = 0;
+    PetscScalar zeroTolerance = 1e-16;
+    PetscInt firstOutOfPlaneIdx = box_ptr->sheetCount * box_ptr->fibreCountPerSheet;
+
+    /* check for off-the-end index */
+    assert(fIndex < firstOutOfPlaneIdx + (box_ptr->sheetCount-1)*box_ptr->conFibCountPerSheetPair);
+
+    /* index based energy summing */
+    if (fIndex < firstOutOfPlaneIdx)
+    {
+        par_ptr->inPlnEnergyTotl += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+        par_ptr->inPlnEnergyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
+
+        if (SPAN == 2)
+        {
+            par_ptr->inPlnEnergyTotl += box_ptr->masterFibreList[fIndex].fibreBendEnergy;
+        }
+    }
+    else
+    {
+        par_ptr->outPlnEnergyTotl += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+        par_ptr->outPlnEnergyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
+
+        /* between plane bending should not be possible */
+        assert(fabs(box_ptr->masterFibreList[fIndex].fibreBendEnergy) < zeroTolerance);
+    }
+
+    return ierr;
+}
+
+
 void checkVolume(Box *box_ptr, PetscScalar volume)
 {
     assert(volume >= 0);
     // TODO: Modify this to allow for y,z 2d planes
-    PetscPrintf(PETSC_COMM_WORLD,"Volume is %.16f\n", volume);
-    PetscPrintf(PETSC_COMM_WORLD,"Volume is %.16f\n", box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
+    PetscPrintf(PETSC_COMM_WORLD,"Network volume is %.16f\n", volume);
+    PetscPrintf(PETSC_COMM_WORLD,"Box volume is %.16f\n", box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
     if (DIMENSION==2) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]);
     //if (DIMENSION==3) assert(volume <= box_ptr->xyzDimension[0]*box_ptr->xyzDimension[1]*box_ptr->xyzDimension[2]);
 }
