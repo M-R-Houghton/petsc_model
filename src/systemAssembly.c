@@ -32,6 +32,9 @@ PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat
     ierr = MatAssemblyBegin(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     ierr = MatAssemblyEnd(H,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
+    ierr = PetscPrintf(PETSC_COMM_WORLD, "Printing vec B sample here...\n");CHKERRQ(ierr);
+    ierr = printVecValuesSample(b);CHKERRQ(ierr);
+
     /* Zero entries for elastic medium validation only */
     //ierr = VecZeroEntries(b);CHKERRQ(ierr);
     //ierr = MatZeroEntries(H);CHKERRQ(ierr);
@@ -41,10 +44,32 @@ PetscErrorCode systemAssembly(const Box *box_ptr, const Parameters *par_ptr, Mat
     ierr = VecGetSize(b, &solSize);CHKERRQ(ierr);
     if (solSize < 50)
     {
-        ierr = MatView(H,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
-        ierr = VecView(b,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+        ierr = MatView(H,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
+        ierr = VecView(b,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
     }
 
+    return ierr;
+}
+
+
+PetscErrorCode printVecValuesSample(Vec vecToPrint)
+{
+    PetscErrorCode ierr;
+    PetscInt i,nlocal;
+    PetscInt sample=10;
+    PetscScalar const *array;
+
+    ierr = VecGetLocalSize(vecToPrint,&nlocal);
+    ierr = VecGetArrayRead(vecToPrint,&array);CHKERRQ(ierr);
+    if (nlocal >= sample)
+    {
+        for (i = 0; i < sample; i++)
+        {
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"array[%d] = %.16g\n", i, array[i]);CHKERRQ(ierr);
+        }
+    }
+    ierr = VecRestoreArrayRead(vecToPrint,&array);CHKERRQ(ierr);
+    
     return ierr;
 }
 
