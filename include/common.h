@@ -55,6 +55,11 @@ struct parameters
     PetscScalar energyAffn;
     PetscScalar shearModulus;
     PetscScalar shearModAffn;
+    /* sheet based network parameters */
+    PetscScalar inPlnEnergyTotl;
+    PetscScalar inPlnEnergyAffn;
+    PetscScalar outPlnEnergyTotl;
+    PetscScalar outPlnEnergyAffn;
 };
 
 /* structure for the domain */
