@@ -12,76 +12,77 @@ PetscScalar calculateKappa(const PetscScalar radius, const PetscScalar youngsMod
 PetscErrorCode addFibreLocalBend(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, 
                                     const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
-	PetscErrorCode 	ierr = 0;
-	PetscScalar		kappa;
-	PetscScalar		l_alphOmeg, l_omegBeta, l_alphBeta;
-	PetscScalar		bConstNum, bConstDen, bConst;
+    PetscErrorCode  ierr = 0;
+    PetscScalar     kappa;
+    PetscScalar     l_alphOmeg, l_omegBeta, l_alphBeta;
+    PetscScalar     bConstNum, bConstDen, bConst;
 
-	/* setup local matrix and rhs vector */
-	PetscScalar localBendMat_A[9][9];
-	PetscScalar localBendVec_b[9];         /* actual size will be 3*DIMENSION */
+    /* setup local matrix and rhs vector */
+    PetscScalar localBendMat_A[9][9];
+    PetscScalar localBendVec_b[9];         /* actual size will be 3*DIMENSION */
 
-	/* setup difference vectors */
-	PetscScalar s_alphOmeg[DIMENSION], u_alphOmeg[DIMENSION];
-	PetscScalar s_omegBeta[DIMENSION], u_omegBeta[DIMENSION];
-	PetscScalar s_alphBeta[DIMENSION], u_alphBeta[DIMENSION];
+    /* setup difference vectors */
+    PetscScalar s_alphOmeg[DIMENSION], u_alphOmeg[DIMENSION];
+    PetscScalar s_omegBeta[DIMENSION], u_omegBeta[DIMENSION];
+    PetscScalar s_alphBeta[DIMENSION], u_alphBeta[DIMENSION];
 
-	/* loop over every pair of nodes on the fibre */
-	PetscInt i;
-	for (i = 0; i < fibre_ptr->nodesOnFibre - 2; i++)
-	{
-		const Node *n_alph = fibre_ptr->nodesOnFibreList[i];
-		const Node *n_omeg = fibre_ptr->nodesOnFibreList[i+1];
-		const Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
+    /* loop over every pair of nodes on the fibre */
+    PetscInt i;
+    for (i = 0; i < fibre_ptr->nodesOnFibre - 2; i++)
+    {
+        const Node *n_alph = fibre_ptr->nodesOnFibreList[i];
+        const Node *n_omeg = fibre_ptr->nodesOnFibreList[i+1];
+        const Node *n_beta = fibre_ptr->nodesOnFibreList[i+2];
 
-		/* make difference vectors from position vectors with boundary checking */
-		ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
-		ierr = posVecDifference(s_omegBeta, n_omeg->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
-		ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
+        /* make difference vectors from position vectors with boundary checking */
+        ierr = posVecDifference(s_alphOmeg, n_alph->xyzCoord, n_omeg->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
+        ierr = posVecDifference(s_omegBeta, n_omeg->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
+        ierr = posVecDifference(s_alphBeta, n_alph->xyzCoord, n_beta->xyzCoord, xyzPer, xyzDim);CHKERRQ(ierr);
 
-		/* make difference vectors from displacement vectors */
-		ierr = stdVecDifference(u_alphOmeg, n_alph->xyzDisplacement, n_omeg->xyzDisplacement);CHKERRQ(ierr);
-		ierr = stdVecDifference(u_omegBeta, n_omeg->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
-		ierr = stdVecDifference(u_alphBeta, n_alph->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
+        /* make difference vectors from displacement vectors */
+        ierr = stdVecDifference(u_alphOmeg, n_alph->xyzDisplacement, n_omeg->xyzDisplacement);CHKERRQ(ierr);
+        ierr = stdVecDifference(u_omegBeta, n_omeg->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
+        ierr = stdVecDifference(u_alphBeta, n_alph->xyzDisplacement, n_beta->xyzDisplacement);CHKERRQ(ierr);
 
-		/* calculate segment lengths */
-		l_alphOmeg = vecMagnitude(s_alphOmeg);
-		l_omegBeta = vecMagnitude(s_omegBeta);	/* WARNING: do NOT assume that 			 */
-		l_alphBeta = l_alphOmeg + l_omegBeta;	/* l_alphBeta = vecMagnitude(s_alphBeta) */
+        /* calculate segment lengths */
+        l_alphOmeg = vecMagnitude(s_alphOmeg);
+        l_omegBeta = vecMagnitude(s_omegBeta);  /* WARNING: do NOT assume that           */
+        l_alphBeta = l_alphOmeg + l_omegBeta;   /* l_alphBeta = vecMagnitude(s_alphBeta) */
 
-		/* calculate bending modulus kappa */
+        /* calculate bending modulus kappa */
         kappa = calculateKappa(fibre_ptr->radius, youngsModulus);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] kappa = %0.6g\n", kappa);CHKERRQ(ierr);
 
-		/* calculate bending constant */
-		bConstNum = 2 * kappa;
-		bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
-		bConst 	  = bConstNum / bConstDen;
+        /* calculate bending constant */
+        bConstNum = 2 * kappa;
+        bConstDen = l_alphBeta * pow(l_alphOmeg,2) * pow(l_omegBeta,2);
+        bConst    = bConstNum / bConstDen;
 
         if (DIMENSION == 2)
-		{
-			/* assemble the 2D local matrix and rhs vector */
-			ierr = make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
-			ierr = make2DBendVec(u_alphOmeg, u_omegBeta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);
+        {
+            /* assemble the 2D local matrix and rhs vector */
+            ierr = make2DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
+            ierr = make2DBendVec(u_alphOmeg, u_omegBeta, s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendVec_b);
             CHKERRQ(ierr);
-		}
-		else if (DIMENSION == 3)
-		{
-			/* assemble the 3D local matrix and rhs vector */
-			ierr = make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
-			ierr = make3DBendVec(u_alphOmeg, u_omegBeta, u_alphBeta, s_alphOmeg, 
+        }
+        else if (DIMENSION == 3)
+        {
+            /* assemble the 3D local matrix and rhs vector */
+            ierr = make3DBendMat(s_alphOmeg, s_omegBeta, s_alphBeta, bConst, localBendMat_A);CHKERRQ(ierr);
+            ierr = make3DBendVec(u_alphOmeg, u_omegBeta, u_alphBeta, s_alphOmeg, 
                                     s_omegBeta, s_alphBeta, bConst, localBendVec_b);
             CHKERRQ(ierr);
-		}
+        }
 
-		/* determine contributions and add to the global system */
+        /* determine contributions and add to the global system */
         ierr = addBendContToGlobal( globalMat_H, globalVec_B, N,  
                                     n_alph->globalID, n_omeg->globalID, n_beta->globalID,
                                     n_alph->nodeType, n_omeg->nodeType, n_beta->nodeType,
-        							localBendMat_A, localBendVec_b );
+                                    localBendMat_A, localBendVec_b );
         CHKERRQ(ierr);
-	}
+    }
 
-	return ierr;
+    return ierr;
 }
 
 
@@ -148,16 +149,16 @@ PetscErrorCode make2DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s
      *  localBendMat_A[6:8][0:8] = N/A
      */
 
-	return ierr;
+    return ierr;
 }
 
 
 /* Assembles the local 2D bend RHS vector of a given triplet */
 PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta,
-                    			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
 
     const PetscInt x = 0;     /* set these values purely for readability */
     const PetscInt y = 1;     /* set *(1) also for readability */
@@ -180,7 +181,7 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
      *  localBendVec_b[6:8] = N/A
      */
 
-	return ierr;
+    return ierr;
 }
 
 
@@ -188,9 +189,9 @@ PetscErrorCode make2DBendVec( const PetscScalar *u_alphOmeg, const PetscScalar *
 PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 const PetscScalar bConst, PetscScalar localBendMat_A[9][9] )
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
 
-	const PetscInt x = 0;    /* set these values purely for readability */
+    const PetscInt x = 0;    /* set these values purely for readability */
     const PetscInt y = 1;    /* set *(1) also for readability */
     const PetscInt z = 2;
 
@@ -317,31 +318,41 @@ PetscErrorCode make3DBendMat(const PetscScalar *s_alphOmeg, const PetscScalar *s
 
     localBendMat_A[8][6] = localBendMat_A[6][8];
     localBendMat_A[8][7] = localBendMat_A[7][8];
-    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[y], 2));
+    localBendMat_A[8][8] = ( 1) * bConst * (pow(s_alphOmeg[y], 2) + pow(s_alphOmeg[x], 2));
 
-	return ierr;
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] bConst = %0.6g\n", bConst);CHKERRQ(ierr);
+    //int i,j;
+    //for (i = 0; i < 9; i++) {
+    //    for (j = 0; j < 9; j++) {
+    //        ierr = PetscPrintf(PETSC_COMM_WORLD,"[BMAT] %0.6g\t", localBendMat_A[i][j]);CHKERRQ(ierr);
+    //    }
+    //    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    //}
+    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+
+    return ierr;
 }
 
 
 /* Assembles the local 3D bend RHS vector of a given triplet */
 PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u_omegBeta, const PetscScalar *u_alphBeta,
-                    			const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
+                                const PetscScalar *s_alphOmeg, const PetscScalar *s_omegBeta, const PetscScalar *s_alphBeta, 
                                 PetscScalar bConst, PetscScalar localBendVec_b[9] )
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
 
-	const PetscInt x = 0;    /* set these values purely for readability */
+    const PetscInt x = 0;    /* set these values purely for readability */
     const PetscInt y = 1;    /* set *(1) also for readability */
     const PetscInt z = 2;
 
     PetscScalar phi_xy = s_alphOmeg[x] * u_omegBeta[y] - s_alphOmeg[y] * u_omegBeta[x]
-                    	- s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
+                        - s_omegBeta[x] * u_alphOmeg[y] + s_omegBeta[y] * u_alphOmeg[x];
 
     PetscScalar phi_zx = s_alphOmeg[z] * u_omegBeta[x] - s_alphOmeg[x] * u_omegBeta[z]
-                    	- s_omegBeta[z] * u_alphOmeg[x] + s_omegBeta[x] * u_alphOmeg[z];
+                        - s_omegBeta[z] * u_alphOmeg[x] + s_omegBeta[x] * u_alphOmeg[z];
 
     PetscScalar phi_yz = s_alphOmeg[y] * u_omegBeta[z] - s_alphOmeg[z] * u_omegBeta[y]
-                    	- s_omegBeta[y] * u_alphOmeg[z] + s_omegBeta[z] * u_alphOmeg[y];
+                        - s_omegBeta[y] * u_alphOmeg[z] + s_omegBeta[z] * u_alphOmeg[y];
 
     /* we want the negation of the 1st partial derivatives */
     phi_xy *= -1;
@@ -358,7 +369,7 @@ PetscErrorCode make3DBendVec(const PetscScalar *u_alphOmeg, const PetscScalar *u
     localBendVec_b[7] = bConst * (( 1) * phi_zx * s_alphBeta[x] + (-1) * phi_yz * s_alphBeta[y]);
     localBendVec_b[8] = bConst * ((-1) * phi_zx * s_alphOmeg[x] + ( 1) * phi_yz * s_alphOmeg[y]);
 
-	return ierr;
+    return ierr;
 }
 
 

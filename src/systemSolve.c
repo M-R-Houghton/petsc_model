@@ -3,33 +3,33 @@
 /* Initiates system solve routine */
 PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
 {
-	PetscErrorCode 	ierr;
-	KSP            	ksp;          /* linear solver context */
-	PC             	pc;           /* preconditioner context */
-	PetscInt 		its;
-	PetscReal 		norm; 		  /* norm of solution error */
+    PetscErrorCode  ierr;
+    KSP             ksp;          /* linear solver context */
+    PC              pc;           /* preconditioner context */
+    PetscInt        its;
+    PetscReal       norm;         /* norm of solution error */
 
-	/* Create linear solver context */
+    /* Create linear solver context */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Creating solver context...\n");CHKERRQ(ierr);
-	ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
-	
-	/*
+    ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
+    
+    /*
        Set operators. Here the matrix that defines the linear system
        also serves as the preconditioning matrix.
     */
-	ierr = KSPSetOperators(ksp,globalMat_H,globalMat_H MATSTRUCT);CHKERRQ(ierr);
+    ierr = KSPSetOperators(ksp,globalMat_H,globalMat_H MATSTRUCT);CHKERRQ(ierr);
 
-	/* Set linear solver defaults for this problem (optional) */
-	ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-	ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
-	ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
+    /* Set linear solver defaults for this problem (optional) */
+    ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+    ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
+    ierr = KSPSetTolerances(ksp,1.e-5,PETSC_DEFAULT,PETSC_DEFAULT,PETSC_DEFAULT);CHKERRQ(ierr);
     // TODO: Decide whether default tolerance is more appropriate
 
-	/* Set runtime options after those specified above to override the defaults */
+    /* Set runtime options after those specified above to override the defaults */
     ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
 
     /* Solve linear system */
-	ierr = KSPSolve(ksp,globalVec_B,globalVec_U);CHKERRQ(ierr);
+    ierr = KSPSolve(ksp,globalVec_B,globalVec_U);CHKERRQ(ierr);
 
     /* View solution vector if problem is small enough */
     PetscInt solSize;
@@ -39,12 +39,12 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
     if (solSize < 50) VecView(globalVec_U,PETSC_VIEWER_STDOUT_WORLD);
     //ierr = VecView(globalVec_U,PETSC_VIEWER_DRAW_WORLD);CHKERRQ(ierr);
 
-	/* View solver info */
-	ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+    /* View solver info */
+    ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
 
-	/* Get iteration count */
-	ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Iterations %d\n",its);CHKERRQ(ierr);
+    /* Get iteration count */
+    ierr = KSPGetIterationNumber(ksp,&its);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Iterations %d\n",its);CHKERRQ(ierr);
 
     /* Manual residual norm calculation */
     /*
@@ -58,14 +58,14 @@ PetscErrorCode systemSolve(Mat globalMat_H, Vec globalVec_B, Vec globalVec_U)
     VecDestroy(&w);
     */
 
-	/* Get (relative?) residual norm */
-	KSPGetResidualNorm(ksp,&norm);
-	PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %g\n", (double)norm);CHKERRQ(ierr);
+    /* Get (relative?) residual norm */
+    KSPGetResidualNorm(ksp,&norm);
+    PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Residual norm = %g\n", (double)norm);CHKERRQ(ierr);
 
     /* Clean up */
-	ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+    ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
 
-	return ierr;
+    return ierr;
 }
 
 

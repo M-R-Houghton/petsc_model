@@ -13,8 +13,8 @@ void checkSegLength(const PetscScalar segLength, const PetscInt *xyzPer, const P
 /* Calculates the stretching constant k */
 PetscScalar calculateK(const PetscScalar radius, const PetscScalar youngsModulus, const PetscScalar segLength)
 {
-    PetscScalar area 	= M_PI * pow(radius, 2);
-    PetscScalar mu 		= area * youngsModulus;
+    PetscScalar area    = M_PI * pow(radius, 2);
+    PetscScalar mu      = area * youngsModulus;
     return mu / segLength;
 }
 
@@ -48,8 +48,8 @@ PetscErrorCode calculateSegPairInfo( PetscScalar *k, PetscScalar *t_alphBeta, co
 PetscErrorCode addFibreLocalStretch(Mat globalMat_H, Vec globalVec_B, const PetscInt N, const Fibre *fibre_ptr, 
                                     const PetscInt *xyzPer, const PetscScalar *xyzDim, const PetscScalar youngsModulus)
 {
-    PetscErrorCode 	ierr = 0;
-    PetscScalar		l_alphBeta, k;
+    PetscErrorCode  ierr = 0;
+    PetscScalar     l_alphBeta, k;
 
     /* setup local matrix and rhs vector */
     PetscScalar localStretchMat_A[6][6];
@@ -239,6 +239,16 @@ PetscErrorCode make3DStretchMat(const PetscScalar k, const PetscScalar *tangVec,
     localStretchMat_A[5][3] = localStretchMat_A[3][5];
     localStretchMat_A[5][4] = localStretchMat_A[4][5];
     localStretchMat_A[5][5] = ( 1) * k * pow( tangVec[z], 2 );
+
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"[SMAT] k = %0.16g\n", k);CHKERRQ(ierr);
+    //int i,j;
+    //for (i = 0; i < 6; i++) {
+    //    for (j = 0; j < 6; j++) {
+    //        ierr = PetscPrintf(PETSC_COMM_WORLD,"[SMAT] %0.16g\t", localStretchMat_A[i][j]);CHKERRQ(ierr);
+    //    }
+    //    ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
+    //}
+    //ierr = PetscPrintf(PETSC_COMM_WORLD, "\n");CHKERRQ(ierr);
 
     return ierr;
 }

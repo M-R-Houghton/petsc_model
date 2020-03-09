@@ -82,7 +82,7 @@ PetscErrorCode stdVecAddition(PetscScalar *addVec_ptr, const PetscScalar *vec1_p
  * \param xyzDimension Array of x,y,z dimensions
  */
 PetscErrorCode posVecAddition(PetscScalar *addVec_ptr, const PetscScalar *posVec1_ptr, const PetscScalar *posVec2_ptr, 
-                            const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
+                                const PetscInt *xyzPeriodic, const PetscScalar *xyzDimension);
 
 /* \brief Creates the difference vector between two vectors without periodicity checking 
  * \param distVec_ptr
