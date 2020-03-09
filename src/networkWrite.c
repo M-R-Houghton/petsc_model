@@ -141,6 +141,16 @@ PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     //
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tE_Aff-E \t= %g\n", par_ptr->energyAffn-par_ptr->energyTotl);CHKERRQ(ierr);
     //ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tG_Aff-G \t= %g\n", par_ptr->shearModAffn-par_ptr->shearModulus);CHKERRQ(ierr);
+    if (box_ptr->sheetCount > 0) 
+    {
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tSheetCount \t= %d\n", box_ptr->sheetCount);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tFibPerSheet \t= %d\n", box_ptr->fibreCountPerSheet);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tConFibPerPair\t= %d\n", box_ptr->conFibCountPerSheetPair);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tInPlnEnergyTotl = %.16e\n", par_ptr->inPlnEnergyTotl);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tInPlnEnergyAffn = %.16e\n", par_ptr->inPlnEnergyAffn);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tOutPlnEnergyTot = %.16e\n", par_ptr->outPlnEnergyTotl);CHKERRQ(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tOutPlnEnergyAff = %.16e\n", par_ptr->outPlnEnergyAffn);CHKERRQ(ierr);
+    }
 
     return ierr;
 }

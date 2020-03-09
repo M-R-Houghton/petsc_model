@@ -55,6 +55,11 @@ struct parameters
     PetscScalar energyAffn;
     PetscScalar shearModulus;
     PetscScalar shearModAffn;
+    /* sheet based network parameters */
+    PetscScalar inPlnEnergyTotl;
+    PetscScalar inPlnEnergyAffn;
+    PetscScalar outPlnEnergyTotl;
+    PetscScalar outPlnEnergyAffn;
 };
 
 /* structure for the domain */
@@ -69,6 +74,11 @@ struct box
     Node *masterNodeList;           /* declare lists for storing nodes and fibres */
     Fibre *masterFibreList;
     Couple *masterCoupleList;
+
+    /* probably want to move this into its own struct eventually */
+    PetscInt sheetCount;
+    PetscInt fibreCountPerSheet;
+    PetscInt conFibCountPerSheetPair;
 };
 
 /* structure for coupled nodes */
