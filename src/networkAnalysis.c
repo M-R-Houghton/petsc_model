@@ -360,7 +360,11 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
         par_ptr->energyPsAf += box_ptr->masterFibreList[fIndex].fibrePsAfEnergy;
         par_ptr->energyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
 
-        // TODO: split energies based on ID here
+        /* calculate index based sheet network energy if appropriate */
+        if (box_ptr->sheetCount > 0)
+        {
+            ierr = addFibreSheetEnergy(box_ptr, par_ptr, fIndex);
+        }
 
         /* calculate bending energy from contributions of every fibre */
         if (SPAN == 2)
@@ -374,6 +378,30 @@ PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr)
 
     /* calculate total energy after looping over every fibre */
     par_ptr->energyTotl = par_ptr->energyStre + par_ptr->energyBend;
+
+    return ierr;
+}
+
+
+PetscErrorCode addFibreSheetEnergy(const Box *box_ptr, Parameters *par_ptr, PetscInt fIndex)
+{
+    PetscErrorCode ierr = 0;
+    PetscInt firstOutOfPlaneIdx = box_ptr->sheetCount * box_ptr->fibreCountPerSheet;
+
+    /* check for off-the-end index */
+    assert(fIndex < firstOutOfPlaneIdx + (box_ptr->sheetCount-1)*box_ptr->conFibCountPerSheetPair);
+
+    /* index based energy summing */
+    if (fIndex < firstOutOfPlaneIdx)
+    {
+        par_ptr->inPlnEnergyTotl += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+        par_ptr->inPlnEnergyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
+    }
+    else
+    {
+        par_ptr->outPlnEnergyTotl += box_ptr->masterFibreList[fIndex].fibreStreEnergy;
+        par_ptr->outPlnEnergyAffn += box_ptr->masterFibreList[fIndex].fibreAffnEnergy;
+    }
 
     return ierr;
 }
