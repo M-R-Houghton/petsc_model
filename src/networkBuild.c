@@ -4,145 +4,145 @@
 PetscErrorCode networkBuild()
 {
     /* TODO: This function is obsolete and will be removed */
-	PetscErrorCode 	ierr;
-	ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building network objects...\n");CHKERRQ(ierr);
+    PetscErrorCode  ierr;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Building network objects...\n");CHKERRQ(ierr);
 
-	return ierr;
+    return ierr;
 }
 
 
 /* Creates a parameters structure */
 Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod)
 {
-	/* allocate memory */
-	Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
+    /* allocate memory */
+    Parameters *par_ptr = (Parameters *)malloc(sizeof(Parameters));
 
-	/* assign attributes */
-	strcpy(par_ptr->inputNetwork, input);
-	strcpy(par_ptr->outputNetwork, output);
-	strcpy(par_ptr->outadvNetwork, outadv);
+    /* assign attributes */
+    strcpy(par_ptr->inputNetwork, input);
+    strcpy(par_ptr->outputNetwork, output);
+    strcpy(par_ptr->outadvNetwork, outadv);
     strcpy(par_ptr->postSolveResults, results);
     // TODO: add results file here
-	par_ptr->gamma = gamma;
-	par_ptr->youngsModulus = yMod;
+    par_ptr->gamma = gamma;
+    par_ptr->youngsModulus = yMod;
     // TODO: Check input and output do not exceed 100 chars
 
-	/* should not be assigned by user */
-	par_ptr->energyStre = 0;
-	par_ptr->energyBend = 0;
-	par_ptr->energyTotl = 0;
-	par_ptr->energyPsAf = 0;
-	par_ptr->energyAffn = 0;
-	par_ptr->shearModulus = 0;
-	par_ptr->shearModAffn = 0;
+    /* should not be assigned by user */
+    par_ptr->energyStre = 0;
+    par_ptr->energyBend = 0;
+    par_ptr->energyTotl = 0;
+    par_ptr->energyPsAf = 0;
+    par_ptr->energyAffn = 0;
+    par_ptr->shearModulus = 0;
+    par_ptr->shearModAffn = 0;
 
-	return par_ptr;
+    return par_ptr;
 }
 
 
 /* Creates a sparse structure */
 Sparse *makeSparse(PetscInt n, PetscInt nz)
 {
-	/* check for invalid arguments given */
-	assert(n >= nz);
+    /* check for invalid arguments given */
+    assert(n >= nz);
 
-	/* allocate memory */
-	Sparse *sparse_ptr = (Sparse *)malloc(sizeof(Sparse));
+    /* allocate memory */
+    Sparse *sparse_ptr = (Sparse *)malloc(sizeof(Sparse));
 
-	/* assign attributes */
-	sparse_ptr->n = n;
-	sparse_ptr->nz = nz;
-	sparse_ptr->counter = (PetscInt *)calloc(sparse_ptr->n,sizeof(PetscInt));
-	sparse_ptr->rowp = (PetscInt *)calloc(sparse_ptr->n+1,sizeof(PetscInt));
-	sparse_ptr->col = (PetscInt *)calloc(sparse_ptr->nz,sizeof(PetscInt));
-	sparse_ptr->mat = (PetscScalar *)calloc(sparse_ptr->nz,sizeof(PetscScalar));
+    /* assign attributes */
+    sparse_ptr->n = n;
+    sparse_ptr->nz = nz;
+    sparse_ptr->counter = (PetscInt *)calloc(sparse_ptr->n,sizeof(PetscInt));
+    sparse_ptr->rowp = (PetscInt *)calloc(sparse_ptr->n+1,sizeof(PetscInt));
+    sparse_ptr->col = (PetscInt *)calloc(sparse_ptr->nz,sizeof(PetscInt));
+    sparse_ptr->mat = (PetscScalar *)calloc(sparse_ptr->nz,sizeof(PetscScalar));
 
-	return sparse_ptr;
+    return sparse_ptr;
 }
 
 
 /* Checks box arguments are all legal */
 void checkBoxArguments(PetscInt nCount, PetscInt fCount,
-							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
-							PetscInt xPer, PetscInt yPer, PetscInt zPer)
+                            PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
+                            PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
-	assert(nCount >= 0);
-	assert(fCount >= 0);
+    assert(nCount >= 0);
+    assert(fCount >= 0);
 
-	assert(xDim >= 0);
-	assert(yDim >= 0);
-	assert(zDim >= 0);
+    assert(xDim >= 0);
+    assert(yDim >= 0);
+    assert(zDim >= 0);
 
-	assert(xPer >= 0);
-	assert(yPer >= 0);
-	assert(zPer >= 0);
+    assert(xPer >= 0);
+    assert(yPer >= 0);
+    assert(zPer >= 0);
 
-	assert(xPer <= 1);
-	assert(yPer <= 1);
-	assert(zPer <= 1);
+    assert(xPer <= 1);
+    assert(yPer <= 1);
+    assert(zPer <= 1);
 }
 
 
 /* Creates a box structure */
 Box *makeBox(PetscInt nCount, PetscInt fCount,
-				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
-				PetscInt xPer, PetscInt yPer, PetscInt zPer)
+                PetscScalar xDim, PetscScalar yDim, PetscScalar zDim,
+                PetscInt xPer, PetscInt yPer, PetscInt zPer)
 {
-	/* validate arguments */
-	checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer);
+    /* validate arguments */
+    checkBoxArguments(nCount,fCount,xDim,yDim,zDim,xPer,yPer,zPer);
 
-	/* allocate memory */
-	Box *box_ptr = (Box *)malloc(sizeof(Box));
+    /* allocate memory */
+    Box *box_ptr = (Box *)malloc(sizeof(Box));
 
-	/* assign attributes */
-	box_ptr->nodeCount = nCount;
-	box_ptr->nodeInternalCount = -1;
-	box_ptr->fibreCount = fCount;
-	box_ptr->xyzDimension[0] = xDim;
-	box_ptr->xyzDimension[1] = yDim;
-	box_ptr->xyzDimension[2] = zDim;
-	box_ptr->xyzPeriodic[0] = xPer;
-	box_ptr->xyzPeriodic[1] = yPer;
-	box_ptr->xyzPeriodic[2] = zPer;
+    /* assign attributes */
+    box_ptr->nodeCount = nCount;
+    box_ptr->nodeInternalCount = -1;
+    box_ptr->fibreCount = fCount;
+    box_ptr->xyzDimension[0] = xDim;
+    box_ptr->xyzDimension[1] = yDim;
+    box_ptr->xyzDimension[2] = zDim;
+    box_ptr->xyzPeriodic[0] = xPer;
+    box_ptr->xyzPeriodic[1] = yPer;
+    box_ptr->xyzPeriodic[2] = zPer;
 
-	/* assign allocated memory to master node/fibre lists */
-	box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
-	box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
+    /* assign allocated memory to master node/fibre lists */
+    box_ptr->masterNodeList = (Node*)calloc(nCount, sizeof(Node));
+    box_ptr->masterFibreList = (Fibre*)calloc(fCount, sizeof(Fibre));
 
     /* couple count should only be changed from initial val if system is coupled */
     box_ptr->coupleCount = 0;
     /* couple list memory should be allocated after no. of couples is known */
     box_ptr->masterCoupleList = NULL;
 
-	return box_ptr;
+    return box_ptr;
 }
 
 
 /* Checks fibre arguments are all legal */
 void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
-				PetscScalar radius, Node **nList_ptr_ptr)
+                PetscScalar radius, Node **nList_ptr_ptr)
 {
-	assert(box_ptr       != NULL);
-	assert(nList_ptr_ptr != NULL);
+    assert(box_ptr       != NULL);
+    assert(nList_ptr_ptr != NULL);
 
-	assert(fID      >= 0);
-	assert(nOnFibre >= 0);
-	assert(radius   >= 0);
+    assert(fID      >= 0);
+    assert(nOnFibre >= 0);
+    assert(radius   >= 0);
 }
 
 
 /* Creates a fibre within its allocated location in a box */
 PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
 
-	/* validate arguments */
-	checkFibreArguments(box_ptr, fID, nOnFibre, radius, nList_ptr_ptr);
+    /* validate arguments */
+    checkFibreArguments(box_ptr, fID, nOnFibre, radius, nList_ptr_ptr);
 
-	/* assign attributes */
-	box_ptr->masterFibreList[fID].fibreID = fID;
-	box_ptr->masterFibreList[fID].nodesOnFibre = nOnFibre;
-	box_ptr->masterFibreList[fID].radius = radius;
+    /* assign attributes */
+    box_ptr->masterFibreList[fID].fibreID = fID;
+    box_ptr->masterFibreList[fID].nodesOnFibre = nOnFibre;
+    box_ptr->masterFibreList[fID].radius = radius;
     box_ptr->masterFibreList[fID].nodesOnFibreList = nList_ptr_ptr;
 
     /* additional attributes not to be assigned by user */
@@ -157,69 +157,69 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscSca
 
 /* Checks node arguments are all legal */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
+                PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
-	assert(box_ptr != NULL);
-	assert(nID     >= 0   );
+    assert(box_ptr != NULL);
+    assert(nID     >= 0   );
     /* check for legal node type */
-	assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
+    assert(nType == NODE_INTERNAL || nType == NODE_BOUNDARY || nType == NODE_DANGLING);
 }
 
 
 /* Creates a node within its allocated location in a box */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
+                PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma)
 {
-	PetscErrorCode ierr = 0;
+    PetscErrorCode ierr = 0;
 
-	/* validate arguments */
-	checkNodeArguments(box_ptr, nID, nType, x, y, z, gamma);
+    /* validate arguments */
+    checkNodeArguments(box_ptr, nID, nType, x, y, z, gamma);
 
-	/* create shortcut for readability */
-	Node *node_ptr = &(box_ptr->masterNodeList[nID]);
+    /* create shortcut for readability */
+    Node *node_ptr = &(box_ptr->masterNodeList[nID]);
 
-	/* assign attributes */
-	node_ptr->nodeID      = nID;
-	node_ptr->nodeType    = nType;
-	node_ptr->xyzCoord[0] = x;
-	node_ptr->xyzCoord[1] = y;
-	node_ptr->xyzCoord[2] = z;
-	/* default before switch case */
-	node_ptr->globalID    = -1;
+    /* assign attributes */
+    node_ptr->nodeID      = nID;
+    node_ptr->nodeType    = nType;
+    node_ptr->xyzCoord[0] = x;
+    node_ptr->xyzCoord[1] = y;
+    node_ptr->xyzCoord[2] = z;
+    /* default before switch case */
+    node_ptr->globalID    = -1;
 
     /* non-boundary displacements are zero until after matrix solve */
-	node_ptr->xyzDisplacement[0] = 0;
-	node_ptr->xyzDisplacement[1] = 0;
-	node_ptr->xyzDisplacement[2] = 0;
+    node_ptr->xyzDisplacement[0] = 0;
+    node_ptr->xyzDisplacement[1] = 0;
+    node_ptr->xyzDisplacement[2] = 0;
 
-	/* assign affine displacements like boundary nodes */
-	node_ptr->xyzAffDisplacement[0] = gamma * y;
-	node_ptr->xyzAffDisplacement[1] = 0;
-	node_ptr->xyzAffDisplacement[2] = 0; 	/* is node_ptr->xyzCoord[1] safer than y? */
+    /* assign affine displacements like boundary nodes */
+    node_ptr->xyzAffDisplacement[0] = gamma * y;
+    node_ptr->xyzAffDisplacement[1] = 0;
+    node_ptr->xyzAffDisplacement[2] = 0;    /* is node_ptr->xyzCoord[1] safer than y? */
 
-	/* NOTE: node displacement assumes boundary nodes are fixed at y=0...	*
-	 *		...and sheared at y=HEIGHT along the x-axis 					*/
+    /* NOTE: node displacement assumes boundary nodes are fixed at y=0...   *
+     *      ...and sheared at y=HEIGHT along the x-axis                     */
 
-	switch (nType)
-	{
-		case NODE_INTERNAL:
-			/* modify global ID of internals */
+    switch (nType)
+    {
+        case NODE_INTERNAL:
+            /* modify global ID of internals */
             node_ptr->globalID = -2;
-			break;
-		case NODE_BOUNDARY:
-			/* apply boundary conditions */
-			node_ptr->xyzDisplacement[0] = gamma * y;
+            break;
+        case NODE_BOUNDARY:
+            /* apply boundary conditions */
+            node_ptr->xyzDisplacement[0] = gamma * y;
             /* NOTE: we leave y and z displacement = 0 */
-			break;
-		case NODE_DANGLING:
-			/* do nothing at the moment */
-			break;
-		default:
+            break;
+        case NODE_DANGLING:
+            /* do nothing at the moment */
+            break;
+        default:
             SETERRQ(PETSC_COMM_WORLD,PETSC_ERR_ARG_UNKNOWN_TYPE,
                     "Error in identifying node type.");
-	}
+    }
 
-	return ierr;
+    return ierr;
 }
 
 

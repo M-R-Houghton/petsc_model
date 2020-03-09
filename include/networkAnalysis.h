@@ -19,7 +19,7 @@ PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr);
  * \return
  */
 PetscScalar calculateSegStretchEnergy( const Fibre *fibre_ptr, PetscScalar youngsModulus,
-										const PetscScalar *s_alph, const PetscScalar *s_beta,
+                                        const PetscScalar *s_alph, const PetscScalar *s_beta,
                                         const PetscScalar *u_alph, const PetscScalar *u_beta,
                                         const PetscInt *xyzPer, const PetscScalar *xyzDim );
 
@@ -31,7 +31,7 @@ PetscScalar calculateSegStretchEnergy( const Fibre *fibre_ptr, PetscScalar young
  * \return
  */
 PetscScalar calculateSegBendEnergy( Box *box_ptr, Parameters *par_ptr, PetscInt fIndex,
-									 const PetscScalar *s_alph, const PetscScalar *s_omeg, const PetscScalar *s_beta,
+                                     const PetscScalar *s_alph, const PetscScalar *s_omeg, const PetscScalar *s_beta,
                                      const PetscScalar *u_alph, const PetscScalar *u_omeg, const PetscScalar *u_beta );
 
 /**

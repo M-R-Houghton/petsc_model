@@ -6,8 +6,8 @@ static char help[] = "The first draft of the PETSc model.\n\n";
 
 int main(int argc, char **args)
 {
-    Box  		    *box_ptr;
-    Parameters 	    *par_ptr;
+    Box             *box_ptr;
+    Parameters      *par_ptr;
     Vec             vecB, vecU, vecX;       /* approx solution, RHS, exact solution */
     Mat             matH;                   /* linear system matrix */
     PetscReal       norm;                   /* norm of solution error */
@@ -33,20 +33,20 @@ int main(int argc, char **args)
     PetscBool       restartTS = PETSC_TRUE;
 
 #if defined(PETSC_USE_LOG)
-	PetscLogStage stages[6];
+    PetscLogStage stages[6];
 #endif
 
     // testing the use of tag update
 
     if (argc < 2)
     {
-    	printf("[ERROR] Incorrect number of arguments provided.\n");
-    	exit(EXIT_FAILURE);
+        printf("[ERROR] Incorrect number of arguments provided.\n");
+        exit(EXIT_FAILURE);
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Model set up
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     /* set options file */
     const char optFile[] = "modelOptions.dat";
     
@@ -90,14 +90,14 @@ int main(int argc, char **args)
     /* Register stages for separate profiling */
     ierr = PetscLogStageRegister("Network Read-in",  &stages[0]);CHKERRQ(ierr);
     ierr = PetscLogStageRegister("System Assembly",  &stages[1]);CHKERRQ(ierr);
-    ierr = PetscLogStageRegister("System Solve",  	 &stages[2]);CHKERRQ(ierr);
-    ierr = PetscLogStageRegister("Network Update", 	 &stages[3]);CHKERRQ(ierr);
+    ierr = PetscLogStageRegister("System Solve",     &stages[2]);CHKERRQ(ierr);
+    ierr = PetscLogStageRegister("Network Update",   &stages[3]);CHKERRQ(ierr);
     ierr = PetscLogStageRegister("Network Analysis", &stages[4]);CHKERRQ(ierr);
     ierr = PetscLogStageRegister("Network Write-out",&stages[5]);CHKERRQ(ierr);
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network read in
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading parameter file...\n");CHKERRQ(ierr);
     ierr = parameterRead(parFile, &par_ptr, gamma, yMod);CHKERRQ(ierr);
     
@@ -105,8 +105,8 @@ int main(int argc, char **args)
     ierr = PetscLogStagePush(stages[0]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Reading from file '%s'...\n", par_ptr->inputNetwork);CHKERRQ(ierr);
     ierr = networkRead(par_ptr->inputNetwork, &box_ptr, par_ptr->gamma);CHKERRQ(ierr);
-    N 	 = box_ptr->nodeInternalCount;
-    n 	 = N * DIMENSION;
+    N    = box_ptr->nodeInternalCount;
+    n    = N * DIMENSION;
     /* WARNING: here we are overwriting the number of procs n... why? */
     // TODO: change this so that we have separate variables.
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
@@ -118,7 +118,7 @@ int main(int argc, char **args)
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             System assembly
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     /* allocate memory for global rhs and solution vectors and set them up */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
     ierr = VecCreate(PETSC_COMM_WORLD,&vecB);CHKERRQ(ierr);
@@ -146,7 +146,7 @@ int main(int argc, char **args)
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Solve the linear system
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
     /* solve linear system via matrix inversion */
@@ -199,7 +199,7 @@ int main(int argc, char **args)
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Update the network and analyse
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[3]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Updating network...\n");CHKERRQ(ierr);
     ierr = networkUpdate(box_ptr,vecU);CHKERRQ(ierr);
@@ -262,7 +262,7 @@ int main(int argc, char **args)
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network write out to file
-     	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[5]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Writing to file...\n");CHKERRQ(ierr);
     ierr = networkWrite(par_ptr->outputNetwork, par_ptr->outadvNetwork, box_ptr);CHKERRQ(ierr);

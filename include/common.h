@@ -10,7 +10,7 @@
 
 #include "minUnitMacros.h"
 
-#define DIMENSION 2
+#define DIMENSION 3
 #define MAX_LENGTH 10000
 #define MAX_NAME 100
 #define MAX_NODES_ON_COUPLE 200
@@ -42,32 +42,32 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
-	char inputNetwork[MAX_NAME];
-	char outputNetwork[MAX_NAME];
-	char outadvNetwork[MAX_NAME];
-	char postSolveResults[MAX_NAME];
-	PetscScalar gamma;
-	PetscScalar youngsModulus;
-	PetscScalar energyStre;
-	PetscScalar energyBend;
-	PetscScalar energyTotl;
-	PetscScalar energyPsAf;
-	PetscScalar energyAffn;
-	PetscScalar shearModulus;
-	PetscScalar shearModAffn;
+    char inputNetwork[MAX_NAME];
+    char outputNetwork[MAX_NAME];
+    char outadvNetwork[MAX_NAME];
+    char postSolveResults[MAX_NAME];
+    PetscScalar gamma;
+    PetscScalar youngsModulus;
+    PetscScalar energyStre;
+    PetscScalar energyBend;
+    PetscScalar energyTotl;
+    PetscScalar energyPsAf;
+    PetscScalar energyAffn;
+    PetscScalar shearModulus;
+    PetscScalar shearModAffn;
 };
 
 /* structure for the domain */
 struct box 
 {
-	PetscInt nodeCount;
-	PetscInt nodeInternalCount;
-	PetscInt fibreCount;
+    PetscInt nodeCount;
+    PetscInt nodeInternalCount;
+    PetscInt fibreCount;
     PetscInt coupleCount;           /* in many cases this may be equal to internal */
-	PetscScalar xyzDimension[3];
-	PetscInt xyzPeriodic[3];
-	Node *masterNodeList;			/* declare lists for storing nodes and fibres */
-	Fibre *masterFibreList;
+    PetscScalar xyzDimension[3];
+    PetscInt xyzPeriodic[3];
+    Node *masterNodeList;           /* declare lists for storing nodes and fibres */
+    Fibre *masterFibreList;
     Couple *masterCoupleList;
 };
 
@@ -86,37 +86,37 @@ struct couple
 /* structure for nodes */
 struct node 
 {
-	PetscInt nodeID;
-	PetscInt nodeType;					/* might want to link back later */
-	PetscInt globalID;
-	PetscScalar xyzCoord[3];
-	PetscScalar xyzDisplacement[3];
-	PetscScalar xyzAffDisplacement[3];
+    PetscInt nodeID;
+    PetscInt nodeType;                  /* might want to link back later */
+    PetscInt globalID;
+    PetscScalar xyzCoord[3];
+    PetscScalar xyzDisplacement[3];
+    PetscScalar xyzAffDisplacement[3];
 };
 
 /* structure for fibres */
 struct fibre 
 {
-	PetscInt fibreID;
-	PetscInt nodesOnFibre;
-	PetscScalar radius;
-	Node **nodesOnFibreList;
+    PetscInt fibreID;
+    PetscInt nodesOnFibre;
+    PetscScalar radius;
+    Node **nodesOnFibreList;
 
-	PetscScalar fibreStreEnergy;
-	PetscScalar fibreBendEnergy;
-	PetscScalar fibrePsAfEnergy;
-	PetscScalar fibreAffnEnergy;
+    PetscScalar fibreStreEnergy;
+    PetscScalar fibreBendEnergy;
+    PetscScalar fibrePsAfEnergy;
+    PetscScalar fibreAffnEnergy;
 };
 
 /* structure for sparse matrices */
 struct sparseMat 
 {
-	PetscInt n;
-	PetscInt nz;
-	PetscInt *counter; 					/* (0<n)   counters     */
-	PetscInt *rowp;    					/* (0<n+1) row pointers */
-	PetscInt *col;     					/* (0<nz)  column index */
-	PetscScalar *mat;  					/* (0<nz)  matrix entry */
+    PetscInt n;
+    PetscInt nz;
+    PetscInt *counter;                  /* (0<n)   counters     */
+    PetscInt *rowp;                     /* (0<n+1) row pointers */
+    PetscInt *col;                      /* (0<nz)  column index */
+    PetscScalar *mat;                   /* (0<nz)  matrix entry */
 };
 
 /* set macros for compatibility between 3.4 and 3.10 */
