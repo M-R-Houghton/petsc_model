@@ -214,52 +214,6 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tLambda \t= %g\n\n", lambda);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
-    /*
-        START: DEBUGGING BAD NODES
-    */
-    PetscInt vals = 2;
-    PetscInt valInd[vals], nodeInd[vals], xyz[vals];
-    valInd[0] = 14638;
-    valInd[1] = 20336;
-    
-    int nd;
-    for (nd = 0; nd < vals; nd++)
-    {
-        nodeInd[nd]= valInd[nd] % box_ptr->nodeInternalCount;
-        xyz[nd] = valInd[nd] / box_ptr->nodeInternalCount;
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"----------------\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"-- NEXT NODE ---\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"----------------\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"xyz = %d\n",xyz[nd]);CHKERRQ(ierr);
-        /* this needs to loop to find the internal node id not general id */
-        int i;
-        for (i = 0; i < box_ptr->nodeCount; i++)
-        {
-            Node *node_ptr = &(box_ptr->masterNodeList[i]);
-            if (node_ptr->globalID == nodeInd[nd])
-            {
-                //ierr = printNodeInfo(node_ptr);CHKERRQ(ierr);
-            }
-        }
-    
-        int j,k;
-        for (j = 0; j < box_ptr->fibreCount; j++)
-        {
-            Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
-            for (k = 0; k < fibre_ptr->nodesOnFibre; k++)
-            {
-                Node *node_ptr = fibre_ptr->nodesOnFibreList[k];
-                if (node_ptr->globalID == nodeInd[nd])
-                {
-                    //ierr = printFibreInfo(fibre_ptr);CHKERRQ(ierr);
-                }
-            }
-        }
-    }
-    /* 
-        END: DEBUGGING BAD NODES
-    */
-
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network write out to file
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
