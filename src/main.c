@@ -24,7 +24,6 @@ int main(int argc, char **args)
     
     /* set EM and TS default values */
     PetscBool       useKSP = PETSC_TRUE;
-    PetscBool       useEM = PETSC_FALSE;
     PetscScalar     lambda = 1e-5;       
     PetscBool       useTS = PETSC_FALSE;
     PetscScalar     alpha = 1e-1;
@@ -68,7 +67,6 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetReal(NULL,NULL,"-gamma",&gamma,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-y_mod",&yMod,NULL);CHKERRQ(ierr);
     /* set up options for elastic medium */
-    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
     
     /* set up options for solving with KSP */
@@ -138,10 +136,6 @@ int main(int argc, char **args)
     /* assemble sparse structure and assemble linear system */
     ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
     ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
-    if (useEM)
-    {
-        //ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
-    }
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
