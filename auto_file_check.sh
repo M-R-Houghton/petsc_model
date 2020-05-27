@@ -21,6 +21,8 @@ tmp_res_tst="temp_res.txt"
 
 fail_count=0
 skip_count=0
+pass_count=0
+total_count=0
 
 # Check test file exists
 if [ ! -f "$test_file" ]; then
@@ -38,25 +40,27 @@ while read file; do
     file_out_val="${dat_path}${file}_out.val"       # The out data to check against
     file_out_tst="${dat_path}${file}_out.dat"       # The out data from model run
 
+    total_count=$((total_count+2))
+
     # Validate input, parameter and out validate file exists
     if [ ! -f "$file_par" ]; then
         printf "Parameter file %s is missing\n" "$file_par"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
     if [ ! -f "$file_in" ]; then
         printf "Input data file %s is missing\n" "$file_in"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
     if [ ! -f "$file_out_val" ]; then
         printf "Output validation file %s is missing\n" "$file_out_val"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
     if [ ! -f "$file_res_val" ]; then
         printf "Results validation file %s is missing\n" "$file_res_val"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
 
@@ -74,12 +78,12 @@ while read file; do
 
     if [ ! -f "$file_out_tst" ]; then
         printf "Output data file %s is missing\n" "$file_out_tst"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
     if [ ! -f "$file_res_tst" ]; then
         printf "Results data file %s is missing\n" "$file_res_tst"
-        ((skip_count++))
+        skip_count=$((skip_count+2))
         continue;
     fi
 
@@ -96,6 +100,7 @@ while read file; do
             ((fail_count++))
     else
             printf "\e[32m[PASSED]\e[0m Output data regression test.\n"
+            ((pass_count++))
     fi
 
     # Execute diff
@@ -108,12 +113,14 @@ while read file; do
             ((fail_count++))
     else
             printf "\e[32m[PASSED]\e[0m Energy regression test.\n"
+            ((pass_count++))
     fi
 
 done < $test_file
 
-printf "Tests failed:\t%d\n" "$fail_count"
-printf "Tests skipped:\t%d\n" "$skip_count"
+printf "Tests \e[31mfailed\e[0m:\t%d / %d\n" "$fail_count" "$total_count"
+printf "Tests \e[33mskipped\e[0m:\t%d / %d\n" "$skip_count" "$total_count"
+printf "Tests \e[32mpassed\e[0m:\t%d / %d\n" "$pass_count" "$total_count"
 
 rm $tmp_res_tst
 
