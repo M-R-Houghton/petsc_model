@@ -7,18 +7,22 @@ if [ $# -lt 1 ]; then
 fi
 
 bin="model"         # The application (from command arg)
-diff="diff -iadq"    # Diff command, or what ever
-group="$1"
+diff="diff -iadq"   # Diff command with selected flags
+group="$1"          # Test group
 
+# Set up paths
 head="data/"
 par_path="${head}par/${group}/"
 dat_path="${head}dat/${group}/"
 res_path="${head}res/${group}/"
 
+# File containing networks to be tested
 test_file="${dat_path}${group}TestNetworks.txt"
 
+# Temporary file to store results
 tmp_res_tst="temp_res.txt"
 
+# Success counters
 fail_count=0
 skip_count=0
 pass_count=0
@@ -42,7 +46,7 @@ while read file; do
 
     total_count=$((total_count+2))
 
-    # Validate input, parameter and out validate file exists
+    # Check input, parameter and out validate file exists
     if [ ! -f "$file_par" ]; then
         printf "Parameter file %s is missing\n" "$file_par"
         skip_count=$((skip_count+2))
@@ -76,6 +80,7 @@ while read file; do
     # Pipe temporary output through grep to collect energy values
     cat $tmp_res_tst | grep -E "Gamma|Mod|Radius|Energy" > $file_res_tst
 
+    # Check new results files exist
     if [ ! -f "$file_out_tst" ]; then
         printf "Output data file %s is missing\n" "$file_out_tst"
         skip_count=$((skip_count+2))
