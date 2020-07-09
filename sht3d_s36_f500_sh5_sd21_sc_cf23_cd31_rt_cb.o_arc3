@@ -1,0 +1,531 @@
+## Running job 2386364.1 on host dc1s6b3b.arc3.leeds.ac.uk
+##
+## Resources granted:
+##
+## h_vmem = 4G
+## h_rt   = 12:00:00
+## disk   = 1G
+
+sht3d_s36_f500_sh5_r1.996e-03_sd21_sc_cf23_cd31_rt_cb
+f500, s36, 1.996e-03, xy
+[STATUS] Initialising...
+[STATUS] Reading parameter file...
+[STATUS] Reading from file 'data/dat/sht/sht3d_s36_pxy_sz1_f500_mf23_sh5_sd21_sc_cf23_cd31_rt_cb_in.dat'...
+g = 0
+g = 0
+gIDTotal = 43518
+[STATUS] Problem size is (130554 x 130554)
+[STATUS] Setting up vectors...
+[STATUS] Setting up matrix...
+Printing vec B sample here...
+array[0] = 0
+array[1] = 0
+array[2] = 1.097334647810687e-10
+array[3] = 1.759343927449287e-12
+array[4] = 0
+array[5] = 0
+array[6] = 0
+array[7] = 1.985547220653756e-11
+array[8] = 1.561586337605635e-12
+array[9] = 0
+[STATUS] Solving system...
+[STATUS] Creating solver context...
+Printing vec U sample here...
+array[0] = 0.003063416797696573
+array[1] = 0.001375290882110496
+array[2] = 0.001516476599828707
+array[3] = 0.002869562340068588
+array[4] = 0.002232850523056529
+array[5] = 0.00224208978079659
+array[6] = 0.003198820960464176
+array[7] = 0.002682466135827185
+array[8] = 0.001268213776538827
+array[9] = 0.001450270836111564
+KSP Object: 1 MPI processes
+  type: preonly
+  maximum iterations=10000, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-50, divergence=10000.
+  left preconditioning
+  using NONE norm type for convergence test
+PC Object: 1 MPI processes
+  type: lu
+    out-of-place factorization
+    tolerance for zero pivot 2.22045e-14
+    matrix ordering: nd
+    factor fill ratio given 0., needed 0.
+      Factored matrix follows:
+        Mat Object: 1 MPI processes
+          type: mumps
+          rows=130554, cols=130554
+          package used to perform factorization: mumps
+          total: nonzeros=106318026, allocated nonzeros=106318026
+          total number of mallocs used during MatSetValues calls =0
+            MUMPS run parameters:
+              SYM (matrix type):                   0 
+              PAR (host participation):            1 
+              ICNTL(1) (output for error):         6 
+              ICNTL(2) (output of diagnostic msg): 0 
+              ICNTL(3) (output for global info):   0 
+              ICNTL(4) (level of printing):        0 
+              ICNTL(5) (input mat struct):         0 
+              ICNTL(6) (matrix prescaling):        7 
+              ICNTL(7) (sequential matrix ordering):7 
+              ICNTL(8) (scaling strategy):        77 
+              ICNTL(10) (max num of refinements):  0 
+              ICNTL(11) (error analysis):          0 
+              ICNTL(12) (efficiency control):                         1 
+              ICNTL(13) (efficiency control):                         0 
+              ICNTL(14) (percentage of estimated workspace increase): 20 
+              ICNTL(18) (input mat struct):                           0 
+              ICNTL(19) (Schur complement info):                      0 
+              ICNTL(20) (rhs sparse pattern):                         0 
+              ICNTL(21) (solution struct):                            0 
+              ICNTL(22) (in-core/out-of-core facility):               0 
+              ICNTL(23) (max size of memory can be allocated locally):0 
+              ICNTL(24) (detection of null pivot rows):               0 
+              ICNTL(25) (computation of a null space basis):          0 
+              ICNTL(26) (Schur options for rhs or solution):          0 
+              ICNTL(27) (experimental parameter):                     -32 
+              ICNTL(28) (use parallel or sequential ordering):        1 
+              ICNTL(29) (parallel ordering):                          0 
+              ICNTL(30) (user-specified set of entries in inv(A)):    0 
+              ICNTL(31) (factors is discarded in the solve phase):    0 
+              ICNTL(33) (compute determinant):                        0 
+              ICNTL(35) (activate BLR based factorization):           0 
+              CNTL(1) (relative pivoting threshold):      0.01 
+              CNTL(2) (stopping criterion of refinement): 1.49012e-08 
+              CNTL(3) (absolute pivoting threshold):      0. 
+              CNTL(4) (value of static pivoting):         -1. 
+              CNTL(5) (fixation for null pivots):         0. 
+              CNTL(7) (dropping parameter for BLR):       0. 
+              RINFO(1) (local estimated flops for the elimination after analysis): 
+                [0] 1.26051e+11 
+              RINFO(2) (local estimated flops for the assembly after factorization): 
+                [0]  1.95723e+08 
+              RINFO(3) (local estimated flops for the elimination after factorization): 
+                [0]  1.26184e+11 
+              INFO(15) (estimated size of (in MB) MUMPS internal data for running numerical factorization): 
+              [0] 1095 
+              INFO(16) (size of (in MB) MUMPS internal data used during numerical factorization): 
+                [0] 1095 
+              INFO(23) (num of pivots eliminated on this processor after factorization): 
+                [0] 130554 
+              RINFOG(1) (global estimated flops for the elimination after analysis): 1.26051e+11 
+              RINFOG(2) (global estimated flops for the assembly after factorization): 1.95723e+08 
+              RINFOG(3) (global estimated flops for the elimination after factorization): 1.26184e+11 
+              (RINFOG(12) RINFOG(13))*2^INFOG(34) (determinant): (0.,0.)*(2^0)
+              INFOG(3) (estimated real workspace for factors on all processors after analysis): 106318026 
+              INFOG(4) (estimated integer workspace for factors on all processors after analysis): 1741780 
+              INFOG(5) (estimated maximum front size in the complete tree): 3039 
+              INFOG(6) (number of nodes in the complete tree): 10934 
+              INFOG(7) (ordering option effectively use after analysis): 4 
+              INFOG(8) (structural symmetry in percent of the permuted matrix after analysis): 100 
+              INFOG(9) (total real/complex workspace to store the matrix factors after factorization): 106376138 
+              INFOG(10) (total integer space store the matrix factors after factorization): 1741920 
+              INFOG(11) (order of largest frontal matrix after factorization): 3039 
+              INFOG(12) (number of off-diagonal pivots): 212 
+              INFOG(13) (number of delayed pivots after factorization): 70 
+              INFOG(14) (number of memory compress after factorization): 0 
+              INFOG(15) (number of steps of iterative refinement after solution): 0 
+              INFOG(16) (estimated size (in MB) of all MUMPS internal data for factorization after analysis: value on the most memory consuming processor): 1095 
+              INFOG(17) (estimated size of all MUMPS internal data for factorization after analysis: sum over all processors): 1095 
+              INFOG(18) (size of all MUMPS internal data allocated during factorization: value on the most memory consuming processor): 1095 
+              INFOG(19) (size of all MUMPS internal data allocated during factorization: sum over all processors): 1095 
+              INFOG(20) (estimated number of entries in the factors): 106318026 
+              INFOG(21) (size in MB of memory effectively used during factorization - value on the most memory consuming processor): 920 
+              INFOG(22) (size in MB of memory effectively used during factorization - sum over all processors): 920 
+              INFOG(23) (after analysis: value of ICNTL(6) effectively used): 0 
+              INFOG(24) (after analysis: value of ICNTL(12) effectively used): 1 
+              INFOG(25) (after factorization: number of pivots modified by static pivoting): 0 
+              INFOG(28) (after factorization: number of null pivots encountered): 0
+              INFOG(29) (after factorization: effective number of entries in the factors (sum over all processors)): 106376138
+              INFOG(30, 31) (after solution: size in Mbytes of memory used during solution phase): 1071, 1071
+              INFOG(32) (after analysis: type of analysis done): 1
+              INFOG(33) (value used for ICNTL(8)): 7
+              INFOG(34) (exponent of the determinant if determinant is requested): 0
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=130554, cols=130554
+    total: nonzeros=3620016, allocated nonzeros=4552065
+    total number of mallocs used during MatSetValues calls =259953
+      not using I-node routines
+[STATUS] Iterations 1
+[STATUS] Residual norm = 0.
+[STATUS] Updating network...
+[STATUS] Analysing network...
+Network volume is 1.0000000000000002
+Box volume is 1.0000000000000000
+Incorrect data for stretch/compression analysis.
+
+[STATUS]	Gamma 		= 0.01
+[STATUS]	YoungsModulus 	= 1.
+[STATUS]	Radius 		= 0.001996
+[STATUS]	EnergyStre 	= 4.2394072278460770e-08
+[STATUS]	EnergyBend 	= 7.0211428338704447e-10
+[STATUS]	EnergyTotl 	= 4.3096186561847817e-08
+[STATUS]	EnergyPsAf 	= 4.8822860125413566e-08
+[STATUS]	EnergyAffn 	= 4.9884989280382801e-08
+[STATUS]	ShearModulus 	= 8.6192373123695598e-04
+[STATUS]	ShearModAffn 	= 9.9769978560765565e-04
+
+[STATUS]	SheetCount 	= 5
+[STATUS]	FibPerSheet 	= 500
+[STATUS]	ConFibPerPair	= 4889
+[STATUS]	InPlnEnergyTotl = 4.3089649228862401e-08
+[STATUS]	InPlnEnergyAffn = 4.9884261145984275e-08
+[STATUS]	OutPlnEnergyTot = 6.5373329859393078e-12
+[STATUS]	OutPlnEnergyAff = 7.2813439897152325e-13
+[STATUS]	Lambda 	= 1e-05
+
+[STATUS] Writing to file...
+[STATUS] Cleaning up...
+[STATUS] Finalising...
+f500, s36, 1.996e-03, yz
+[STATUS] Initialising...
+[STATUS] Reading parameter file...
+[STATUS] Reading from file 'data/dat/sht/sht3d_s36_pyz_sz1_f500_mf23_sh5_sd21_sc_cf23_cd31_rt_cb_in.dat'...
+g = 0
+g = 0
+gIDTotal = 43518
+[STATUS] Problem size is (130554 x 130554)
+[STATUS] Setting up vectors...
+[STATUS] Setting up matrix...
+Printing vec B sample here...
+array[0] = 0
+array[1] = 0
+array[2] = 7.173359521457148e-08
+array[3] = 1.30050278246527e-07
+array[4] = 0
+array[5] = 0
+array[6] = 0
+array[7] = 1.23664580793802e-07
+array[8] = 5.490878736136704e-08
+array[9] = 0
+[STATUS] Solving system...
+[STATUS] Creating solver context...
+Printing vec U sample here...
+array[0] = 0.002914025036365516
+array[1] = 0.001232663688782081
+array[2] = 0.001435316003464242
+array[3] = 0.002607022964631846
+array[4] = 0.002009442560881406
+array[5] = 0.002020279359353986
+array[6] = 0.003128104146484938
+array[7] = 0.002475088849761472
+array[8] = 0.001120743440172365
+array[9] = 0.001321214710026721
+KSP Object: 1 MPI processes
+  type: preonly
+  maximum iterations=10000, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-50, divergence=10000.
+  left preconditioning
+  using NONE norm type for convergence test
+PC Object: 1 MPI processes
+  type: lu
+    out-of-place factorization
+    tolerance for zero pivot 2.22045e-14
+    matrix ordering: nd
+    factor fill ratio given 0., needed 0.
+      Factored matrix follows:
+        Mat Object: 1 MPI processes
+          type: mumps
+          rows=130554, cols=130554
+          package used to perform factorization: mumps
+          total: nonzeros=106318026, allocated nonzeros=106318026
+          total number of mallocs used during MatSetValues calls =0
+            MUMPS run parameters:
+              SYM (matrix type):                   0 
+              PAR (host participation):            1 
+              ICNTL(1) (output for error):         6 
+              ICNTL(2) (output of diagnostic msg): 0 
+              ICNTL(3) (output for global info):   0 
+              ICNTL(4) (level of printing):        0 
+              ICNTL(5) (input mat struct):         0 
+              ICNTL(6) (matrix prescaling):        7 
+              ICNTL(7) (sequential matrix ordering):7 
+              ICNTL(8) (scaling strategy):        77 
+              ICNTL(10) (max num of refinements):  0 
+              ICNTL(11) (error analysis):          0 
+              ICNTL(12) (efficiency control):                         1 
+              ICNTL(13) (efficiency control):                         0 
+              ICNTL(14) (percentage of estimated workspace increase): 20 
+              ICNTL(18) (input mat struct):                           0 
+              ICNTL(19) (Schur complement info):                      0 
+              ICNTL(20) (rhs sparse pattern):                         0 
+              ICNTL(21) (solution struct):                            0 
+              ICNTL(22) (in-core/out-of-core facility):               0 
+              ICNTL(23) (max size of memory can be allocated locally):0 
+              ICNTL(24) (detection of null pivot rows):               0 
+              ICNTL(25) (computation of a null space basis):          0 
+              ICNTL(26) (Schur options for rhs or solution):          0 
+              ICNTL(27) (experimental parameter):                     -32 
+              ICNTL(28) (use parallel or sequential ordering):        1 
+              ICNTL(29) (parallel ordering):                          0 
+              ICNTL(30) (user-specified set of entries in inv(A)):    0 
+              ICNTL(31) (factors is discarded in the solve phase):    0 
+              ICNTL(33) (compute determinant):                        0 
+              ICNTL(35) (activate BLR based factorization):           0 
+              CNTL(1) (relative pivoting threshold):      0.01 
+              CNTL(2) (stopping criterion of refinement): 1.49012e-08 
+              CNTL(3) (absolute pivoting threshold):      0. 
+              CNTL(4) (value of static pivoting):         -1. 
+              CNTL(5) (fixation for null pivots):         0. 
+              CNTL(7) (dropping parameter for BLR):       0. 
+              RINFO(1) (local estimated flops for the elimination after analysis): 
+                [0] 1.26051e+11 
+              RINFO(2) (local estimated flops for the assembly after factorization): 
+                [0]  1.95725e+08 
+              RINFO(3) (local estimated flops for the elimination after factorization): 
+                [0]  1.26171e+11 
+              INFO(15) (estimated size of (in MB) MUMPS internal data for running numerical factorization): 
+              [0] 1095 
+              INFO(16) (size of (in MB) MUMPS internal data used during numerical factorization): 
+                [0] 1095 
+              INFO(23) (num of pivots eliminated on this processor after factorization): 
+                [0] 130554 
+              RINFOG(1) (global estimated flops for the elimination after analysis): 1.26051e+11 
+              RINFOG(2) (global estimated flops for the assembly after factorization): 1.95725e+08 
+              RINFOG(3) (global estimated flops for the elimination after factorization): 1.26171e+11 
+              (RINFOG(12) RINFOG(13))*2^INFOG(34) (determinant): (0.,0.)*(2^0)
+              INFOG(3) (estimated real workspace for factors on all processors after analysis): 106318026 
+              INFOG(4) (estimated integer workspace for factors on all processors after analysis): 1741780 
+              INFOG(5) (estimated maximum front size in the complete tree): 3039 
+              INFOG(6) (number of nodes in the complete tree): 10934 
+              INFOG(7) (ordering option effectively use after analysis): 4 
+              INFOG(8) (structural symmetry in percent of the permuted matrix after analysis): 100 
+              INFOG(9) (total real/complex workspace to store the matrix factors after factorization): 106370164 
+              INFOG(10) (total integer space store the matrix factors after factorization): 1741914 
+              INFOG(11) (order of largest frontal matrix after factorization): 3039 
+              INFOG(12) (number of off-diagonal pivots): 223 
+              INFOG(13) (number of delayed pivots after factorization): 67 
+              INFOG(14) (number of memory compress after factorization): 0 
+              INFOG(15) (number of steps of iterative refinement after solution): 0 
+              INFOG(16) (estimated size (in MB) of all MUMPS internal data for factorization after analysis: value on the most memory consuming processor): 1095 
+              INFOG(17) (estimated size of all MUMPS internal data for factorization after analysis: sum over all processors): 1095 
+              INFOG(18) (size of all MUMPS internal data allocated during factorization: value on the most memory consuming processor): 1095 
+              INFOG(19) (size of all MUMPS internal data allocated during factorization: sum over all processors): 1095 
+              INFOG(20) (estimated number of entries in the factors): 106318026 
+              INFOG(21) (size in MB of memory effectively used during factorization - value on the most memory consuming processor): 920 
+              INFOG(22) (size in MB of memory effectively used during factorization - sum over all processors): 920 
+              INFOG(23) (after analysis: value of ICNTL(6) effectively used): 0 
+              INFOG(24) (after analysis: value of ICNTL(12) effectively used): 1 
+              INFOG(25) (after factorization: number of pivots modified by static pivoting): 0 
+              INFOG(28) (after factorization: number of null pivots encountered): 0
+              INFOG(29) (after factorization: effective number of entries in the factors (sum over all processors)): 106370164
+              INFOG(30, 31) (after solution: size in Mbytes of memory used during solution phase): 1071, 1071
+              INFOG(32) (after analysis: type of analysis done): 1
+              INFOG(33) (value used for ICNTL(8)): 7
+              INFOG(34) (exponent of the determinant if determinant is requested): 0
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=130554, cols=130554
+    total: nonzeros=3620016, allocated nonzeros=4552065
+    total number of mallocs used during MatSetValues calls =259953
+      not using I-node routines
+[STATUS] Iterations 1
+[STATUS] Residual norm = 0.
+[STATUS] Updating network...
+[STATUS] Analysing network...
+Network volume is 1.0000000000000002
+Box volume is 1.0000000000000000
+Incorrect data for stretch/compression analysis.
+
+[STATUS]	Gamma 		= 0.01
+[STATUS]	YoungsModulus 	= 1.
+[STATUS]	Radius 		= 0.001996
+[STATUS]	EnergyStre 	= 4.6031193481529488e-10
+[STATUS]	EnergyBend 	= 1.3286969681755774e-10
+[STATUS]	EnergyTotl 	= 5.9318163163285260e-10
+[STATUS]	EnergyPsAf 	= 1.0643178679855391e-09
+[STATUS]	EnergyAffn 	= 1.0643178679855391e-09
+[STATUS]	ShearModulus 	= 1.1863632632657049e-05
+[STATUS]	ShearModAffn 	= 2.1286357359710775e-05
+
+[STATUS]	SheetCount 	= 5
+[STATUS]	FibPerSheet 	= 500
+[STATUS]	ConFibPerPair	= 4889
+[STATUS]	InPlnEnergyTotl = 1.3309365098494492e-10
+[STATUS]	InPlnEnergyAffn = 0.0000000000000000e+00
+[STATUS]	OutPlnEnergyTot = 4.6008798064790783e-10
+[STATUS]	OutPlnEnergyAff = 1.0643178679855391e-09
+[STATUS]	Lambda 	= 1e-05
+
+[STATUS] Writing to file...
+[STATUS] Cleaning up...
+[STATUS] Finalising...
+f500, s36, 1.996e-03, xz
+[STATUS] Initialising...
+[STATUS] Reading parameter file...
+[STATUS] Reading from file 'data/dat/sht/sht3d_s36_pxz_sz1_f500_mf23_sh5_sd21_sc_cf23_cd31_rt_cb_in.dat'...
+g = 0
+g = 0
+gIDTotal = 43518
+[STATUS] Problem size is (130554 x 130554)
+[STATUS] Setting up vectors...
+[STATUS] Setting up matrix...
+Printing vec B sample here...
+array[0] = 0
+array[1] = 0
+array[2] = 0
+array[3] = 0
+array[4] = 0
+array[5] = 0
+array[6] = 0
+array[7] = 0
+array[8] = 0
+array[9] = 0
+[STATUS] Solving system...
+[STATUS] Creating solver context...
+Printing vec U sample here...
+array[0] = 0.00249803655140267
+array[1] = 0.00249996721711758
+array[2] = 0.002499993282901698
+array[3] = 0.002498599636288575
+array[4] = 0.002499801658777473
+array[5] = 0.002499807747344435
+array[6] = 0.00249807563717673
+array[7] = 0.002498894587605317
+array[8] = 0.002499715843677769
+array[9] = 0.002499958252545775
+KSP Object: 1 MPI processes
+  type: preonly
+  maximum iterations=10000, initial guess is zero
+  tolerances:  relative=1e-05, absolute=1e-50, divergence=10000.
+  left preconditioning
+  using NONE norm type for convergence test
+PC Object: 1 MPI processes
+  type: lu
+    out-of-place factorization
+    tolerance for zero pivot 2.22045e-14
+    matrix ordering: nd
+    factor fill ratio given 0., needed 0.
+      Factored matrix follows:
+        Mat Object: 1 MPI processes
+          type: mumps
+          rows=130554, cols=130554
+          package used to perform factorization: mumps
+          total: nonzeros=106318026, allocated nonzeros=106318026
+          total number of mallocs used during MatSetValues calls =0
+            MUMPS run parameters:
+              SYM (matrix type):                   0 
+              PAR (host participation):            1 
+              ICNTL(1) (output for error):         6 
+              ICNTL(2) (output of diagnostic msg): 0 
+              ICNTL(3) (output for global info):   0 
+              ICNTL(4) (level of printing):        0 
+              ICNTL(5) (input mat struct):         0 
+              ICNTL(6) (matrix prescaling):        7 
+              ICNTL(7) (sequential matrix ordering):7 
+              ICNTL(8) (scaling strategy):        77 
+              ICNTL(10) (max num of refinements):  0 
+              ICNTL(11) (error analysis):          0 
+              ICNTL(12) (efficiency control):                         1 
+              ICNTL(13) (efficiency control):                         0 
+              ICNTL(14) (percentage of estimated workspace increase): 20 
+              ICNTL(18) (input mat struct):                           0 
+              ICNTL(19) (Schur complement info):                      0 
+              ICNTL(20) (rhs sparse pattern):                         0 
+              ICNTL(21) (solution struct):                            0 
+              ICNTL(22) (in-core/out-of-core facility):               0 
+              ICNTL(23) (max size of memory can be allocated locally):0 
+              ICNTL(24) (detection of null pivot rows):               0 
+              ICNTL(25) (computation of a null space basis):          0 
+              ICNTL(26) (Schur options for rhs or solution):          0 
+              ICNTL(27) (experimental parameter):                     -32 
+              ICNTL(28) (use parallel or sequential ordering):        1 
+              ICNTL(29) (parallel ordering):                          0 
+              ICNTL(30) (user-specified set of entries in inv(A)):    0 
+              ICNTL(31) (factors is discarded in the solve phase):    0 
+              ICNTL(33) (compute determinant):                        0 
+              ICNTL(35) (activate BLR based factorization):           0 
+              CNTL(1) (relative pivoting threshold):      0.01 
+              CNTL(2) (stopping criterion of refinement): 1.49012e-08 
+              CNTL(3) (absolute pivoting threshold):      0. 
+              CNTL(4) (value of static pivoting):         -1. 
+              CNTL(5) (fixation for null pivots):         0. 
+              CNTL(7) (dropping parameter for BLR):       0. 
+              RINFO(1) (local estimated flops for the elimination after analysis): 
+                [0] 1.26051e+11 
+              RINFO(2) (local estimated flops for the assembly after factorization): 
+                [0]  1.95723e+08 
+              RINFO(3) (local estimated flops for the elimination after factorization): 
+                [0]  1.26184e+11 
+              INFO(15) (estimated size of (in MB) MUMPS internal data for running numerical factorization): 
+              [0] 1095 
+              INFO(16) (size of (in MB) MUMPS internal data used during numerical factorization): 
+                [0] 1095 
+              INFO(23) (num of pivots eliminated on this processor after factorization): 
+                [0] 130554 
+              RINFOG(1) (global estimated flops for the elimination after analysis): 1.26051e+11 
+              RINFOG(2) (global estimated flops for the assembly after factorization): 1.95723e+08 
+              RINFOG(3) (global estimated flops for the elimination after factorization): 1.26184e+11 
+              (RINFOG(12) RINFOG(13))*2^INFOG(34) (determinant): (0.,0.)*(2^0)
+              INFOG(3) (estimated real workspace for factors on all processors after analysis): 106318026 
+              INFOG(4) (estimated integer workspace for factors on all processors after analysis): 1741780 
+              INFOG(5) (estimated maximum front size in the complete tree): 3039 
+              INFOG(6) (number of nodes in the complete tree): 10934 
+              INFOG(7) (ordering option effectively use after analysis): 4 
+              INFOG(8) (structural symmetry in percent of the permuted matrix after analysis): 100 
+              INFOG(9) (total real/complex workspace to store the matrix factors after factorization): 106376138 
+              INFOG(10) (total integer space store the matrix factors after factorization): 1741920 
+              INFOG(11) (order of largest frontal matrix after factorization): 3039 
+              INFOG(12) (number of off-diagonal pivots): 201 
+              INFOG(13) (number of delayed pivots after factorization): 70 
+              INFOG(14) (number of memory compress after factorization): 0 
+              INFOG(15) (number of steps of iterative refinement after solution): 0 
+              INFOG(16) (estimated size (in MB) of all MUMPS internal data for factorization after analysis: value on the most memory consuming processor): 1095 
+              INFOG(17) (estimated size of all MUMPS internal data for factorization after analysis: sum over all processors): 1095 
+              INFOG(18) (size of all MUMPS internal data allocated during factorization: value on the most memory consuming processor): 1095 
+              INFOG(19) (size of all MUMPS internal data allocated during factorization: sum over all processors): 1095 
+              INFOG(20) (estimated number of entries in the factors): 106318026 
+              INFOG(21) (size in MB of memory effectively used during factorization - value on the most memory consuming processor): 920 
+              INFOG(22) (size in MB of memory effectively used during factorization - sum over all processors): 920 
+              INFOG(23) (after analysis: value of ICNTL(6) effectively used): 0 
+              INFOG(24) (after analysis: value of ICNTL(12) effectively used): 1 
+              INFOG(25) (after factorization: number of pivots modified by static pivoting): 0 
+              INFOG(28) (after factorization: number of null pivots encountered): 0
+              INFOG(29) (after factorization: effective number of entries in the factors (sum over all processors)): 106376138
+              INFOG(30, 31) (after solution: size in Mbytes of memory used during solution phase): 1071, 1071
+              INFOG(32) (after analysis: type of analysis done): 1
+              INFOG(33) (value used for ICNTL(8)): 7
+              INFOG(34) (exponent of the determinant if determinant is requested): 0
+  linear system matrix = precond matrix:
+  Mat Object: 1 MPI processes
+    type: seqaij
+    rows=130554, cols=130554
+    total: nonzeros=3620016, allocated nonzeros=4552065
+    total number of mallocs used during MatSetValues calls =259953
+      not using I-node routines
+[STATUS] Iterations 1
+[STATUS] Residual norm = 0.
+[STATUS] Updating network...
+[STATUS] Analysing network...
+Network volume is 1.0000000000000007
+Box volume is 1.0000000000000000
+Incorrect data for stretch/compression analysis.
+
+[STATUS]	Gamma 		= 0.01
+[STATUS]	YoungsModulus 	= 1.
+[STATUS]	Radius 		= 0.001996
+[STATUS]	EnergyStre 	= 4.5995838753464763e-10
+[STATUS]	EnergyBend 	= 1.3440888050501005e-10
+[STATUS]	EnergyTotl 	= 5.9436726803965766e-10
+[STATUS]	EnergyPsAf 	= 1.0643178679855378e-09
+[STATUS]	EnergyAffn 	= 1.0643178679855378e-09
+[STATUS]	ShearModulus 	= 1.1887345360793144e-05
+[STATUS]	ShearModAffn 	= 2.1286357359710741e-05
+
+[STATUS]	SheetCount 	= 5
+[STATUS]	FibPerSheet 	= 500
+[STATUS]	ConFibPerPair	= 4889
+[STATUS]	InPlnEnergyTotl = 1.3463672936279346e-10
+[STATUS]	InPlnEnergyAffn = 0.0000000000000000e+00
+[STATUS]	OutPlnEnergyTot = 4.5973053867686428e-10
+[STATUS]	OutPlnEnergyAff = 1.0643178679855378e-09
+[STATUS]	Lambda 	= 1e-05
+
+[STATUS] Writing to file...
+[STATUS] Cleaning up...
+[STATUS] Finalising...
