@@ -61,6 +61,15 @@ PetscErrorCode calculateFibreBendEnergy(Box *box_ptr, Parameters *par_ptr, Petsc
 PetscErrorCode calculateEnergy(Box *box_ptr, Parameters *par_ptr);
 
 /**
+ * \brief Adds the relevant sheet based energies of a specific fibre index to the totals.
+ * \param box_ptr Box containing sheet network stats.
+ * \param par_ptr Parameters containing sheet network energies.
+ * \param fIndex Fibre index
+ * \return Petsc error code.
+ */
+PetscErrorCode addFibreSheetEnergy(const Box *box_ptr, Parameters *par_ptr, PetscInt fIndex);
+
+/**
  * \brief Checks for a valid volume
  * \param box_ptr Pointer to box containing dimensions.
  * \param volume Volume to be checked.

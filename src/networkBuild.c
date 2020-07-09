@@ -36,6 +36,12 @@ Parameters *makeParameters(const char *input, const char *output, const char *ou
     par_ptr->shearModulus = 0;
     par_ptr->shearModAffn = 0;
 
+    /* add all new sheet based energies and initialise to 0 */
+    par_ptr->inPlnEnergyTotl = 0;
+    par_ptr->inPlnEnergyAffn = 0;
+    par_ptr->outPlnEnergyTotl = 0;
+    par_ptr->outPlnEnergyAffn = 0;
+
     return par_ptr;
 }
 
@@ -113,6 +119,11 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
     box_ptr->coupleCount = 0;
     /* couple list memory should be allocated after no. of couples is known */
     box_ptr->masterCoupleList = NULL;
+
+    /* sheet related quantities should only be changed if dat file has a sheet line */
+    box_ptr->sheetCount = 0;
+    box_ptr->fibreCountPerSheet = 0;
+    box_ptr->conFibCountPerSheetPair = 0;
 
     return box_ptr;
 }
@@ -259,5 +270,33 @@ PetscErrorCode makeCouple(Box *box_ptr, const PetscInt coupleID, const PetscInt 
 
     return ierr;
 }
+
+
+void checkSheetArguments(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
+{
+    assert(box_ptr != NULL);
+    assert(noOfSheets  > 0);            /* if sheet line exists there should be at least 1 sheet */
+    assert(fibPerSheet > 0);            /* sheets cannot be empty */
+    assert(conFibPerSheetPair >= 0);    /* could have 0 if sheets are disconnected */
+
+    /* catch single sheet case */
+    if (noOfSheets == 1) assert(conFibPerSheetPair == 0);
+}
+
+
+PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)
+{
+    PetscErrorCode ierr = 0;
+
+    checkSheetArguments(box_ptr, noOfSheets, fibPerSheet, conFibPerSheetPair);
+
+    /* set up sheet info in box object */
+    box_ptr->sheetCount = noOfSheets;
+    box_ptr->fibreCountPerSheet = fibPerSheet;
+    box_ptr->conFibCountPerSheetPair = conFibPerSheetPair;
+
+    return ierr;
+}
+
 
 
