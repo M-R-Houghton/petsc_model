@@ -26,12 +26,6 @@
  */
 #define SPAN 2
 
-/* may remove and add back into .par files */
-/* WARNING: These are now overwritten in main.c */
-#define GAMMA 0.02
-#define YOUNGS_MOD 1.0
-/* CHECK FOR DEPENDENCIES AND REMOVE */
-
 typedef struct parameters Parameters;
 typedef struct box Box;
 typedef struct node Node;
@@ -42,11 +36,12 @@ typedef struct sparseMat Sparse;
 /* structure for storing variables */
 struct parameters 
 {
-    char inputNetwork[MAX_NAME];
-    char outputNetwork[MAX_NAME];
-    char outadvNetwork[MAX_NAME];
-    char postSolveResults[MAX_NAME];
-    PetscScalar gamma;
+    char inputNetwork[MAX_NAME];        /* input/output data files */
+    char outputNetwork[MAX_NAME];       
+    char outadvNetwork[MAX_NAME];       
+    char postSolveResults[MAX_NAME];    
+
+    PetscScalar gamma;                  /* mechanical property parameters */
     PetscScalar youngsModulus;
     PetscScalar energyStre;
     PetscScalar energyBend;
@@ -55,8 +50,8 @@ struct parameters
     PetscScalar energyAffn;
     PetscScalar shearModulus;
     PetscScalar shearModAffn;
-    /* sheet based network parameters */
-    PetscScalar inPlnEnergyTotl;
+    
+    PetscScalar inPlnEnergyTotl;        /* sheet based network parameters */
     PetscScalar inPlnEnergyAffn;
     PetscScalar outPlnEnergyTotl;
     PetscScalar outPlnEnergyAffn;
@@ -68,15 +63,14 @@ struct box
     PetscInt nodeCount;
     PetscInt nodeInternalCount;
     PetscInt fibreCount;
-    PetscInt coupleCount;           /* in many cases this may be equal to internal */
+    PetscInt coupleCount;               /* in many cases this may be equal to internal */
     PetscScalar xyzDimension[3];
     PetscInt xyzPeriodic[3];
-    Node *masterNodeList;           /* declare lists for storing nodes and fibres */
+    Node *masterNodeList;               /* declare lists for storing nodes and fibres */
     Fibre *masterFibreList;
     Couple *masterCoupleList;
 
-    /* probably want to move this into its own struct eventually */
-    PetscInt sheetCount;
+    PetscInt sheetCount;                
     PetscInt fibreCountPerSheet;
     PetscInt conFibCountPerSheetPair;
 };
@@ -90,7 +84,6 @@ struct couple
 
     /* TODO: change to nodesOnCouple for consistency */
     /* TODO: change to dynamically allocated nodeIDList */
-    //PetscInt *nodeIDList;
 };
 
 /* structure for nodes */
