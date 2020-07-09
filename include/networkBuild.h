@@ -41,8 +41,8 @@ Sparse *makeSparse(PetscInt n, PetscInt nz);
  * \param zPer
  */
 void checkBoxArguments(PetscInt nCount, PetscInt fCount, 
-							PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
-							PetscInt xPer, PetscInt yPer, PetscInt zPer);
+                            PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+                            PetscInt xPer, PetscInt yPer, PetscInt zPer);
 
 /**
  * \brief Creates a box structure
@@ -57,8 +57,8 @@ void checkBoxArguments(PetscInt nCount, PetscInt fCount,
  * \return
  */
 Box *makeBox(PetscInt nCount, PetscInt fCount, 
-				PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
-				PetscInt xPer, PetscInt yPer, PetscInt zPer);
+                PetscScalar xDim, PetscScalar yDim, PetscScalar zDim, 
+                PetscInt xPer, PetscInt yPer, PetscInt zPer);
 
 /**
  * \brief Checks fibre arguments are all legal
@@ -69,7 +69,7 @@ Box *makeBox(PetscInt nCount, PetscInt fCount,
  * \param nList_ptr_ptr
  */
 void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
-				PetscScalar radius, Node **nList_ptr_ptr);
+                PetscScalar radius, Node **nList_ptr_ptr);
 
 /**
  * \brief Creates a fibre within its allocated location in a box
@@ -81,7 +81,7 @@ void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, 
-							PetscScalar radius, Node **nList_ptr_ptr);
+                            PetscScalar radius, Node **nList_ptr_ptr);
 
 /**
  * \brief Checks node arguments are all legal
@@ -95,7 +95,7 @@ PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,
  * \param gamma
  */
 void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType, 
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
+                PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
 
 /**
  * \brief Creates a node within its allocated location in a box
@@ -109,7 +109,7 @@ void checkNodeArguments(Box *box_ptr, PetscInt nID, PetscInt nType,
  * \return Index to represent Petsc error code.
  */
 PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType, 
-				PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
+                PetscScalar x, PetscScalar y, PetscScalar z, PetscScalar gamma);
 
 /**
  * \brief Checks couple arguments are all legal

@@ -3,7 +3,7 @@
 /* Initiates network write out routine */
 PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr)
 {
-    PetscErrorCode 	ierr;
+    PetscErrorCode  ierr;
     PetscBool       advWrite = PETSC_TRUE;
     FILE            *file_ptr;
 
@@ -59,7 +59,7 @@ PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr)
 }
 
 
-/* \brief Writes out all the additional network energy info to an opened file */
+/* Writes out all the additional network energy info to an opened file */
 PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr)
 {
     PetscErrorCode  ierr;
@@ -126,7 +126,7 @@ PetscErrorCode printNodeInfo(const Node *node_ptr)
 /* This function will be replaced with a parameter write out */
 PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 {
-	PetscErrorCode ierr;
+    PetscErrorCode ierr;
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"\n[STATUS]\tGamma \t\t= %g\n",      par_ptr->gamma);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tYoungsModulus \t= %g\n",  par_ptr->youngsModulus);CHKERRQ(ierr);
@@ -149,18 +149,18 @@ PetscErrorCode printAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 /* Initiates network write out routine */
 PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
 {
-	PetscErrorCode 	ierr;
-	FILE *file_ptr;
+    PetscErrorCode  ierr;
+    FILE *file_ptr;
 
-	file_ptr = fopen(par_ptr->postSolveResults, "w+");
+    file_ptr = fopen(par_ptr->postSolveResults, "w+");
 
-	fprintf( file_ptr, "Dimension,");
-	fprintf( file_ptr, "Periodicity,");
-	fprintf( file_ptr, "TotalNodes," );
-	fprintf( file_ptr, "InternalNodes," );
-	fprintf( file_ptr, "TotalFibres," );
-	fprintf( file_ptr, "TotalCouples," );
-	fprintf( file_ptr, "Gamma," );
+    fprintf( file_ptr, "Dimension,");
+    fprintf( file_ptr, "Periodicity,");
+    fprintf( file_ptr, "TotalNodes," );
+    fprintf( file_ptr, "InternalNodes," );
+    fprintf( file_ptr, "TotalFibres," );
+    fprintf( file_ptr, "TotalCouples," );
+    fprintf( file_ptr, "Gamma," );
     fprintf( file_ptr, "YoungsModulus," );
     fprintf( file_ptr, "Radius," );
     fprintf( file_ptr, "EnergyStre," );
@@ -173,15 +173,15 @@ PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     fprintf( file_ptr, "ShearModAffn," );
     fprintf( file_ptr, "ShearModRatio\n" );
 
-	fprintf( file_ptr, "(%f;%f;%f),", box_ptr->xyzDimension[0], 
+    fprintf( file_ptr, "(%f;%f;%f),", box_ptr->xyzDimension[0], 
                 box_ptr->xyzDimension[1], box_ptr->xyzDimension[2]          );
-	fprintf( file_ptr, "(%d;%d;%d),", box_ptr->xyzPeriodic[0], 
+    fprintf( file_ptr, "(%d;%d;%d),", box_ptr->xyzPeriodic[0], 
                 box_ptr->xyzPeriodic[1], box_ptr->xyzPeriodic[2]            );
-	fprintf( file_ptr, "%d,",   box_ptr->nodeCount                          );
-	fprintf( file_ptr, "%d,",   box_ptr->nodeInternalCount                  );
-	fprintf( file_ptr, "%d,",   box_ptr->fibreCount                         );
-	fprintf( file_ptr, "%d,",   box_ptr->coupleCount                        );
-	fprintf( file_ptr, "%g,",   par_ptr->gamma                              );
+    fprintf( file_ptr, "%d,",   box_ptr->nodeCount                          );
+    fprintf( file_ptr, "%d,",   box_ptr->nodeInternalCount                  );
+    fprintf( file_ptr, "%d,",   box_ptr->fibreCount                         );
+    fprintf( file_ptr, "%d,",   box_ptr->coupleCount                        );
+    fprintf( file_ptr, "%g,",   par_ptr->gamma                              );
     fprintf( file_ptr, "%g,",   par_ptr->youngsModulus                      );
     fprintf( file_ptr, "%g,",   box_ptr->masterFibreList[0].radius          );
     fprintf( file_ptr, "%g,",   par_ptr->energyStre                         );
@@ -194,9 +194,9 @@ PetscErrorCode writeAnalysis(const Box *box_ptr, const Parameters *par_ptr)
     fprintf( file_ptr, "%g,",   par_ptr->shearModAffn                       );
     fprintf( file_ptr, "%g\n",  par_ptr->shearModulus/par_ptr->shearModAffn );
 
-	ierr = fclose(file_ptr);
+    ierr = fclose(file_ptr);
 
-	return ierr;
+    return ierr;
 }
 
 
