@@ -8,13 +8,12 @@ int main(int argc, char **args)
 {
     Box             *box_ptr;
     Parameters      *par_ptr;
-    Vec             vecB, vecU, vecX;       /* approx solution, RHS, exact solution */
+    Vec             vecX, vecU, vecB;       /* approx solution, RHS, exact solution */
     Mat             matH;                   /* linear system matrix */
     PetscReal       norm;                   /* norm of solution error */
     PetscErrorCode  ierr;
     PetscInt        n,N;
     PetscMPIInt     size;
-    //PetscScalar     one = 1.0;
     PetscBool       nonzeroguess = PETSC_FALSE;
     PetscViewer     viewer;
     
@@ -24,7 +23,6 @@ int main(int argc, char **args)
     
     /* set EM and TS default values */
     PetscBool       useKSP = PETSC_TRUE;
-    PetscBool       useEM = PETSC_FALSE;
     PetscScalar     lambda = 1e-5;       
     PetscBool       useTS = PETSC_FALSE;
     PetscScalar     alpha = 1e-1;
@@ -35,8 +33,6 @@ int main(int argc, char **args)
 #if defined(PETSC_USE_LOG)
     PetscLogStage stages[6];
 #endif
-
-    // testing the use of tag update
 
     if (argc < 2)
     {
@@ -57,10 +53,10 @@ int main(int argc, char **args)
     ierr = PetscInitialize(&argc,&args,optFile,help);if (ierr) return ierr;
     ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size);CHKERRQ(ierr);
     if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only!");
-
-    /* 
-        START: to be put in own function 
-    */
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Command line argument support (could be put in own function)
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscOptionsGetInt(NULL,NULL,"-n",&n,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetBool(NULL,NULL,"-nonzero_guess",&nonzeroguess,NULL);CHKERRQ(ierr);
     
@@ -68,7 +64,6 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetReal(NULL,NULL,"-gamma",&gamma,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-y_mod",&yMod,NULL);CHKERRQ(ierr);
     /* set up options for elastic medium */
-    ierr = PetscOptionsGetBool(NULL,NULL,"-use_em",&useEM,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-k",&lambda,NULL);CHKERRQ(ierr);
     
     /* set up options for solving with KSP */
@@ -80,9 +75,6 @@ int main(int argc, char **args)
     ierr = PetscOptionsGetInt(NULL,NULL,"-max_steps",&maxSteps,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-alpha",&alpha,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-f_tol",&normTolF,NULL);CHKERRQ(ierr);
-    /* 
-        END: to be put in own function 
-    */
     
     /* perform all unit tests */
     //ierr = runIntegrationTests();CHKERRQ(ierr);
@@ -107,8 +99,6 @@ int main(int argc, char **args)
     ierr = networkRead(par_ptr->inputNetwork, &box_ptr, par_ptr->gamma);CHKERRQ(ierr);
     N    = box_ptr->nodeInternalCount;
     n    = N * DIMENSION;
-    /* WARNING: here we are overwriting the number of procs n... why? */
-    // TODO: change this so that we have separate variables.
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Problem size is (%d x %d)\n", n, n);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
@@ -122,7 +112,6 @@ int main(int argc, char **args)
     /* allocate memory for global rhs and solution vectors and set them up */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Setting up vectors...\n");CHKERRQ(ierr);
     ierr = VecCreate(PETSC_COMM_WORLD,&vecB);CHKERRQ(ierr);
-    //ierr = PetscObjectSetName((PetscObject) vecB, "Solution");CHKERRQ(ierr);
     ierr = VecSetSizes(vecB,PETSC_DECIDE,n);CHKERRQ(ierr);
     ierr = VecSetFromOptions(vecB);CHKERRQ(ierr);
     ierr = VecDuplicate(vecB,&vecU);CHKERRQ(ierr);
@@ -138,10 +127,6 @@ int main(int argc, char **args)
     /* assemble sparse structure and assemble linear system */
     ierr = PetscLogStagePush(stages[1]);CHKERRQ(ierr);
     ierr = systemAssembly(box_ptr,par_ptr,matH,vecB);CHKERRQ(ierr);
-    if (useEM)
-    {
-        //ierr = applyElasticMedium(box_ptr, matH, vecB, lambda);CHKERRQ(ierr);
-    }
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,13 +134,14 @@ int main(int argc, char **args)
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscLogStagePush(stages[2]);CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Solving system...\n");CHKERRQ(ierr);
-    /* solve linear system via matrix inversion */
+    /* static solve of linear system */
     if (useKSP)
     {
         ierr = systemSolve(matH,vecB,vecU);CHKERRQ(ierr);
     }
     
     /* solve the linear system via time stepping */
+    /* TODO: if time stepping is kept then this will be moved to a new file */
     if (useTS)
     {
         /* set initial U and begin time stepping */
@@ -214,52 +200,6 @@ int main(int argc, char **args)
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS]\tLambda \t= %g\n\n", lambda);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
-    /*
-        START: DEBUGGING BAD NODES
-    */
-    PetscInt vals = 2;
-    PetscInt valInd[vals], nodeInd[vals], xyz[vals];
-    valInd[0] = 14638;
-    valInd[1] = 20336;
-    
-    int nd;
-    for (nd = 0; nd < vals; nd++)
-    {
-        nodeInd[nd]= valInd[nd] % box_ptr->nodeInternalCount;
-        xyz[nd] = valInd[nd] / box_ptr->nodeInternalCount;
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"----------------\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"-- NEXT NODE ---\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"----------------\n");CHKERRQ(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"xyz = %d\n",xyz[nd]);CHKERRQ(ierr);
-        /* this needs to loop to find the internal node id not general id */
-        int i;
-        for (i = 0; i < box_ptr->nodeCount; i++)
-        {
-            Node *node_ptr = &(box_ptr->masterNodeList[i]);
-            if (node_ptr->globalID == nodeInd[nd])
-            {
-                //ierr = printNodeInfo(node_ptr);CHKERRQ(ierr);
-            }
-        }
-    
-        int j,k;
-        for (j = 0; j < box_ptr->fibreCount; j++)
-        {
-            Fibre *fibre_ptr = &(box_ptr->masterFibreList[j]);
-            for (k = 0; k < fibre_ptr->nodesOnFibre; k++)
-            {
-                Node *node_ptr = fibre_ptr->nodesOnFibreList[k];
-                if (node_ptr->globalID == nodeInd[nd])
-                {
-                    //ierr = printFibreInfo(fibre_ptr);CHKERRQ(ierr);
-                }
-            }
-        }
-    }
-    /* 
-        END: DEBUGGING BAD NODES
-    */
-
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
             Network write out to file
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -270,9 +210,9 @@ int main(int argc, char **args)
     ierr = destroyParameters(par_ptr);CHKERRQ(ierr);
     ierr = PetscLogStagePop();CHKERRQ(ierr);
     
-    /*
-     * Clean up Petsc objects
-     */
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            Clean up Petsc objects
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     ierr = PetscPrintf(PETSC_COMM_WORLD,"[STATUS] Cleaning up...\n");CHKERRQ(ierr);
     ierr = VecDestroy(&vecB);CHKERRQ(ierr); ierr = VecDestroy(&vecX);CHKERRQ(ierr);
     ierr = VecDestroy(&vecU);CHKERRQ(ierr); ierr = MatDestroy(&matH);CHKERRQ(ierr);
