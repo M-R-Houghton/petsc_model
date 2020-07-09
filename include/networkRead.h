@@ -113,6 +113,22 @@ PetscErrorCode readCoupleLine(char *line_ptr, Box *box_ptr, const PetscInt coupl
 PetscInt tokeniseLine(char *line_ptr, PetscScalar *infoArray);
 
 /**
+ * \brief Reads sheet information from a given line pointer
+ * \param line_ptr Pointer to the line.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readSheetStatsLine(char *line_ptr, Box *box_ptr);
+
+/**
+ * \brief Reads general information from a given line pointer
+ * \param line_ptr Pointer to the line.
+ * \param box_ptr Pointer to box for data to be written to.
+ * \return Index to represent Petsc error code.
+ */
+PetscErrorCode readGeneralStatsLine(char *line_ptr, Box *box_ptr);
+
+/**
  * \brief Removes trailing whitespace on the right-hand side of a string
  * \param str_ptr
  * \return
