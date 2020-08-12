@@ -17,5 +17,5 @@ mpiexec -n 1 ./model data/par/parameterFile.par [optional_args]
 This command runs the model in serial, for the network corresponding with the relevant parameter file found at `data/par/parameterFile.par`.
 
 ## Further Information 
-For additional information and model documentation please see the project [wiki](wiki)
+For additional information and model documentation please see the project [wiki](../petsc_model/wiki)
 
