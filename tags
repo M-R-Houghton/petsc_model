@@ -1914,6 +1914,7 @@ Node	tests/googletest/test/gtest_xml_outfiles_test.py	/^from xml.dom import mini
 Node	tests/googletest/test/gtest_xml_output_unittest.py	/^from xml.dom import minidom, Node$/;"	i
 Node	tests/googletest/test/gtest_xml_test_utils.py	/^from xml.dom import minidom, Node$/;"	i
 Node	tests/otherTests/common.py	/^class Node:$/;"	c
+Node	tests/pyTests/rfnCore/node.py	/^class Node:$/;"	c
 NodeDisplacement	tests/otherTests/common.py	/^class NodeDisplacement:$/;"	c
 NonContainer	tests/googletest/test/gtest_unittest.cc	/^class NonContainer {};$/;"	c	file:
 NonDefaultConstructAssignString	tests/googletest/test/googletest-param-test-test.cc	/^  NonDefaultConstructAssignString(const std::string& s) : str_(s) {}$/;"	f	class:NonDefaultConstructAssignString
@@ -5451,6 +5452,7 @@ __init__	tests/otherTests/network_conflict_checker.py	/^    def __init__(self, b
 __init__	tests/otherTests/network_general_analysis.py	/^    def __init__(self, box, fibre_dict, node_dict, link_dict):$/;"	m	class:NetworkAnalyser
 __init__	tests/otherTests/network_reader.py	/^    def __init__(self, data_file):$/;"	m	class:NetworkReader
 __init__	tests/otherTests/node_displacement_checker.py	/^    def __init__(self, filename, tolerance=0.1):$/;"	m	class:DisplacementChecker
+__init__	tests/pyTests/rfnCore/node.py	/^    def __init__(self, nodeID, nodeType, x, y, z):$/;"	m	class:Node
 __le__	tests/googletest/scripts/pump.py	/^  def __le__(self, rhs):$/;"	m	class:Cursor	file:
 __lt__	tests/googletest/scripts/pump.py	/^  def __lt__(self, rhs):$/;"	m	class:Cursor	file:
 __ne__	tests/googletest/scripts/pump.py	/^  def __ne__(self, rhs):$/;"	m	class:Cursor	file:
@@ -5710,11 +5712,7 @@ check	include/debugMacros.h	/^#define check(/;"	d
 checkBoxArguments	src/networkBuild.c	/^void checkBoxArguments(PetscInt nCount, PetscInt fCount,$/;"	f
 checkCoupleArguments	src/networkBuild.c	/^void checkCoupleArguments(Box *box_ptr, const PetscInt coupleID, const PetscInt nodesOnCouple, const PetscInt *nodeIDList)$/;"	f
 checkFibreArguments	src/networkBuild.c	/^void checkFibreArguments(Box *box_ptr, PetscInt fID, PetscInt nOnFibre,$/;"	f
-<<<<<<< HEAD
-checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName, $/;"	f
-=======
 checkFileNameLengths	src/parameterRead.c	/^void checkFileNameLengths(const char *inputFileName, const char *outputFileName,$/;"	f
->>>>>>> development
 checkForValidDisplacement	src/networkUpdate.c	/^void checkForValidDisplacement(PetscScalar displacement)$/;"	f
 checkInternalNodeIndices	src/networkRead.c	/^void checkInternalNodeIndices(const Box *box_ptr)$/;"	f
 checkMatBendContIndexes	src/globalAssemblyBend.c	/^void checkMatBendContIndexes( const PetscInt gIdx_A, const PetscInt gIdx_B, $/;"	f
@@ -6263,6 +6261,7 @@ get	tests/googletest/include/gtest/internal/gtest-linked_ptr.h	/^  T* get() cons
 get	tests/googletest/include/gtest/internal/gtest-port.h	/^  T* get() const { return ptr_; }$/;"	f	class:testing::internal::scoped_ptr
 get	tests/googletest/include/gtest/internal/gtest-port.h	/^  const T& get() const { return *pointer(); }$/;"	f	class:testing::internal::ThreadLocal
 get	tests/googletest/include/gtest/internal/gtest-port.h	/^  const T& get() const { return value_; }$/;"	f	class:testing::internal::ThreadLocal
+getPosition	tests/pyTests/rfnCore/node.py	/^    def getPosition(self):$/;"	m	class:Node
 get_base_name	data/par/generate_par_file.py	/^    def get_base_name(self):$/;"	m	class:ParGenerator
 get_par_name	data/par/generate_par_file.py	/^    def get_par_name(self):$/;"	m	class:ParGenerator
 get_res_name	data/par/generate_par_file.py	/^    def get_res_name(self):$/;"	m	class:ParGenerator
@@ -6686,11 +6685,7 @@ makeCouple	src/networkBuild.c	/^PetscErrorCode makeCouple(Box *box_ptr, const Pe
 makeDisplacementVec	src/vectorOperations.c	/^PetscErrorCode makeDisplacementVec(PetscScalar *dispVec_ptr, const Node *node_ptr)$/;"	f
 makeFibre	src/networkBuild.c	/^PetscErrorCode makeFibre(Box *box_ptr, PetscInt fID, PetscInt nOnFibre, PetscScalar radius, Node **nList_ptr_ptr)$/;"	f
 makeNode	src/networkBuild.c	/^PetscErrorCode makeNode(Box *box_ptr, PetscInt nID, PetscInt nType,$/;"	f
-<<<<<<< HEAD
-makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, const char *results, const PetscScalar gamma, const PetscScalar yMod)$/;"	f
-=======
 makeParameters	src/networkBuild.c	/^Parameters *makeParameters(const char *input, const char *output, const char *outadv, const char *results, const PetscScalar gamma, const PetscScalar yMod)$/;"	f
->>>>>>> development
 makePositionVec	src/vectorOperations.c	/^PetscErrorCode makePositionVec(PetscScalar *posVec_ptr, const Node *node_ptr)$/;"	f
 makeSheetStats	src/networkBuild.c	/^PetscErrorCode makeSheetStats(Box *box_ptr, const PetscInt noOfSheets, const PetscInt fibPerSheet, const PetscInt conFibPerSheetPair)$/;"	f
 makeSparse	src/networkBuild.c	/^Sparse *makeSparse(PetscInt n, PetscInt nz)$/;"	f
@@ -6806,21 +6801,14 @@ nan1	tests/googletest/test/gtest_unittest.cc	/^    RawType nan1;$/;"	m	struct:__
 nan2	tests/googletest/test/gtest_unittest.cc	/^    RawType nan2;$/;"	m	struct:__anon37::FloatingPointTest::TestValues	file:
 nearestSegmentCopy	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopy(PetscScalar *distVec_ptr, const PetscInt *xyzPer, const PetscScalar *xyzDim)$/;"	f
 nearestSegmentCopyDirN	src/vectorOperations.c	/^PetscErrorCode nearestSegmentCopyDirN(PetscScalar *distVec_ptr, const PetscInt N, const PetscInt perN, const PetscScalar dimN)$/;"	f
-<<<<<<< HEAD
-=======
 networkAdvancedWrite	src/networkWrite.c	/^PetscErrorCode networkAdvancedWrite(FILE *file_ptr, const Box *box_ptr)$/;"	f
->>>>>>> development
 networkAnalysis	src/networkAnalysis.c	/^PetscErrorCode networkAnalysis(Box *box_ptr, Parameters *par_ptr)$/;"	f
 networkBuild	src/networkBuild.c	/^PetscErrorCode networkBuild()$/;"	f
 networkDestroy	src/networkDestroy.c	/^PetscErrorCode networkDestroy()$/;"	f
 networkRead	src/networkRead.c	/^PetscErrorCode networkRead(const char *fileToRead_ptr, Box **box_ptr_ptr, const PetscScalar gamma)$/;"	f
 networkStandardWrite	src/networkWrite.c	/^PetscErrorCode networkStandardWrite(FILE *file_ptr, const Box *box_ptr)$/;"	f
 networkUpdate	src/networkUpdate.c	/^PetscErrorCode networkUpdate(Box *box_ptr, Vec globalVec_U)$/;"	f
-<<<<<<< HEAD
-networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, const Box *box_ptr)$/;"	f
-=======
 networkWrite	src/networkWrite.c	/^PetscErrorCode networkWrite(const char *fileName, const char *fileNameAdv, const Box *box_ptr)$/;"	f
->>>>>>> development
 network_analyser	tests/otherTests/network_general_analysis.py	/^    network_analyser = NetworkAnalyser(network_reader.box, network_reader.fibre_dict, network_reader.node_dict, network_reader.link_dict)$/;"	v	class:NetworkAnalyser
 network_data	tests/otherTests/network_id_shifter.py	/^    network_data = []$/;"	v
 network_reader	tests/otherTests/network_general_analysis.py	/^    network_reader = NetworkReader(data_file)$/;"	v	class:NetworkAnalyser
@@ -6851,6 +6839,7 @@ normalize	tests/googletest/test/gtest_json_test_utils.py	/^def normalize(obj):$/
 notifications_	tests/googletest/test/googletest-output-test_.cc	/^  SpawnThreadNotifications notifications_;$/;"	m	class:DeathTestAndMultiThreadsTest	file:
 notified_	tests/googletest/include/gtest/internal/gtest-port.h	/^  bool notified_;$/;"	m	class:testing::internal::Notification
 np	tests/otherTests/common.py	/^import numpy as np$/;"	i
+np	tests/pyTests/rfnCore/node.py	/^import numpy as np$/;"	i
 num	tests/googletest/test/googletest-linked-ptr-test.cc	/^int num;$/;"	m	namespace:__anon22	file:
 number_	tests/googletest/xcode/Samples/FrameworkSample/widget.h	/^  float number_;$/;"	m	class:Widget
 nz	include/common.h	/^    PetscInt nz;$/;"	m	struct:sparseMat
@@ -7300,11 +7289,15 @@ set	tests/googletest/include/gtest/internal/gtest-port.h	/^  void set(const T& v
 set	tests/googletest/scripts/fuse_gtest_files.py	/^  from sets import Set as set  # For Python 2.3 compatibility$/;"	i
 setCoupledInternalNodeIndices	src/networkRead.c	/^PetscInt setCoupledInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount, PetscInt *nextIndex)$/;"	f
 setInternalNodeIndices	src/networkRead.c	/^PetscInt setInternalNodeIndices(Box *box_ptr, const PetscInt coupleCount)$/;"	f
+setPosition	tests/pyTests/rfnCore/node.py	/^    def setPosition(self, x, y, z):$/;"	m	class:Node
 setStandardInternalNodeIndices	src/networkRead.c	/^PetscInt setStandardInternalNodeIndices(Box *box_ptr, PetscInt *nextIndex)$/;"	f
 setUp	tests/googletest/test/googletest-filter-unittest.py	/^  def setUp(self):$/;"	m	class:GTestFilterUnitTest
 setUp	tests/googletest/test/googletest-json-outfiles-test.py	/^  def setUp(self):$/;"	m	class:GTestJsonOutFilesTest
 setUp	tests/googletest/test/googletest-shuffle-test.py	/^  def setUp(self):$/;"	m	class:GTestShuffleUnitTest
 setUp	tests/googletest/test/gtest_xml_outfiles_test.py	/^  def setUp(self):$/;"	m	class:GTestXMLOutFilesTest
+setX	tests/pyTests/rfnCore/node.py	/^    def setX(self, x):$/;"	m	class:Node
+setY	tests/pyTests/rfnCore/node.py	/^    def setY(self, y):$/;"	m	class:Node
+setZ	tests/pyTests/rfnCore/node.py	/^    def setZ(self, z):$/;"	m	class:Node
 set_catch_exceptions	tests/googletest/src/gtest-internal-inl.h	/^  void set_catch_exceptions(bool value) { catch_exceptions_ = value; }$/;"	f	class:testing::internal::UnitTestImpl
 set_child_pid	tests/googletest/src/gtest-death-test.cc	/^  void set_child_pid(pid_t child_pid) { child_pid_ = child_pid; }$/;"	f	class:testing::internal::ForkingDeathTest
 set_current_test_case	tests/googletest/src/gtest-internal-inl.h	/^  void set_current_test_case(TestCase* a_current_test_case) {$/;"	f	class:testing::internal::UnitTestImpl
